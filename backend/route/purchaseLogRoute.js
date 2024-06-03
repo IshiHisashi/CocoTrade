@@ -7,7 +7,7 @@ const router = express.Router({ mergeParams: true });
 
 router.post("/", purchaseLogController.createPurchaseLog);
 
-router.get("/:month", purchaseLogController.readThisMonthPurchaseLogs);
+router.get("/:month", purchaseLogController.readPurchaseLogsMonthly);
 // expecting /purchaselog/thismonth or /purchaselog/lastmonth.
 
 export default router;

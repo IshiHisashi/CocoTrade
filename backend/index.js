@@ -3,6 +3,7 @@ import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
 import testRoute from "./route/testRoute.js";
 import purchaseLogRoute from "./route/purchaseLogRoute.js";
+import currentBalanceRoute from "./route/currentBalanceRoute.js";
 
 const app = express();
 
@@ -17,7 +18,9 @@ app.listen(PORT, () => {
 
 app.use("/test", testRoute);
 
+// Sacha
 app.use("/purchaselog", purchaseLogRoute);
+app.use("/currentbalance", currentBalanceRoute);
 
 // connection to DB
 mongoose

@@ -6,15 +6,15 @@ import { PurchaseLogModel } from "../model/purchaseLogModel.js";
 export const createPurchaseLog = async (req, res) => {
   try {
     const newPurchaseLog = await PurchaseLogModel.create(req.body);
-    res.status(201).sendDateExclusive(newPurchaseLog);
+    res.status(201).send(newPurchaseLog);
   } catch (error) {
     console.log(error.message);
-    res.status(500).sendDateExclusive({ message: error.message });
+    res.status(500).send({ message: error.message });
   }
 };
 
 // Read purchase logs based on month
-export const readThisMonthPurchaseLogs = async (req, res) => {
+export const readPurchaseLogsMonthly = async (req, res) => {
   try {
     const month = req.params.month;
     console.log(month);

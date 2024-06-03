@@ -2,6 +2,7 @@ import express from "express";
 import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
 import testRoute from "./route/testRoute.js";
+import purchaseLogRoute from "./route/purchaseLogRoute.js";
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.listen(PORT, () => {
 });
 
 app.use("/test", testRoute);
+
+app.use("/purchaselog", purchaseLogRoute);
 
 // connection to DB
 mongoose

@@ -13,6 +13,7 @@ import notificationRoute from "./route/notificationRoute.js";
 
 import testRoute from "./route/testRoute.js";
 import salesFinRoute from "./route/salesFinRoute.js";
+import purchaseFinRoute from "./route/purchaseFinRoute.js";
 
 
 const app = express();
@@ -38,6 +39,7 @@ app.use("/sale", saleRoute);
 app.use("/purchase", purchaseRoute);
 app.use("/test", testRoute);
 app.use("/salesFin", salesFinRoute);
+app.use("/purchaseFin", purchaseFinRoute);
 
 // connection to DB
 mongoose

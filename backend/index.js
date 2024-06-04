@@ -11,6 +11,10 @@ import saleRoute from "./route/saleRoute.js";
 import purchaseRoute from "./route/purchaseRoute.js";
 import notificationRoute from "./route/notificationRoute.js";
 
+import testRoute from "./route/testRoute.js";
+import salesFinRoute from "./route/salesFinRoute.js";
+
+
 const app = express();
 
 // middleware to parse request body
@@ -32,6 +36,8 @@ app.use("/marketprice", marketPriceRoute);
 app.use("/user", priceSuggestionRoute);
 app.use("/sale", saleRoute);
 app.use("/purchase", purchaseRoute);
+app.use("/test", testRoute);
+app.use("/salesFin", salesFinRoute);
 
 // connection to DB
 mongoose

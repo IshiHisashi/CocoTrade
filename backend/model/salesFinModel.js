@@ -16,4 +16,7 @@ const salesFinSchema = new Schema({
   // cheque_receive_date: Date,
   total_sales_price: Number,
 });
-export const salesFinmodel = mongoose.model("salesFinmodel", salesFinSchema);
+export const salesFinmodel = mongoose.model(
+  "ishi_salesFinmodel",
+  salesFinSchema
+);

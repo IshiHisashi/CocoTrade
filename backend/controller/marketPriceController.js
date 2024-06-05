@@ -16,45 +16,40 @@ export const createMarketPrice = async (req, res) => {
 // Read
 export const readMarketPrice = async (req, res) => {
   try {
-    const lastWeekDate = req.params.lastweekdate;
-    const thisWeekDate = req.params.thisweekdate;
+    const { comparison, current } = req.query;
 
-    const startYearLast = Number(lastWeekDate.substring(0, 4));
-    const startMonthLast = Number(lastWeekDate.substring(4, 6));
-    const startDayLast = Number(lastWeekDate.substring(6));
-    const startDateInclusiveLast = new Date(
-      startYearLast,
-      startMonthLast - 1,
-      startDayLast
+    const comparisonYear = Number(comparison.substring(0, 4));
+    const comparisonMonth = Number(comparison.substring(4, 6));
+    const comparisonDay = Number(comparison.substring(6));
+    const comparisonDate = new Date(
+      comparisonYear,
+      comparisonMonth - 1,
+      comparisonDay
     );
 
-    const nextDateLast = new Date(startDateInclusiveLast);
-    nextDateLast.setDate(startDateInclusiveLast.getDate() + 1);
+    const comparisonNextDate = new Date(comparisonDate);
+    comparisonNextDate.setDate(comparisonDate.getDate() + 1);
 
-    const startYearThis = Number(thisWeekDate.substring(0, 4));
-    const startMonthThis = Number(thisWeekDate.substring(4, 6));
-    const startDayThis = Number(thisWeekDate.substring(6));
-    const startDateInclusiveThis = new Date(
-      startYearThis,
-      startMonthThis - 1,
-      startDayThis
-    );
+    const currentYear = Number(current.substring(0, 4));
+    const currentMonth = Number(current.substring(4, 6));
+    const currentDay = Number(current.substring(6));
+    const currentDate = new Date(currentYear, currentMonth - 1, currentDay);
 
-    const nextDateThis = new Date(startDateInclusiveThis);
-    nextDateThis.setDate(startDateInclusiveThis.getDate() + 1);
+    const currentNextDate = new Date(currentDate);
+    currentNextDate.setDate(currentDate.getDate() + 1);
 
     const docs = await MarketPriceModel.find({
       $or: [
         {
           createdAt: {
-            $gte: startDateInclusiveLast,
-            $lt: nextDateLast,
+            $gte: comparisonDate,
+            $lt: comparisonNextDate,
           },
         },
         {
           createdAt: {
-            $gte: startDateInclusiveThis,
-            $lt: nextDateThis,
+            $gte: currentDate,
+            $lt: currentNextDate,
           },
         },
       ],

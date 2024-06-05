@@ -5,11 +5,10 @@ import * as marketPriceController from "../controller/marketPriceController.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", marketPriceController.createMarketPrice);
-
-router.get(
-  "/:lastweekdate/:thisweekdate",
-  marketPriceController.readMarketPrice
-);
+router
+  .route("/")
+  .post(marketPriceController.createMarketPrice)
+  .get(marketPriceController.readMarketPrice);
+// get: expecting /marketprice?comparison=yyyymmdd&current=yyyymmdd
 
 export default router;

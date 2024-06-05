@@ -1,6 +1,8 @@
 import { Inventory } from "../model/inventoryModel.js";
 import { User } from "../model/userModels.js";
 
+const userId = "665bb23ef58fac2ad8cb75f8";
+
 export const getAllInventories = async (req, res) => {
     const endDate = new Date();
     let startDate = new Date(endDate);
@@ -17,14 +19,19 @@ export const getAllInventories = async (req, res) => {
             time_stamp: {
                 $gte: new Date(startDate),
                 $lte: new Date(endDate)
-            }
+            },
+            user_id: userId
         });
         console.log("Inventories retrieved");
-        // const user = await User.findById()
+        const user = await User.findById(userId);
+        console.log("User retreived");
 
+        const data = {
+            inventories: inventories,
+            user: user
+        }
 
-
-        res.status(200).json(inventories);
+        res.status(200).json(data);
     }
     catch (err) {
         res.status(500).json({error: err.message});
@@ -45,7 +52,8 @@ export const getAllInventoriesByDuration = async (req, res) => {
             time_stamp: {
                 $gte: new Date(startDate),
                 $lte: new Date(endDate)
-            }
+            },
+            user_id: userId
         });
         console.log("Inventories retrieved");
         res.status(200).json(selectedInventories);

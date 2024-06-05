@@ -6,10 +6,16 @@ import { CurrentBalanceModel } from "../model/currentBalanceModel.js";
 export const createCurrentBalance = async (req, res) => {
   try {
     const newCurrentBalance = await CurrentBalanceModel.create(req.body);
-    res.status(201).send(newCurrentBalance);
+    res.status(201).json({
+      status: "success",
+      data: newCurrentBalance,
+    });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send({ message: error.message });
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
   }
 };
 
@@ -35,9 +41,15 @@ export const readCurrentBalance = async (req, res) => {
         $lt: endDateExclusive,
       },
     });
-    res.status(201).send(docs);
+    res.status(201).json({
+      status: "success",
+      data: docs,
+    });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send({ message: error.message });
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
   }
 };

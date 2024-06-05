@@ -6,10 +6,16 @@ import { MarketPriceModel } from "../model/marketPriceModel.js";
 export const createMarketPrice = async (req, res) => {
   try {
     const newMarketPrice = await MarketPriceModel.create(req.body);
-    res.status(201).send(newMarketPrice);
+    res.status(201).json({
+      status: "success",
+      data: newMarketPrice,
+    });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send({ message: error.message });
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
   }
 };
 
@@ -54,9 +60,15 @@ export const readMarketPrice = async (req, res) => {
         },
       ],
     });
-    res.status(201).send(docs);
+    res.status(201).json({
+      status: "success",
+      data: docs,
+    });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send({ message: error.message });
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
   }
 };

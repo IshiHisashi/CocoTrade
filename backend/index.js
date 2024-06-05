@@ -22,7 +22,7 @@ app.use("/test", testRoute);
 // Sacha
 app.use("/purchaselog", purchaseLogRoute);
 app.use("/saleslog", salesLogRoute);
-app.use("/currentbalance", currentBalanceRoute);
+app.use("/user", currentBalanceRoute);
 
 // connection to DB
 mongoose

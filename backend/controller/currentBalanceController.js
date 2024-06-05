@@ -1,11 +1,32 @@
 import { CurrentBalanceModel } from "../model/currentBalanceModel.js";
+import { UserModel } from "../model/userModel.js";
 
 // this file is created by Sacha.
 
 // Create
 export const createCurrentBalance = async (req, res) => {
   try {
-    const newCurrentBalance = await CurrentBalanceModel.create(req.body);
+    const { userid } = req.params;
+    const {
+      purchases_array,
+      purchases_sum,
+      sales_array,
+      sales_sum,
+      current_balance,
+      date,
+    } = req.body;
+
+    const newData = {
+      user_id: userid,
+      purchases_array,
+      purchases_sum,
+      sales_array,
+      sales_sum,
+      current_balance,
+      date,
+    };
+
+    const newCurrentBalance = await CurrentBalanceModel.create(newData);
     res.status(201).json({
       status: "success",
       data: newCurrentBalance,
@@ -22,7 +43,16 @@ export const createCurrentBalance = async (req, res) => {
 // Read current balance based on month range
 export const readCurrentBalance = async (req, res) => {
   try {
+    const { userid } = req.params;
     const { from, to } = req.query;
+
+    const userDoc = await UserModel.findById(userid).populate("balance_array");
+
+    if (!userDoc) {
+      return res.status(404).json({
+        status: "404: user not found",
+      });
+    }
 
     const startYear = Number(from.substring(0, 4));
     const startMonth = Number(from.substring(4));
@@ -35,15 +65,14 @@ export const readCurrentBalance = async (req, res) => {
       endMonth === 12 ? 1 : endMonth
     );
 
-    const docs = await CurrentBalanceModel.find({
-      date: {
-        $gte: startDateInclusive,
-        $lt: endDateExclusive,
-      },
+    const balanceDocs = userDoc.balance_array.filter((obj) => {
+      const objDate = new Date(obj.date);
+      return objDate >= startDateInclusive && objDate < endDateExclusive;
     });
+
     res.status(201).json({
       status: "success",
-      data: docs,
+      data: balanceDocs,
     });
   } catch (error) {
     console.log(error.message);

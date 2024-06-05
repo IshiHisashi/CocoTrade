@@ -4,10 +4,19 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 const currentBalanceSchema = new Schema({
-  user_id: String,
-  purchases_array: Array,
+  user_id: {
+    type: Schema.Types.ObjectId,
+    ref: "S_User",
+  },
+  purchases_array: {
+    type: Array,
+    // ref: "S_Purchase_Logs"
+  },
   purchases_sum: mongoose.Types.Decimal128,
-  sales_array: Array,
+  sales_array: {
+    type: Array,
+    // ref: "S_Sales_Logs"
+  },
   sales_sum: mongoose.Types.Decimal128,
   current_balance: mongoose.Types.Decimal128,
   date: Date,

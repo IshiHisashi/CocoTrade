@@ -5,12 +5,10 @@ import * as currentBalanceController from "../controller/currentBalanceControlle
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", currentBalanceController.createCurrentBalance);
-
-router.get(
-  "/:startyearmonth/:endyearmonth",
-  currentBalanceController.readCurrentBalance
-);
-// expecting /currentbalance/yyyymm/yyyymm (e.g. /currentbalance/202405/202406)
+router
+  .route("/")
+  .post(currentBalanceController.createCurrentBalance)
+  .get(currentBalanceController.readCurrentBalance);
+// get: expecting /currentbalance?from={yyyymm}&to={yyyymm} (e.g. /currentbalance?from=202405&to=202406)
 
 export default router;

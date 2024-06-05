@@ -16,21 +16,18 @@ export const createCurrentBalance = async (req, res) => {
 // Read current balance based on month range
 export const readCurrentBalance = async (req, res) => {
   try {
-    const startYearMonth = req.params.startyearmonth;
-    const endYearMonth = req.params.endyearmonth;
+    const { from, to } = req.query;
 
-    const startYear = Number(startYearMonth.substring(0, 4));
-    const startMonth = Number(startYearMonth.substring(4));
+    const startYear = Number(from.substring(0, 4));
+    const startMonth = Number(from.substring(4));
     const startDateInclusive = new Date(startYear, startMonth - 1);
 
-    const endYear = Number(endYearMonth.substring(0, 4));
-    const endMonth = Number(endYearMonth.substring(4));
+    const endYear = Number(to.substring(0, 4));
+    const endMonth = Number(to.substring(4));
     const endDateExclusive = new Date(
       endMonth === 12 ? endYear + 1 : endYear,
       endMonth === 12 ? 1 : endMonth
     );
-
-    console.log(startDateInclusive, endDateExclusive);
 
     const docs = await CurrentBalanceModel.find({
       date: {

@@ -1,6 +1,61 @@
 import { Inventory } from "../model/inventoryModel.js";
+import { User } from "../model/userModels.js";
 
-export const createInventory = async (req, res) => {
+export const getAllInventories = async (req, res) => {
+    const endDate = new Date();
+    let startDate = new Date(endDate);
+    startDate.setMonth(endDate.getMonth() - 3);
+    console.log(endDate);
+    console.log(startDate);
+
+    if (!startDate || !endDate) {
+        return res.status(400).json({ error: "Pls provide a valid date" });
+    }
+
+    try {
+        const inventories = await Inventory.find({
+            time_stamp: {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            }
+        });
+        console.log("Inventories retrieved");
+        // const user = await User.findById()
+
+
+
+        res.status(200).json(inventories);
+    }
+    catch (err) {
+        res.status(500).json({error: err.message});
+    }
+};
+
+export const getAllInventoriesByDuration = async (req, res) => {
+    const { startDate, endDate} = req.query;
+    console.log(startDate);
+    console.log(endDate);
+
+    if (!startDate || !endDate) {
+        return res.status(400).json({ error: "Pls provide a valid date" });
+    }
+
+    try {
+        const selectedInventories = await Inventory.find({
+            time_stamp: {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            }
+        });
+        console.log("Inventories retrieved");
+        res.status(200).json(selectedInventories);
+    }
+    catch (err) {
+        res.status(500).json({error: err.message});
+    }
+};
+
+export const createShipment = async (req, res) => {
     try {
         const newInventory = new Inventory(req.body);
         const savedInventory = await newInventory.save();
@@ -8,17 +63,6 @@ export const createInventory = async (req, res) => {
         res.status(201).json(savedInventory);
     }
     catch(err) {
-        res.status(500).json({error: err.message});
-    }
-};
-
-export const getAllInventories = async (req, res) => {
-    try {
-        const inventories = await Inventory.find();
-        console.log("Inventories retrieved");
-        res.status(200).json(inventories);
-    }
-    catch (err) {
         res.status(500).json({error: err.message});
     }
 };

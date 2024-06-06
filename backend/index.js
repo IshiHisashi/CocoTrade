@@ -3,6 +3,7 @@ import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
 import testRoute from "./route/testRoute.js";
 import userRoute from "./route/userRoute.js";
+import marketPriceRoute from "./route/marketPriceRoute.js";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.listen(PORT, () => {
 });
 
 app.use("/test", testRoute);
+app.use("/marketprice", marketPriceRoute);
 
 app.use("/user", userRoute);
 

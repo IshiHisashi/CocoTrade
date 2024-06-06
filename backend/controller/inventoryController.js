@@ -1,9 +1,12 @@
 import { Inventory } from "../model/inventoryModel.js";
-import { User } from "../model/userModels.js";
 
 const userId = "665bb23ef58fac2ad8cb75f8";
 
 export const getAllInventories = async (req, res) => {
+    // I wanna retreive data about
+    // 1. inventory which has to do with inventoryModel
+    // 2. maximum capacity of warehouse which has to do with useModel
+    // So I imported both to get at the same time by just accessing this api.
     const endDate = new Date();
     let startDate = new Date(endDate);
     startDate.setMonth(endDate.getMonth() - 3);
@@ -15,6 +18,7 @@ export const getAllInventories = async (req, res) => {
     }
 
     try {
+        // GET INVENTORY INFO
         const inventories = await Inventory.find({
             time_stamp: {
                 $gte: new Date(startDate),
@@ -23,6 +27,7 @@ export const getAllInventories = async (req, res) => {
             user_id: userId
         });
         console.log("Inventories retrieved");
+        // GET USER INFO
         const user = await User.findById(userId);
         console.log("User retreived");
 

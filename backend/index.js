@@ -1,7 +1,6 @@
 import express from "express";
 import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
-import userRoute from "./route/userRoute.js";
 import inventoryRoute from "./route/inventoryRoute.js";
 import manufacturerRoute from "./route/manufacturerRoute.js";
 
@@ -16,7 +15,7 @@ app.listen(PORT, () => {
   console.log(`APP is listning to port :${PORT}`);
 });
 
-app.use("/user", userRoute);
+
 app.use("/inventory", inventoryRoute);
 app.use("/manufacturer", manufacturerRoute);
 

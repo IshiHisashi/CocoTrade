@@ -1,7 +1,6 @@
 import express from "express";
 import * as inventoryController from "../controller/inventoryController.js";
 import * as manufacturerController from "../controller/manufacturerController.js";
-import * as userController from "../controller/userController.js";
 
 const router = express.Router({ mergeParams: true });
 router.get("/", inventoryController.getAllInventories);

@@ -3,8 +3,9 @@ import * as marketPriceController from "../controller/marketPriceController.js";
 // Define route to execute it
 const router = express.Router({ mergeParams: true });
 router.get("/", marketPriceController.getallMarketPrice);
-router.get("/:id", marketPriceController.getMarketPrice);
+router.get("/latest", marketPriceController.getLatestMarketPrice);
 router.post("/", marketPriceController.createMarketPrice);
+router.get("/:id", marketPriceController.getMarketPrice);
 router.patch("/:id", marketPriceController.updateMarketPrice);
 router.delete("/:id", marketPriceController.deleteMarketPrice);
 

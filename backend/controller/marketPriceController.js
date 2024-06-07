@@ -57,6 +57,24 @@ export const getMarketPrice = async (req, res) => {
   }
 };
 
+// Read the most latest one
+export const getLatestMarketPrice = async (req, res) => {
+  try {
+    const doc = await marketPriceModel.findOne().sort({ createdAt: -1 });
+    res.status(201).json({
+      status: "success",
+      data: {
+        doc,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
 // Update and Delete needs parameter (ID)
 // Update
 export const updateMarketPrice = async (req, res) => {

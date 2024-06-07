@@ -4,30 +4,17 @@ import cron from "node-cron";
 import dotenv from "dotenv";
 dotenv.config({ path: "../config.env" });
 
-const postData = async (priceUSD, pricePHP, exchangeRate, suggestedPrice) => {
+const postData = async (priceUSD, pricePHP, exchangeRate) => {
   try {
+    // modify the URL according to Ishi's code.
     const res = await axios.post("http://localhost:5555/marketprice", {
       price_USD: priceUSD,
       price_PHP: pricePHP,
       exchange_rate: exchangeRate,
-      price_suggestion: suggestedPrice,
     });
     console.log("data posted successfully", res.data);
   } catch (error) {
     console.log("Error posting data: ", error.message);
-  }
-};
-
-const calculateSuggestedPrice = async (userId, pricePHP) => {
-  try {
-    const res = await axios.get(`http://localhost:5555/user/${userId}`);
-    const margin = Number(res.data.data.margin.$numberDecimal);
-    const pricePHPInKg = pricePHP / 1000;
-    const suggestedPrice = pricePHPInKg * (1 + margin);
-    // suggestedPrice is in kg.
-    return suggestedPrice;
-  } catch (error) {
-    console.log("Error getting user: ", error.message);
   }
 };
 
@@ -68,6 +55,5 @@ cron.schedule("0 0 0 * * *", async () => {
 
   const priceUSD = await scraper();
   const { pricePHP, exchangeRate } = await convertCurrency(priceUSD);
-  const suggestedPrice = await calculateSuggestedPrice(userId, pricePHP);
-  postData(priceUSD, pricePHP, exchangeRate, suggestedPrice);
+  postData(priceUSD, pricePHP, exchangeRate);
 });

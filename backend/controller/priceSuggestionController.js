@@ -1,5 +1,6 @@
 import { PriceSuggestionModel } from "../model/priceSuggestionModel.js";
 
+// Create
 export const createPriceSuggestion = async (req, res) => {
   try {
     const { userid } = req.params;
@@ -27,6 +28,19 @@ export const createPriceSuggestion = async (req, res) => {
       status: "success",
       data: newPriceSuggestion,
     });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
+// Read
+export const readPriceSuggestion = async (req, res) => {
+  try {
+    // look for the most resent record and 7 days ago one
+    // but this depends on how often the data will be posted
   } catch (error) {
     res.status(500).json({
       status: "fail",

@@ -8,7 +8,7 @@ import marketPriceRoute from "./route/marketPriceRoute.js";
 
 const app = express();
 
-// Middleware to parse request body
+// middleware to parse request body
 app.use(express.json());
 app.get("/", (req, res) => {
   return res.status(234).send("Successful connection!");

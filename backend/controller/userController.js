@@ -32,3 +32,29 @@ export const readUser = async (req, res) => {
     });
   }
 };
+
+// Update
+
+// Delete a user
+export const deleteUser = async (req, res) => {
+  try {
+    const { userid } = req.params;
+    const result = await UserModel.findByIdAndDelete(userid);
+    if (!result) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found",
+      });
+    } else {
+      return res.status(201).json({
+        status: "success",
+        message: "User deleted successfully",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};

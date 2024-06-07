@@ -3,9 +3,11 @@ import * as userController from "../controller/userController.js";
 
 const router = express.Router({ mergeParams: true });
 
+router.post("/", userController.createUser);
+
 router
   .route("/:userid")
-  .post(userController.createUser)
-  .get(userController.readUser);
+  .get(userController.readUser)
+  .delete(userController.deleteUser);
 
 export default router;

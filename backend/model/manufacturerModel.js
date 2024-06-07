@@ -8,4 +8,4 @@ const Schema = mongoose.Schema;
 const manufacturerSchema = new Schema({
     full_name: String,
 });
-const Manufacturer = mongoose.model('Manufacturers', manufacturerSchema);
+const Manufacturer = mongoose.model('Manufacturer', manufacturerSchema);

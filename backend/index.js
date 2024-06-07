@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import inventoryRoute from "./route/inventoryRoute.js";
 import manufacturerRoute from "./route/manufacturerRoute.js";
 import userRoute from "./route/userRoute.js";
+import notificationRoute from "./route/notificationRoute.js"
 import currentBalanceRoute from "./route/currentBalanceRoute.js";
 
 const app = express();
@@ -17,12 +18,12 @@ app.listen(PORT, () => {
   console.log(`APP is listning to port :${PORT}`);
 });
 
-app.use("/test", testRoute);
+// app.use("/test", testRoute);
 app.use("/currentbalance", currentBalanceRoute);
-
 app.use("/user", userRoute);
-app.use("/user", inventoryRoute);
-app.use("/user", manufacturerRoute);
+app.use("/inventory", inventoryRoute);
+app.use("/manufacturer", manufacturerRoute);
+app.use("/notification", notificationRoute);
 
 // connection to DB
 mongoose

@@ -3,7 +3,6 @@ import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
 import inventoryRoute from "./route/inventoryRoute.js";
 import manufacturerRoute from "./route/manufacturerRoute.js";
-import testRoute from "./route/testRoute.js";
 import userRoute from "./route/userRoute.js";
 
 const app = express();
@@ -17,11 +16,9 @@ app.listen(PORT, () => {
   console.log(`APP is listning to port :${PORT}`);
 });
 
-
-app.use("/inventory", inventoryRoute);
-app.use("/manufacturer", manufacturerRoute);
-
 app.use("/user", userRoute);
+app.use("/user", inventoryRoute);
+app.use("/user", manufacturerRoute);
 
 // connection to DB
 mongoose

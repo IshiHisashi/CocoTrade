@@ -7,9 +7,10 @@ export {
 const Schema = mongoose.Schema;
 const inventorySchema = new Schema({
     user_id: String,
-    purchase_id: Array,
-    sales_id: Array,
-    current_amount: Number,
+    purchase_array: [{ type: Schema.Types.ObjectId, ref: "Purchase" }],
+    sales_array: [{ type: Schema.Types.ObjectId, ref: "Sale" }],
+    current_amount: mongoose.Types.Decimal128,
     time_stamp: Date
 });
+
 const Inventory = mongoose.model('Inventory', inventorySchema);

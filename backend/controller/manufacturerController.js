@@ -1,5 +1,7 @@
 import { Manufacturer } from "../model/manufacturerModel.js";
+import { UserModel as User } from "../model/userModel.js"
 
+// Create manufacturer
 export const createManufacturer = async (req, res) => {
     try {
         const newManufacturer = new Manufacturer(req.body);
@@ -12,16 +14,27 @@ export const createManufacturer = async (req, res) => {
     }
 };
 
+// Get all the manufacturers based on user
 export const getAllManufacturers = async (req, res) => {
     try {
-        const manufacturers = await Manufacturer.find();
+        // GET MANUFACTURERS INFO
+        const { userId } = req.query;
+        const user = await User.findById(userId)
+            .populate('manufacturers_array');
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const data = {
+            manufacturers: user.manufacturers_array,
+        }
         console.log("Manufacturers retrieved");
-        res.status(200).json(manufacturers);
+        res.status(200).json(data);
     }
     catch (err) {
         res.status(500).json({error: err.message});
     }
-};
+}
 
 export const getManufacturerById = async (req, res) => {
     try {
@@ -38,9 +51,16 @@ export const getManufacturerById = async (req, res) => {
 
 export const updateManufacturer = async (req, res) => {
     try {
-        const updatedManufacturer = Manufacturer.findByIdAndUpdate(req.params.id);
+        const userId = req.params.id;
+        const updateData = req.body;
+
+        const updatedManufacturer = Manufacturer.findByIdAndUpdate(
+            userId,
+            updateData,
+            { new: true, runValidators: true }
+        );
         if (!updatedManufacturer) {
-            return res.status(404).json({ error: "Manufacturer not found" });
+            return res.status(404).json({ error: "Manufacturer noot found" });
         }
         res.status(200).json(updatedManufacturer);
     }
@@ -49,9 +69,9 @@ export const updateManufacturer = async (req, res) => {
     }
 }
 
-export const deleteManufacturer = async (res, req) => {
+export const deleteManufacturer = async (req, res) => {
     try {
-        const deletedManufacturer = await Manufacturer.findByIdAndDelete(res.params.id);
+        const deletedManufacturer = await Manufacturer.findByIdAndDelete(req.params.id);
         if (!deletedManufacturer) {
             return res.status(404).json({ error: "Manufacturer not found" });
         }

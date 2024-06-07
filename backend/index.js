@@ -7,6 +7,7 @@ import priceSuggestionRoute from "./route/priceSuggestionRoute.js";
 import currentBalanceRoute from "./route/currentBalanceRoute.js";
 import marketPriceRoute from "./route/marketPriceRoute.js";
 import saleRoute from "./route/saleRoute.js";
+import purchaseRoute from "./route/purchaseRoute.js";
 
 const app = express();
 

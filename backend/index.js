@@ -3,6 +3,7 @@ import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
 import testRoute from "./route/testRoute.js";
 import userRoute from "./route/userRoute.js";
+import currentBalanceRoute from "./route/currentBalanceRoute.js";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.listen(PORT, () => {
 });
 
 app.use("/test", testRoute);
+app.use("/currentbalance", currentBalanceRoute);
 
 app.use("/user", userRoute);
 

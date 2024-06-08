@@ -1,21 +1,26 @@
+import axios from "axios";
 import { PriceSuggestionModel } from "../model/priceSuggestionModel.js";
+import { UserModel } from "../model/userModel.js";
 
 // Create a price suggestion document
 export const createPriceSuggestion = async (req, res) => {
   try {
     const { userid } = req.params;
 
-    const resUserDoc = await fetch(`http://localhost:5555/user/${userid}`);
+    // access to the user document to get margin, and the latest market price document to get market price.
+    const [resUserDoc, resMarketPriceDoc] = await Promise.all([
+      axios.get(`http://localhost:5555/user/${userid}`),
+      axios.get("http://localhost:5555/marketprice/latest"),
+    ]);
+
     const margin = Number(resUserDoc.data.data.margin.$numberDecimal);
 
-    const resMarketPriceDoc = await fetch(
-      "http://localhost:5555/marketprice/latest"
+    // pricePHP is in ton. convert it in kg, and calculate price suggestion.
+    const pricePHP = Number(
+      resMarketPriceDoc.data.data.doc.price_PHP.$numberDecimal
     );
-    // pricePHP is in ton.
-    const pricePHP = Number(resMarketPriceDoc.data.data.doc.price_PHP);
     const pricePHPInKg = pricePHP / 1000;
     const priceSuggestion = pricePHPInKg * (1 + margin);
-    // priceSuggestion is in kg.
 
     const newDoc = {
       userID: userid,
@@ -23,6 +28,10 @@ export const createPriceSuggestion = async (req, res) => {
     };
 
     const newPriceSuggestion = await PriceSuggestionModel.create(newDoc);
+
+    // here update the array in the user document as well!
+    // implement when I create update method for user collection.
+
     res.status(201).json({
       status: "success",
       data: newPriceSuggestion,
@@ -39,10 +48,10 @@ export const createPriceSuggestion = async (req, res) => {
 export const readTwoRecentPriceSuggestion = async (req, res) => {
   try {
     const { userid } = req.params;
-    const docs = await PriceSuggestionModel.findById(userid)
-      .populate("price_suggestion_array")
-      .sort({ createdAt: -1 })
-      .limit(2);
+    const docs = await UserModel.findById(userid).populate({
+      path: "price_suggestion_array",
+      options: { sort: { createdAt: -1 }, limit: 2 },
+    });
     res.status(200).json({
       status: "success",
       data: docs,

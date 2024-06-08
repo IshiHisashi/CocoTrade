@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   company_name: String,
   full_name: String,
-  Country: String,
+  country: String,
   email: String,
   email_verification: Boolean,
   currency: String,

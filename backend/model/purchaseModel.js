@@ -13,6 +13,6 @@ const purchaseSchema = new Schema({
     status: { type: String, enum: ['pending', 'ongoing', 'completed', 'cancelled'], default: 'pending' },
     moisture_test_result: Boolean,
     moisture_test_details: Number,
-    total_purchase_price: Number
+    total_purchase_price: Decimal128
 });
 const Purchase = mongoose.model('Purchase', purchaseSchema);

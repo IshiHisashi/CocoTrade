@@ -6,6 +6,7 @@ const router = express.Router({ mergeParams: true });
 router.get("/:userId", inventoryController.getAllInventories);
 router.get("/manu", manufacturerController.getAllManufacturers);
 router.get("/:id", inventoryController.getInventoryById);
+router.post("/", inventoryController.createInventory);
 router.patch("/:id", inventoryController.updateInventory);
 // router.get("/duration", inventoryController.getAllInventoriesByDuration);
 router.delete("/:id", inventoryController.deleteInventorById);

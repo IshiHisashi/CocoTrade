@@ -13,6 +13,6 @@ const saleSchema = new Schema({
     status: { type: String, enum: ['pending', 'ongoing', 'completed', 'cancelled'], default: 'pending' },
     copra_ship_date: Date,
     cheque_receive_date: Date,
-    total_sales_price: Number
+    total_sales_price: Decimal128
 });
 const Sale = mongoose.model('Sale', saleSchema);

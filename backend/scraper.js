@@ -6,7 +6,6 @@ dotenv.config({ path: "../config.env" });
 
 const postData = async (priceUSD, pricePHP, exchangeRate) => {
   try {
-    // modify the URL according to Ishi's code.
     const res = await axios.post("http://localhost:5555/marketprice", {
       price_USD: priceUSD,
       price_PHP: pricePHP,

@@ -4,10 +4,11 @@ import mongoose from "mongoose";
 import testRoute from "./route/testRoute.js";
 import userRoute from "./route/userRoute.js";
 import currentBalanceRoute from "./route/currentBalanceRoute.js";
+import marketPriceRoute from "./route/marketPriceRoute.js";
 
 const app = express();
 
-// Middleware to parse request body
+// middleware to parse request body
 app.use(express.json());
 app.get("/", (req, res) => {
   return res.status(234).send("Successful connection!");
@@ -18,6 +19,7 @@ app.listen(PORT, () => {
 
 app.use("/test", testRoute);
 app.use("/currentbalance", currentBalanceRoute);
+app.use("/marketprice", marketPriceRoute);
 
 app.use("/user", userRoute);
 

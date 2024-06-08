@@ -6,10 +6,12 @@ import manufacturerRoute from "./route/manufacturerRoute.js";
 import userRoute from "./route/userRoute.js";
 import notificationRoute from "./route/notificationRoute.js"
 import currentBalanceRoute from "./route/currentBalanceRoute.js";
+import marketPriceRoute from "./route/marketPriceRoute.js";
+import saleRoute from "./route/saleRoute.js";
 
 const app = express();
 
-// Middleware to parse request body
+// middleware to parse request body
 app.use(express.json());
 app.get("/", (req, res) => {
   return res.status(234).send("Successful connection!");
@@ -24,7 +26,8 @@ app.use("/user", userRoute);
 app.use("/inventory", inventoryRoute);
 app.use("/manufacturer", manufacturerRoute);
 app.use("/notification", notificationRoute);
-
+app.use("/marketprice", marketPriceRoute);
+app.use("/sale", saleRoute);
 // connection to DB
 mongoose
   .connect(mongoURL, {})

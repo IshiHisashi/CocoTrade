@@ -24,6 +24,7 @@ app.use("/currentbalance", currentBalanceRoute);
 app.use("/marketprice", marketPriceRoute);
 app.use("/user", userRoute);
 app.use("/sale", saleRoute);
+app.use("/purchase", purchaseRoute);
 
 // connection to DB
 mongoose

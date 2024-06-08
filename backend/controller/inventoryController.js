@@ -1,15 +1,26 @@
 import { Inventory } from "../model/inventoryModel.js";
 import { UserModel as User } from "../model/userModel.js";
 
-// skip create inventory as it's the same as create sales.
-// Get all the inventory data based on userId
+// Create inventory
+export const createInventory = async (req, res) => {
+    try {
+        const newInventory = new Inventory(req.body);
+        const savedInventory = await newInventory.save();
+        console.log("Inventory Added!");
+        res.status(201).json(savedInventory);
+    }
+    catch(err) {
+        res.status(500).json({error: err.message});
+    }
+};
 
+// Get all the inventory data based on userId
 export const getAllInventories = async (req, res) => {
-    // To test this use ?userId=66622c07858df5960bf57a06 as query in url
+    // To test this use userId=66622c07858df5960bf57a06 as query in url
 
     try {
         // GET INVENTORY INFO
-        const { userId } = req.query;
+        const { userId } = req.params.userId;
         const user = await User.findById(userId)
             .populate('inventory_amount_array');
             // .populate('sales_array');

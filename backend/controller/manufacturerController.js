@@ -18,7 +18,7 @@ export const createManufacturer = async (req, res) => {
 export const getAllManufacturers = async (req, res) => {
     try {
         // GET MANUFACTURERS INFO
-        const { userId } = req.query;
+        const { userId } = req.params.userId;
         const user = await User.findById(userId)
             .populate('manufacturers_array');
 

@@ -3,7 +3,7 @@ import * as inventoryController from "../controller/inventoryController.js";
 import * as manufacturerController from "../controller/manufacturerController.js";
 
 const router = express.Router({ mergeParams: true });
-router.get("/", inventoryController.getAllInventories);
+router.get("/:userId", inventoryController.getAllInventories);
 router.get("/manu", manufacturerController.getAllManufacturers);
 router.get("/:id", inventoryController.getInventoryById);
 router.patch("/:id", inventoryController.updateInventory);

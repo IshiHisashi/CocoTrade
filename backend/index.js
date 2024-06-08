@@ -28,6 +28,7 @@ app.use("/manufacturer", manufacturerRoute);
 app.use("/notification", notificationRoute);
 app.use("/marketprice", marketPriceRoute);
 app.use("/sale", saleRoute);
+
 // connection to DB
 mongoose
   .connect(mongoURL, {})

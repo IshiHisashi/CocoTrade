@@ -18,7 +18,7 @@ export const createNotification = async (req, res) => {
 export const getAllNotifications = async (req, res) => {
     try {
         // GET Notifications info
-        const { userId } = req.query;
+        const { userId } = req.params.userId;
         const user = await User.findById(userId)
             .populate('notification_array');
 

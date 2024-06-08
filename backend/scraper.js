@@ -50,9 +50,6 @@ const scraper = async () => {
 
 // schedule to execute everyday at 0 o'clock.
 cron.schedule("0 0 0 * * *", async () => {
-  // hardcode user ID for now
-  const userId = "66605a1d4469d91be0d4401f";
-
   const priceUSD = await scraper();
   const { pricePHP, exchangeRate } = await convertCurrency(priceUSD);
   postData(priceUSD, pricePHP, exchangeRate);

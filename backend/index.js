@@ -21,7 +21,6 @@ app.use("/test", testRoute);
 app.use("/currentbalance", currentBalanceRoute);
 app.use("/user", userRoute);
 app.use("/sale", saleRoute);
-
 // connection to DB
 mongoose
   .connect(mongoURL, {})

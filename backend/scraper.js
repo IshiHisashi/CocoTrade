@@ -19,11 +19,10 @@ const postData = async (priceUSD, pricePHP, exchangeRate) => {
 
 const convertCurrency = async (priceUSD) => {
   try {
-    const res = await fetch(
+    const res = await axios.get(
       `https://v6.exchangerate-api.com/v6/${process.env.EXCHANGEAPI}/latest/USD`
     );
-    const data = await res.json();
-    const exchangeRate = data.conversion_rates.PHP;
+    const exchangeRate = res.data.conversion_rates.PHP;
     const pricePHP = priceUSD * exchangeRate;
     // pricePHP is in ton.
     return { pricePHP, exchangeRate };

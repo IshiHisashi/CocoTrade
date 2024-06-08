@@ -3,6 +3,7 @@ import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
 import testRoute from "./route/testRoute.js";
 import userRoute from "./route/userRoute.js";
+import priceSuggestionRoute from "./route/priceSuggestionRoute.js";
 import currentBalanceRoute from "./route/currentBalanceRoute.js";
 import marketPriceRoute from "./route/marketPriceRoute.js";
 import saleRoute from "./route/saleRoute.js";
@@ -22,7 +23,9 @@ app.use("/test", testRoute);
 app.use("/currentbalance", currentBalanceRoute);
 app.use("/marketprice", marketPriceRoute);
 app.use("/user", userRoute);
+app.use("/user", priceSuggestionRoute);
 app.use("/sale", saleRoute);
+
 // connection to DB
 mongoose
   .connect(mongoURL, {})

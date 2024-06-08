@@ -5,6 +5,7 @@ import testRoute from "./route/testRoute.js";
 import userRoute from "./route/userRoute.js";
 import currentBalanceRoute from "./route/currentBalanceRoute.js";
 import marketPriceRoute from "./route/marketPriceRoute.js";
+import saleRoute from "./route/saleRoute.js";
 
 const app = express();
 
@@ -20,9 +21,8 @@ app.listen(PORT, () => {
 app.use("/test", testRoute);
 app.use("/currentbalance", currentBalanceRoute);
 app.use("/marketprice", marketPriceRoute);
-
 app.use("/user", userRoute);
-
+app.use("/sale", saleRoute);
 // connection to DB
 mongoose
   .connect(mongoURL, {})

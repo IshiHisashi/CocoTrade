@@ -7,10 +7,16 @@ export const createNotification = async (req, res) => {
         const newNotification = new Notification(req.body);
         const savedNotification = await newNotification.save();
         console.log("Notification Added!");
-        res.status(201).json(savedNotification);
+        res.status(201).json({
+            status:"success",
+            data: savedNotification
+        });
     }
     catch(err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 };
 
@@ -23,16 +29,25 @@ export const getAllNotifications = async (req, res) => {
             .populate('notification_array');
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({
+                status: "failed", 
+                error: 'User not found' 
+            });
         }
         const data = {
             Notifications: user.notification_array,
         }
         console.log("Notifications retrieved");
-        res.status(200).json(data);
+        res.status(200).json({
+            status: "success",
+            data: data
+        });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 }
 
@@ -40,12 +55,21 @@ export const getNotificationById = async (req, res) => {
     try {
         const Notification = await Notification.findById(req.params.id);
         if(!Notification) {
-            return res.status(404).json({ error: 'Notification not found' });
+            return res.status(404).json({
+                status: "failed", 
+                error: 'Notification not found' 
+            });
         }
-        res.status(200).json(Notification);
+        res.status(200).json({
+            status: "success",
+            data: Notification
+        });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 };
 
@@ -60,12 +84,21 @@ export const updateNotification = async (req, res) => {
             { new: true, runValidators: true }
         );
         if (!updatedNotification) {
-            return res.status(404).json({ error: "Notification not found" });
+            return res.status(404).json({
+                status: "failed", 
+                error: "Notification not found" 
+            });
         }
-        res.status(200).json(updatedNotification);
+        res.status(200).json({
+            status: "success",
+            data: updatedNotification
+        });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 }
 
@@ -73,11 +106,20 @@ export const deleteNotification = async (req, res) => {
     try {
         const deletedNotification = await Notification.findByIdAndDelete(req.params.id);
         if (!deletedNotification) {
-            return res.status(404).json({ error: "Notification not found" });
+            return res.status(404).json({
+                status: "failed", 
+                error: "Notification not found" 
+            });
         }
-        res.status(200).json(deletedNotification);
+        res.status(200).json({
+            status: "success",
+            data: deletedNotification
+        });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 }

@@ -7,10 +7,16 @@ export const createInventory = async (req, res) => {
         const newInventory = new Inventory(req.body);
         const savedInventory = await newInventory.save();
         console.log("Inventory Added!");
-        res.status(201).json(savedInventory);
+        res.status(201).json({ 
+            status: "success",
+            data: savedInventory
+        });
     }
     catch(err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 };
 
@@ -27,7 +33,10 @@ export const getAllInventories = async (req, res) => {
             // WHY NOT WORKING???
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ 
+                status: "failed",
+                error: 'User not found' 
+            });
         }
         const data = {
             max_amount: user.max_inventory_amount,
@@ -35,10 +44,15 @@ export const getAllInventories = async (req, res) => {
             sales: user.sales_array
         }
         console.log("Inventories retrieved");
-        res.status(200).json(data);
+        res.status(200).json({
+            status: "Success",
+            data: data });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 };
 
@@ -52,12 +66,20 @@ export const getInventoryById = async (req, res) => {
         // ACTIVATE THIS LATER ONCE I GET SCHEMA
 
         if(!inventory) {
-            return res.status(404).json({ error: 'Inventory not found' });
+            return res.status(404).json({ 
+                status: "failed",
+                error: 'Inventory not found' 
+            });
         }
-        res.status(200).json(inventory);
+        res.status(200).json({
+            status: "Success",
+            data: inventory });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 };
 
@@ -72,12 +94,20 @@ export const updateInventory = async (req, res) => {
             { new: true, runValidators: true }
         );
         if (!updatedInventory) {
-            return res.status(404).json({ error: "User noot found" });
+            return res.status(404).json({ 
+                status: "failed",
+                error: "User noot found" 
+            });
         }
-        res.status(200).json(updatedInventory);
+        res.status(200).json({
+            status: "Success",
+            data: updatedInventory });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 }
 
@@ -85,12 +115,20 @@ export const deleteInventorById = async (req, res) => {
     try {
         const deletedInventory = await Inventory.findByIdAndDelete(req.params.id);
         if (!deletedInventory) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ 
+                status: "failed",
+                error: "User not found" 
+            });
         }
-        res.status(200).json(deletedInventory);
+        res.status(200).json({
+            status: "Success",
+            data: deletedInventory });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 }
 
@@ -113,9 +151,14 @@ export const deleteInventorById = async (req, res) => {
 //             user_id: userId
 //         });
 //         console.log("Inventories retrieved");
-//         res.status(200).json(selectedInventories);
+//         res.status(200).json({
+    // status: "Success",
+    // data: selectedInventories });
 //     }
 //     catch (err) {
-//         res.status(500).json({error: err.message});
+//         res.status(500).json({
+//     status: "failed",
+//     error: err.message
+// });
 //     }
 // };

@@ -7,10 +7,16 @@ export const createManufacturer = async (req, res) => {
         const newManufacturer = new Manufacturer(req.body);
         const savedManufacturer = await newManufacturer.save();
         console.log("Manufacturer Added!");
-        res.status(201).json(savedManufacturer);
+        res.status(201).json({
+            status: "Success",
+            data: savedManufacturer
+        });
     }
     catch(err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 };
 
@@ -23,16 +29,25 @@ export const getAllManufacturers = async (req, res) => {
             .populate('manufacturers_array');
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({
+                status: "failed", 
+                error: 'User not found' 
+            });
         }
         const data = {
             manufacturers: user.manufacturers_array,
         }
         console.log("Manufacturers retrieved");
-        res.status(200).json(data);
+        res.status(200).json({
+            status: "success",
+            data: data
+        });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 }
 
@@ -40,12 +55,21 @@ export const getManufacturerById = async (req, res) => {
     try {
         const manufacturer = await Manufacturer.findById(req.params.id);
         if(!manufacturer) {
-            return res.status(404).json({ error: 'Manufacturer not found' });
+            return res.status(404).json({
+                status: "failed", 
+                error: 'Manufacturer not found' 
+            });
         }
-        res.status(200).json(manufacturer);
+        res.status(200).json({
+            status: "success",
+            data: manufacturer
+        });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 };
 
@@ -60,12 +84,21 @@ export const updateManufacturer = async (req, res) => {
             { new: true, runValidators: true }
         );
         if (!updatedManufacturer) {
-            return res.status(404).json({ error: "Manufacturer noot found" });
+            return res.status(404).json({
+                status: "failed", 
+                error: "Manufacturer noot found" 
+            });
         }
-        res.status(200).json(updatedManufacturer);
+        res.status(200).json({
+            status: "success",
+            data: updatedManufacturer
+        });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 }
 
@@ -73,11 +106,20 @@ export const deleteManufacturer = async (req, res) => {
     try {
         const deletedManufacturer = await Manufacturer.findByIdAndDelete(req.params.id);
         if (!deletedManufacturer) {
-            return res.status(404).json({ error: "Manufacturer not found" });
+            return res.status(404).json({
+                status: "failed", 
+                error: "Manufacturer not found" 
+            });
         }
-        res.status(200).json(deletedManufacturer);
+        res.status(200).json({
+            status: "success",
+            data: deletedManufacturer
+        });
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({
+            status: "failed",
+            error: err.message
+        });
     }
 }

@@ -5,6 +5,6 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/:userid/pricesuggestion")
   .post(priceSuggestionController.createPriceSuggestion)
-  .get(priceSuggestionController.readPriceSuggestion);
+  .get(priceSuggestionController.readTwoRecentPriceSuggestion);
 
 export default router;

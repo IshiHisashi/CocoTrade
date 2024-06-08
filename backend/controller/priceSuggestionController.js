@@ -52,6 +52,12 @@ export const readTwoRecentPriceSuggestion = async (req, res) => {
       path: "price_suggestion_array",
       options: { sort: { createdAt: -1 }, limit: 2 },
     });
+    if (!docs) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Price suggestion document not found",
+      });
+    }
     res.status(200).json({
       status: "success",
       data: docs,

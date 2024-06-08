@@ -21,6 +21,38 @@ export const readUser = async (req, res) => {
   try {
     const { userid } = req.params;
     const doc = await UserModel.findById(userid);
+    if (!doc) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found",
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      data: doc,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
+// Update a user
+// need to check how this will behave with array updating.
+export const updateUser = async (req, res) => {
+  try {
+    const { userid } = req.params;
+    const doc = await UserModel.findByIdAndUpdate(userid, req.body, {
+      new: true,
+    });
+    if (!doc) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found",
+      });
+    }
     res.status(201).json({
       status: "success",
       data: doc,
@@ -33,8 +65,6 @@ export const readUser = async (req, res) => {
   }
 };
 
-// Update
-
 // Delete a user
 export const deleteUser = async (req, res) => {
   try {
@@ -45,12 +75,11 @@ export const deleteUser = async (req, res) => {
         status: "fail",
         message: "User not found",
       });
-    } else {
-      return res.status(201).json({
-        status: "success",
-        message: "User deleted successfully",
-      });
     }
+    res.status(201).json({
+      status: "success",
+      message: "User deleted successfully",
+    });
   } catch (error) {
     res.status(500).json({
       status: "fail",

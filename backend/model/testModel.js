@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 //   Shcema
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 const testSchema = new Schema({
   name: String,
   age: Number,

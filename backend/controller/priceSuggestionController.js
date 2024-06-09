@@ -7,7 +7,8 @@ export const createPriceSuggestion = async (req, res) => {
   try {
     const { userid } = req.params;
 
-    // access to the user document to get margin, and the latest market price document to get market price.
+    // access to the user document to get margin,
+    // and the latest market price document to get market price.
     const [resUserDoc, resMarketPriceDoc] = await Promise.all([
       axios.get(`http://localhost:5555/user/${userid}`),
       axios.get("http://localhost:5555/marketprice/latest"),
@@ -58,12 +59,12 @@ export const readTwoRecentPriceSuggestion = async (req, res) => {
         message: "Price suggestion document not found",
       });
     }
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       data: docs,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       status: "fail",
       message: error.message,
     });

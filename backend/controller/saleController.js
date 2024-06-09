@@ -50,11 +50,11 @@ export const updateSale = async (req, res) => {
             return res.status(404).json({
                 error: "Sale not found"
             });
-        } else {
+        } 
             return res.status(201).json({
                 status: "success in updating",
             });
-        }
+        
     } catch (err) {
         console.log(err);
         res.status(400).json({

@@ -1,6 +1,6 @@
 import express from "express";
-import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
+import { PORT, mongoURL } from "./config.js";
 import testRoute from "./route/testRoute.js";
 import userRoute from "./route/userRoute.js";
 import priceSuggestionRoute from "./route/priceSuggestionRoute.js";

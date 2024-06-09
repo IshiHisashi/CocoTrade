@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 const marketpriceSchema = new Schema(
   {
     price_USD: mongoose.Types.Decimal128,

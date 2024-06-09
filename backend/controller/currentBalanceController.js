@@ -66,11 +66,10 @@ export const updateCurrentBalance = async (req, res) => {
     );
     if (!result) {
       return res.status(404).json({ message: "not found" });
-    } else {
-      return res.status(201).json({
-        status: "success in updating",
-      });
     }
+    return res.status(201).json({
+      status: "success in updating",
+    });
   } catch (err) {
     console.log(err);
     res.status(400).json({
@@ -85,11 +84,10 @@ export const deleteCurrentBalance = async (req, res) => {
     const result = await CurrentBalanceModel.findByIdAndDelete(req.params.id);
     if (!result) {
       return res.status(404).json({ message: "not found" });
-    } else {
-      return res.status(201).json({
-        status: "success in deleting",
-      });
     }
+    return res.status(201).json({
+      status: "success in deleting",
+    });
   } catch (err) {
     res.status(400).json({
       status: "fail",

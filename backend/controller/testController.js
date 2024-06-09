@@ -65,11 +65,11 @@ export const updateTest = async (req, res) => {
     const result = await Testmodel.findByIdAndUpdate(req.params.id, req.body);
     if (!result) {
       return res.status(404).json({ message: "test not found" });
-    } else {
+    } 
       return res.status(201).json({
         status: "success in updating",
       });
-    }
+    
   } catch (err) {
     console.log(err);
     res.status(400).json({
@@ -84,11 +84,11 @@ export const deleteTest = async (req, res) => {
     const result = await Testmodel.findByIdAndDelete(req.params.id);
     if (!result) {
       return res.status(404).json({ message: "Test not found" });
-    } else {
+    } 
       return res.status(201).json({
         status: "success in deleting",
       });
-    }
+    
   } catch (err) {
     res.status(400).json({
       status: "fail",

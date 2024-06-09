@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 //   Shcema
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 
 const currentBalanceSchema = new Schema({
   user_id: {

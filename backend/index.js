@@ -1,8 +1,10 @@
 import express from "express";
 import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
-import testRoute from "./route/testRoute.js";
+import inventoryRoute from "./route/inventoryRoute.js";
+import manufacturerRoute from "./route/manufacturerRoute.js";
 import userRoute from "./route/userRoute.js";
+import notificationRoute from "./route/notificationRoute.js"
 import priceSuggestionRoute from "./route/priceSuggestionRoute.js";
 import currentBalanceRoute from "./route/currentBalanceRoute.js";
 import marketPriceRoute from "./route/marketPriceRoute.js";
@@ -20,10 +22,13 @@ app.listen(PORT, () => {
   console.log(`APP is listning to port :${PORT}`);
 });
 
-app.use("/test", testRoute);
+// app.use("/test", testRoute);
 app.use("/currentbalance", currentBalanceRoute);
-app.use("/marketprice", marketPriceRoute);
 app.use("/user", userRoute);
+app.use("/inventory", inventoryRoute);
+app.use("/manufacturer", manufacturerRoute);
+app.use("/notification", notificationRoute);
+app.use("/marketprice", marketPriceRoute);
 app.use("/user", priceSuggestionRoute);
 app.use("/sale", saleRoute);
 app.use("/purchase", purchaseRoute);

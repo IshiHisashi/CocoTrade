@@ -1,10 +1,11 @@
 import React from "react";
+import Inventory from "./Inventory";
 
 const App = () => {
   return (
-    <>
-      <h1>Welcome to CocoTrade🌴</h1>
-    </>
+    <div className="app">
+      <Inventory />
+    </div>
   );
 };
 

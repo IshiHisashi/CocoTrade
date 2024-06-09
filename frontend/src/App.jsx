@@ -4,6 +4,7 @@ const App = () => {
   return (
     <>
       <h1>Welcome to CocoTrade🌴</h1>
+      <br />
     </>
   );
 };

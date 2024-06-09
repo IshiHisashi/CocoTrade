@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 //   Shcema
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 const currentBalanceSchema = new Schema({
   user_id: {
@@ -26,3 +26,5 @@ export const CurrentBalanceModel = mongoose.model(
   "Current_Balance",
   currentBalanceSchema
 );
+
+export default CurrentBalanceModel;

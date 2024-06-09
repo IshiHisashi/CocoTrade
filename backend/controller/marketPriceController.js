@@ -85,14 +85,13 @@ export const updateMarketPrice = async (req, res) => {
     );
     if (!result) {
       return res.status(404).json({ message: "not found" });
-    } 
-      return res.status(201).json({
-        status: "success in updating",
-      });
-    
+    }
+    return res.status(201).json({
+      status: "success in updating",
+    });
   } catch (err) {
     console.log(err);
-    res.status(400).json({
+    return res.status(400).json({
       status: "fail",
       message: err,
     });
@@ -104,13 +103,12 @@ export const deleteMarketPrice = async (req, res) => {
     const result = await marketPriceModel.findByIdAndDelete(req.params.id);
     if (!result) {
       return res.status(404).json({ message: "not found" });
-    } 
-      return res.status(201).json({
-        status: "success in deleting",
-      });
-    
+    }
+    return res.status(201).json({
+      status: "success in deleting",
+    });
   } catch (err) {
-    res.status(400).json({
+    return res.status(400).json({
       status: "fail",
       message: err,
     });

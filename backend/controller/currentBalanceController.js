@@ -1,4 +1,4 @@
-import { CurrentBalanceModel } from "../model/CurrentBalanceModel.js";
+import { CurrentBalanceModel } from "../model/currentBalanceModel.js";
 // Define fnc to read the data
 // Create
 export const createCurrentBalance = async (req, res) => {
@@ -72,7 +72,7 @@ export const updateCurrentBalance = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(400).json({
+    return res.status(400).json({
       status: "fail",
       message: err,
     });
@@ -89,7 +89,7 @@ export const deleteCurrentBalance = async (req, res) => {
       status: "success in deleting",
     });
   } catch (err) {
-    res.status(400).json({
+    return res.status(400).json({
       status: "fail",
       message: err,
     });

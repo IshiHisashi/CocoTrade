@@ -17,3 +17,5 @@ export const PriceSuggestionModel = mongoose.model(
   "Price_Suggestion",
   priceSuggestionSchema
 );
+
+export default PriceSuggestionModel;

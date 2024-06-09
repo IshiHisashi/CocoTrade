@@ -6,7 +6,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "lint": "eslint .",
+    "lintfix": "eslint --fix .",
+    "prettier": "prettier --write ."
   },
   "author": "",
   "license": "ISC",
@@ -19,5 +22,14 @@
     "mongoose": "^8.4.0",
     "nodemon": "^3.1.2",
     "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^8.2.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "globals": "^15.4.0",
+    "prettier": "3.3.1"
   }
 }

@@ -2,6 +2,7 @@ import axios from "axios";
 import cheerio from "cheerio";
 import cron from "node-cron";
 import dotenv from "dotenv";
+
 dotenv.config({ path: "../config.env" });
 
 const postData = async (priceUSD, pricePHP, exchangeRate) => {
@@ -28,6 +29,7 @@ const convertCurrency = async (priceUSD) => {
     return { pricePHP, exchangeRate };
   } catch (error) {
     console.log("Error converting currency: ", error.message);
+    return null;
   }
 };
 
@@ -43,6 +45,7 @@ const scraper = async () => {
     return priceUSD;
   } catch (error) {
     console.log("Error scraping data: ", error.message);
+    return null;
   }
 };
 

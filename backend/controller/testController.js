@@ -1,14 +1,14 @@
-import { marketPriceModel } from "../model/marketPriceModel.js";
+import { Testmodel } from "../model/testModel.js";
 
 // Define fnc to read the data
 // Create
-export const createMarketPrice = async (req, res) => {
+export const createTest = async (req, res) => {
   try {
-    const newDoc = await marketPriceModel.create(req.body);
+    const newTest = await Testmodel.create(req.body);
     res.status(201).json({
       status: "success",
       data: {
-        newDoc,
+        tour: newTest,
       },
     });
   } catch (err) {
@@ -21,10 +21,11 @@ export const createMarketPrice = async (req, res) => {
 };
 
 // Read_1 (all docs)
-export const getallMarketPrice = async (req, res) => {
+export const readTests = async (req, res) => {
   try {
+    console.log("successful reading");
     // Read the docs
-    const docs = await marketPriceModel.find({});
+    const docs = await Testmodel.find({});
     res.status(201).json({
       status: "success",
       data: {
@@ -40,27 +41,9 @@ export const getallMarketPrice = async (req, res) => {
   }
 };
 // Read_2 (one doc)
-export const getMarketPrice = async (req, res) => {
+export const readTest = async (req, res) => {
   try {
-    const doc = await marketPriceModel.findById(req.params.id);
-    res.status(201).json({
-      status: "success",
-      data: {
-        doc,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
-
-// Read the most latest one
-export const getLatestMarketPrice = async (req, res) => {
-  try {
-    const doc = await marketPriceModel.findOne().sort({ createdAt: -1 });
+    const doc = await Testmodel.findById(req.params.id);
     res.status(201).json({
       status: "success",
       data: {
@@ -77,14 +60,11 @@ export const getLatestMarketPrice = async (req, res) => {
 
 // Update and Delete needs parameter (ID)
 // Update
-export const updateMarketPrice = async (req, res) => {
+export const updateTest = async (req, res) => {
   try {
-    const result = await marketPriceModel.findByIdAndUpdate(
-      req.params.id,
-      req.body
-    );
+    const result = await Testmodel.findByIdAndUpdate(req.params.id, req.body);
     if (!result) {
-      return res.status(404).json({ message: "not found" });
+      return res.status(404).json({ message: "test not found" });
     }
     return res.status(201).json({
       status: "success in updating",
@@ -98,11 +78,11 @@ export const updateMarketPrice = async (req, res) => {
   }
 };
 // Delete
-export const deleteMarketPrice = async (req, res) => {
+export const deleteTest = async (req, res) => {
   try {
-    const result = await marketPriceModel.findByIdAndDelete(req.params.id);
+    const result = await Testmodel.findByIdAndDelete(req.params.id);
     if (!result) {
-      return res.status(404).json({ message: "not found" });
+      return res.status(404).json({ message: "Test not found" });
     }
     return res.status(201).json({
       status: "success in deleting",

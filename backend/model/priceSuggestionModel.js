@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const priceSuggestionSchema = new Schema(
   {
@@ -17,3 +17,5 @@ export const PriceSuggestionModel = mongoose.model(
   "Price_Suggestion",
   priceSuggestionSchema
 );
+
+export default PriceSuggestionModel;

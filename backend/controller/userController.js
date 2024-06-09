@@ -27,12 +27,12 @@ export const readUser = async (req, res) => {
         message: "User not found",
       });
     }
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       data: doc,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       status: "fail",
       message: error.message,
     });
@@ -53,12 +53,12 @@ export const updateUser = async (req, res) => {
         message: "User not found",
       });
     }
-    res.status(201).json({
+    return res.status(201).json({
       status: "success",
       data: doc,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       status: "fail",
       message: error.message,
     });
@@ -76,12 +76,12 @@ export const deleteUser = async (req, res) => {
         message: "User not found",
       });
     }
-    res.status(201).json({
+    return res.status(201).json({
       status: "success",
       message: "User deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       status: "fail",
       message: error.message,
     });

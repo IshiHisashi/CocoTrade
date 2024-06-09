@@ -3,6 +3,7 @@ import * as saleController from "../controller/saleController.js";
 
 const router = express.Router({ mergeParams: true });
 router.get("/", saleController.getAllSales);
+router.get("/monthly-aggregate", saleController.aggregateMonthlySales);
 router.get("/:id", saleController.getSaleById);
 router.post("/", saleController.createSale);
 router.patch("/:id", saleController.updateSale);

@@ -10,10 +10,9 @@ import marketPriceRoute from "./route/marketPriceRoute.js";
 import saleRoute from "./route/saleRoute.js";
 import purchaseRoute from "./route/purchaseRoute.js";
 import notificationRoute from "./route/notificationRoute.js";
-
-import testRoute from "./route/testRoute.js";
 import salesFinRoute from "./route/salesFinRoute.js";
 import purchaseFinRoute from "./route/purchaseFinRoute.js";
+import userRoute_2 from "./route/userRoute_2.js";
 
 
 const app = express();
@@ -37,9 +36,10 @@ app.use("/marketprice", marketPriceRoute);
 app.use("/user", priceSuggestionRoute);
 app.use("/sale", saleRoute);
 app.use("/purchase", purchaseRoute);
-app.use("/test", testRoute);
-app.use("/salesFin", salesFinRoute);
-app.use("/purchaseFin", purchaseFinRoute);
+// app.use("/test", testRoute);
+app.use("/salesfin", salesFinRoute);
+app.use("/purchasefin", purchaseFinRoute);
+app.use("/user_2", userRoute_2);
 
 // connection to DB
 mongoose

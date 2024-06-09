@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 
-const { Schema } = mongoose;
+export { Sale };
+
+const Schema = mongoose.Schema;
 const saleSchema = new Schema({
-  sale_log_id: String,
-  user_id: Array,
-  manufacturer_id: Array,
-  amount_of_copra_sold: Number,
+  user_id: { type: Schema.Types.ObjectId, ref: "User" },
+  manufacturer_id: { type: Schema.Types.ObjectId, ref: "Manufacturer" },
+  amount_of_copra_sold: mongoose.Types.Decimal128,
   status: {
     type: String,
     enum: ["pending", "ongoing", "completed", "cancelled"],
@@ -15,6 +16,4 @@ const saleSchema = new Schema({
   cheque_receive_date: Date,
   total_sales_price: mongoose.Types.Decimal128,
 });
-export const Sale = mongoose.model("Sale", saleSchema);
-
-export default Sale;
+const Sale = mongoose.model("Sale", saleSchema);

@@ -3,9 +3,9 @@ import Inventory from "./Inventory";
 
 const App = () => {
   return (
-    <div className="app">
-      <Inventory />
-    </div>
+    <>
+      <h1 className="text-[20px]">Welcome to CocoTrade🌴</h1>
+    </>
   );
 };
 

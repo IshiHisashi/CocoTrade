@@ -1,15 +1,15 @@
 import express from "express";
-import { PORT, mongoURL } from "./config.js";
 import mongoose from "mongoose";
+import { PORT, mongoURL } from "./config.js";
 import inventoryRoute from "./route/inventoryRoute.js";
 import manufacturerRoute from "./route/manufacturerRoute.js";
 import userRoute from "./route/userRoute.js";
-import notificationRoute from "./route/notificationRoute.js"
 import priceSuggestionRoute from "./route/priceSuggestionRoute.js";
 import currentBalanceRoute from "./route/currentBalanceRoute.js";
 import marketPriceRoute from "./route/marketPriceRoute.js";
 import saleRoute from "./route/saleRoute.js";
 import purchaseRoute from "./route/purchaseRoute.js";
+import notificationRoute from "./route/notificationRoute.js";
 
 const app = express();
 

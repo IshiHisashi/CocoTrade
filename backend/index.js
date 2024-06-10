@@ -10,6 +10,7 @@ import marketPriceRoute from "./route/marketPriceRoute.js";
 import saleRoute from "./route/saleRoute.js";
 import purchaseRoute from "./route/purchaseRoute.js";
 import notificationRoute from "./route/notificationRoute.js";
+import tmpFinRoute from "./route/tmpFinRoute.js";
 
 const app = express();
 
@@ -22,7 +23,6 @@ app.listen(PORT, () => {
   console.log(`APP is listning to port :${PORT}`);
 });
 
-// app.use("/test", testRoute);
 app.use("/currentbalance", currentBalanceRoute);
 app.use("/user", userRoute);
 app.use("/inventory", inventoryRoute);
@@ -32,6 +32,9 @@ app.use("/marketprice", marketPriceRoute);
 app.use("/user", priceSuggestionRoute);
 app.use("/sale", saleRoute);
 app.use("/purchase", purchaseRoute);
+
+// This will be replaced by the endpoint 'user'
+app.use("/tmpFinRoute", tmpFinRoute);
 
 // connection to DB
 mongoose

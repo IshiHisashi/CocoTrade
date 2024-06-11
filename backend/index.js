@@ -18,12 +18,14 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: [
-      // Local
-      "http://localhost:5173",
-      // Diployment
-      "https://coco-trade.vercel.app",
-    ],
+    // Let the origin have wildcard for the time being.
+    origin: "*",
+    // origin: [
+    //   // Local
+    //   "http://localhost:5173",
+    //   // Diployment
+    //   "https://coco-trade.vercel.app",
+    // ],
   })
 );
 

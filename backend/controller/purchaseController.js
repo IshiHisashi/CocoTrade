@@ -98,7 +98,7 @@ export const aggregateMonthlyPurchases = async (req, res) => {
             year: { $year: "$purchase_date" },
             month: { $month: "$purchase_date" },
           },
-          monthlySales: { $sum: "$total_purchase_price" },
+          monthlyPurchase: { $sum: "$total_purchase_price" },
         },
       },
       {

@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 import { PORT, mongoURL } from "./config.js";
 import inventoryRoute from "./route/inventoryRoute.js";
 import manufacturerRoute from "./route/manufacturerRoute.js";
@@ -13,6 +14,20 @@ import notificationRoute from "./route/notificationRoute.js";
 import tmpFinRoute from "./route/tmpFinRoute.js";
 
 const app = express();
+
+app.use(
+  cors({
+    credentials: true,
+    // Let the origin have wildcard for the time being.
+    origin: "*",
+    // origin: [
+    //   // Local
+    //   "http://localhost:5173",
+    //   // Diployment
+    //   "https://coco-trade.vercel.app",
+    // ],
+  })
+);
 
 // middleware to parse request body
 app.use(express.json());

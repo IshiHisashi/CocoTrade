@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Inventory from "./Inventory";
+import Inventory from "./page/inventory/Inventory";
 import Landing from "./page/landing/Landing.jsx";
 
 const App = () => {
@@ -10,7 +10,7 @@ const App = () => {
       <br /> */}
       <Routes>
         <Route path="/" element={<Landing />} />
-        {/* Add your page the following lines */}
+        <Route path="/inventory" element={<Inventory />} />
       </Routes>
     </>
   );

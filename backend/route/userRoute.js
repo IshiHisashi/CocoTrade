@@ -11,10 +11,4 @@ router
   .patch(userController.updateUser)
   .delete(userController.deleteUser);
 
-router.get("/:userid/inv", userController.getAllInventories);
-router.get("/:userid/invd", userController.getInventoriesOnDuration);
-router.get("/:userid/manu", userController.getAllManufacturers);
-router.get("/:userid/ntf", userController.getAllNotifications);
-router.get("/:userid/ntfd", userController.getNotificationsByDuration);
-
 export default router;

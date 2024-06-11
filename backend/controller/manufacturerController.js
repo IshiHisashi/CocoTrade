@@ -1,5 +1,4 @@
 import { Manufacturer } from "../model/manufacturerModel.js";
-import { UserModel as User } from "../model/userModel.js"
 
 // Create manufacturer
 export const createManufacturer = async (req, res) => {
@@ -19,37 +18,6 @@ export const createManufacturer = async (req, res) => {
         });
     }
 };
-
-// Get all the manufacturers based on user
-export const getAllManufacturers = async (req, res) => {
-    try {
-        // GET MANUFACTURERS INFO
-        const { userId } = req.params.userId;
-        const user = await User.findById(userId)
-            .populate('manufacturers_array');
-
-        if (!user) {
-            return res.status(404).json({
-                status: "failed", 
-                error: 'User not found' 
-            });
-        }
-        const data = {
-            manufacturers: user.manufacturers_array,
-        }
-        console.log("Manufacturers retrieved");
-        res.status(200).json({
-            status: "success",
-            data: data
-        });
-    }
-    catch (err) {
-        res.status(500).json({
-            status: "failed",
-            error: err.message
-        });
-    }
-}
 
 export const getManufacturerById = async (req, res) => {
     try {

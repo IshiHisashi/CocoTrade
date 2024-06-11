@@ -20,37 +20,6 @@ export const createNotification = async (req, res) => {
     }
 };
 
-// Get all the Notifications based on user
-export const getAllNotifications = async (req, res) => {
-    try {
-        // GET Notifications info
-        const { userId } = req.params.userId;
-        const user = await User.findById(userId)
-            .populate('notification_array');
-
-        if (!user) {
-            return res.status(404).json({
-                status: "failed", 
-                error: 'User not found' 
-            });
-        }
-        const data = {
-            Notifications: user.notification_array,
-        }
-        console.log("Notifications retrieved");
-        res.status(200).json({
-            status: "success",
-            data: data
-        });
-    }
-    catch (err) {
-        res.status(500).json({
-            status: "failed",
-            error: err.message
-        });
-    }
-}
-
 export const getNotificationById = async (req, res) => {
     try {
         const Notification = await Notification.findById(req.params.id);

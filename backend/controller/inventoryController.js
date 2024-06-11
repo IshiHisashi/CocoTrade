@@ -1,5 +1,4 @@
 import { Inventory } from "../model/inventoryModel.js";
-import { UserModel as User } from "../model/userModel.js";
 
 // Create inventory
 export const createInventory = async (req, res) => {
@@ -13,42 +12,6 @@ export const createInventory = async (req, res) => {
         });
     }
     catch(err) {
-        res.status(500).json({
-            status: "failed",
-            error: err.message
-        });
-    }
-};
-
-// Get all the inventory data based on userId
-export const getAllInventories = async (req, res) => {
-    // To test this use userId=66622c07858df5960bf57a06 as query in url
-
-    try {
-        // GET INVENTORY INFO
-        const { userId } = req.params.userId;
-        const user = await User.findById(userId)
-            .populate('inventory_amount_array');
-            // .populate('sales_array');
-            // WHY NOT WORKING???
-
-        if (!user) {
-            return res.status(404).json({ 
-                status: "failed",
-                error: 'User not found' 
-            });
-        }
-        const data = {
-            max_amount: user.max_inventory_amount,
-            inventory: user.inventory_amount_array,
-            sales: user.sales_array
-        }
-        console.log("Inventories retrieved");
-        res.status(200).json({
-            status: "Success",
-            data: data });
-    }
-    catch (err) {
         res.status(500).json({
             status: "failed",
             error: err.message

@@ -2,29 +2,9 @@
 // eslint-disable-next-line no-underscore-dangle
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-// import { Bar } from "react-chartjs-2";
-// import ChartDataLabels from "chartjs-plugin-datalabels";
-import {
-  Chart,
-  registerables,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart, registerables } from "chart.js";
 
-Chart.register(
-  ...registerables
-  // CategoryScale,
-  // LinearScale,
-  // BarElement,
-  // Title,
-  // Tooltip,
-  // Legend
-  //   ChartDataLabels
-);
+Chart.register(...registerables);
 
 const MonthlyActivity = ({ userId }) => {
   const [monthlySale, setMonthlySale] = useState([]);
@@ -98,8 +78,6 @@ const MonthlyActivity = ({ userId }) => {
             backgroundColor: "#F1F7F8",
             hoverBackgroundColor: "#245E66",
             barThickness: 15,
-            // borderColor: "#245E66",
-            // borderWidth: 1,
           },
           {
             label: "Monthly Purchase",
@@ -107,8 +85,6 @@ const MonthlyActivity = ({ userId }) => {
             backgroundColor: "#F1F7F8",
             hoverBackgroundColor: "#0C7F8E",
             barThickness: 15,
-            // borderColor: "#0C7F8E",
-            // borderWidth: 1,
           },
         ],
       },
@@ -164,7 +140,6 @@ const MonthlyActivity = ({ userId }) => {
     <div>
       <h1>MonthlyActivity</h1>
       <canvas ref={chartRef}> </canvas>
-      {/* <Bar data={chartConfig} options={options} /> */}
     </div>
   );
 };

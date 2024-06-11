@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Inventory from "./Inventory";
 import Landing from "./page/landing/Landing.jsx";
-import Finance from "./Finance/Finance.jsx";
+import Finance from "./page/finance/Finance.jsx";
 
 const App = () => {
   return (

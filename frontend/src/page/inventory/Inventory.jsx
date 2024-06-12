@@ -1,32 +1,14 @@
 import React from "react";
+import BarChart from "./BarChart";
 
 const Inventory = () => {
-  return <div>Inventory</div>;
+  const userId = "66622c07858df5960bf57a06";
+  return (
+    <div>
+      <h1>Inventory</h1>
+      <BarChart userId={ userId } />
+    </div>
+  );
 };
 
 export default Inventory;
-
-// import React, { useState, useEffect } from 'react';
-// import axios from "axios";
-
-// const Inventory = () => {
-//   const [inventory, setInventory] = useState("");
-//   useEffect(() => {
-//       axios.get("http://localhost:5555/inventory")
-//       .then((res) => {
-//           setInventory(res.data.data.docs);
-//           console.log(inventory);
-//       })
-//       .catch((err) => {
-//           console.error(err);
-//       })
-//   })
-
-//   return (
-//     <div>
-//       <p>{ inventory.inventories[0] }</p>
-//     </div>
-//   )
-// }
-
-// export default Inventory

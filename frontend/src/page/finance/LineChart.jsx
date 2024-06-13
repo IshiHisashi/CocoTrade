@@ -1,29 +1,28 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { Chart } from "chart.js";
 import "chartjs-adapter-moment";
+import UserIdContext from "./UserIdContext";
 
-const LineChart = ({ userId }) => {
+const LineChart = () => {
   // const { type } = t;
   const type = "cashflow";
+  const userId = useContext(UserIdContext);
   const [marketPrice, setMarketPrice] = useState([]);
   const chartRef = useRef(null);
 
   // Get market price from the collection
   useEffect(() => {
-    console.log(type);
     if (type === "market") {
       // for market price
       axios
         .get(`http://localhost:5555/marketprice`)
         .then((res) => {
-          console.log(res.data.data.docs);
           setMarketPrice(res.data.data.docs);
         })
         .catch(console.log("waiting..."));
     } else if (type === "cashflow") {
       // for cash flow
-      console.log(userId);
       console.log("coming soon...");
     }
   }, [type, userId]);

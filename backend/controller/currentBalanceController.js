@@ -1,4 +1,5 @@
 import { CurrentBalanceModel } from "../model/currentBalanceModel.js";
+import { UserModel } from "../model/userModel.js";
 // Define fnc to read the data
 // Create
 export const createCurrentBalance = async (req, res) => {
@@ -24,6 +25,29 @@ export const getAllCurrentBalance = async (req, res) => {
   try {
     // Read the docs
     const docs = await CurrentBalanceModel.find({});
+    res.status(201).json({
+      status: "success",
+      data: {
+        docs,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      status: "fail",
+      message: "failed",
+    });
+  }
+};
+
+export const getAllCurrentBalanceByUser = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.userid);
+    // Read the docs
+    // const docs = await CurrentBalanceModel.find({});
+    const docs = await CurrentBalanceModel.aggregate([
+      { $match: { _id: { $in: user.balance_array } } },
+    ]);
     res.status(201).json({
       status: "success",
       data: {

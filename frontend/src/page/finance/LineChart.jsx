@@ -3,21 +3,30 @@ import axios from "axios";
 import { Chart } from "chart.js";
 import "chartjs-adapter-moment";
 
-const LineChart = () => {
+const LineChart = ({ userId }) => {
+  // const { type } = t;
+  const type = "cashflow";
   const [marketPrice, setMarketPrice] = useState([]);
   const chartRef = useRef(null);
-  const chartInstanceRef = useRef(null); // Ref to hold the chart instance
 
   // Get market price from the collection
   useEffect(() => {
-    axios
-      .get(`http://localhost:5555/marketprice`)
-      .then((res) => {
-        console.log(res.data.data.docs);
-        setMarketPrice(res.data.data.docs);
-      })
-      .catch(console.log("waiting..."));
-  }, []);
+    console.log(type);
+    if (type === "market") {
+      // for market price
+      axios
+        .get(`http://localhost:5555/marketprice`)
+        .then((res) => {
+          console.log(res.data.data.docs);
+          setMarketPrice(res.data.data.docs);
+        })
+        .catch(console.log("waiting..."));
+    } else if (type === "cashflow") {
+      // for cash flow
+      console.log(userId);
+      console.log("coming soon...");
+    }
+  }, [type, userId]);
 
   useEffect(() => {
     const ctxx = chartRef.current.getContext("2d");

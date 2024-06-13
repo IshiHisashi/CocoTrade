@@ -9,9 +9,10 @@ const Finance = () => {
   return (
     <div className="flex flex-col gap-8">
       <h1>Finance</h1>
+      <LineChart type="cashflow" userId={userId} />
       <MonthlyActivity userId={userId} />
       {/* <LineChart /> */}
-      <LineChart />
+      <LineChart type="market" />
     </div>
   );
 };

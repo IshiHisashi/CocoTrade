@@ -4,7 +4,7 @@ export {
     Inventory
 };
 
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 const inventorySchema = new Schema({
     user_id: { type: Schema.Types.ObjectId },
     purchase_array: [{ type: Schema.Types.ObjectId, ref: "Purchase" }],

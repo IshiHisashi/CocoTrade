@@ -111,7 +111,8 @@ export const getAllInventories = async (req, res) => {
       console.log("Inventories retrieved");
       res.status(200).json({
           status: "Success",
-          data: data });
+          data: data
+        });
   }
   catch (err) {
       res.status(500).json({

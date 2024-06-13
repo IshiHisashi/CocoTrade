@@ -4,7 +4,7 @@ export {
     Manufacturer
 };
 
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 const manufacturerSchema = new Schema({
     full_name: String,
 });

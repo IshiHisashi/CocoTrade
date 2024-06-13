@@ -4,7 +4,7 @@ import Inventory from "./Inventory";
 import Landing from "./page/landing/Landing.jsx";
 import Finance from "./page/finance/Finance.jsx";
 import Dashboard from "./page/dashboard/Dashboard.jsx";
-import Sale from "./page/purchase/sale.jsx"
+import Sale from "./page/sale/sale.jsx"
 
 const App = () => {
   return (

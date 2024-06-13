@@ -1,5 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import UserIdContext from "../../page/dashboard/UserIdContext";
 
 const getDataObjRes = async (type, userId) => {
   let dataObj;
@@ -46,7 +47,8 @@ const calculateDiff = (obj) => {
 };
 
 const PriceIndicatorCard = (props) => {
-  const { type, userId } = props;
+  const { type } = props;
+  const userId = useContext(UserIdContext);
   const [dataObj, setDataObj] = useState(null);
 
   useEffect(() => {

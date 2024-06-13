@@ -75,6 +75,23 @@ export const getLatestMarketPrice = async (req, res) => {
   }
 };
 
+export const getLatestTwoMarketPrice = async (req, res) => {
+  try {
+    const docs = await marketPriceModel.find().limit(2).sort({ createdAt: -1 });
+    res.status(200).json({
+      status: "success",
+      data: {
+        docs,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
 // Update and Delete needs parameter (ID)
 // Update
 export const updateMarketPrice = async (req, res) => {

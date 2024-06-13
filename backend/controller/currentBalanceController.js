@@ -23,6 +23,25 @@ export const createCurrentBalance = async (req, res) => {
 // Read_1 (all docs)
 export const getAllCurrentBalance = async (req, res) => {
   try {
+    // Read the docs
+    const docs = await CurrentBalanceModel.find({});
+    res.status(201).json({
+      status: "success",
+      data: {
+        docs,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      status: "fail",
+      message: "failed",
+    });
+  }
+};
+
+export const getAllCurrentBalanceByUser = async (req, res) => {
+  try {
     const user = await UserModel.findById(req.params.userid);
     // Read the docs
     // const docs = await CurrentBalanceModel.find({});

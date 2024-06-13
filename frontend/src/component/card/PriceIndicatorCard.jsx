@@ -1,43 +1,85 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const getData = async (type, userId) => {
-  let figure;
+const getDataObjRes = async (type, userId) => {
+  let dataObj;
+
   if (type === "market") {
     const res = await axios.get("http://localhost:5555/marketprice/latest");
-    figure = res.data.data.doc.price_PHP.$numberDecimal / 1000;
+    let figure = res.data.data.doc.price_PHP.$numberDecimal / 1000;
     figure = figure.toFixed(2);
+    dataObj = {
+      comparison: 50,
+      current: figure,
+    };
   } else if (type === "suggestion") {
     const res = await axios.get(
       `http://localhost:5555/user/${userId}/pricesuggestion`
     );
-    figure =
-      res.data.data.price_suggestion_array[0].price_suggestion.$numberDecimal;
+
+    const fixedPriceArray = res.data.data.price_suggestion_array.map((obj) => {
+      return obj.price_suggestion.$numberDecimal;
+    });
+
+    dataObj = {
+      comparison: fixedPriceArray[0],
+      current: fixedPriceArray[1],
+    };
   }
-  return figure;
+
+  return dataObj;
+};
+
+const calculateDiff = (obj) => {
+  const priceDiff = (obj.current - obj.comparison).toFixed(2);
+  const percentageDiff = ((1 - obj.current / obj.comparison) * 100).toFixed(2);
+  let arrow;
+  if (priceDiff > 0) {
+    arrow = "↑";
+  } else if (priceDiff < 0) {
+    arrow = "↓";
+  } else {
+    arrow = "±";
+  }
+  return { priceDiff, percentageDiff, arrow };
 };
 
 const PriceIndicatorCard = (props) => {
   const { type, userId } = props;
-  const [data, setData] = useState(null);
+  const [dataObj, setDataObj] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const figure = await getData(type, userId);
-      setData(figure);
+      const dataObjRes = await getDataObjRes(type, userId);
+      setDataObj(dataObjRes);
     })();
   }, [type, userId]);
+
+  let diffObj;
+  if (dataObj) {
+    diffObj = calculateDiff(dataObj);
+  }
 
   return (
     <div className="flex flex-col items-center gap-4">
       <h3 className="text-base">
         {type === "market" ? "PALM OIL PRICE" : "SUGGESTED PURCHASE PRICE"}
       </h3>
-      <p className="text-3xl">Php {data}/kg</p>
-      <div className="flex content-center items-center gap-4">
-        <p className="bg-red-300 text-gray-500 p-2 rounded-xl">UP Php 2.85</p>
-        <p className="text-gray-500">+5.12% this week</p>
-      </div>
+      {dataObj ? (
+        <>
+          <p className="text-3xl">Php {dataObj.current}/kg</p>
+          <div className="flex content-center items-center gap-4">
+            <p className="bg-red-300 text-gray-500 p-2 rounded-xl">
+              {diffObj.arrow} Php {diffObj.priceDiff}
+            </p>
+            <p className="text-gray-500">
+              {diffObj.arrow} {diffObj.percentageDiff}% this week
+            </p>
+          </div>
+        </>
+      ) : (
+        <p>loading...</p>
+      )}
     </div>
   );
 };

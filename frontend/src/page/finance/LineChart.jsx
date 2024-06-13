@@ -4,9 +4,9 @@ import { Chart } from "chart.js";
 import "chartjs-adapter-moment";
 import UserIdContext from "./UserIdContext";
 
-const LineChart = () => {
-  // const { type } = t;
-  const type = "cashflow";
+const LineChart = (t) => {
+  const { type } = t;
+  // const type = "cashflow";
   const userId = useContext(UserIdContext);
   const [marketPrice, setMarketPrice] = useState([]);
   const chartRef = useRef(null);
@@ -23,7 +23,14 @@ const LineChart = () => {
         .catch(console.log("waiting..."));
     } else if (type === "cashflow") {
       // for cash flow
-      console.log("coming soon...");
+      axios
+        .get(
+          `http://localhost:5555/tmpFinRoute/${userId}/currentbalance/byuser`
+        )
+        .then((res) => {
+          setMarketPrice(res.data.data.docs);
+        })
+        .catch(console.log("waiting..."));
     }
   }, [type, userId]);
 
@@ -35,10 +42,16 @@ const LineChart = () => {
     gradient.addColorStop(1, "rgba(75, 192, 192, 0)");
 
     const dailyData = marketPrice.map((price) => {
-      const priceObj = {
-        date: price.createdAt.slice(0, 10),
-        price: Number(price.price_PHP.$numberDecimal),
-      };
+      const priceObj =
+        type === "cashflow"
+          ? {
+              date: price.date.slice(0, 10),
+              price: Number(price.current_balance.$numberDecimal),
+            }
+          : {
+              date: price.createdAt.slice(0, 10),
+              price: Number(price.price_PHP.$numberDecimal),
+            };
       return priceObj;
     });
 
@@ -171,11 +184,11 @@ const LineChart = () => {
     return () => {
       myChart.destroy();
     };
-  }, [marketPrice]);
+  }, [marketPrice, type]);
 
   return (
     <div className="flex flex-col gap-8">
-      <p>Market Price trend </p>
+      <p>{type === "cashflow" ? "Cash balance trend" : "Market Price trend"}</p>
       <canvas ref={chartRef}> </canvas>
     </div>
   );

@@ -42,6 +42,8 @@ app.options(
   })
 );
 
+app.options("*", cors());
+
 // middleware to parse request body
 app.use(express.json());
 app.get("/", (req, res) => {

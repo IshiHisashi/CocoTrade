@@ -4,6 +4,7 @@ import Inventory from "./Inventory";
 import Landing from "./page/landing/Landing.jsx";
 import Finance from "./page/finance/Finance.jsx";
 import Dashboard from "./page/dashboard/Dashboard.jsx";
+import Sale from "./page/sale/sale.jsx"
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/finance" element={<Finance />} />
+        <Route path="/sale" element={<Sale />} />
       </Routes>
     </>
   );

@@ -167,7 +167,7 @@ const LineChart = () => {
 
   return (
     <div className="flex flex-col gap-8">
-      <p>LineChart </p>
+      <p>Market Price trend </p>
       <canvas ref={chartRef}> </canvas>
     </div>
   );

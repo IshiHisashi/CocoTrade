@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Inventory from "./Inventory";
 import Landing from "./page/landing/Landing.jsx";
 import Finance from "./page/finance/Finance.jsx";
+import Dashboard from "./page/dashboard/Dashboard.jsx";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
       <br /> */}
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/finance" element={<Finance />} />
       </Routes>

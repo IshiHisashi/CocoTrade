@@ -9,6 +9,7 @@ const getDataObjRes = async (type, userId) => {
     let figure = res.data.data.doc.price_PHP.$numberDecimal / 1000;
     figure = figure.toFixed(2);
     dataObj = {
+      // hard-code for now. will have API for this created.
       comparison: 50,
       current: figure,
     };

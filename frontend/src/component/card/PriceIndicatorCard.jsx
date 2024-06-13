@@ -20,7 +20,7 @@ const getDataObjRes = async (type, userId) => {
     );
 
     const fixedPriceArray = res.data.data.price_suggestion_array.map((obj) => {
-      return obj.price_suggestion.$numberDecimal;
+      return Number(obj.price_suggestion.$numberDecimal).toFixed(2);
     });
 
     dataObj = {

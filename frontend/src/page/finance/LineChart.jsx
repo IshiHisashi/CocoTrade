@@ -11,7 +11,7 @@ const LineChart = () => {
   // Get market price from the collection
   useEffect(() => {
     axios
-      .get(`https://coco-trade-backend.vercel.app/marketprice`)
+      .get(`http://localhost:5555/marketprice`)
       .then((res) => {
         console.log(res.data.data.docs);
         setMarketPrice(res.data.data.docs);

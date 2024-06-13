@@ -19,13 +19,13 @@ app.use(
   cors({
     credentials: true,
     // Let the origin have wildcard for the time being.
-    origin: "*",
-    // origin: [
-    //   // Local
-    //   "http://localhost:5173",
-    //   // Diployment
-    //   "https://coco-trade.vercel.app",
-    // ],
+    // origin: "*",
+    origin: [
+      // Local
+      "http://localhost:5173",
+      // Diployment
+      "https://coco-trade.vercel.app",
+    ],
   })
 );
 

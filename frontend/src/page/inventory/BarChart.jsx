@@ -48,7 +48,7 @@ const BarChart = ({ userId }) => {
     chartInstance.current = new Chart(chartRef.current, {
       type: "bar",
       data: {
-        label: ["aaa"],
+        label: [""],
         datasets: [{
           label: 'Inventory',
           data: [inventory],

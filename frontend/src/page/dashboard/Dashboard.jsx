@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
@@ -9,10 +9,18 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const getData = async (userId, targetLog) => {
   // 66654dc4c6e950671e988962
-  // purchase or sale
   const res = await axios.get(
     `http://localhost:5555/tmpFinRoute/${userId}/${targetLog}/monthly-aggregate`
   );
+
+  if (
+    (targetLog === "purchase" &&
+      res.data.data.purchaseAggregation.length === 0) ||
+    (targetLog === "sales" && res.data.data.salesAggregation.length === 0)
+  ) {
+    return null;
+  }
+
   const dataArrayRes =
     targetLog === "purchase"
       ? res.data.data.purchaseAggregation
@@ -28,21 +36,26 @@ const getMonthName = (year, monthNum) => {
 };
 
 const Dashboard = () => {
+  const userId = useContext(UserIdContext);
   const [purchase, setPurchase] = useState(null);
   const [sales, setSales] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const dataArrayP = await getData("66654dc4c6e950671e988962", "purchase");
+      const [dataArrayP, dataArrayS] = await Promise.all([
+        // user doc and purchase/sales log doc utilize different user so hard code for now.
+        getData("66654dc4c6e950671e988962", "purchase"),
+        // getData(userId, "purchase"),
+        getData("66654dc4c6e950671e988962", "sale"),
+        // getData(userId, "sale"),
+      ]);
       setPurchase(dataArrayP);
-
-      const dataArrayS = await getData("66654dc4c6e950671e988962", "sale");
       setSales(dataArrayS);
     })();
-  }, []);
+  }, [userId]);
 
   return (
-    <UserIdContext.Provider value="66640d8158d2c8dc4cedaf1e">
+    <UserIdContext.Provider value={userId}>
       <p>You have an upcoming shipment on May 8, 2024</p>
       <button type="button">Add Purchase</button>
 

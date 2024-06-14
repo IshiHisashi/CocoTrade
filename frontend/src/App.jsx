@@ -3,6 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import Inventory from "./page/inventory/Inventory.jsx";
 import Landing from "./page/landing/Landing.jsx";
 import Finance from "./page/finance/Finance.jsx";
+import Dashboard from "./page/dashboard/Dashboard.jsx";
+import Purchase from "./page/purchase/purchase.jsx";
+import Sale from "./page/sale/sale.jsx"
 
 const App = () => {
   return (
@@ -11,8 +14,11 @@ const App = () => {
       <br /> */}
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/finance" element={<Finance />} />
+        <Route path="/purchase" element={<Purchase />} />
+        <Route path="/sale" element={<Sale />} />
       </Routes>
     </>
   );

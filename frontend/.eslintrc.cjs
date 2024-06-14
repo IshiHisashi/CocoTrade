@@ -45,6 +45,7 @@ module.exports = {
             unnamedComponents: "function-expression",
           },
         ], // consistent function type
+        "react/prop-types": "off", // don't care about the type of props
         // single quotations usage is turned off by Prettier.
         // trailing comma usage is set to be "es5" by Prettier.
       },

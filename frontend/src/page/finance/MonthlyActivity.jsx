@@ -1,14 +1,16 @@
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line no-underscore-dangle
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { Chart, registerables } from "chart.js";
+import UserIdContext from "./UserIdContext";
 
 Chart.register(...registerables);
 
-const MonthlyActivity = ({ userId }) => {
+const MonthlyActivity = () => {
   const [monthlySale, setMonthlySale] = useState([]);
   const [monthlyPurchase, setMonthlyPurchase] = useState([]);
+  const userId = useContext(UserIdContext);
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -17,20 +19,18 @@ const MonthlyActivity = ({ userId }) => {
     axios
       .get(`http://localhost:5555/tmpFinRoute/${userId}/sale/monthly-aggregate`)
       .then((res) => {
-        console.log(res.data.data.salesAggregation);
         setMonthlySale(res.data.data.salesAggregation);
       })
-      .catch(console.log("error"));
+      .catch();
     // Read purchas
     axios
       .get(
         `http://localhost:5555/tmpFinRoute/${userId}/purchase/monthly-aggregate`
       )
       .then((res) => {
-        console.log(res.data.data.purchaseAggregation);
         setMonthlyPurchase(res.data.data.purchaseAggregation);
       })
-      .catch(console.log("error"));
+      .catch();
   }, [userId]);
 
   //   For Graph

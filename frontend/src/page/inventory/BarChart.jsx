@@ -10,19 +10,35 @@ const BarChart = ({ userId }) => {
 
   // Retreice info for bar chart
   useEffect(() => {
+    // Current inventory
     axios
       .get(`http://localhost:5555/user/${userId}/inv`)
       .then((res) => {
-          setMaximumInv(res.data.data.max_amount);
-          setInventory(res.data.data.inventory);
-          console.log(res.data.data);
+          // setMaximumInv(res.data.data.max_amount);
+          setInventory(res.data.data[0].current_amount.$numberDecimal);
+          console.log(res.data.data[0].current_amount.$numberDecimal);
       })
       .catch((err) => {
           console.error(err);
       })
+    // maximum capacity
+    axios
+    .get(`http://localhost:5555/user/${userId}/maxcap`)
+    .then((res) => {
+        setMaximumInv(res.data.data);
+        console.log(res.data.data);
+    })
+    .catch((err) => {
+        console.error(err);
+    })    
   }, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [])
+
+  useEffect(() => {
+    
+  }, [])
+
   return (
     <div>
       Barchart here

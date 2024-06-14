@@ -23,6 +23,7 @@ app.use(
     origin: [
       // Local
       "http://localhost:5173",
+      "http://localhost:5174",
       // Diployment
       "https://coco-trade.vercel.app",
     ],

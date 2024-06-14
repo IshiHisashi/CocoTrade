@@ -1,4 +1,5 @@
 import { UserModel } from "../model/userModel.js";
+import { Inventory } from "../model/inventoryModel.js";
 
 // Create a user
 export const createUser = async (req, res) => {
@@ -94,8 +95,7 @@ export const getAllInventories = async (req, res) => {
   try {
       // GET INVENTORY INFO
       const user = await UserModel.findById(req.params.userid)
-          .populate('inventory_amount_array')
-          .populate('sales_array');
+          .populate('inventory_amount_array');
 
       if (!user) {
           return res.status(404).json({ 
@@ -103,11 +103,10 @@ export const getAllInventories = async (req, res) => {
               error: 'User not found' 
           });
       }
-      const data = {
-          max_amount: user.max_inventory_amount,
-          inventory: user.inventory_amount_array,
-          sales: user.sales_array
-      }
+      const data = user.inventory_amount_array;
+      await data.sort((a, b) => {
+        return new Date(b.time_stamp) - new Date(a.time_stamp);
+      });
       console.log("Inventories retrieved");
       res.status(200).json({
           status: "Success",
@@ -153,10 +152,42 @@ export const getInventoriesOnDuration = async (req, res) => {
       const itemDate = new Date(item.time_stamp);
       return itemDate >= startDate && itemDate <= endDate;
     })
+    await dataBasedOnDuration.sort((a, b) => {
+      return new Date(b.time_stamp) - new Date(a.time_stamp);
+    });
     console.log("Inventories retrieved");
     res.status(200).json({
         status: "Success",
         data: dataBasedOnDuration });
+  }
+  catch (err) {
+      res.status(500).json({
+          status: "failed",
+          error: err.message
+      });
+  }
+};
+
+// Get the maximum capacity based on user
+export const getMaximumCap = async (req, res) => {
+
+  try {
+      // GET INVENTORY INFO
+      const user = await UserModel.findById(req.params.userid);
+
+      if (!user) {
+          return res.status(404).json({ 
+              status: "failed",
+              error: 'User not found' 
+          });
+      }
+      console.log(user);
+      const data = user.max_inventory_amount;
+      console.log("Max Capacity retrieved");
+      res.status(200).json({
+          status: "Success",
+          data: data
+        });
   }
   catch (err) {
       res.status(500).json({

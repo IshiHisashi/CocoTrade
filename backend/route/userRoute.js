@@ -13,6 +13,7 @@ router
 
 router.get("/:userid/inv", userController.getAllInventories);
 router.get("/:userid/invd", userController.getInventoriesOnDuration);
+router.get("/:userid/maxcap", userController.getMaximumCap);
 router.get("/:userid/manu", userController.getAllManufacturers);
 router.get("/:userid/ntf", userController.getAllNotifications);
 router.get("/:userid/ntfd", userController.getNotificationsByDuration);

@@ -73,7 +73,6 @@ const Dashboard = () => {
                   ],
                 },
                 {
-                  id: 2,
                   label: "Sales",
                   data: [
                     sales[0].monthlySales.$numberDecimal,

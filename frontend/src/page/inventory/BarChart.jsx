@@ -7,6 +7,8 @@ import { Chart, BarController, BarElement, CategoryScale, LinearScale } from 'ch
 const BarChart = ({ userId }) => {
   const [inventory, setInventory] = useState([]);
   const [maximumInv, setMaximumInv] = useState(0);
+
+  // Retreice info for bar chart
   useEffect(() => {
     axios
       .get(`http://localhost:5555/user/${userId}/inv`)

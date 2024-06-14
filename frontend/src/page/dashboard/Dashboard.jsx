@@ -84,6 +84,8 @@ const Dashboard = () => {
                     purchase[0].monthlyPurchase.$numberDecimal,
                     purchase[1].monthlyPurchase.$numberDecimal,
                   ],
+                  hoverBackgroundColor: "blue",
+                  barPercentage: 1,
                 },
                 {
                   label: "Sales",
@@ -91,11 +93,19 @@ const Dashboard = () => {
                     sales[0].monthlySales.$numberDecimal,
                     sales[1].monthlySales.$numberDecimal,
                   ],
+                  hoverBackgroundColor: "red",
+                  barPercentage: 1,
                 },
               ],
             }}
             options={{
               indexAxis: "y",
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                },
+              },
             }}
           />
         )}

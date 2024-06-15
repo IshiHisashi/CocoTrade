@@ -45,6 +45,32 @@ export const createPriceSuggestion = async (req, res) => {
   }
 };
 
+// Read one most recent price suggestion document
+export const readOneRecentPriceSuggestion = async (req, res) => {
+  try {
+    const { userid } = req.params;
+    const doc = await UserModel.findById(userid).populate({
+      path: "price_suggestion_array",
+      options: { sort: { createdAt: -1 }, limit: 1 },
+    });
+    if (!doc) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Price suggestion document not found",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      data: Number(doc.price_suggestion_array[0].price_suggestion).toFixed(2),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
 // Read the two most recent price suggestion documents
 export const readTwoRecentPriceSuggestion = async (req, res) => {
   try {

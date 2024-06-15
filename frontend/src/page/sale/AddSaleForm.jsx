@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const NewSaleForm = () => {
   const navigate = useNavigate();
+  const [manufacturers, setManufacturers] = useState([]);
   const [formData, setFormData] = useState({
     manufacturer_id: '',
     amount_of_copra_sold: '', 
@@ -13,6 +14,33 @@ const NewSaleForm = () => {
     cheque_receive_date: '',
     total_sales_price: '',
   });
+
+  useEffect(() => {
+    // Fetch manufacturers
+    axios.get('http://localhost:5555/manufacturer')
+      .then(response => {
+        setManufacturers(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching manufacturers:', error);
+      });
+  
+    // Fetch price suggestion
+    const userid = '66640d8158d2c8dc4cedaf1e'; // using the provided user ID for now
+    axios.get(`http://localhost:5555/user/${userid}/pricesuggestion/getone`)
+      .then(response => {
+        if (response.data.status === 'success') {
+          setFormData((prevData) => ({
+            ...prevData,
+            sales_unit_price: response.data.data, // Set the sales_unit_price with the fetched value
+          }));
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching price suggestion:', error);
+      });
+  }, []);
+  
 
   useEffect(() => {
     const calculateTotalSalesPrice = () => {
@@ -63,12 +91,21 @@ const NewSaleForm = () => {
         </div>
         <div>
           <label htmlFor="manufacturer_id">Manufacturer: </label>
-          <input type="text" id="manufacturer_id" name="manufacturer_id" placeholder="Company Name" value={formData.manufacturer_id} onChange={handleChange} required />
+          <select id="manufacturer_id" name="manufacturer_id" value={formData.manufacturer_id} onChange={handleChange} required>
+            <option value="">Company name</option>
+            {manufacturers.map(manufacturer => (
+              // eslint-disable-next-line no-underscore-dangle
+              <option key={manufacturer._id} value={manufacturer._id}>
+                {manufacturer.full_name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="form-group">
-          <label htmlFor="sales_unit_price">Sales Unit Price: PHP </label>
+          <label htmlFor="sales_unit_price">Sales Unit Price: </label>
+          <span>PHP</span>
           <input type="text" id="sales_unit_price" name="sales_unit_price" placeholder="32.00 per kg" value={formData.sales_unit_price} onChange={handleChange} required />
-        </div> 
+        </div>
         <div>
           <label htmlFor="amount_of_copra_sold">Copra Sold:</label>
           <input type="number" id="amount_of_copra_sold" name="amount_of_copra_sold" value={formData.amount_of_copra_sold} onChange={handleChange} required />

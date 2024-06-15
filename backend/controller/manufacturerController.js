@@ -19,6 +19,19 @@ export const createManufacturer = async (req, res) => {
     }
 };
 
+//get all manufacturers
+export const getAllManufacturers = async (req, res) => {
+    try {
+      const manufacturers = await Manufacturer.find({}, 'full_name');
+      console.log("Manufacturers retrieved");
+      res.status(200).json(manufacturers);
+    } catch (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    }
+  };
+
 export const getManufacturerById = async (req, res) => {
     try {
         const manufacturer = await Manufacturer.findById(req.params.id);

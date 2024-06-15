@@ -6,6 +6,8 @@ import Finance from "./page/finance/Finance.jsx";
 import Dashboard from "./page/dashboard/Dashboard.jsx";
 import Purchase from "./page/purchase/purchase.jsx";
 import Sale from "./page/sale/sale.jsx"
+import ViewPurchaseTable from "./page/purchase/ViewPurchaseTable.jsx";
+
 
 const App = () => {
   return (
@@ -19,6 +21,7 @@ const App = () => {
         <Route path="/finance" element={<Finance />} />
         <Route path="/purchase" element={<Purchase />} />
         <Route path="/sale" element={<Sale />} />
+        <Route path="/purchase/ViewPurchaseTable" element={<ViewPurchaseTable />} />
       </Routes>
     </>
   );

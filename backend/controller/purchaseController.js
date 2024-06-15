@@ -16,7 +16,7 @@ export const createPurchase = async (req, res) => {
 
 export const getAllPurchase = async (req, res) => {
   try {
-    const purchase = await Purchase.find();
+    const purchase = await Purchase.find().populate('farmer_id');;
     console.log("Purchase retrieved");
     res.status(200).json(purchase);
   } catch (err) {

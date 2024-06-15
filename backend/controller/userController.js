@@ -273,8 +273,6 @@ export const getNotificationsByDuration = async (req, res) => {
   try {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    console.log(startDate);
-    console.log(endDate);
     const user = await UserModel.findById(req.params.userid)
         .populate('notification_array');
 
@@ -286,9 +284,7 @@ export const getNotificationsByDuration = async (req, res) => {
     }
     const data = user.notification_array;
     const dataBasedOnDuration = await data.filter(item => {
-      console.log(item.time_stamp);
       const itemDate = new Date(item.time_stamp);
-      console.log(itemDate);
       return itemDate >= startDate && itemDate <= endDate;
     })
     console.log("Notifications retrieved");

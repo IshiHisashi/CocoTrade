@@ -1,16 +1,16 @@
 /* eslint-disable react/prop-types */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { Chart, registerables } from 'chart.js';
+import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend  } from 'chart.js';
+import { Bar } from "react-chartjs-2";
 
-Chart.register(...registerables);
+Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend );
 
 const BarChart = ({ userId }) => {
   const [inventory, setInventory] = useState([]);
   const [maximumInv, setMaximumInv] = useState(0);
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
+  // const [data, setData] = useState({});
 
   // Retreice info for bar chart
   useEffect(() => {
@@ -38,40 +38,60 @@ const BarChart = ({ userId }) => {
     });
   }, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  [])
+  [inventory])
 
-  useEffect(() => {
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
-    }
+  const data = {
+    labels: [""],
+    datasets: [{
+      label: 'Current Inventory',
+      data: [inventory],
+      backgroundColor: "#0C7F8E",
+      barThickness: 60
+    }],
+  }
 
-    chartInstance.current = new Chart(chartRef.current, {
-      type: "bar",
-      data: {
-        label: [""],
-        datasets: [{
-          label: 'Inventory',
-          data: [inventory],
-          backgroundColor: "#0C7F8E",
-          barThickness: 30
-        }],
+  const options =  {
+    indexAxis: 'y',
+    layout: {
+      padding: {
+        top: 20,
+        bottom: 20
+      }
+    },
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        max: maximumInv,
+        beginAtZero: true,
+        grid: {
+          display: false
+        }
       },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          }
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: "Your Inventory Capacity",
+        font: {
+          size: 20,
         },
       },
-    });
-  },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [inventory])
+      customCanvasHeight: {
+        height: "150px"
+      }
+    },
+  }
 
   return (
     <div>
       <h2>{ userId } inventory is like this now yay!</h2>
-      <canvas ref={chartRef}> </canvas>
+      <div>
+        <Bar data={ data } options={ options }/>
+      </div>
+      
     </div>
   )
 }

@@ -14,12 +14,19 @@ module.exports = {
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
   settings: { react: { version: "18.2" } },
-  plugins: ["react-refresh"],
+  plugins: ["react-refresh", "jsx-a11y"],
   rules: {
     "react/jsx-no-target-blank": "off",
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
+    ],"jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        required: {
+          some: ["nesting", "id"]
+        }
+      }
     ],
   },
   overrides: [

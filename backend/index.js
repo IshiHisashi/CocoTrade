@@ -12,7 +12,7 @@ import saleRoute from "./route/saleRoute.js";
 import purchaseRoute from "./route/purchaseRoute.js";
 import notificationRoute from "./route/notificationRoute.js";
 import tmpFinRoute from "./route/tmpFinRoute.js";
-import tmpFinRoute from "./route/farmerRoute.js";
+import farmerRoute from "./route/farmerRoute.js";
 
 const app = express();
 

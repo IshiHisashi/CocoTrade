@@ -4,7 +4,15 @@ import * as priceSuggestionController from "../controller/priceSuggestionControl
 const router = express.Router({ mergeParams: true });
 router
   .route("/:userid/pricesuggestion")
-  .post(priceSuggestionController.createPriceSuggestion)
-  .get(priceSuggestionController.readTwoRecentPriceSuggestion);
+  .post(priceSuggestionController.createPriceSuggestion);
+
+router.get(
+  "/:userid/pricesuggestion/getone",
+  priceSuggestionController.readOneRecentPriceSuggestion
+);
+router.get(
+  "/:userid/pricesuggestion/gettwo",
+  priceSuggestionController.readTwoRecentPriceSuggestion
+);
 
 export default router;

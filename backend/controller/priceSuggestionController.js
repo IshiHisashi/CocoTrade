@@ -87,7 +87,14 @@ export const readTwoRecentPriceSuggestion = async (req, res) => {
     }
     return res.status(200).json({
       status: "success",
-      data: docs,
+      data: {
+        current: Number(
+          docs.price_suggestion_array[0].price_suggestion
+        ).toFixed(2),
+        comparison: Number(
+          docs.price_suggestion_array[1].price_suggestion
+        ).toFixed(2),
+      },
     });
   } catch (error) {
     return res.status(500).json({

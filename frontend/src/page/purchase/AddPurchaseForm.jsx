@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const AddPurchaseForm = () => {
+const AddPurchaseForm = ({ setShowAddForm }) => {
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
   const [formData, setFormData] = useState({
@@ -11,7 +11,6 @@ const AddPurchaseForm = () => {
     purchase_date: '',
     sales_unit_price: '', 
     amount_of_copra_purchased: '',
-    // moisture_test_result: false,
     moisture_test_details: '',
     total_purchase_price: '',
   });
@@ -57,18 +56,17 @@ const AddPurchaseForm = () => {
     }));
   }, []);
 
-
   useEffect(() => {
     const calculateTotalPurchasePrice = () => {
       const unitPrice = parseFloat(formData.sales_unit_price);
       const amountPurchased = parseFloat(formData.amount_of_copra_purchased);
       const moistureLevel = parseFloat(formData.moisture_test_details);
       let total = unitPrice * amountPurchased;
-  
+
       if (moistureLevel > 7) {
         total *= 0.85; // Deduct 15%
       }
-  
+
       if (!Number.isNaN(total)) {
         setFormData((prevData) => ({
           ...prevData,
@@ -76,10 +74,10 @@ const AddPurchaseForm = () => {
         }));
       }
     };
-  
+
     calculateTotalPurchasePrice();
   }, [formData.sales_unit_price, formData.amount_of_copra_purchased, formData.moisture_test_details]);
-  
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -93,7 +91,7 @@ const AddPurchaseForm = () => {
     axios.post('http://localhost:5555/purchase', formData)
       .then(response => {
         console.log('Purchase created:', response.data);
-        navigate('/purchase');
+        setShowAddForm(false);
       })
       .catch(error => console.error('Error creating purchase:', error));
   };
@@ -102,66 +100,70 @@ const AddPurchaseForm = () => {
     <div>
       <h2>New Purchase</h2>
       <form onSubmit={handleSubmit}>
-      <div>
-          <label htmlFor="invoice_number">Invoice No :</label>
-          <span>{formData.invoice_number}</span>
+        <div>
+          <label htmlFor="invoice_number">
+            Invoice No:
+            <span>{formData.invoice_number}</span>
+          </label>
         </div>
         <div>
-          <label htmlFor="purchase_date">Date Purchased:</label>
-          <input type="date" id="purchase_date" name="purchase_date" value={formData.purchase_date} onChange={handleChange} required />
+          <label htmlFor="purchase_date">
+            Date Purchased:
+            <input type="date" id="purchase_date" name="purchase_date" value={formData.purchase_date} onChange={handleChange} required />
+          </label>
         </div>
         <div>
-          <label htmlFor="farmer_id">Farmer Name:</label>
-          <select id="farmer_id" name="farmer_id" value={formData.farmer_id} onChange={handleChange} required>
-            <option value="">First name / Last name</option>
-            {farmers.map(farmer => (
-              // eslint-disable-next-line no-underscore-dangle
-              <option key={farmer._id} value={farmer._id}>
-                {farmer.full_name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="sales_unit_price">Price per kilo </label>
-          <span>PHP</span>
-          <input type="text" id="sales_unit_price" name="sales_unit_price" placeholder="32.00 per kg" value={formData.sales_unit_price} onChange={handleChange} required />
+          <label htmlFor="farmer_id">
+            Farmer Name:
+            <select id="farmer_id" name="farmer_id" value={formData.farmer_id} onChange={handleChange} required>
+              <option value="">First name / Last name</option>
+              {farmers.map(farmer => (
+                // eslint-disable-next-line no-underscore-dangle
+                <option key={farmer._id} value={farmer._id}>
+                  {farmer.full_name}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         <div>
-          <label htmlFor="amount_of_copra_purchased">Copra bought </label>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <input
-              type="text"
-              id="amount_of_copra_purchased"
-              name="amount_of_copra_purchased"
-              value={formData.amount_of_copra_purchased}
-              onChange={handleChange}
-              required
-              style={{ marginRight: '5px' }}
-            />
-            <span>kg</span>
-          </div>
-        </div>
-        {/* <div>
-          <label htmlFor="moisture_test_result">Moisture Test Result:</label>
-          <input
-            type="checkbox"
-            id="moisture_test_result"
-            name="moisture_test_result"
-            checked={formData.moisture_test_result}
-            onChange={handleChange}
-          />
-        </div> */}
-        <div>
-          <label htmlFor="moisture_test_details">Moisture Test Details:</label>
-          <input type="text" id="moisture_test_details" name="moisture_test_details" value={formData.moisture_test_details} onChange={handleChange} required />
+          <label htmlFor="sales_unit_price">
+            Price per kilo:
+            <span>PHP</span>
+            <input type="text" id="sales_unit_price" name="sales_unit_price" placeholder="32.00 per kg" value={formData.sales_unit_price} onChange={handleChange} required />
+          </label>
         </div>
         <div>
-          <label htmlFor="total_purchase_price">Total Sale </label>
-          <input type="text" id="total_purchase_price" name="total_purchase_price" value={`PHP ${formData.total_purchase_price}`} readOnly />
+          <label htmlFor="amount_of_copra_purchased">
+            Copra bought:
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                type="text"
+                id="amount_of_copra_purchased"
+                name="amount_of_copra_purchased"
+                value={formData.amount_of_copra_purchased}
+                onChange={handleChange}
+                required
+                style={{ marginRight: '5px' }}
+              />
+              <span>kg</span>
+            </div>
+          </label>
         </div>
         <div>
-        <button type="button" onClick={() => navigate('/purchase')}>Clear</button>
+          <label htmlFor="moisture_test_details">
+            Moisture Test Details:
+            <input type="text" id="moisture_test_details" name="moisture_test_details" value={formData.moisture_test_details} onChange={handleChange} required />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="total_purchase_price">
+            Total Sale:
+            <input type="text" id="total_purchase_price" name="total_purchase_price" value={`PHP ${formData.total_purchase_price}`} readOnly />
+          </label>
+        </div>
+        <div>
+          <button type="button" onClick={() => setShowAddForm(false)}>Clear</button>
           <button type="submit">Save</button>
         </div>
       </form>

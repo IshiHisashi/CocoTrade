@@ -5,6 +5,7 @@ import axios from 'axios';
 const AddPurchaseForm = ({ setShowAddForm }) => {
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
+  const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
     farmer_id: '',
     invoice_number: '',
@@ -13,9 +14,21 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
     amount_of_copra_purchased: '',
     moisture_test_details: '',
     total_purchase_price: '',
+    user_id: '66640d8158d2c8dc4cedaf1e'
   });
 
+  const userid = '66640d8158d2c8dc4cedaf1e';
+
   useEffect(() => {
+    // Fetch user data
+    axios.get(`http://localhost:5555/user/${userid}`)
+      .then(response => {
+        setUser(response.data.data); 
+      })
+      .catch(error => {
+        console.error('Error fetching user:', error);
+      });
+
     // Fetch farmers
     axios.get('http://localhost:5555/farmer')
       .then(response => {
@@ -26,13 +39,12 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
       });
 
     // Fetch price suggestion
-    const userid = '66640d8158d2c8dc4cedaf1e'; // using the provided user ID for now
     axios.get(`http://localhost:5555/user/${userid}/pricesuggestion/getone`)
       .then(response => {
         if (response.data.status === 'success') {
           setFormData((prevData) => ({
             ...prevData,
-            sales_unit_price: response.data.data, // Set the sales_unit_price with the fetched value
+            sales_unit_price: response.data.data, 
           }));
         }
       })
@@ -86,14 +98,25 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:5555/purchase', formData)
-      .then(response => {
-        console.log('Purchase created:', response.data);
-        setShowAddForm(false);
-      })
-      .catch(error => console.error('Error creating purchase:', error));
+    try {
+      const response = await axios.post('http://localhost:5555/purchase', formData);
+      console.log('Purchase created:', response.data);
+            // eslint-disable-next-line no-underscore-dangle
+      const purchaseId = response.data._id;
+
+      // Preset the existing array
+      const updatedPurchasesArray = [...user.purchases_array, purchaseId];
+
+      await axios.patch(`http://localhost:5555/user/${userid}`, {
+        purchases_array: updatedPurchasesArray
+      });
+
+      setShowAddForm(false);
+    } catch (error) {
+      console.error('Error creating purchase:', error);
+    }
   };
 
   return (
@@ -118,7 +141,7 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
             <select id="farmer_id" name="farmer_id" value={formData.farmer_id} onChange={handleChange} required>
               <option value="">First name / Last name</option>
               {farmers.map(farmer => (
-                // eslint-disable-next-line no-underscore-dangle
+                 // eslint-disable-next-line no-underscore-dangle
                 <option key={farmer._id} value={farmer._id}>
                   {farmer.full_name}
                 </option>

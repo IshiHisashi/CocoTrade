@@ -3,6 +3,9 @@ import axios from 'axios';
 
 const ViewPurchaseTable = () => {
   const [purchases, setPurchases] = useState([]);
+  const [dropdownVisible, setDropdownVisible] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
 
   useEffect(() => {
     // Fetch purchase data from the backend
@@ -22,9 +25,26 @@ const ViewPurchaseTable = () => {
     return parseFloat(decimal128.$numberDecimal).toFixed(2);
   };
 
+  // Pagination logic
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = purchases.slice(indexOfFirstRecord, indexOfLastRecord);
+  const totalPages = Math.ceil(purchases.length / recordsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div>
-      <h2>Purchase Log</h2>
       <table>
         <thead>
           <tr>
@@ -38,7 +58,7 @@ const ViewPurchaseTable = () => {
           </tr>
         </thead>
         <tbody>
-          {purchases.map(purchase => (
+          {currentRecords.map(purchase => (
             // eslint-disable-next-line no-underscore-dangle
             <tr key={purchase._id}>
               <td>{purchase.invoice_number}</td>
@@ -49,16 +69,38 @@ const ViewPurchaseTable = () => {
               <td>{`PHP ${formatDecimal(purchase.total_purchase_price)}`}</td>
               <td>
                 <div className="dropdown">
-                  <div className="dropdown-content">
-                    <button type="button" onClick={() => alert('Edit Clicked')}>Edit</button>
-                    <button type="button" onClick={() => alert('Delete Clicked')}>Delete</button>
-                  </div>
+                  <button type="button"
+                    className="dropbtn" 
+                                // eslint-disable-next-line no-underscore-dangle
+                    onClick={() => setDropdownVisible(dropdownVisible === purchase._id ? null : purchase._id)}>...</button>{dropdownVisible === purchase._id && (
+                    <div className="dropdown-content">
+                      <button type="button" onClick={() => alert('Edit Clicked')}>Edit</button>
+                      <button type="button" onClick={() => alert('Delete Clicked')}>Delete</button>
+                    </div>
+                  )}
                 </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div className="pagination">
+        <button type="button" onClick={handlePrevPage} disabled={currentPage === 1}>
+          &lt;
+        </button>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button type="button"
+            key={index + 1}
+            onClick={() => setCurrentPage(index + 1)}
+            className={currentPage === index + 1 ? 'active' : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button type="button" onClick={handleNextPage} disabled={currentPage === totalPages}>
+          &gt;
+        </button>
+      </div>
     </div>
   );
 };

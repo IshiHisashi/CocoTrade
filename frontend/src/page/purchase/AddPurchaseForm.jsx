@@ -64,7 +64,7 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
       let total = unitPrice * amountPurchased;
 
       if (moistureLevel > 7) {
-        total *= 0.85; // Deduct 15%
+        total *= 0.85; 
       }
 
       if (!Number.isNaN(total)) {

@@ -5,6 +5,7 @@ export { Purchase };
 const {Schema} = mongoose;
 const purchaseSchema = new Schema({
   user_id: { type: Schema.Types.ObjectId, ref: "User" },
+  invoice_number: String,
   farmer_id: { type: Schema.Types.ObjectId, ref: "Farmer" },
   purchase_date: Date,
   amount_of_copra_purchased: mongoose.Types.Decimal128,

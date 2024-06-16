@@ -4,7 +4,7 @@ export {
     Notification
 };
 
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 const notificationSchema = new Schema(
     {
         user_id: { type: Schema.Types.ObjectId },

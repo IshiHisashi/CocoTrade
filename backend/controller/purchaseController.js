@@ -52,11 +52,10 @@ export const updatePurchase = async (req, res) => {
       return res.status(404).json({
         error: "Purchase not found",
       });
-    } else {
+    } 
       return res.status(201).json({
         status: "success in updating",
-      });
-    }
+      });    
   } catch (err) {
     console.log(err);
     res.status(400).json({

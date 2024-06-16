@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export { Purchase };
 
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 const purchaseSchema = new Schema({
   user_id: { type: Schema.Types.ObjectId, ref: "User" },
   farmer_id: { type: Schema.Types.ObjectId, ref: "Farmer" },

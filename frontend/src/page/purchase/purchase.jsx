@@ -50,7 +50,7 @@ const Purchase = () => {
       <button type="button" onClick={() => { setShowAddForm(true); setSelectedPurchase(null); }}>Add New Purchase</button>
       <Modal
         isOpen={showAddForm}
-        onRequestClose={() => setShowAddForm(false)}
+        onRequestClose={() => {setShowAddForm(false); window.location.reload();}}
         contentLabel="Add Purchase Form"
       >
         <AddPurchaseForm setShowAddForm={setShowAddForm} purchase={selectedPurchase} handleUpdate={handleUpdate} />

@@ -16,16 +16,12 @@ const getDataObjRes = async (type, userId) => {
     };
   } else if (type === "suggestion") {
     const res = await axios.get(
-      `http://localhost:5555/user/${userId}/pricesuggestion`
+      `http://localhost:5555/user/${userId}/pricesuggestion/gettwo`
     );
 
-    const fixedPriceArray = res.data.data.price_suggestion_array.map((obj) => {
-      return Number(obj.price_suggestion.$numberDecimal).toFixed(2);
-    });
-
     dataObj = {
-      comparison: fixedPriceArray[0],
-      current: fixedPriceArray[1],
+      comparison: res.data.data.comparison,
+      current: res.data.data.current,
     };
   }
 

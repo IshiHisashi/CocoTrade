@@ -206,7 +206,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           </label>
         </div>
         <div>
-          <button type="button" onClick={() => setShowAddForm(false)}>Clear</button>
+          <button type="button" onClick={() => {setShowAddForm(false); window.location.reload();}}>Clear</button>
           <button type="submit">Save</button>
         </div>
       </form>

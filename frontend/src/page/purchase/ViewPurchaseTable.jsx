@@ -7,8 +7,7 @@ const ViewPurchaseTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
-  useEffect(() => {
-    // Fetch purchase data from the backend
+  const fetchPurchases = () => {
     axios.get('http://localhost:5555/purchase')
       .then(response => {
         setPurchases(response.data);
@@ -16,6 +15,10 @@ const ViewPurchaseTable = () => {
       .catch(error => {
         console.error('Error fetching purchases:', error);
       });
+  };
+
+  useEffect(() => {
+    fetchPurchases();
   }, []);
 
   const formatDecimal = (decimal128) => {
@@ -23,6 +26,15 @@ const ViewPurchaseTable = () => {
       return '0.00';
     }
     return parseFloat(decimal128.$numberDecimal).toFixed(2);
+  };
+
+  const handleDeleteClick = async (purchaseId) => {
+    try {
+      await axios.delete(`http://localhost:5555/purchase/${purchaseId}`);
+      fetchPurchases(); // Refresh the purchases list
+    } catch (error) {
+      console.error('Error deleting purchase:', error);
+    }
   };
 
   // Pagination logic
@@ -71,11 +83,13 @@ const ViewPurchaseTable = () => {
                 <div className="dropdown">
                   <button type="button"
                     className="dropbtn" 
-                                // eslint-disable-next-line no-underscore-dangle
+                    // eslint-disable-next-line no-underscore-dangle
                     onClick={() => setDropdownVisible(dropdownVisible === purchase._id ? null : purchase._id)}>...</button>{dropdownVisible === purchase._id && (
                     <div className="dropdown-content">
                       <button type="button" onClick={() => alert('Edit Clicked')}>Edit</button>
-                      <button type="button" onClick={() => alert('Delete Clicked')}>Delete</button>
+                      <button type="button" onClick={() => 
+                        // eslint-disable-next-line no-underscore-dangle
+                        handleDeleteClick(purchase._id)}>Delete</button>
                     </div>
                   )}
                 </div>

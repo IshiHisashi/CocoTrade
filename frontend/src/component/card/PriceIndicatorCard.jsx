@@ -6,13 +6,15 @@ const getDataObjRes = async (type, userId) => {
   let dataObj;
 
   if (type === "market") {
-    const res = await axios.get("http://localhost:5555/marketprice/latest");
-    let figure = res.data.data.doc.price_PHP.$numberDecimal / 1000;
-    figure = figure.toFixed(2);
+    const res = await axios.get("http://localhost:5555/marketprice/latest-2");
+
+    const resArray = res.data.data.docs;
+
     dataObj = {
-      // hard-code for now. will have API for this created.
-      comparison: 50,
-      current: figure,
+      comparison: Number(resArray[1].price_PHP.$numberDecimal / 1000).toFixed(
+        2
+      ),
+      current: Number(resArray[0].price_PHP.$numberDecimal / 1000).toFixed(2),
     };
   } else if (type === "suggestion") {
     const res = await axios.get(

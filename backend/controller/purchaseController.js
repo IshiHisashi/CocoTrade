@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Purchase } from "../model/purchaseModel.js";
 import { UserModel } from "../model/userModel.js";
 
@@ -115,6 +116,49 @@ export const aggregateMonthlyPurchases = async (req, res) => {
     res.status(400).json({
       status: "fail",
       message: "failed",
+    });
+  }
+};
+export const getTodaysTotalPurchasePriceForUser = async (req, res) => {
+  const hardcodedUserId = "66640d8158d2c8dc4cedaf1e"; // Hardcoded user ID
+  const startOfDay = new Date();
+  startOfDay.setUTCHours(0, 0, 0, 0); // Set to start of today in UTC
+  
+  const endOfDay = new Date();
+  endOfDay.setUTCHours(23, 59, 59, 999); // Set to end of today in UTC
+
+  try {
+    const result = await Purchase.aggregate([
+      {
+        $match: {
+          user_id: new mongoose.Types.ObjectId(hardcodedUserId), // Ensure the user_id is correctly formatted as ObjectId
+          purchase_date: {
+            $gte: startOfDay,
+            $lte: endOfDay
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalSum: { $sum: "$total_purchase_price" }
+        }
+      }
+    ]);
+
+    if (result.length === 0 || !result[0].totalSum) {
+      return res.status(404).json({
+        status: "fail",
+        message: "No purchases found for today for this user",
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      totalSum: result[0].totalSum
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
     });
   }
 };

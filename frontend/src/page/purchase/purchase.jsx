@@ -10,6 +10,7 @@ Modal.setAppElement('#root');
 const Purchase = () => {
   const [purchases, setPurchases] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedPurchase, setSelectedPurchase] = useState(null);
 
   useEffect(() => {
     // Fetch purchases data from the backend
@@ -22,22 +23,39 @@ const Purchase = () => {
       });
   }, []);
 
-  const parseDecimal = (decimalObj) => {
-    return decimalObj ? parseFloat(decimalObj.$numberDecimal) : 0;
+  const handleEdit = (purchase) => {
+    setSelectedPurchase(purchase);
+  };
+
+  const handleUpdate = async (updatedPurchase) => {
+    try {
+                                        // eslint-disable-next-line no-underscore-dangle 
+      await axios.patch(`http://localhost:5555/purchase/${updatedPurchase._id}`, updatedPurchase);
+      setShowAddForm(false);
+      setSelectedPurchase(null);
+      setPurchases((prevPurchases) => prevPurchases.map((purchase) => 
+                                          // eslint-disable-next-line no-underscore-dangle 
+        purchase._id === updatedPurchase._id ? updatedPurchase : purchase
+      ));
+      window.location.reload();
+
+    } catch (error) {
+      console.error('Error updating purchase:', error);
+    }
   };
 
   return (
     <div>
       <h2>Purchase Log</h2>
-      <button type="button" onClick={() => setShowAddForm(true)}>Add New Purchase</button>
+      <button type="button" onClick={() => { setShowAddForm(true); setSelectedPurchase(null); }}>Add New Purchase</button>
       <Modal
         isOpen={showAddForm}
         onRequestClose={() => setShowAddForm(false)}
         contentLabel="Add Purchase Form"
       >
-        <AddPurchaseForm setShowAddForm={setShowAddForm} />
+        <AddPurchaseForm setShowAddForm={setShowAddForm} purchase={selectedPurchase} handleUpdate={handleUpdate} />
       </Modal>
-      <ViewPurchaseTable purchases={purchases} />
+      <ViewPurchaseTable setShowAddForm={setShowAddForm} handleEdit={handleEdit} />
     </div>
   );
 };

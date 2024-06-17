@@ -5,7 +5,8 @@ import Landing from "./page/landing/Landing.jsx";
 import Finance from "./page/finance/Finance.jsx";
 import Dashboard from "./page/dashboard/Dashboard.jsx";
 import Purchase from "./page/purchase/purchase.jsx";
-import Sale from "./page/sale/sale.jsx"
+import Sale from "./page/sale/sale.jsx";
+import Layout from "./Layout.jsx";
 
 const App = () => {
   return (
@@ -14,11 +15,46 @@ const App = () => {
       <br /> */}
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/inventory" element={<Inventory />} />
-        <Route path="/finance" element={<Finance />} />
-        <Route path="/purchase" element={<Purchase />} />
-        <Route path="/sale" element={<Sale />} />
+        <Route
+          path="/dashboard"
+          element={
+            <Layout>
+              <Dashboard />
+            </Layout>
+          }
+        />
+        <Route
+          path="/inventory"
+          element={
+            <Layout>
+              <Inventory />
+            </Layout>
+          }
+        />
+        <Route
+          path="/finance"
+          element={
+            <Layout>
+              <Finance />
+            </Layout>
+          }
+        />
+        <Route
+          path="/purchase"
+          element={
+            <Layout>
+              <Purchase />
+            </Layout>
+          }
+        />
+        <Route
+          path="/sale"
+          element={
+            <Layout>
+              <Sale />
+            </Layout>
+          }
+        />
       </Routes>
     </>
   );

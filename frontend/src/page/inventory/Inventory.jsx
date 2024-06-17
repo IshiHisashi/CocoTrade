@@ -1,6 +1,7 @@
 import React from "react";
 import BarChart from "./BarChart";
 import LineChart from "./LineChart";
+import SalesTable from "./SalesTable";
 
 const Inventory = () => {
   const userId = "66622c07858df5960bf57a06";
@@ -9,6 +10,7 @@ const Inventory = () => {
       <h1>Inventory</h1>
       <BarChart userId={ userId } />
       <LineChart userId={ userId } />
+      <SalesTable userId={ userId }/>
     </div>
   );
 };

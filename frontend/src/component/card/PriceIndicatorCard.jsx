@@ -72,7 +72,7 @@ const PriceIndicatorCard = (props) => {
               {diffObj.arrow} Php {diffObj.priceDiff}
             </p>
             <p className="text-gray-500">
-              {diffObj.arrow} {diffObj.percentageDiff}% this week
+              {diffObj.arrow} {diffObj.percentageDiff}% compared to yesterday
             </p>
           </div>
         </>

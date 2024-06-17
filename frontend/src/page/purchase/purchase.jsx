@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
+import ViewPurchaseTable from './ViewPurchaseTable';
 import AddPurchaseForm from './AddPurchaseForm.jsx';
 
 // Set the app element for accessibility
@@ -36,6 +37,7 @@ const Purchase = () => {
       >
         <AddPurchaseForm setShowAddForm={setShowAddForm} />
       </Modal>
+      <ViewPurchaseTable purchases={purchases} />
     </div>
   );
 };

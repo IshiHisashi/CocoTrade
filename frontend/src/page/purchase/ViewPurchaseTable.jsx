@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import AddPurchaseForm from './AddPurchaseForm.jsx';
 
-const ViewPurchaseTable = () => {
+const ViewPurchaseTable = ({ setShowAddForm, handleEdit }) => {
   const [purchases, setPurchases] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,6 +36,11 @@ const ViewPurchaseTable = () => {
     } catch (error) {
       console.error('Error deleting purchase:', error);
     }
+  };
+
+  const handleEditClick = (purchase) => {
+    setShowAddForm(true);
+    handleEdit(purchase);
   };
 
   // Pagination logic
@@ -86,7 +92,7 @@ const ViewPurchaseTable = () => {
                     // eslint-disable-next-line no-underscore-dangle
                     onClick={() => setDropdownVisible(dropdownVisible === purchase._id ? null : purchase._id)}>...</button>{dropdownVisible === purchase._id && (
                     <div className="dropdown-content">
-                      <button type="button" onClick={() => alert('Edit Clicked')}>Edit</button>
+                      <button type="button" onClick={() => handleEditClick(purchase)}>Edit</button>
                       <button type="button" onClick={() => 
                         // eslint-disable-next-line no-underscore-dangle
                         handleDeleteClick(purchase._id)}>Delete</button>

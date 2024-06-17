@@ -12,6 +12,7 @@ import saleRoute from "./route/saleRoute.js";
 import purchaseRoute from "./route/purchaseRoute.js";
 import notificationRoute from "./route/notificationRoute.js";
 import tmpFinRoute from "./route/tmpFinRoute.js";
+import farmerRoute from "./route/farmerRoute.js";
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(
       // Diployment
       "https://coco-trade.vercel.app",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
@@ -37,7 +38,7 @@ app.options(
   cors({
     credentials: true,
     origin: ["http://localhost:5173", "https://coco-trade.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
@@ -60,6 +61,7 @@ app.use("/marketprice", marketPriceRoute);
 app.use("/user", priceSuggestionRoute);
 app.use("/sale", saleRoute);
 app.use("/purchase", purchaseRoute);
+app.use("/farmer", farmerRoute);
 
 // This will be replaced by the endpoint 'user'
 app.use("/tmpFinRoute", tmpFinRoute);

@@ -47,7 +47,10 @@ const LineChart = ({ userId }) => {
     i += 1;
   }
 
-  const dataPoints = inventory.map(item => item.current_amount.$numberDecimal);
+  const dataPoints = inventory.map((item) => ({
+    x: item.time_stamp,
+    y: item.current_amount.$numberDecimal
+  }));
   console.log(dataPoints);
 
   console.log(last12Months);
@@ -68,12 +71,21 @@ const LineChart = ({ userId }) => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
+    interaction: {
+      mode: "nearest",
+      axis: "x",
+      intersect: false,
+    },
     scales: {
       x: {
+        type: "time",
+        time: {
+          unit: "month",
+          tooltipFormat: "yyyy-MM-dd",
+        },
         title: {
           display: true,
-          text: 'Date',
+          text: 'Month',
         },
         grid: {
           display: false,
@@ -82,22 +94,29 @@ const LineChart = ({ userId }) => {
       y: {
         title: {
           display: true,
-          text: 'amount',
+          text: 'Amount',
         },
         beginAtZero: true,
-      },
-      grid: {
-        display: false,
+        grid: {
+          display: false,
+        },
       },
     },
     plugins: {
       legend: {
-        display: true,
-        position: 'top',
+        display: false
       },
       title: {
         display: true,
         text: 'Inventory history',
+      },
+    },
+    elements: {
+      line: {
+        tension: 0.4, // Smoothing effect
+      },
+      point: {
+        radius: 0, // Hide points
       },
     },
   };
@@ -106,7 +125,7 @@ const LineChart = ({ userId }) => {
     <div>
       <p>Start Date: { startDate }</p>
       <p>End Date: { endDate }</p>
-      {/* <Line data={ data } options={ options } /> */}
+      <Line data={ data } options={ options } />
     </div>
   )
 }

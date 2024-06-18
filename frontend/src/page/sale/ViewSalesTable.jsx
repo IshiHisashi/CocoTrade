@@ -7,6 +7,20 @@ const ViewSalesTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
+  const fetchSales = () => {
+    axios.get('http://localhost:5555/sale')
+      .then(response => {
+        setSales(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching sales:', error);
+      });
+  };
+
+  useEffect(() => {
+    fetchSales();
+  }, []);
+
 
   useEffect(() => {
     // Fetch sales data from the backend
@@ -24,6 +38,15 @@ const ViewSalesTable = () => {
       return '0.00';
     }
     return parseFloat(decimal128.$numberDecimal).toFixed(2);
+  };
+
+  const handleDeleteClick = async (saleId) => {
+    try {
+      await axios.delete(`http://localhost:5555/sale/${saleId}`);
+      fetchSales(); // Refresh the purchases list
+    } catch (error) {
+      console.error('Error deleting sale:', error);
+    }
   };
  // Pagination logic
  const indexOfLastRecord = currentPage * recordsPerPage;
@@ -76,8 +99,9 @@ const ViewSalesTable = () => {
                     onClick={() => setDropdownVisible(dropdownVisible === sale._id ? null : sale._id)}>...</button>{dropdownVisible === sale._id && (
                     <div className="dropdown-content">
                       <button type="button" onClick={() => {alert('Edit Clicked');window.location.reload();}}>Edit</button>
-                      <button type="button" onClick={() => {alert('Delete Clicked');window.location.reload();}}>Delete</button>
-                    </div>
+                      <button type="button" onClick={() => 
+                        // eslint-disable-next-line no-underscore-dangle
+                        handleDeleteClick(sale._id)}>Delete</button>                    </div>
                   )}
                 </div>
               </td>

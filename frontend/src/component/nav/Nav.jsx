@@ -1,28 +1,25 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import NavList from "./NavList";
 
 const Nav = (props) => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, [pathname]);
+
   return (
     <nav className="bg-orange-300 fixed h-screen w-52">
-      <p>
+      <h1 className="text-center text-4xl p-4">
         <Link to="/">CocoTrade</Link>
-      </p>
+      </h1>
       <ul>
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>
-        <li>
-          <Link to="/inventory">Inventory</Link>
-        </li>
-        <li>
-          <Link to="/purchase">Purchase</Link>
-        </li>
-        <li>
-          <Link to="/sale">Sales</Link>
-        </li>
-        <li>
-          <Link to="/finance">Finances</Link>
-        </li>
+        <NavList page="dashboard" />
+        <NavList page="inventory" />
+        <NavList page="purchase" />
+        <NavList page="sales" />
+        <NavList page="finances" />
       </ul>
     </nav>
   );

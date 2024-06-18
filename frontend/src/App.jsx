@@ -10,53 +10,49 @@ import Layout from "./Layout.jsx";
 
 const App = () => {
   return (
-    <>
-      {/* <h1 className="text-[20px]">Welcome to CocoTrade🌴</h1>
-      <br /> */}
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route
-          path="/dashboard"
-          element={
-            <Layout>
-              <Dashboard />
-            </Layout>
-          }
-        />
-        <Route
-          path="/inventory"
-          element={
-            <Layout>
-              <Inventory />
-            </Layout>
-          }
-        />
-        <Route
-          path="/finance"
-          element={
-            <Layout>
-              <Finance />
-            </Layout>
-          }
-        />
-        <Route
-          path="/purchase"
-          element={
-            <Layout>
-              <Purchase />
-            </Layout>
-          }
-        />
-        <Route
-          path="/sale"
-          element={
-            <Layout>
-              <Sale />
-            </Layout>
-          }
-        />
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route
+        path="/dashboard"
+        element={
+          <Layout>
+            <Dashboard />
+          </Layout>
+        }
+      />
+      <Route
+        path="/inventory"
+        element={
+          <Layout>
+            <Inventory />
+          </Layout>
+        }
+      />
+      <Route
+        path="/finances"
+        element={
+          <Layout>
+            <Finance />
+          </Layout>
+        }
+      />
+      <Route
+        path="/purchase"
+        element={
+          <Layout>
+            <Purchase />
+          </Layout>
+        }
+      />
+      <Route
+        path="/sales"
+        element={
+          <Layout>
+            <Sale />
+          </Layout>
+        }
+      />
+    </Routes>
   );
 };
 

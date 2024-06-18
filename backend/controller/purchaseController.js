@@ -120,7 +120,7 @@ export const aggregateMonthlyPurchases = async (req, res) => {
   }
 };
 export const getTodaysTotalPurchasePriceForUser = async (req, res) => {
-  const hardcodedUserId = "66640d8158d2c8dc4cedaf1e"; // Hardcoded user ID
+  const user = await UserModel.findById(req.params.userid);
   const startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0); // Set to start of today in UTC
   
@@ -131,7 +131,7 @@ export const getTodaysTotalPurchasePriceForUser = async (req, res) => {
     const result = await Purchase.aggregate([
       {
         $match: {
-          user_id: new mongoose.Types.ObjectId(hardcodedUserId), // Ensure the user_id is correctly formatted as ObjectId
+          _id: { $in: user.purchases_array },
           purchase_date: {
             $gte: startOfDay,
             $lte: endOfDay

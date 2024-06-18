@@ -16,7 +16,7 @@ export const createSale = async (req, res) => {
 
 export const getAllSales = async (req, res) => {
   try {
-    const sales = await Sale.find();
+    const sales = await Sale.find().populate('manufacturer_id');
     console.log("Sales retrieved");
     res.status(200).json(sales);
   } catch (err) {

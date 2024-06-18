@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const AddPurchaseForm = ({ setShowAddForm }) => {
+const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
   const [user, setUser] = useState(null);
@@ -44,7 +44,7 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
         if (response.data.status === 'success') {
           setFormData((prevData) => ({
             ...prevData,
-            sales_unit_price: response.data.data, 
+            sales_unit_price: parseFloat(response.data.data?.$numberDecimal ?? response.data.data), 
           }));
         }
       })
@@ -53,20 +53,38 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
       });
 
     // Generate invoice number
-    const generateInvoiceNumber = () => {
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let result = 'IN';
-      for (let i = 0; i < 8; i += 1) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-      }
-      return result;
-    };
+    if (!purchase) {
+      const generateInvoiceNumber = () => {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = 'IN';
+        for (let i = 0; i < 8; i += 1) {
+          result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return result;
+      };
 
-    setFormData((prevData) => ({
-      ...prevData,
-      invoice_number: generateInvoiceNumber(),
-    }));
-  }, []);
+      setFormData((prevData) => ({
+        ...prevData,
+        invoice_number: generateInvoiceNumber(),
+      }));
+    }
+  }, [purchase]); // Include purchase in the dependency array
+
+  useEffect(() => {
+    if (purchase) {
+      setFormData({
+        ...purchase,
+                          // eslint-disable-next-line no-underscore-dangle 
+        farmer_id: purchase.farmer_id?._id ?? '',
+        sales_unit_price: parseFloat(purchase.sales_unit_price?.$numberDecimal ?? purchase.sales_unit_price),
+        amount_of_copra_purchased: parseFloat(purchase.amount_of_copra_purchased?.$numberDecimal ?? purchase.amount_of_copra_purchased),
+        moisture_test_details: parseFloat(purchase.moisture_test_details?.$numberDecimal ?? purchase.moisture_test_details),
+        total_purchase_price: parseFloat(purchase.total_purchase_price?.$numberDecimal ?? purchase.total_purchase_price),
+        purchase_date: purchase.purchase_date ? new Date(purchase.purchase_date).toISOString().split('T')[0] : '',
+        user_id: userid,
+      });
+    }
+  }, [purchase]); // Include purchase in the dependency array
 
   useEffect(() => {
     const calculateTotalPurchasePrice = () => {
@@ -101,27 +119,29 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5555/purchase', formData);
-      console.log('Purchase created:', response.data);
-            // eslint-disable-next-line no-underscore-dangle
-      const purchaseId = response.data._id;
+      if (purchase) {
+        await handleUpdate(formData);
+      } else {
+        const response = await axios.post('http://localhost:5555/purchase', formData);
+        console.log('Purchase created:', response.data);
+                          // eslint-disable-next-line no-underscore-dangle 
+        const purchaseId = response.data._id;
 
-      // Preset the existing array
-      const updatedPurchasesArray = [...user.purchases_array, purchaseId];
+        const updatedPurchasesArray = [...user.purchases_array, purchaseId];
 
-      await axios.patch(`http://localhost:5555/user/${userid}`, {
-        purchases_array: updatedPurchasesArray
-      });
-
-      setShowAddForm(false);
+        await axios.patch(`http://localhost:5555/user/${userid}`, {
+          purchases_array: updatedPurchasesArray
+        });
+        setShowAddForm(false);
+      }
     } catch (error) {
-      console.error('Error creating purchase:', error);
+      console.error('Error creating/updating purchase:', error);
     }
   };
 
   return (
     <div>
-      <h2>New Purchase</h2>
+      <h2>{purchase ? 'Edit Purchase' : 'New Purchase'}</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="invoice_number">
@@ -141,7 +161,7 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
             <select id="farmer_id" name="farmer_id" value={formData.farmer_id} onChange={handleChange} required>
               <option value="">First name / Last name</option>
               {farmers.map(farmer => (
-                 // eslint-disable-next-line no-underscore-dangle
+                                  // eslint-disable-next-line no-underscore-dangle 
                 <option key={farmer._id} value={farmer._id}>
                   {farmer.full_name}
                 </option>
@@ -186,7 +206,7 @@ const AddPurchaseForm = ({ setShowAddForm }) => {
           </label>
         </div>
         <div>
-          <button type="button" onClick={() => setShowAddForm(false)}>Clear</button>
+          <button type="button" onClick={() => {setShowAddForm(false); window.location.reload();}}>Clear</button>
           <button type="submit">Save</button>
         </div>
       </form>

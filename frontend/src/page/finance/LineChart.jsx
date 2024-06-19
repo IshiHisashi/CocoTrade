@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
+import moment from "moment";
 import { Chart } from "chart.js";
 import "chartjs-adapter-moment";
 import UserIdContext from "./UserIdContext";
@@ -11,19 +12,19 @@ const LineChart = (t) => {
   const thisYear = today.toLocaleDateString().split("/")[2];
   const thisMonth = today.toLocaleDateString().split("/")[0].padStart(2, "0");
   const userId = useContext(UserIdContext);
-  const [marketPrice, setMarketPrice] = useState([]);
-  const [durationType, setDurationType] = useState("monthly");
-  const [durationValue, setDurationValue] = useState(thisMonth);
+  const [retrievedData, setRetrievedData] = useState([]);
+  const [durationType, setDurationType] = useState("yearly");
+  const [durationValue, setDurationValue] = useState(thisYear);
   const chartRef = useRef(null);
 
-  // Get market price from the collection
+  // Get data from the collection
   useEffect(() => {
     if (type === "market") {
       // for market price
       axios
         .get(`http://localhost:5555/marketprice`)
         .then((res) => {
-          setMarketPrice(res.data.data.docs);
+          setRetrievedData(res.data.data.docs);
         })
         .catch(console.log("waiting..."));
     } else if (type === "cashflow") {
@@ -33,7 +34,7 @@ const LineChart = (t) => {
           `http://localhost:5555/tmpFinRoute/${userId}/currentbalance/byuser`
         )
         .then((res) => {
-          setMarketPrice(res.data.data.docs);
+          setRetrievedData(res.data.data.docs);
         })
         .catch(console.log("waiting..."));
     }
@@ -46,7 +47,22 @@ const LineChart = (t) => {
     gradient.addColorStop(0, "rgba(75, 192, 192, 0.2)");
     gradient.addColorStop(1, "rgba(75, 192, 192, 0)");
 
-    const dailyData = marketPrice.map((price) => {
+    // Generate the last 12 months dynamically
+    const last12Months = Array.from({ length: 12 }, (_, i) =>
+      moment().subtract(i, "months").format("MMM YYYY")
+    ).reverse();
+
+    // Generate all days for the current month
+    const startOfMonth = moment().startOf("month");
+    const endOfMonth = moment().endOf("month");
+    const daysInMonth = [];
+
+    for (let day = startOfMonth; day <= endOfMonth; day.add(1, "day")) {
+      daysInMonth.push(day.format("YYYY-MM-DD"));
+    }
+
+    // Generate the daily data based on retrievedData
+    const dailyData = retrievedData.map((price) => {
       const priceObj =
         type === "cashflow"
           ? {
@@ -60,37 +76,26 @@ const LineChart = (t) => {
       return priceObj;
     });
 
-    const durationAdujster = (data) => {
-      let slicer = [];
+    // Tweak corrsponding duration (range of times)
+    const durationAdjuster = (data) => {
       if (durationType === "yearly") {
-        slicer = [0, 4];
+        return moment(data.date).isAfter(moment().subtract(12, "months"));
       }
       if (durationType === "monthly") {
-        slicer = [5, 7];
+        return (
+          data.date.slice(5, 7) === durationValue &&
+          data.date.slice(0, 4) === thisYear.toString()
+        );
       }
-      return data.date.slice(slicer[0], slicer[1]) === durationValue;
+      return true;
     };
 
-    const dailyDateDuration = dailyData.filter(durationAdujster);
+    const dailyDateDuration = dailyData
+      .filter(durationAdjuster)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const data = {
-      labels:
-        durationType === "yearly"
-          ? [
-              "Jan 2024",
-              "Feb 2024",
-              "Mar 2024",
-              "Apr 2024",
-              "May 2024",
-              "Jun 2024",
-              "Jul 2024",
-              "Aug 2024",
-              "Sep 2024",
-              "Oct 2024",
-              "Nov 2024",
-              "Dec 2024",
-            ]
-          : ["Jun 2024", "July 2024"],
+      labels: durationType === "yearly" ? last12Months : daysInMonth,
       datasets: [
         {
           label: "Market Price",
@@ -172,18 +177,18 @@ const LineChart = (t) => {
               tooltipFormat: "yyyy-MM-dd",
             },
             title: {
-              display: true,
-              text: "Month",
+              display: false,
+              text: durationType === "yearly" ? "month" : "day",
             },
             grid: {
               display: false,
             },
           },
           y: {
-            beginAtZero: false,
+            beginAtZero: type === "market" ? false : true, // eslint-disable-line no-unneeded-ternary
             title: {
               display: true,
-              text: "Price",
+              text: "",
             },
             grid: {
               display: false,
@@ -208,7 +213,7 @@ const LineChart = (t) => {
     return () => {
       myChart.destroy();
     };
-  }, [marketPrice, type, durationType, durationValue, thisMonth]);
+  }, [retrievedData, type, durationType, durationValue, thisYear, thisMonth]);
 
   return (
     <div className="flex flex-col gap-8">

@@ -8,7 +8,7 @@ import LineChart from "./LineChart.jsx";
 const Finance = () => {
   return (
     <UserIdContext.Provider value="66654dc4c6e950671e988962">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 mx-6 my-4">
         <h1>Finance</h1>
         <LineChart type="cashflow" />
         <MonthlyActivity />

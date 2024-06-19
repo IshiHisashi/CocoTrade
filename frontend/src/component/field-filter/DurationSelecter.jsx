@@ -9,7 +9,6 @@ const DurationSelecter = ({
   const handleDurationSelecter = (durationType, durationValue) => {
     setDurationType(durationType);
     setDurationValue(durationValue);
-    console.log("clicked");
   };
 
   return (

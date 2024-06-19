@@ -3,12 +3,17 @@ import axios from "axios";
 import { Chart } from "chart.js";
 import "chartjs-adapter-moment";
 import UserIdContext from "./UserIdContext";
+import DurationSelecter from "../../component/field-filter/DurationSelecter.jsx";
 
 const LineChart = (t) => {
   const { type } = t;
-  // const type = "cashflow";
+  const today = new Date();
+  const thisYear = today.toLocaleDateString().split("/")[2];
+  const thisMonth = today.toLocaleDateString().split("/")[0].padStart(2, "0");
   const userId = useContext(UserIdContext);
   const [marketPrice, setMarketPrice] = useState([]);
+  const [durationType, setDurationType] = useState("monthly");
+  const [durationValue, setDurationValue] = useState(thisMonth);
   const chartRef = useRef(null);
 
   // Get market price from the collection
@@ -55,25 +60,44 @@ const LineChart = (t) => {
       return priceObj;
     });
 
+    const durationAdujster = (data) => {
+      let slicer = [];
+      if (durationType === "yearly") {
+        slicer = [0, 4];
+      }
+      if (durationType === "monthly") {
+        slicer = [5, 7];
+      }
+      return data.date.slice(slicer[0], slicer[1]) === durationValue;
+    };
+
+    const dailyDateDuration = dailyData.filter(durationAdujster);
+
     const data = {
-      labels: [
-        "Jan 2024",
-        "Feb 2024",
-        "Mar 2024",
-        "Apr 2024",
-        "May 2024",
-        "Jun 2024",
-        "Jul 2024",
-        "Aug 2024",
-        "Sep 2024",
-        "Oct 2024",
-        "Nov 2024",
-        "Dec 2024",
-      ],
+      labels:
+        durationType === "yearly"
+          ? [
+              "Jan 2024",
+              "Feb 2024",
+              "Mar 2024",
+              "Apr 2024",
+              "May 2024",
+              "Jun 2024",
+              "Jul 2024",
+              "Aug 2024",
+              "Sep 2024",
+              "Oct 2024",
+              "Nov 2024",
+              "Dec 2024",
+            ]
+          : ["Jun 2024", "July 2024"],
       datasets: [
         {
           label: "Market Price",
-          data: dailyData.map((point) => ({ x: point.date, y: point.price })),
+          data: dailyDateDuration.map((point) => ({
+            x: point.date,
+            y: point.price,
+          })),
           fill: true,
           backgroundColor: gradient,
           borderColor: "rgba(75, 192, 192, 1)",
@@ -144,7 +168,7 @@ const LineChart = (t) => {
           x: {
             type: "time",
             time: {
-              unit: "month",
+              unit: durationType === "yearly" ? "month" : "day",
               tooltipFormat: "yyyy-MM-dd",
             },
             title: {
@@ -184,11 +208,21 @@ const LineChart = (t) => {
     return () => {
       myChart.destroy();
     };
-  }, [marketPrice, type]);
+  }, [marketPrice, type, durationType, durationValue, thisMonth]);
 
   return (
     <div className="flex flex-col gap-8">
-      <p>{type === "cashflow" ? "Cash balance trend" : "Market Price trend"}</p>
+      <div className="flex gap-4 justify-between">
+        <p>
+          {type === "cashflow" ? "Cash balance trend" : "Market Price trend"}
+        </p>
+        <DurationSelecter
+          setDurationType={setDurationType}
+          setDurationValue={setDurationValue}
+          thisYear={thisYear}
+          thisMonth={thisMonth}
+        />
+      </div>
       <canvas ref={chartRef}> </canvas>
     </div>
   );

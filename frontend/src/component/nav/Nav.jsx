@@ -10,7 +10,7 @@ const Nav = (props) => {
   }, [pathname]);
 
   return (
-    <nav className="bg-orange-300 fixed h-screen w-52">
+    <nav className="bg-orange-300 fixed h-screen top-0 bottom-0 left-0 w-52">
       <h1 className="text-center text-4xl p-4">
         <Link to="/">CocoTrade</Link>
       </h1>

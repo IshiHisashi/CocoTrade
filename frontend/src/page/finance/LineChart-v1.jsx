@@ -1,7 +1,4 @@
-/* eslint-disable no-else-return */
-/* eslint-disable spaced-comment */
-
-import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import moment from "moment";
 import { Chart } from "chart.js";
@@ -11,7 +8,7 @@ import DurationSelecter from "../../component/field-filter/DurationSelecter.jsx"
 
 const LineChart = (t) => {
   const { type } = t;
-  const today = useMemo(() => new Date(), []);
+  const today = new Date();
   const thisYear = today.toLocaleDateString().split("/")[2];
   const thisMonth = today.toLocaleDateString().split("/")[0].padStart(2, "0");
   const userId = useContext(UserIdContext);
@@ -43,20 +40,28 @@ const LineChart = (t) => {
     }
   }, [type, userId]);
 
-  // LineChart drawing
   useEffect(() => {
-    // Visual setting
     const ctxx = chartRef.current.getContext("2d");
-    const gradient = ctxx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, "rgba(75, 192, 192, 0.5)");
+
+    const gradient = ctxx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, "rgba(75, 192, 192, 0.2)");
     gradient.addColorStop(1, "rgba(75, 192, 192, 0)");
 
-    // -----DATA processing ------
-    // 1. Convert the data to simple obj array
-    // 2. Set duration and convert data as per the span
-    // 3. Fill in data to the days where the data doesn't exists.
+    // Generate the last 12 months dynamically
+    const last12Months = Array.from({ length: 12 }, (_, i) =>
+      moment().subtract(i, "months").format("MMM YYYY")
+    ).reverse();
 
-    // 1. Data Simplification : Generate the daily data based on retrievedData
+    // Generate all days for the current month
+    const startOfMonth = moment().startOf("month");
+    const endOfMonth = moment().endOf("month");
+    const daysInMonth = [];
+
+    for (let day = startOfMonth; day <= endOfMonth; day.add(1, "day")) {
+      daysInMonth.push(day.format("YYYY-MM-DD"));
+    }
+
+    // Generate the daily data based on retrievedData
     const dailyData = retrievedData.map((price) => {
       const priceObj =
         type === "cashflow"
@@ -71,7 +76,7 @@ const LineChart = (t) => {
       return priceObj;
     });
 
-    // 2-1. Duration control : Tweak corrsponding duration (range of times)
+    // Tweak corrsponding duration (range of times)
     const durationAdjuster = (data) => {
       if (durationType === "yearly") {
         return moment(data.date).isAfter(moment().subtract(12, "months"));
@@ -85,73 +90,16 @@ const LineChart = (t) => {
       return true;
     };
 
-    // 2-2. Revise Array in accordance with the duration (yearly or monthly)
     const dailyDateDuration = dailyData
       .filter(durationAdjuster)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    // 3-1. Add data to blank days. This is to make consecutive chart : Get the latest balance before the start of the duration
-    const latestBalanceBeforeStart =
-      dailyData
-        .filter((data) =>
-          moment(data.date).isBefore(dailyDateDuration[0]?.date || today)
-        )
-        .sort((a, b) => new Date(b.date) - new Date(a.date))[0]?.price || null;
-
-    // 3-2. Generate all days for the current month or the last 12 months
-    let daysInDuration = [];
-    if (durationType === "monthly") {
-      // Monthly scenario
-      const startOfMonth = moment().startOf("month");
-      const endOfMonth = moment().endOf("month");
-      for (let day = startOfMonth; day <= endOfMonth; day.add(1, "day")) {
-        daysInDuration.push(day.format("YYYY-MM-DD"));
-      }
-      // Ensure each day in the current month has a corresponding data point
-      let lastPrice = latestBalanceBeforeStart;
-      daysInDuration = daysInDuration.map((day) => {
-        const dataPoint = dailyDateDuration.find((data) => data.date === day);
-        if (moment(day).isBefore(dailyDateDuration[0]?.date)) {
-          return { date: day, price: latestBalanceBeforeStart }; //inherit the initial value
-        } else if (moment(day).isAfter(today)) {
-          return { date: day, price: null }; // if the blank day is in the future, leave it null.
-        } else if (!dataPoint) {
-          return { date: day, price: lastPrice }; // If the transaction doesn't occur. just refer to the day before.
-        } else {
-          lastPrice = dataPoint.price;
-          return { date: day, price: dataPoint.price }; //If transaction occurs, the value of the day should change
-        }
-      });
-    } else if (durationType === "yearly") {
-      // Yearly scenario
-      const startOfDuration = moment().subtract(12, "months").startOf("month");
-      const endOfDuration = moment().endOf("month");
-      for (let day = startOfDuration; day <= endOfDuration; day.add(1, "day")) {
-        daysInDuration.push(day.format("YYYY-MM-DD"));
-      }
-      // Ensure each day in the last 12 months has a corresponding data point
-      let lastPrice = latestBalanceBeforeStart;
-      daysInDuration = daysInDuration.map((day) => {
-        const dataPoint = dailyDateDuration.find((data) => data.date === day);
-        if (moment(day).isBefore(dailyDateDuration[0]?.date)) {
-          return { date: day, price: latestBalanceBeforeStart };
-        } else if (moment(day).isAfter(today)) {
-          return { date: day, price: null };
-        } else if (!dataPoint) {
-          return { date: day, price: lastPrice };
-        } else {
-          lastPrice = dataPoint.price;
-          return { date: day, price: dataPoint.price };
-        }
-      });
-    }
-
     const data = {
-      labels: daysInDuration.map((dayOrMonth) => dayOrMonth.date),
+      labels: durationType === "yearly" ? last12Months : daysInMonth,
       datasets: [
         {
           label: "Market Price",
-          data: daysInDuration.map((point) => ({
+          data: dailyDateDuration.map((point) => ({
             x: point.date,
             y: point.price,
           })),
@@ -209,7 +157,7 @@ const LineChart = (t) => {
             intersect: false,
             callbacks: {
               label(context) {
-                const date = context.raw.x;
+                const date = context.label;
                 const price = context.raw.y;
                 return `Php ${price.toFixed(2)}`;
               },
@@ -226,7 +174,7 @@ const LineChart = (t) => {
             type: "time",
             time: {
               unit: durationType === "yearly" ? "month" : "day",
-              tooltipFormat: "YYYY-MM-DD",
+              tooltipFormat: "yyyy-MM-dd",
             },
             title: {
               display: false,
@@ -265,15 +213,7 @@ const LineChart = (t) => {
     return () => {
       myChart.destroy();
     };
-  }, [
-    retrievedData,
-    type,
-    durationType,
-    durationValue,
-    thisYear,
-    thisMonth,
-    today,
-  ]);
+  }, [retrievedData, type, durationType, durationValue, thisYear, thisMonth]);
 
   return (
     <div className="flex flex-col gap-8">

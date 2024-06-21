@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Text from '../../component/text/Text'; 
+import Field from '../../component/field-filter/Field'; 
 
 const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
     <div className="modal">
       <h2>Edit Sale</h2>
       <form onSubmit={handleSubmit}>
-        <Text
+        <Field
           label="Manufacturer Name"
           name="manufacturer_id"
           value={formData.manufacturer_id}
@@ -132,14 +132,14 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
           options={manufacturers.map(manufacturer => ({ value: manufacturer._id, label: manufacturer.full_name }))}
           required
         />
-        <Text
+        <Field
           label="Amount of Copra Sold"
           name="amount_of_copra_sold"
           type="number"
           value={formData.amount_of_copra_sold}
           onChange={handleChange}
         />
-        <Text
+        <Field
           label="Sales Unit Price"
           name="sales_unit_price"
           type="number"
@@ -147,7 +147,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
           onChange={handleChange}
           disabled
         />
-        <Text
+        <Field
           label="Status"
           name="status"
           type="dropdown"
@@ -160,21 +160,21 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
             { value: 'cancelled', label: 'Cancelled' }
           ]}
         />
-        <Text
+        <Field
           label="Copra Ship Date"
           name="copra_ship_date"
           type="date"
           value={formData.copra_ship_date}
           onChange={handleChange}
         />
-        <Text
+        <Field
           label="Cheque Receive Date"
           name="cheque_receive_date"
           type="date"
           value={formData.cheque_receive_date}
           onChange={handleChange}
         />
-        <Text
+        <Field
           label="Total Sales Price"
           name="total_sales_price"
           type="number"

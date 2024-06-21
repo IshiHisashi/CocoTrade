@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Text from '../../component/text/Text'; 
+import Field from '../../component/field-filter/Field'; 
 
 const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
   const navigate = useNavigate();
@@ -144,7 +144,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
     <div className="modal">
       <h2>{purchase ? 'Edit Purchase' : 'New Purchase'}</h2>
       <form onSubmit={handleSubmit}>
-        <Text
+        <Field
           label="Invoice No"
           name="invoice_number"
           value={formData.invoice_number}
@@ -152,7 +152,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           type="text"
           disabled
         />
-        <Text
+        <Field
           label="Date Purchased"
           name="purchase_date"
           type="date"
@@ -160,7 +160,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           onChange={handleChange}
           required
         />
-        <Text
+        <Field
           label="Farmer Name"
           name="farmer_id"
           type="dropdown"
@@ -170,7 +170,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           onChange={handleChange}
           required
         />
-        <Text
+        <Field
           label="Price per kilo (PHP)"
           name="sales_unit_price"
           type="number"
@@ -178,7 +178,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           onChange={handleChange}
           required
         />
-        <Text
+        <Field
           label="Copra bought (kg)"
           name="amount_of_copra_purchased"
           type="number"
@@ -186,7 +186,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           onChange={handleChange}
           required
         />
-        <Text
+        <Field
           label="Moisture Test Details"
           name="moisture_test_details"
           type="text"
@@ -194,7 +194,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           onChange={handleChange}
           required
         />
-        <Text
+        <Field
           label="Total Sale (PHP)"
           name="total_purchase_price"
           type="text"

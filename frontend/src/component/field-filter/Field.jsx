@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Text = ({ label, name, value, onChange, type = 'text', options, disabled = false, required = false }) => {
+const Field = ({ label, name, value, onChange, type = 'text', options, disabled = false, required = false }) => {
   let inputElement = null;
 
   switch (type) {
@@ -49,4 +49,4 @@ const Text = ({ label, name, value, onChange, type = 'text', options, disabled =
   );
 };
 
-export default Text;
+export default Field;

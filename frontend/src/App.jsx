@@ -53,6 +53,7 @@ const App = () => {
           </Layout>
         }
       />
+      <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
     </Routes>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Text from '../../component/text/Text'; 
 
 const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
   const navigate = useNavigate();
@@ -121,60 +122,71 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
     <div className="modal">
       <h2>Edit Sale</h2>
       <form onSubmit={handleSubmit}>
-      <div>
-          <label htmlFor="manufacturer_id">
-            Manufacturer Name:
-            <select id="manufacturer_id" name="manufacturer_id" value={formData.manufacturer_id} onChange={handleChange} required>
-              <option value="">Company name</option>
-              {manufacturers.map(manufacturer => (
-                                  // eslint-disable-next-line no-underscore-dangle 
-                <option key={manufacturer._id} value={manufacturer._id}>
-                  {manufacturer.full_name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="amount_of_copra_sold">Amount of Copra Sold:
-          <input type="number" name="amount_of_copra_sold" value={formData.amount_of_copra_sold} onChange={handleChange} />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="sales_unit_price">Sales Unit Price:
-          <input type="number" name="sales_unit_price" value={formData.sales_unit_price} onChange={handleChange} disabled/>
-          </label>
-          </div>
-        <div>
-          <label htmlFor="status">Status:
-          <select name="status" value={formData.status} onChange={handleChange}>
-            <option value="pending">Pending</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="copra_ship_date">Copra Ship Date:
-          <input type="date" name="copra_ship_date" value={formData.copra_ship_date} onChange={handleChange} />
-          </label>
-          </div>
-        <div>
-          <label htmlFor="cheque_receive_date">Cheque Receive Date:
-          <input type="date" name="cheque_receive_date" value={formData.cheque_receive_date} onChange={handleChange} />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="total_sales_price">Total Sales Price:
-          <input type="number" name="total_sales_price" value={formData.total_sales_price} disabled />
-          </label>
-          </div>
+        <Text
+          label="Manufacturer Name"
+          name="manufacturer_id"
+          value={formData.manufacturer_id}
+          onChange={handleChange}
+          type="dropdown"
+          // eslint-disable-next-line no-underscore-dangle 
+          options={manufacturers.map(manufacturer => ({ value: manufacturer._id, label: manufacturer.full_name }))}
+          required
+        />
+        <Text
+          label="Amount of Copra Sold"
+          name="amount_of_copra_sold"
+          type="number"
+          value={formData.amount_of_copra_sold}
+          onChange={handleChange}
+        />
+        <Text
+          label="Sales Unit Price"
+          name="sales_unit_price"
+          type="number"
+          value={formData.sales_unit_price}
+          onChange={handleChange}
+          disabled
+        />
+        <Text
+          label="Status"
+          name="status"
+          type="dropdown"
+          value={formData.status}
+          onChange={handleChange}
+          options={[
+            { value: 'pending', label: 'Pending' },
+            { value: 'ongoing', label: 'Ongoing' },
+            { value: 'completed', label: 'Completed' },
+            { value: 'cancelled', label: 'Cancelled' }
+          ]}
+        />
+        <Text
+          label="Copra Ship Date"
+          name="copra_ship_date"
+          type="date"
+          value={formData.copra_ship_date}
+          onChange={handleChange}
+        />
+        <Text
+          label="Cheque Receive Date"
+          name="cheque_receive_date"
+          type="date"
+          value={formData.cheque_receive_date}
+          onChange={handleChange}
+        />
+        <Text
+          label="Total Sales Price"
+          name="total_sales_price"
+          type="number"
+          value={formData.total_sales_price}
+          disabled
+        />
         <button type="button" onClick={() => {setShowAddForm(false); window.location.reload();}}>Clear</button>
         <button type="submit">Save</button>
       </form>
     </div>
   );
 };
+
 
 export default EditSaleModal;

@@ -15,7 +15,7 @@ const Inventory = () => {
       <h1>Inventory</h1>
       <button type="button" onClick={() => {
         setShowModal(true);
-        className="bg-teal-900 text-white"
+        // className="bg-teal-900 text-white"
       }}>
         Plan Shipment
       </button>

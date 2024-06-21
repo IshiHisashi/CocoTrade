@@ -15,6 +15,7 @@ const Inventory = () => {
       <h1>Inventory</h1>
       <button type="button" onClick={() => {
         setShowModal(true);
+        className="bg-teal-900 text-white"
       }}>
         Plan Shipment
       </button>
@@ -25,7 +26,7 @@ const Inventory = () => {
         }}
         contentLabel="Plan Your Shipment"
       >
-        <PlanShipment userId={ userId } setShowModal={setShowModal} />
+        <PlanShipment userId={ userId } setShowModal={setShowModal}/>
       </Modal>
       <BarChart userId={ userId } />
       <LineChart userId={ userId } />

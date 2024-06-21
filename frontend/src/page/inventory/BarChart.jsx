@@ -87,10 +87,7 @@ const BarChart = ({ userId }) => {
 
   return (
     <div>
-      <h2>{ userId } inventory is like this now yay!</h2>
-      <div>
-        <Bar data={ data } options={ options }/>
-      </div>
+      <Bar data={ data } options={ options }/>
       
     </div>
   )

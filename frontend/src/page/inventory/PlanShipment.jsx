@@ -8,11 +8,11 @@ const PlanShipment = ({ userId, setShowModal }) => {
   const [formData, setFormData] = useState({
     manufacturer_id: '',
     amount_of_copra_sold: '',
-    sales_unit_price: '',
-    status: '', 
+    sales_unit_price: 0,
+    status: 'pending', 
     copra_ship_date: '',
     cheque_receive_date: '',
-    total_sales_price: '',
+    total_sales_price: 0,
     user_id: userId
   });
 
@@ -51,6 +51,7 @@ const PlanShipment = ({ userId, setShowModal }) => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
+      console.log(formData);
       const response = await axios.post('http://localhost:5555/sale', formData);
       console.log('Shipment/sale created:', response.data);
       // eslint-disable-next-line no-underscore-dangle 

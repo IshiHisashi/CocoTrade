@@ -21,6 +21,14 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        required: {
+          some: ["nesting", "id"],
+        },
+      },
+    ],
   },
   overrides: [
     {

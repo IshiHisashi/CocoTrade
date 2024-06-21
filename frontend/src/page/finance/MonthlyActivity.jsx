@@ -123,14 +123,6 @@ const MonthlyActivity = () => {
               size: 18,
             },
           },
-          //   datalabels: {
-          //     display: true,
-          //     align: "end",
-          //     anchor: "end",
-          //     formatter: (value) => {
-          //       return `${value / 1000}k`; // Format the value
-          //     },
-          //   },
         },
       },
     });

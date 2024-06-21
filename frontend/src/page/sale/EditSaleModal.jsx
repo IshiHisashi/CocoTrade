@@ -136,34 +136,40 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
           </label>
         </div>
         <div>
-          <label htmlFor="amount_of_copra_sold">Amount of Copra Sold:</label>
+          <label htmlFor="amount_of_copra_sold">Amount of Copra Sold:
           <input type="number" name="amount_of_copra_sold" value={formData.amount_of_copra_sold} onChange={handleChange} />
+          </label>
         </div>
         <div>
-          <label htmlFor="sales_unit_price">Sales Unit Price:</label>
+          <label htmlFor="sales_unit_price">Sales Unit Price:
           <input type="number" name="sales_unit_price" value={formData.sales_unit_price} onChange={handleChange} disabled/>
-        </div>
+          </label>
+          </div>
         <div>
-          <label htmlFor="status">Status:</label>
+          <label htmlFor="status">Status:
           <select name="status" value={formData.status} onChange={handleChange}>
             <option value="pending">Pending</option>
             <option value="ongoing">Ongoing</option>
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
           </select>
+          </label>
         </div>
         <div>
-          <label htmlFor="copra_ship_date">Copra Ship Date:</label>
+          <label htmlFor="copra_ship_date">Copra Ship Date:
           <input type="date" name="copra_ship_date" value={formData.copra_ship_date} onChange={handleChange} />
-        </div>
+          </label>
+          </div>
         <div>
-          <label htmlFor="cheque_receive_date">Cheque Receive Date:</label>
+          <label htmlFor="cheque_receive_date">Cheque Receive Date:
           <input type="date" name="cheque_receive_date" value={formData.cheque_receive_date} onChange={handleChange} />
+          </label>
         </div>
         <div>
-          <label htmlFor="total_sales_price">Total Sales Price:</label>
+          <label htmlFor="total_sales_price">Total Sales Price:
           <input type="number" name="total_sales_price" value={formData.total_sales_price} disabled />
-        </div>
+          </label>
+          </div>
         <button type="button" onClick={() => {setShowAddForm(false); window.location.reload();}}>Clear</button>
         <button type="submit">Save</button>
       </form>

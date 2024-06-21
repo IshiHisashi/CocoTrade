@@ -93,14 +93,6 @@ const getData = async (userId) => {
   };
 };
 
-// convert month number to month name
-const convertMonthToName = (date1, date2) => {
-  return [
-    date1.toLocaleString("default", { month: "long" }),
-    date2.toLocaleString("default", { month: "long" }),
-  ];
-};
-
 const Dashboard = () => {
   const userId = useContext(UserIdContext);
   const [data, setData] = useState(null);
@@ -123,7 +115,7 @@ const Dashboard = () => {
       </section>
 
       <section>
-        <h2>Cashflow this month vs last month</h2>
+        <h2>Activity this month vs last month</h2>
         {!data ? (
           <p>loading...</p>
         ) : (

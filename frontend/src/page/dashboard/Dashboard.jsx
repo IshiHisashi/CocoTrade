@@ -4,6 +4,7 @@ import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
 import PriceIndicatorCard from "../../component/card/PriceIndicatorCard.jsx";
 import UserIdContext from "./UserIdContext.jsx";
+import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -114,56 +115,63 @@ const Dashboard = () => {
         <PriceIndicatorCard type="suggestion" />
       </section>
 
-      <section>
-        <h2>Activity this month vs last month</h2>
-        {!data ? (
-          <p>loading...</p>
-        ) : (
-          <Bar
-            data={{
-              labels: [data.secondLatestMonthName, data.latestMonthName],
-              datasets: [
-                {
-                  label: "Purchase",
-                  data: [
-                    data.purchase.secondLatest
-                      ? data.purchase.secondLatest.monthlyPurchase
-                          .$numberDecimal
-                      : 0,
-                    data.purchase.latest
-                      ? data.purchase.latest.monthlyPurchase.$numberDecimal
-                      : 0,
-                  ],
-                  hoverBackgroundColor: "blue",
-                  barPercentage: 1,
+      <div className="grid grid-cols-3">
+        <section className="col-span-2 border-2 p-4">
+          <h2>Activity this month vs last month</h2>
+          {!data ? (
+            <p>loading...</p>
+          ) : (
+            <Bar
+              data={{
+                labels: [data.secondLatestMonthName, data.latestMonthName],
+                datasets: [
+                  {
+                    label: "Purchase",
+                    data: [
+                      data.purchase.secondLatest
+                        ? data.purchase.secondLatest.monthlyPurchase
+                            .$numberDecimal
+                        : 0,
+                      data.purchase.latest
+                        ? data.purchase.latest.monthlyPurchase.$numberDecimal
+                        : 0,
+                    ],
+                    hoverBackgroundColor: "blue",
+                    barPercentage: 1,
+                  },
+                  {
+                    label: "Sales",
+                    data: [
+                      data.sales.secondLatest
+                        ? data.sales.secondLatest.monthlySales.$numberDecimal
+                        : 0,
+                      data.sales.latest
+                        ? data.sales.latest.monthlySales.$numberDecimal
+                        : 0,
+                    ],
+                    hoverBackgroundColor: "red",
+                    barPercentage: 1,
+                  },
+                ],
+              }}
+              options={{
+                indexAxis: "y",
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                  },
                 },
-                {
-                  label: "Sales",
-                  data: [
-                    data.sales.secondLatest
-                      ? data.sales.secondLatest.monthlySales.$numberDecimal
-                      : 0,
-                    data.sales.latest
-                      ? data.sales.latest.monthlySales.$numberDecimal
-                      : 0,
-                  ],
-                  hoverBackgroundColor: "red",
-                  barPercentage: 1,
-                },
-              ],
-            }}
-            options={{
-              indexAxis: "y",
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: "bottom",
-                },
-              },
-            }}
-          />
-        )}
-      </section>
+              }}
+            />
+          )}
+        </section>
+
+        <section>
+          <RecentActivityCard type="purchase" />
+          <RecentActivityCard type="sales" />
+        </section>
+      </div>
     </UserIdContext.Provider>
   );
 };

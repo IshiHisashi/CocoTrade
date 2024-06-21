@@ -6,6 +6,7 @@ import Finance from "./page/finance/Finance.jsx";
 import Dashboard from "./page/dashboard/Dashboard.jsx";
 import Purchase from "./page/purchase/purchase.jsx";
 import Sale from "./page/sale/sale.jsx";
+import ViewSalesTable from "./page/sale/ViewSalesTable.jsx";
 import Layout from "./Layout.jsx";
 
 const App = () => {

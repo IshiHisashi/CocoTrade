@@ -1,5 +1,5 @@
 import { UserModel } from "../model/userModel.js";
-import { Inventory } from "../model/inventoryModel.js";
+import { Sale } from "../model/saleModel.js";
 
 // Create a user
 export const createUser = async (req, res) => {
@@ -273,8 +273,6 @@ export const getNotificationsByDuration = async (req, res) => {
   try {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    console.log(startDate);
-    console.log(endDate);
     const user = await UserModel.findById(req.params.userid)
         .populate('notification_array');
 
@@ -286,9 +284,7 @@ export const getNotificationsByDuration = async (req, res) => {
     }
     const data = user.notification_array;
     const dataBasedOnDuration = await data.filter(item => {
-      console.log(item.time_stamp);
       const itemDate = new Date(item.time_stamp);
-      console.log(itemDate);
       return itemDate >= startDate && itemDate <= endDate;
     })
     console.log("Notifications retrieved");
@@ -304,3 +300,36 @@ export const getNotificationsByDuration = async (req, res) => {
     });
   }
 }
+
+export const getTopFiveSales = async (req, res) => {
+
+  try {
+      // GET sales INFO
+      const user = await Sale.find({ user_id: req.params.userid })
+        .populate({
+          path: 'manufacturer_id',
+          model: 'Manufacturer'
+        })
+        .sort({'copra_ship_date': -1})
+        .limit(7);
+
+      if (!user) {
+          return res.status(404).json({ 
+              status: "failed",
+              error: 'User not found' 
+          });
+      }
+      const data = user;
+      console.log("Sales retrieved");
+      res.status(200).json({
+          status: "Success",
+          data: data
+        });
+  }
+  catch (err) {
+      res.status(500).json({
+          status: "failed",
+          error: err.message
+      });
+  }
+};

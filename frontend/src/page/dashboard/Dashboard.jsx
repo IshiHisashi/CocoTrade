@@ -7,50 +7,108 @@ import UserIdContext from "./UserIdContext.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const getData = async (userId, targetLog) => {
-  // 66654dc4c6e950671e988962
-  const res = await axios.get(
-    `http://localhost:5555/tmpFinRoute/${userId}/${targetLog}/monthly-aggregate`
-  );
+// get the latest month among the purchase and sales logs.
+const getLatestDate = (
+  purchaseYear,
+  purchaseMonthNum,
+  salesYear,
+  salesMonthNum
+) => {
+  const purchaseDate = new Date(purchaseYear, purchaseMonthNum - 1, 1);
+  const salesDate = new Date(salesYear, salesMonthNum - 1, 1);
 
-  if (
-    (targetLog === "purchase" &&
-      res.data.data.purchaseAggregation.length === 0) ||
-    (targetLog === "sales" && res.data.data.salesAggregation.length === 0)
-  ) {
-    return null;
+  if (purchaseDate > salesDate) {
+    return [new Date(purchaseDate - 1), purchaseDate];
   }
-
-  const dataArrayRes =
-    targetLog === "purchase"
-      ? res.data.data.purchaseAggregation
-      : res.data.data.salesAggregation;
-  const dataArray = dataArrayRes.slice(-2);
-  return dataArray;
+  return [new Date(salesDate - 1), salesDate];
 };
 
-const getMonthName = (year, monthNum) => {
-  const date = new Date(year, monthNum - 1, 1);
-  const month = date.toLocaleString("default", { month: "long" });
-  return month;
+const getData = async (userId) => {
+  // 66654dc4c6e950671e988962
+
+  const [purchaseRes, salesRes] = await Promise.all([
+    axios.get(
+      `http://localhost:5555/tmpFinRoute/${userId}/purchase/monthly-aggregate`
+    ),
+    axios.get(
+      `http://localhost:5555/tmpFinRoute/${userId}/sale/monthly-aggregate`
+    ),
+  ]);
+
+  const purchaseResArray = purchaseRes.data.data.purchaseAggregation;
+  const salesResArray = salesRes.data.data.salesAggregation;
+
+  const [secondLatestDate, latestDate] = getLatestDate(
+    // eslint-disable-next-line no-underscore-dangle
+    purchaseResArray[purchaseResArray.length - 1]._id.year,
+    // eslint-disable-next-line no-underscore-dangle
+    purchaseResArray[purchaseResArray.length - 1]._id.month,
+    // eslint-disable-next-line no-underscore-dangle
+    salesResArray[salesResArray.length - 1]._id.year,
+    // eslint-disable-next-line no-underscore-dangle
+    salesResArray[salesResArray.length - 1]._id.month
+  );
+
+  const latestMonthNum = latestDate.getMonth() + 1;
+  const latestYearNum = latestDate.getFullYear();
+  const secondLatestMonthNum = secondLatestDate.getMonth() + 1;
+  const secondLatestYearNum = secondLatestDate.getFullYear();
+
+  const latestPurchaseObj = purchaseResArray.find(
+    // eslint-disable-next-line no-underscore-dangle
+    (obj) => obj._id.year === latestYearNum && obj._id.month === latestMonthNum
+  );
+  const secondLatestPurchaseObj = purchaseResArray.find(
+    (obj) =>
+      // eslint-disable-next-line no-underscore-dangle
+      obj._id.year === secondLatestYearNum &&
+      // eslint-disable-next-line no-underscore-dangle
+      obj._id.month === secondLatestMonthNum
+  );
+  const latestSalesObj = salesResArray.find(
+    // eslint-disable-next-line no-underscore-dangle
+    (obj) => obj._id.year === latestYearNum && obj._id.month === latestMonthNum
+  );
+  const secondLatestSalesObj = salesResArray.find(
+    (obj) =>
+      // eslint-disable-next-line no-underscore-dangle
+      obj._id.year === secondLatestYearNum &&
+      // eslint-disable-next-line no-underscore-dangle
+      obj._id.month === secondLatestMonthNum
+  );
+
+  return {
+    latestMonthName: latestDate.toLocaleString("default", { month: "long" }),
+    secondLatestMonthName: secondLatestDate.toLocaleString("default", {
+      month: "long",
+    }),
+    purchase: {
+      latest: latestPurchaseObj,
+      secondLatest: secondLatestPurchaseObj,
+    },
+    sales: {
+      latest: latestSalesObj,
+      secondLatest: secondLatestSalesObj,
+    },
+  };
+};
+
+// convert month number to month name
+const convertMonthToName = (date1, date2) => {
+  return [
+    date1.toLocaleString("default", { month: "long" }),
+    date2.toLocaleString("default", { month: "long" }),
+  ];
 };
 
 const Dashboard = () => {
   const userId = useContext(UserIdContext);
-  const [purchase, setPurchase] = useState(null);
-  const [sales, setSales] = useState(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const [dataArrayP, dataArrayS] = await Promise.all([
-        // user doc and purchase/sales log doc utilize different user so hard code for now.
-        getData("66654dc4c6e950671e988962", "purchase"),
-        // getData(userId, "purchase"),
-        getData("66654dc4c6e950671e988962", "sale"),
-        // getData(userId, "sale"),
-      ]);
-      setPurchase(dataArrayP);
-      setSales(dataArrayS);
+      const dataObj = await getData(userId);
+      setData(dataObj);
     })();
   }, [userId]);
 
@@ -66,23 +124,23 @@ const Dashboard = () => {
 
       <section>
         <h2>Cashflow this month vs last month</h2>
-        {!purchase || !sales ? (
+        {!data ? (
           <p>loading...</p>
         ) : (
           <Bar
             data={{
-              labels: [
-                // eslint-disable-next-line no-underscore-dangle
-                getMonthName(purchase[0]._id.year, purchase[0]._id.month),
-                // eslint-disable-next-line no-underscore-dangle
-                getMonthName(purchase[1]._id.year, purchase[1]._id.month),
-              ],
+              labels: [data.secondLatestMonthName, data.latestMonthName],
               datasets: [
                 {
                   label: "Purchase",
                   data: [
-                    purchase[0].monthlyPurchase.$numberDecimal,
-                    purchase[1].monthlyPurchase.$numberDecimal,
+                    data.purchase.secondLatest
+                      ? data.purchase.secondLatest.monthlyPurchase
+                          .$numberDecimal
+                      : 0,
+                    data.purchase.latest
+                      ? data.purchase.latest.monthlyPurchase.$numberDecimal
+                      : 0,
                   ],
                   hoverBackgroundColor: "blue",
                   barPercentage: 1,
@@ -90,8 +148,12 @@ const Dashboard = () => {
                 {
                   label: "Sales",
                   data: [
-                    sales[0].monthlySales.$numberDecimal,
-                    sales[1].monthlySales.$numberDecimal,
+                    data.sales.secondLatest
+                      ? data.sales.secondLatest.monthlySales.$numberDecimal
+                      : 0,
+                    data.sales.latest
+                      ? data.sales.latest.monthlySales.$numberDecimal
+                      : 0,
                   ],
                   hoverBackgroundColor: "red",
                   barPercentage: 1,

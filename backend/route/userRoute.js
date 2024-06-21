@@ -17,4 +17,6 @@ router.get("/:userid/maxcap", userController.getMaximumCap);
 router.get("/:userid/manu", userController.getAllManufacturers);
 router.get("/:userid/ntf", userController.getAllNotifications);
 router.get("/:userid/ntfd", userController.getNotificationsByDuration);
+router.get("/:userid/fivesales", userController.getTopFiveSales);
+
 export default router;

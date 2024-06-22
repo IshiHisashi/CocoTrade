@@ -123,6 +123,14 @@ const LineChart = ({ userId }) => {
 
   return (
     <div>
+      <form>
+        {/* <div>
+          <label htmlFor="copra_ship_date">
+            Date Purchased:
+            <input type="date" id="copra_ship_date" name="copra_ship_date" value={formData.copra_ship_date} onChange={handleChange} required />
+          </label>
+        </div> */}
+      </form>
       <p>Start Date: { startDate }</p>
       <p>End Date: { endDate }</p>
       <Line data={ data } options={ options } />

@@ -6,16 +6,16 @@ const { Schema } = mongoose;
 const currentBalanceSchema = new Schema({
   user_id: {
     type: Schema.Types.ObjectId,
-    // ref:
+    ref: "User",
   },
   purchases_array: {
     type: Array,
-    // ref:
+    ref: "Purchase",
   },
   purchases_sum: mongoose.Types.Decimal128,
   sales_array: {
     type: Array,
-    // ref:
+    ref: "Sale",
   },
   sales_sum: mongoose.Types.Decimal128,
   current_balance: mongoose.Types.Decimal128,

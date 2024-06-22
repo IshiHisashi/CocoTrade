@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Field from '../../component/field-filter/Field'; 
 
 const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
   const navigate = useNavigate();
@@ -140,75 +141,69 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
   };
 
   return (
-    <div>
+    <div className="modal">
       <h2>{purchase ? 'Edit Purchase' : 'New Purchase'}</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="invoice_number">
-            Invoice No:
-            <span>{formData.invoice_number}</span>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="purchase_date">
-            Date Purchased:
-            <input type="date" id="purchase_date" name="purchase_date" value={formData.purchase_date} onChange={handleChange} required />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="farmer_id">
-            Farmer Name:
-            <select id="farmer_id" name="farmer_id" value={formData.farmer_id} onChange={handleChange} required>
-              <option value="">First name / Last name</option>
-              {farmers.map(farmer => (
-                                  // eslint-disable-next-line no-underscore-dangle 
-                <option key={farmer._id} value={farmer._id}>
-                  {farmer.full_name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="sales_unit_price">
-            Price per kilo:
-            <span>PHP</span>
-            <input type="text" id="sales_unit_price" name="sales_unit_price" placeholder="32.00 per kg" value={formData.sales_unit_price} onChange={handleChange} required />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="amount_of_copra_purchased">
-            Copra bought:
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <input
-                type="text"
-                id="amount_of_copra_purchased"
-                name="amount_of_copra_purchased"
-                value={formData.amount_of_copra_purchased}
-                onChange={handleChange}
-                required
-                style={{ marginRight: '5px' }}
-              />
-              <span>kg</span>
-            </div>
-          </label>
-        </div>
-        <div>
-          <label htmlFor="moisture_test_details">
-            Moisture Test Details:
-            <input type="text" id="moisture_test_details" name="moisture_test_details" value={formData.moisture_test_details} onChange={handleChange} required />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="total_purchase_price">
-            Total Sale:
-            <input type="text" id="total_purchase_price" name="total_purchase_price" value={`PHP ${formData.total_purchase_price}`} readOnly />
-          </label>
-        </div>
-        <div>
-          <button type="button" onClick={() => {setShowAddForm(false); window.location.reload();}}>Clear</button>
-          <button type="submit">Save</button>
-        </div>
+        <Field
+          label="Invoice No"
+          name="invoice_number"
+          value={formData.invoice_number}
+          onChange={handleChange}
+          type="text"
+          disabled
+        />
+        <Field
+          label="Date Purchased"
+          name="purchase_date"
+          type="date"
+          value={formData.purchase_date}
+          onChange={handleChange}
+          required
+        />
+        <Field
+          label="Farmer Name"
+          name="farmer_id"
+          type="dropdown"
+          value={formData.farmer_id}
+          // eslint-disable-next-line no-underscore-dangle 
+          options={farmers.map(farmer => ({ value: farmer._id, label: farmer.full_name }))}
+          onChange={handleChange}
+          required
+        />
+        <Field
+          label="Price per kilo (PHP)"
+          name="sales_unit_price"
+          type="number"
+          value={formData.sales_unit_price}
+          onChange={handleChange}
+          required
+        />
+        <Field
+          label="Copra bought (kg)"
+          name="amount_of_copra_purchased"
+          type="number"
+          value={formData.amount_of_copra_purchased}
+          onChange={handleChange}
+          required
+        />
+        <Field
+          label="Moisture Test Details"
+          name="moisture_test_details"
+          type="text"
+          value={formData.moisture_test_details}
+          onChange={handleChange}
+          required
+        />
+        <Field
+          label="Total Sale (PHP)"
+          name="total_purchase_price"
+          type="text"
+          value={formData.total_purchase_price}
+          onChange={handleChange}
+          disabled
+        />
+        <button type="button" onClick={() => setShowAddForm(false)}>Clear</button>
+        <button type="submit">Save</button>
       </form>
     </div>
   );

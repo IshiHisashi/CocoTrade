@@ -62,7 +62,7 @@ const PriceIndicatorCard = (props) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 border-2 p-4">
       <h3 className="text-base">
         {type === "market" ? "PALM OIL PRICE" : "SUGGESTED PURCHASE PRICE"}
       </h3>
@@ -74,7 +74,7 @@ const PriceIndicatorCard = (props) => {
               {diffObj.arrow} Php {diffObj.priceDiff}
             </p>
             <p className="text-gray-500">
-              {diffObj.arrow} {diffObj.percentageDiff}% compared to yesterday
+              {diffObj.arrow} {diffObj.percentageDiff}% today
             </p>
           </div>
         </>

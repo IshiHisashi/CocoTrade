@@ -16,8 +16,16 @@ export const createSale = async (req, res) => {
 
 export const getAllSales = async (req, res) => {
   try {
-    const sales = await Sale.find().populate('manufacturer_id');
-    console.log("Sales retrieved");
+    const user = await UserModel.findById(req.params.userid);
+    const sales = await Sale.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: user.sales_array,
+          },
+        },
+      },
+    ]);
     res.status(200).json(sales);
   } catch (err) {
     res.status(500).json({
@@ -87,18 +95,33 @@ export const aggregateMonthlySales = async (req, res) => {
   try {
     const user = await UserModel.findById(req.params.userid);
     const salesAggregation = await Sale.aggregate([
-      { $match: { _id: { $in: user.sales_array } } },
       {
-        $group: {
+        $match: {
           _id: {
-            year: { $year: "$copra_ship_date" },
-            month: { $month: "$copra_ship_date" },
+            $in: user.sales_array,
           },
-          monthlySales: { $sum: "$total_sales_price" },
         },
       },
       {
-        $sort: { "_id.year": 1, "_id.month": 1 },
+        $group: {
+          _id: {
+            year: {
+              $year: "$copra_ship_date",
+            },
+            month: {
+              $month: "$copra_ship_date",
+            },
+          },
+          monthlySales: {
+            $sum: "$total_sales_price",
+          },
+        },
+      },
+      {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
       },
     ]);
     res.status(200).json({
@@ -112,6 +135,80 @@ export const aggregateMonthlySales = async (req, res) => {
     res.status(400).json({
       status: "fail",
       message: "failed",
+    });
+  }
+};
+
+// function to get dates for last week
+const getLastWeekDates = () => {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+
+  // Set lastSunday
+  const lastSunday = new Date();
+  lastSunday.setDate(today.getDate() - dayOfWeek);
+
+  // Set lastMonday
+  const lastMonday = new Date(lastSunday);
+  lastMonday.setDate(lastSunday.getDate() - 6);
+  return {
+    lastMonday,
+    lastSunday,
+  };
+};
+
+// This is to retrieve weekly total sales completed by a user
+export const getWeeklyCompletedSalesSumByUserSalesArray = async (req, res) => {
+  const userId = req.params.userid;
+  const { lastMonday, lastSunday } = getLastWeekDates();
+
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found",
+      });
+    }
+
+    const salesSum = await Sale.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: user.sales_array,
+          },
+          status: "completed",
+          cheque_receive_date: {
+            $gte: lastMonday,
+            $lte: lastSunday,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$total_sales_price",
+          },
+        },
+      },
+    ]);
+
+    if (salesSum.length === 0 || !salesSum[0].total) {
+      return res.status(404).json({
+        status: "fail",
+        message: "No completed sales found for this user in the last week",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        totalSales: salesSum[0].total,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
     });
   }
 };

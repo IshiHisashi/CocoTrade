@@ -48,18 +48,17 @@ export const getInventoryById = async (req, res) => {
 
 export const updateInventory = async (req, res) => {
     try {
-        const userId = req.params.id;
+        const invId = req.params.id;
         const updateData = req.body;
 
-        const updatedInventory = Inventory.findByIdAndUpdate(
-            userId,
+        const updatedInventory = await Inventory.findByIdAndUpdate(
+            invId,
             updateData,
-            { new: true, runValidators: true }
         );
         if (!updatedInventory) {
             return res.status(404).json({ 
                 status: "failed",
-                error: "User noot found" 
+                error: "User not found" 
             });
         }
         res.status(200).json({
@@ -95,33 +94,3 @@ export const deleteInventorById = async (req, res) => {
     }
 }
 
-//　PLS IGNORE THIS!!! NOT SURE IF WE NEED THIS TYPE OF FUNCTION
-// export const getAllInventoriesByDuration = async (req, res) => {
-//     const { startDate, endDate} = req.query;
-//     console.log(startDate);
-//     console.log(endDate);
-
-//     if (!startDate || !endDate) {
-//         return res.status(400).json({ error: "Pls provide a valid date" });
-//     }
-
-//     try {
-//         const selectedInventories = await Inventory.find({
-//             time_stamp: {
-//                 $gte: new Date(startDate),
-//                 $lte: new Date(endDate)
-//             },
-//             user_id: userId
-//         });
-//         console.log("Inventories retrieved");
-//         res.status(200).json({
-    // status: "Success",
-    // data: selectedInventories });
-//     }
-//     catch (err) {
-//         res.status(500).json({
-//     status: "failed",
-//     error: err.message
-// });
-//     }
-// };

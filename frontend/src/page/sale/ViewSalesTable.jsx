@@ -4,14 +4,19 @@ import EditSaleModal from './EditSaleModal';
 
 const ViewSalesTable = ({ setShowAddForm, handleEdit })  => {
   const [sales, setSales] = useState([]);
+  const [filteredSales, setFilteredSales] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
   const fetchSales = () => {
-    axios.get('http://localhost:5555/sale')
+    const saleId = "66622c07858df5960bf57a06";
+    const url = `http://localhost:5555/tmpFinRoute/${saleId}/sale`;
+    axios.get(url)
       .then(response => {
         setSales(response.data);
+        setFilteredSales(response.data);
       })
       .catch(error => {
         console.error('Error fetching sales:', error);
@@ -28,6 +33,12 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit })  => {
     }
     return parseFloat(decimal128.$numberDecimal).toFixed(2);
   };
+
+  useEffect(() => {
+    const filtered = sales.filter(sale => statusFilter === 'all' || sale.status === statusFilter);
+    setFilteredSales(filtered);
+    setCurrentPage(1);  // Reset to first page on filter change
+  }, [statusFilter, sales]);
 
   const handleDeleteClick = async (saleId) => {
     try {
@@ -46,8 +57,8 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit })  => {
   // Pagination logic
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = sales.slice(indexOfFirstRecord, indexOfLastRecord);
-  const totalPages = Math.ceil(sales.length / recordsPerPage);
+  const currentRecords = filteredSales.slice(indexOfFirstRecord, indexOfLastRecord);
+  const totalPages = Math.ceil(filteredSales.length / recordsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -63,6 +74,16 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit })  => {
 
   return (
     <div>
+      <div>
+        <label>Status Filter: 
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="ongoing">Ongoing</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select></label>
+      </div>
       <table>
       <thead>
       <tr>

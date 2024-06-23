@@ -13,8 +13,9 @@ const Sale = () => {
   const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
-    // Fetch sales data from the backend
-    axios.get('http://localhost:5555/sale')
+    const saleId = "66622c07858df5960bf57a06";
+    const url = `http://localhost:5555/tmpFinRoute/${saleId}/sale`;
+    axios.get(url)
       .then(response => {
         setSales(response.data);
       })

@@ -11,8 +11,8 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit })  => {
   const recordsPerPage = 10;
 
   const fetchSales = () => {
-    const saleId = "66622c07858df5960bf57a06";
-    const url = `http://localhost:5555/tmpFinRoute/${saleId}/sale`;
+    const userId = "66622c07858df5960bf57a06";
+    const url = `http://localhost:5555/tmpFinRoute/${userId}/sale`;
     axios.get(url)
       .then(response => {
         setSales(response.data);

@@ -12,18 +12,6 @@ const Sale = () => {
   const [selectedSale, setSelectedSale] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  useEffect(() => {
-    const saleId = "66622c07858df5960bf57a06";
-    const url = `http://localhost:5555/tmpFinRoute/${saleId}/sale`;
-    axios.get(url)
-      .then(response => {
-        setSales(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching sales:', error);
-      });
-  }, []);
-
   const handleEdit = (sale) => {
     setSelectedSale(sale);
   };

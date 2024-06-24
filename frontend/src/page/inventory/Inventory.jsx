@@ -6,6 +6,7 @@ import SalesTable from "./SalesTable";
 import PlanShipment from "./PlanShipment";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Pagination from "../../component/btn/Pagination";
+import TabBtn from "../../component/btn/TabBtn";
 
 Modal.setAppElement('#root');
 
@@ -19,6 +20,7 @@ const Inventory = () => {
     <div>
       <h1>Inventory</h1>
       <Pagination />
+      <TabBtn type="button" innerTxt="3M" />
       <CtaBtn 
         size="M"
         level="S"

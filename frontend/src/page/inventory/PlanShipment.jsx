@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
+import CtaBtn from '../../component/btn/CtaBtn';
 
 const PlanShipment = ({ userId, setShowModal }) => {
 
@@ -65,6 +66,8 @@ const PlanShipment = ({ userId, setShowModal }) => {
     }
   }
 
+  const fncCloseModal = () => {setShowModal(false);}
+
   return (
     <div>
       <h2>Plan Your Shipment</h2>
@@ -107,8 +110,18 @@ const PlanShipment = ({ userId, setShowModal }) => {
           </label>
         </div>
         <div>
-          <button type="button" onClick={() => {setShowModal(false);}}>Clear</button>
-          <button type="submit">Save</button>
+          <CtaBtn 
+              size="S"
+              level="O"
+              innerTxt="Cancel"
+              onClickFnc={fncCloseModal}
+          />
+          <CtaBtn 
+              size="S"
+              level="P"
+              type="submit"
+              innerTxt="Save"
+          />
         </div>
       </form>
     </div>

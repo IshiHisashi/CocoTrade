@@ -10,13 +10,12 @@ const MonthlyTable = () => {
   const userId = useContext(UserIdContext);
   // Would be transferred
   useEffect(() => {
-    // axios
-    //   .get(`http://localhost:5555/tmpFinRoute/${userId}/sale`)
-    //   .then((res) => {
-    //     console.log(res);
-    //     dailyTransactionSale(res.data.data.salesAggregation);
-    //   })
-    //   .catch();
+    axios
+      .get(`http://localhost:5555/tmpFinRoute/${userId}/sale`)
+      .then((res) => {
+        setDailyTransactionSale(res.data);
+      })
+      .catch();
     // Read purchas
     axios
       .get(`http://localhost:5555/tmpFinRoute/${userId}/purchase`)
@@ -36,8 +35,15 @@ const MonthlyTable = () => {
           acc[current.purchase_date] =
             +current.total_purchase_price.$numberDecimal;
         }
-      } else {
-        // will wite in case of sales
+      }
+      if (type === "sale") {
+        if (acc[current.copra_ship_date]) {
+          acc[current.copra_ship_date] +=
+            +current.total_sales_price.$numberDecimal;
+        } else {
+          acc[current.copra_ship_date] =
+            +current.total_sales_price.$numberDecimal;
+        }
       }
       return acc;
     }, {});
@@ -49,6 +55,22 @@ const MonthlyTable = () => {
       dailyTransactionPurchase,
       "purchase"
     );
+    const consolidatedSale = consolidateByDate(dailyTransactionSale, "sale");
+    // label sales and purchase
+    const labeledPurchase = Object.entries(consolidatedPurchase).map(
+      ([date, purchase]) => ({
+        date,
+        purchase,
+      })
+    );
+    const labeledSale = Object.entries(consolidatedSale).map(
+      ([date, sale]) => ({
+        date,
+        sale,
+      })
+    );
+    // const trial = combineByDate(labeledSale, labeledPurchase);
+    // console.log(trial);
     // consolidate two arrays into one transactionArr
     setTransactionArr(
       Object.entries(consolidatedPurchase).map(([date, purchase]) => ({
@@ -70,7 +92,6 @@ const MonthlyTable = () => {
             <th>Purchase</th>
           </tr>
           {/* Loop over */}
-          {console.log(transactionArr)}
           {transactionArr.map((transaction) => (
             <tr>
               <td>{transaction.date.slice(0, 10)}</td>

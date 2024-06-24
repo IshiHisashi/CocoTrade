@@ -4,12 +4,14 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { Chart, registerables } from "chart.js";
 import UserIdContext from "./UserIdContext";
+import MonthlyTable from "./MonthlyTable";
 
 Chart.register(...registerables);
 
 const MonthlyActivity = () => {
   const [monthlySale, setMonthlySale] = useState([]);
   const [monthlyPurchase, setMonthlyPurchase] = useState([]);
+
   const userId = useContext(UserIdContext);
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
@@ -132,6 +134,7 @@ const MonthlyActivity = () => {
     <div>
       <h1>MonthlyActivity</h1>
       <canvas ref={chartRef}> </canvas>
+      <MonthlyTable />
     </div>
   );
 };

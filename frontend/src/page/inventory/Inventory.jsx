@@ -7,6 +7,7 @@ import PlanShipment from "./PlanShipment";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Pagination from "../../component/btn/Pagination";
 import TabBtn from "../../component/btn/TabBtn";
+import TrendBadge from "../../component/btn/TrendBadge";
 
 Modal.setAppElement('#root');
 
@@ -21,6 +22,7 @@ const Inventory = () => {
       <h1>Inventory</h1>
       <Pagination />
       <TabBtn type="button" innerTxt="3M" />
+      <TrendBadge trend="D" num="50.23"/>
       <CtaBtn 
         size="M"
         level="S"

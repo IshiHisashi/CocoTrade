@@ -18,16 +18,25 @@ export const createPurchase = async (req, res) => {
 export const getAllPurchase = async (req, res) => {
   try {
     const user = await UserModel.findById(req.params.userid);
-    const purchase = await Purchase.aggregate([
-      {
-        $match: {
-          _id: {
-            $in: user.purchases_array,
-          },
-        },
-      },
-    ]);
-    res.status(200).json(purchase);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const purchases = await Purchase.find({
+      _id: { $in: user.purchases_array },
+    })
+    .populate({
+      path: 'farmer_id',
+      select: 'full_name'  // Assuming the manufacturer's name is stored in the 'full_name' field
+    });
+
+    res.status(200).json(purchases.map(purchase => {
+      // Transforming the data structure a bit to make it easier to handle on the frontend
+      return {
+        ...purchase.toObject(),
+        manufacturer_name: purchase.farmer_id ? purchase.farmer_id.full_name : 'N/A' 
+      };
+    }));
   } catch (err) {
     res.status(500).json({
       error: err.message,

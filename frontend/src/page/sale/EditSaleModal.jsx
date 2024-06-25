@@ -179,7 +179,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
           name="total_sales_price"
           type="number"
           value={formData.total_sales_price}
-          disabled
+          onChange={handleChange}
         />
         <button type="button" onClick={() => {setShowAddForm(false); window.location.reload();}}>Clear</button>
         <button type="submit">Save</button>

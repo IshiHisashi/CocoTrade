@@ -12,17 +12,6 @@ const Sale = () => {
   const [selectedSale, setSelectedSale] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  useEffect(() => {
-    // Fetch sales data from the backend
-    axios.get('http://localhost:5555/sale')
-      .then(response => {
-        setSales(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching sales:', error);
-      });
-  }, []);
-
   const handleEdit = (sale) => {
     setSelectedSale(sale);
   };

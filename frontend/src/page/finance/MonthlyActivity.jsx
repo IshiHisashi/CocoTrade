@@ -14,7 +14,9 @@ Chart.register(...registerables);
 const MonthlyActivity = () => {
   const [monthlySale, setMonthlySale] = useState([]);
   const [monthlyPurchase, setMonthlyPurchase] = useState([]);
-
+  const [selectedMonth, setSelectedMonth] = useState(
+    moment().format("YYYY-MM")
+  );
   const userId = useContext(UserIdContext);
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
@@ -41,13 +43,23 @@ const MonthlyActivity = () => {
   function getLast12Months() {
     const months = [];
     for (let i = 0; i < 12; i++) {
+      months.push(moment().subtract(i, "months").format("YYYY-MM"));
+    }
+    return months.reverse(); // To get them in chronological order
+  }
+
+  function getLast12MonthsDisplay() {
+    const months = [];
+    for (let i = 0; i < 12; i++) {
       months.push(moment().subtract(i, "months").format("MMM YYYY"));
     }
     return months.reverse(); // To get them in chronological order
   }
+
   //   For Graph
   useEffect(() => {
     const labels = getLast12Months();
+    const displayLabels = getLast12MonthsDisplay();
     const chartDataSale = new Array(12).fill(null);
     const chartDataPurchase = new Array(12).fill(null);
 
@@ -84,7 +96,7 @@ const MonthlyActivity = () => {
     chartInstance.current = new Chart(chartRef.current, {
       type: "bar",
       data: {
-        labels,
+        labels: displayLabels,
         datasets: [
           {
             label: "Monthly Sale",
@@ -138,6 +150,14 @@ const MonthlyActivity = () => {
             },
           },
         },
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const chartElement = elements[0];
+            const clickedMonth = labels[chartElement.index];
+            setSelectedMonth(clickedMonth);
+            console.log(`Selected Month: ${clickedMonth}`);
+          }
+        },
       },
     });
   }, [monthlySale, monthlyPurchase]);
@@ -146,8 +166,7 @@ const MonthlyActivity = () => {
     <div>
       <h1>MonthlyActivity</h1>
       <canvas ref={chartRef}> </canvas>
-      <MonthlyTable />
-      {console.log(monthlySale)}
+      <MonthlyTable selectedMonth={selectedMonth} />
     </div>
   );
 };

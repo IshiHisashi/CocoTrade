@@ -2,10 +2,11 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import UserIdContext from "./UserIdContext";
 
-const MonthlyTable = () => {
+const MonthlyTable = ({ selectedMonth }) => {
   const [dailyTransactionSale, setDailyTransactionSale] = useState([]);
   const [dailyTransactionPurchase, setDailyTransactionPurchase] = useState([]);
   const [transactionArr, setTransactionArr] = useState([]);
+  const [monthTransactionArr, setMonthTransactionArr] = useState([]);
   const userId = useContext(UserIdContext);
   // Would be transferred
   useEffect(() => {
@@ -116,28 +117,41 @@ const MonthlyTable = () => {
       "integration"
     );
     // Then, extracted objArr is put into state.
-    setTransactionArr(Object.values(integratedObj));
+    setTransactionArr(
+      Object.values(integratedObj).sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      )
+    );
   }, [dailyTransactionPurchase, dailyTransactionSale]);
+
+  useEffect(() => {
+    const extractSpecificMonth = (data) => {
+      return data.date.slice(0, 7) === selectedMonth;
+    };
+    setMonthTransactionArr(transactionArr.filter(extractSpecificMonth));
+  }, [selectedMonth, transactionArr]);
 
   return (
     <div>
       <section className="title">Your daily activity</section>
       <section className="table">
         <table>
-          {/* Fixed table head */}
-          <tr>
-            <th>Date</th>
-            <th>Sales</th>
-            <th>Purchase</th>
-          </tr>
-          {/* Loop over */}
-          {transactionArr.map((transaction) => (
-            <tr key={transaction.date}>
-              <td>{transaction.date.slice(0, 10)}</td>
-              <td>{transaction.sale}</td>
-              <td>{transaction.purchase}</td>
+          <tbody>
+            {/* Fixed table head */}
+            <tr>
+              <th>Date</th>
+              <th>Sales</th>
+              <th>Purchase</th>
             </tr>
-          ))}
+            {/* Loop over */}
+            {monthTransactionArr.map((transaction) => (
+              <tr key={transaction.date} className="text-center">
+                <td>{transaction.date.slice(0, 10)}</td>
+                <td>{transaction.sale}</td>
+                <td>{transaction.purchase}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </section>
     </div>

@@ -7,6 +7,8 @@ import PlanShipment from "./PlanShipment";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Pagination from "../../component/btn/Pagination";
 import TabBtn from "../../component/btn/TabBtn";
+import TrendBadge from "../../component/btn/TrendBadge";
+import StatusBadge from "../../component/btn/StatusBadge";
 
 Modal.setAppElement('#root');
 
@@ -19,8 +21,19 @@ const Inventory = () => {
   return (
     <div>
       <h1>Inventory</h1>
-      <Pagination />
+      <div className="flex flex-wrap gap-2 justify-center content-center items-center ">
+        <Pagination size="M" />
+        <Pagination pageNum="1" />
+        <Pagination pageNum="2" />
+        <Pagination pageNum="3" />
+        <Pagination pageNum="R" size="M" />
+      </div>
+      <StatusBadge />
+      <StatusBadge status="O" />
+      <StatusBadge status="C" />
       <TabBtn type="button" innerTxt="3M" />
+      <TrendBadge />
+      <TrendBadge trend="D" num="50.23"/>
       <CtaBtn 
         size="M"
         level="S"

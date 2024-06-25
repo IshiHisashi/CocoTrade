@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
-// eslint-disable-next-line no-underscore-dangle
+/* eslint-disable-next-line no-underscore-dangle */
+/* eslint-disable no-plusplus */
+
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
+import moment from "moment";
 import { Chart, registerables } from "chart.js";
 import UserIdContext from "./UserIdContext";
 import MonthlyTable from "./MonthlyTable";
@@ -35,40 +38,49 @@ const MonthlyActivity = () => {
       .catch();
   }, [userId]);
 
+  function getLast12Months() {
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      months.push(moment().subtract(i, "months").format("MMM YYYY"));
+    }
+    return months.reverse(); // To get them in chronological order
+  }
   //   For Graph
   useEffect(() => {
-    const labels = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
+    const labels = getLast12Months();
     const chartDataSale = new Array(12).fill(null);
     const chartDataPurchase = new Array(12).fill(null);
+
+    // Make an array to list the last 12 months data
+    const months = [];
+    for (let i = 11; i >= 0; i--) {
+      months.push(moment().subtract(i, "months").format("YYYY-MM"));
+    }
+    const findMonthIndex = (month, year) => {
+      const monthYearString = `${year}-${String(month).padStart(2, "0")}`;
+      return months.indexOf(monthYearString);
+    };
+
     monthlySale.forEach((item) => {
       // eslint-disable-next-line no-underscore-dangle
-      const monthIndex = item._id.month - 1; // MongoDB month is 1-indexed
-      chartDataSale[monthIndex] = +item.monthlySales.$numberDecimal.toString();
+      const monthIndex = findMonthIndex(item._id.month, item._id.year);
+      if (monthIndex !== -1) {
+        chartDataSale[monthIndex] =
+          +item.monthlySales.$numberDecimal.toString();
+      }
     });
     monthlyPurchase.forEach((item) => {
       // eslint-disable-next-line no-underscore-dangle
-      const monthIndex = item._id.month - 1; // MongoDB month is 1-indexed
-      chartDataPurchase[monthIndex] =
-        +item.monthlyPurchase.$numberDecimal.toString();
+      const monthIndex = findMonthIndex(item._id.month, item._id.year);
+      if (monthIndex !== -1) {
+        chartDataPurchase[monthIndex] =
+          +item.monthlyPurchase.$numberDecimal.toString();
+      }
     });
 
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
-
     chartInstance.current = new Chart(chartRef.current, {
       type: "bar",
       data: {
@@ -135,6 +147,7 @@ const MonthlyActivity = () => {
       <h1>MonthlyActivity</h1>
       <canvas ref={chartRef}> </canvas>
       <MonthlyTable />
+      {console.log(monthlySale)}
     </div>
   );
 };

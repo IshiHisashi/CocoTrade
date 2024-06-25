@@ -12,17 +12,6 @@ const Purchase = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
 
-  useEffect(() => {
-    // Fetch purchases data from the backend
-    axios.get('http://localhost:5555/purchase')
-      .then(response => {
-        setPurchases(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching purchases:', error);
-      });
-  }, []);
-
   const handleEdit = (purchase) => {
     setSelectedPurchase(purchase);
   };

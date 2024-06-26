@@ -8,6 +8,7 @@ import Purchase from "./page/purchase/purchase.jsx";
 import Sale from "./page/sale/sale.jsx";
 import ViewSalesTable from "./page/sale/ViewSalesTable.jsx";
 import Layout from "./Layout.jsx";
+// import Settings from "";
 
 const App = () => {
   return (
@@ -54,6 +55,7 @@ const App = () => {
         }
       />
       <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
+      <Route path="/settings" element={<Layout>{/* <Settings /> */}</Layout>} />
     </Routes>
   );
 };

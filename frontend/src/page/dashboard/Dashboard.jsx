@@ -5,6 +5,7 @@ import axios from "axios";
 import PriceIndicatorCard from "../../component/card/PriceIndicatorCard.jsx";
 import UserIdContext from "./UserIdContext.jsx";
 import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
+import CtaBtn from "../../component/btn/CtaBtn.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -108,7 +109,12 @@ const Dashboard = () => {
   return (
     <UserIdContext.Provider value={userId}>
       <p>You have an upcoming shipment on May 8, 2024</p>
-      <button type="button">Add Purchase</button>
+      <CtaBtn
+        size="M"
+        level="S"
+        innerTxt="Add Purchase"
+        // onClickFnc={}
+      />
 
       <section className="grid grid-cols-2">
         <PriceIndicatorCard type="market" />

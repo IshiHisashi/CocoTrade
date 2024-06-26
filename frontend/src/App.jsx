@@ -1,5 +1,11 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+} from "react-router-dom";
 import Inventory from "./page/inventory/Inventory.jsx";
 import Landing from "./page/landing/Landing.jsx";
 import Finance from "./page/finance/Finance.jsx";
@@ -10,52 +16,56 @@ import ViewSalesTable from "./page/sale/ViewSalesTable.jsx";
 import Layout from "./Layout.jsx";
 
 const App = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route
-        path="/dashboard"
-        element={
-          <Layout>
-            <Dashboard />
-          </Layout>
-        }
-      />
-      <Route
-        path="/inventory"
-        element={
-          <Layout>
-            <Inventory />
-          </Layout>
-        }
-      />
-      <Route
-        path="/finances"
-        element={
-          <Layout>
-            <Finance />
-          </Layout>
-        }
-      />
-      <Route
-        path="/purchase"
-        element={
-          <Layout>
-            <Purchase />
-          </Layout>
-        }
-      />
-      <Route
-        path="/sales"
-        element={
-          <Layout>
-            <Sale />
-          </Layout>
-        }
-      />
-      <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
-    </Routes>
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route path="/" element={<Landing />} />
+        <Route
+          path="/dashboard"
+          element={
+            <Layout>
+              <Dashboard />
+            </Layout>
+          }
+        />
+        <Route
+          path="/inventory"
+          element={
+            <Layout>
+              <Inventory />
+            </Layout>
+          }
+        />
+        <Route
+          path="/purchase"
+          element={
+            <Layout>
+              <Purchase />
+            </Layout>
+          }
+        />
+        <Route
+          path="/sales"
+          element={
+            <Layout>
+              <Sale />
+            </Layout>
+          }
+        />
+        <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
+        <Route
+          path="/finances"
+          element={
+            <Layout>
+              <Finance />
+            </Layout>
+          }
+        />
+      </>
+    )
   );
+
+  return <RouterProvider router={router} />;
 };
 
 export default App;

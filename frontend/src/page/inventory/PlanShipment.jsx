@@ -6,6 +6,7 @@ const PlanShipment = ({ userId, setShowModal }) => {
 
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
+  const [latestInv, setLatestInv] = useState([]);
   const [formData, setFormData] = useState({
     manufacturer_id: '',
     amount_of_copra_sold: '',
@@ -37,10 +38,27 @@ const PlanShipment = ({ userId, setShowModal }) => {
     .catch(error => {
       console.error('Error fetching manufacturers:', error);
     });
+
+    // Fetch the latest inventory data to make a new inventory log or to modify the log
+    axios
+    .get(`http://localhost:5555/user/${userId}/inv`)
+    .then((res) => {
+        // setMaximumInv(res.data.data.max_amount);
+        const invArray = res.data.data;
+        const invObj = invArray.reduce((latest, current) => {
+          return new Date(current.time_stamp) > new Date(latest.time_stamp) ? current : latest;
+        })
+        setLatestInv(invObj);
+        console.log(invObj);
+    })
+    .catch((err) => {
+        console.error(err);
+    });
   }, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [userId])
 
+  // function to handle changes in a form
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -49,17 +67,47 @@ const PlanShipment = ({ userId, setShowModal }) => {
     });
   };
 
+  // function to handle submit
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-      console.log(formData);
+      // Create a new sales log with pending status
       const response = await axios.post('http://localhost:5555/sale', formData);
       console.log('Shipment/sale created:', response.data);
-      // eslint-disable-next-line no-underscore-dangle 
+
+      // Add a new id of the sales log into sales_array in the user document.
+      // eslint-disable-next-line no-underscore-dangle
       const saleId = response.data._id;
       const updatedSalesArray = [...user.sales_array, saleId];
-      await axios.patch(`http://localhost:5555/user/${userId}`, {sales_array: updatedSalesArray});
-      setShowModal(false)
+      const patchedArray = await axios.patch(`http://localhost:5555/user/${userId}`, {sales_array: updatedSalesArray});
+      console.log("Sales data updated: ", patchedArray.data);
+
+      // Add a new id of the sales log into sales_array in the inventory document.
+      const today = new Date();
+      const todayISO = today.toISOString();
+      const invDate = new Date(latestInv.time_stamp);
+      console.log(latestInv.current_amount_left);
+      console.log(response.data.amount_of_copra_sold);
+      const newCurrentAmntLft = latestInv.current_amount_left.$numberDecimal - response.data.amount_of_copra_sold.$numberDecimal;
+      // IF THERE IS NO INVENTORY LOG FOR TODAY, CREATE A NEW ONE
+      if (!(today.getFullYear() === invDate.getFullYear() && today.getMonth() === invDate.getMonth() && today.getDate() === invDate.getDate())) {
+        const newInvDate = {
+          user_id: userId,
+          purchase_array: [],
+          sales_array: [saleId],
+          time_stamp: todayISO,
+          current_amount_left: newCurrentAmntLft,
+          current_amount_with_pending: latestInv.current_amount_with_pending,
+        };
+        const createdInv = await axios.post('http://localhost:5555/inventory', newInvDate);
+        console.log("New sales_id added to sales_array in inv doc: ", createdInv.data);
+
+      } 
+      // else {
+
+      // }
+
+      setShowModal(false);
     }
     catch (error) {
       console.error('Error creating/updating sale:', error);

@@ -2,7 +2,6 @@
 import React from "react";
 import UserIdContext from "./UserIdContext.jsx";
 import MonthlyActivity from "./MonthlyActivity.jsx";
-// import LineChart from "./LineChart.jsx";
 import LineChart from "./LineChart.jsx";
 
 const Finance = () => {
@@ -12,7 +11,7 @@ const Finance = () => {
         <h1>Finance</h1>
         <LineChart type="cashflow" />
         <MonthlyActivity />
-        {/* <LineChart /> */}
+        
         <LineChart type="market" />
       </div>
     </UserIdContext.Provider>

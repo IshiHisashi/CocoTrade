@@ -79,8 +79,8 @@ const PlanShipment = ({ userId, setShowModal }) => {
       // eslint-disable-next-line no-underscore-dangle
       const saleId = response.data._id;
       const updatedSalesArray = [...user.sales_array, saleId];
-      const patchedArray = await axios.patch(`http://localhost:5555/user/${userId}`, {sales_array: updatedSalesArray});
-      console.log("Sales data updated: ", patchedArray.data);
+      const patchedSalesArray = await axios.patch(`http://localhost:5555/user/${userId}`, {sales_array: updatedSalesArray});
+      console.log("Sales data in user's doc updated: ", patchedSalesArray.data);
 
       // Add a new id of the sales log into sales_array in the inventory document.
       const today = new Date();
@@ -91,7 +91,7 @@ const PlanShipment = ({ userId, setShowModal }) => {
       const newCurrentAmntLft = latestInv.current_amount_left.$numberDecimal - response.data.amount_of_copra_sold.$numberDecimal;
       // IF THERE IS NO INVENTORY LOG FOR TODAY, CREATE A NEW ONE
       if (!(today.getFullYear() === invDate.getFullYear() && today.getMonth() === invDate.getMonth() && today.getDate() === invDate.getDate())) {
-        const newInvDate = {
+        const newInvData = {
           user_id: userId,
           purchase_array: [],
           sales_array: [saleId],
@@ -99,13 +99,22 @@ const PlanShipment = ({ userId, setShowModal }) => {
           current_amount_left: newCurrentAmntLft,
           current_amount_with_pending: latestInv.current_amount_with_pending,
         };
-        const createdInv = await axios.post('http://localhost:5555/inventory', newInvDate);
-        console.log("New sales_id added to sales_array in inv doc: ", createdInv.data);
+        const createdInv = await axios.post('http://localhost:5555/inventory', newInvData);
+        console.log("New inv doc created: ", createdInv.data);
 
-      } 
-      // else {
-
-      // }
+        // Add this new inv doc to "inventory_amount_array" in user's doc
+        // eslint-disable-next-line no-underscore-dangle
+        const invId = createdInv.data.data._id;
+        const updatedInvArray = [...user.inventory_amount_array, invId];
+        const patchedInvArray = await axios.patch(`http://localhost:5555/user/${userId}`, {inventory_amount_array
+        : updatedInvArray});
+        console.log("Inv data in user's doc updated: ", patchedInvArray.data);
+      } else {
+         // eslint-disable-next-line no-underscore-dangle
+        const currentInvId = latestInv._id;
+        const patchedInvDoc = await axios.patch(`http://localhost:5555/inventory/${currentInvId}`, {sales_array: updatedSalesArray});
+        console.log("Sales data in sales_array in inv doc updated: ", patchedInvDoc.data);
+      }
 
       setShowModal(false);
     }

@@ -1,4 +1,5 @@
 import React from "react";
+import TabBtn from "../btn/TabBtn";
 
 const DurationSelecter = ({
   setDurationType,
@@ -13,18 +14,14 @@ const DurationSelecter = ({
 
   return (
     <div className="flex gap-4">
-      <button
-        onClick={() => handleDurationSelecter("monthly", thisMonth)}
-        type="submit"
-      >
-        1M
-      </button>
-      <button
-        onClick={() => handleDurationSelecter("yearly", thisYear)}
-        type="submit"
-      >
-        1Y
-      </button>
+      <TabBtn
+        innerTxt="1M"
+        onClickFnc={() => handleDurationSelecter("monthly", thisMonth)}
+      />
+      <TabBtn
+        innerTxt="1Y"
+        onClickFnc={() => handleDurationSelecter("yearly", thisYear)}
+      />
     </div>
   );
 };

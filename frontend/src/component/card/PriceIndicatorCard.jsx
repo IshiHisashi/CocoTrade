@@ -32,7 +32,7 @@ const getDataObjRes = async (type, userId) => {
 
 const calculateDiff = (obj) => {
   const priceDiff = (obj.current - obj.comparison).toFixed(2);
-  const percentageDiff = ((1 - obj.current / obj.comparison) * 100).toFixed(2);
+  const percentageDiff = ((obj.current / obj.comparison - 1) * 100).toFixed(2);
   let arrow;
   if (priceDiff > 0) {
     arrow = "↑";

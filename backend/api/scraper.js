@@ -31,7 +31,6 @@ const postDataToMarketPrice = async (priceUSD, pricePHP, exchangeRate) => {
       price_PHP: pricePHP,
       exchange_rate: exchangeRate,
     });
-    // console.log("data posted successfully", res.data);
   } catch (error) {
     console.log("Error posting data: ", error.message);
   }

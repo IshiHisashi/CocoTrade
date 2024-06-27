@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import PriceIndicatorCard from "../../component/card/PriceIndicatorCard.jsx";
 import UserIdContext from "./UserIdContext.jsx";
 import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
@@ -98,6 +99,7 @@ const getData = async (userId) => {
 const Dashboard = () => {
   const userId = useContext(UserIdContext);
   const [data, setData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -113,7 +115,9 @@ const Dashboard = () => {
         size="M"
         level="S"
         innerTxt="Add Purchase"
-        // onClickFnc={}
+        onClickFnc={() =>
+          navigate("/purchase", { state: { showAddForm: true } })
+        }
       />
 
       <section className="grid grid-cols-2">

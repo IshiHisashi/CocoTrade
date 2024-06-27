@@ -81,7 +81,7 @@ const LineChart = ({ userId }) => {
         type: "time",
         time: {
           unit: "month",
-          tooltipFormat: "yyyy-MM-dd",
+          tooltipFormat: "yyyy-MM-DD",
         },
         title: {
           display: true,

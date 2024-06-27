@@ -30,8 +30,8 @@ const BarChart = ({ userId }) => {
     .get(`http://localhost:5555/user/${userId}/inv`)
     .then((res) => {
         // setMaximumInv(res.data.data.max_amount);
-        setInventory(res.data.data[0].current_amount.$numberDecimal);
-        console.log(res.data.data[0].current_amount.$numberDecimal);
+        setInventory(res.data.data[0].current_amount_left.$numberDecimal);
+        console.log(res.data.data[0].current_amount_left.$numberDecimal);
     })
     .catch((err) => {
         console.error(err);

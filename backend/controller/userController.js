@@ -1,5 +1,6 @@
 import { UserModel } from "../model/userModel.js";
 import { Sale } from "../model/saleModel.js";
+import { Inventory } from "../model/inventoryModel.js";
 
 // Create a user
 export const createUser = async (req, res) => {

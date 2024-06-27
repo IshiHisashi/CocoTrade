@@ -49,7 +49,7 @@ const LineChart = ({ userId }) => {
 
   const dataPoints = inventory.map((item) => ({
     x: item.time_stamp,
-    y: item.current_amount.$numberDecimal
+    y: item.current_amount_with_pending.$numberDecimal
   }));
   console.log(dataPoints);
 
@@ -81,7 +81,7 @@ const LineChart = ({ userId }) => {
         type: "time",
         time: {
           unit: "month",
-          tooltipFormat: "yyyy-MM-dd",
+          tooltipFormat: "yyyy-MM-DD",
         },
         title: {
           display: true,

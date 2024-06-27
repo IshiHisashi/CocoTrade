@@ -11,8 +11,10 @@ const getTotalSum = async (type, userId) => {
     totalSum = res.data.totalSum.$numberDecimal;
   }
   if (type === "sales") {
-    // hard code for now
-    totalSum = 100;
+    const res = await axios.get(
+      `http://localhost:5555/tmpFinRoute/${userId}/sale//weekly-sales-sum`
+    );
+    totalSum = res.data.data.totalSales.$numberDecimal;
   }
   return Number(totalSum).toFixed(2).toLocaleString();
 };

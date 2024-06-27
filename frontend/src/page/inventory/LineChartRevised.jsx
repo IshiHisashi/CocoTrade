@@ -24,7 +24,6 @@ const LineChartRevised = ({ userId }) => {
     .get(`http://localhost:5555/user/${userId}/inv`)
     .then((res) => {
         setInventory(res.data.data);
-        console.log(res.data.data);
     })
     .catch((err) => {
         console.error(err);
@@ -47,15 +46,12 @@ const LineChartRevised = ({ userId }) => {
         const invDate = new Date(inv.time_stamp);
         return invDate > startDate;
       })
-      console.log(modifiedInvData);
 
       // Convert raw data into a way that suits chart.js
       const dataPoints = modifiedInvData.map(inv => ({
         x: inv.time_stamp.slice(0, 10),
         y: inv.current_amount_with_pending.$numberDecimal
       }));
-
-      console.log(dataPoints);
 
       // Create a labels and modify timeOption
       const durationLabels = [];
@@ -75,10 +71,12 @@ const LineChartRevised = ({ userId }) => {
           i += 1;
         }
 
-        setTimeOption({
-          unit: "month",
-          tooltipFormat: "yyyy-MM-DD",
-        });
+        if (timeOption.unit !== "month") {
+          setTimeOption({
+            unit: "month",
+            tooltipFormat: "yyyy-MM-DD",
+          });
+        }
 
       } else if (durationType === "monthly") {
         for (let i = 0; i < 30;) {
@@ -88,10 +86,12 @@ const LineChartRevised = ({ userId }) => {
           i += 1
         }
 
-        setTimeOption({
-          unit: "week",
-          tooltipFormat: "MM-DD",
-        })
+        if (timeOption.unit !== "week") {
+          setTimeOption({
+            unit: "week",
+            tooltipFormat: "MM-DD",
+          })
+        }
       }
       console.log(durationLabels);
 
@@ -160,7 +160,7 @@ const LineChartRevised = ({ userId }) => {
 
   },
   // eslint-disable-next-line react-hooks/exhaustive-deps 
-  [inventory, durationType]);
+  [inventory, durationType, timeOption]);
 
   return (
     <div>

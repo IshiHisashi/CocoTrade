@@ -14,7 +14,10 @@ export const createPriceSuggestion = async (req, res) => {
       axios.get("http://localhost:5555/marketprice/latest"),
     ]);
 
-    const margin = Number(resUserDoc.data.data.margin.$numberDecimal);
+    const margin = resUserDoc.data.data.margin
+      ? Number(resUserDoc.data.data.margin.$numberDecimal)
+      : 0;
+    console.log(userid, margin);
 
     // pricePHP is in ton. convert it in kg, and calculate price suggestion.
     const pricePHP = Number(

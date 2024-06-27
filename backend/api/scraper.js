@@ -50,8 +50,10 @@ const scraper = async () => {
 };
 
 // schedule to execute everyday at 0 o'clock.
-cron.schedule("0 0 0 * * *", async () => {
+// cron.schedule("0 0 0 * * *",
+export default async function handler() {
   const priceUSD = await scraper();
   const { pricePHP, exchangeRate } = await convertCurrency(priceUSD);
-  postData(priceUSD, pricePHP, exchangeRate);
-});
+  await postData(priceUSD, pricePHP, exchangeRate);
+}
+// );

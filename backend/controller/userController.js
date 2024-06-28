@@ -66,19 +66,45 @@ export const readAllUsers = async (req, res) => {
 };
 
 // Update a user
-// need to check how this will behave with array updating.
 export const updateUser = async (req, res) => {
+  const { userid } = req.params;
+
+  const keysArray = Object.keys(req.body);
+
   try {
-    const { userid } = req.params;
-    const doc = await UserModel.findByIdAndUpdate(userid, req.body, {
-      new: true,
-    });
-    if (!doc) {
-      return res.status(404).json({
-        status: "fail",
-        message: "User not found",
-      });
+    let doc;
+
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < keysArray.length; i++) {
+      const currentKey = keysArray[i];
+
+      const objToBePushed = {};
+      objToBePushed[currentKey] = req.body[currentKey];
+
+      if (req.body[currentKey] instanceof Array) {
+        // eslint-disable-next-line no-await-in-loop
+        doc = await UserModel.findByIdAndUpdate(
+          userid,
+          { $push: { ...objToBePushed } },
+          {
+            new: true,
+          }
+        );
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        doc = await UserModel.findByIdAndUpdate(userid, objToBePushed, {
+          new: true,
+        });
+      }
+
+      if (!doc) {
+        return res.status(404).json({
+          status: "fail",
+          message: "User not found",
+        });
+      }
     }
+
     return res.status(201).json({
       status: "success",
       data: doc,

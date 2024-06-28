@@ -54,6 +54,7 @@ module.exports = {
           },
         ], // consistent function type
         "react/prop-types": "off", // don't care about the type of props
+        "no-underscore-dangle": ["off"], // allow to use dangling underscores in identifiers like "_id"
         // single quotations usage is turned off by Prettier.
         // trailing comma usage is set to be "es5" by Prettier.
       },

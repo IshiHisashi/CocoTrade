@@ -20,10 +20,10 @@ const AddPurchaseForm = ({
     amount_of_copra_purchased: "",
     moisture_test_details: "",
     total_purchase_price: "",
-    user_id: "66640d8158d2c8dc4cedaf1e",
+    user_id: "66654dc4c6e950671e988962",
   });
 
-  const userid = "66640d8158d2c8dc4cedaf1e";
+  const userid = "66654dc4c6e950671e988962";
 
   useEffect(() => {
     // Fetch user data
@@ -194,20 +194,15 @@ const AddPurchaseForm = ({
         // eslint-disable-next-line no-underscore-dangle
         const purchaseId = newPurchaseDoc.data._id;
         const updatedPurchasesArray = [...user.purchases_array, purchaseId];
-        // 2). Create cash_balance
-        // 2-1). get current cashbalance
-        const currentCashDoc = await axios.get(
-          `http://localhost:5555/tmpFinRoute/${userid}/currentbalance/latest`
-        );
-        const currentCash =
-          +currentCashDoc.data.data.doc[0].current_balance.$numberDecimal;
-        // 2-2). post new cashbalance
+
+        // 2). Create cash_balance:
         const newCashDoc = await axios.post(
-          "http://localhost:5555/currentbalance",
+          `http://localhost:5555/tmpFinRoute/${userid}/currentbalance`,
           {
             user_id: userid,
-            current_balance: currentCash - formData.total_purchase_price,
+            changeValue: formData.total_purchase_price,
             date: new Date(),
+            type: "purchase",
           }
         );
         // eslint-disable-next-line no-underscore-dangle

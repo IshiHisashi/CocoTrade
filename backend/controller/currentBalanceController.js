@@ -4,7 +4,29 @@ import { UserModel } from "../model/userModel.js";
 // Create
 export const createCurrentBalance = async (req, res) => {
   try {
-    const newCurrentBalance = await CurrentBalanceModel.create(req.body);
+    // Get the latest balance
+    const user = await UserModel.findById(req.params.userid);
+    const doc = await CurrentBalanceModel.aggregate([
+      {
+        $match: { _id: { $in: user.balance_array } },
+      },
+      {
+        $sort: { date: -1 },
+      },
+      {
+        $limit: 1,
+      },
+    ]);
+    const currentCash = +doc[0].current_balance;
+    const newDoc = {
+      user_id: req.body.user_id,
+      date: req.body.date,
+      current_balance:
+        req.body.type === "purchase"
+          ? currentCash - req.body.changeValue
+          : currentCash + req.body.changeValue,
+    };
+    const newCurrentBalance = await CurrentBalanceModel.create(newDoc);
     res.status(201).json({
       status: "success",
       data: {

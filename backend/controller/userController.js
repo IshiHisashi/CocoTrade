@@ -41,20 +41,97 @@ export const readUser = async (req, res) => {
   }
 };
 
-// Update a user
-// need to check how this will behave with array updating.
-export const updateUser = async (req, res) => {
+// Read all users and return user IDs and their preffered margin
+export const readAllUsers = async (req, res) => {
   try {
-    const { userid } = req.params;
-    const doc = await UserModel.findByIdAndUpdate(userid, req.body, {
-      new: true,
-    });
-    if (!doc) {
+    const docs = await UserModel.find({});
+    if (!docs) {
       return res.status(404).json({
         status: "fail",
-        message: "User not found",
+        message: "Couldn't get all users",
       });
     }
+    const userIdsArray = docs.map((doc) => doc._id);
+    return res.status(200).json({
+      status: "success",
+      data: userIdsArray,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
+// Update a user
+// For array updating, expect to receive something like this as req.body:
+// { price_suggestion_array: {
+//   "action": "push" or "pull",
+//   "value": elementYouWannaPushOrPull
+//   }
+// }
+export const updateUser = async (req, res) => {
+  console.log("req.body", req.body);
+  const { userid } = req.params;
+
+  const keysArray = Object.keys(req.body);
+
+  try {
+    let doc;
+    for (let i = 0; i < keysArray.length; i++) {
+      const currentKey = keysArray[i];
+      const objToBeHandled = {};
+
+      if (UserModel.schema.path(currentKey).instance === "Array") {
+        // if it's array updating...
+        console.log("instance array");
+
+        const { action } = req.body[currentKey];
+        const { value } = req.body[currentKey];
+
+        // create something like { price_suggestion_array: elementYouWannaPushOrPull }
+        objToBeHandled[currentKey] = value;
+
+        if (action === "push") {
+          // eslint-disable-next-line no-await-in-loop
+          doc = await UserModel.findByIdAndUpdate(
+            userid,
+            { $push: objToBeHandled },
+            {
+              new: true,
+            }
+          );
+        } else if (action === "pull") {
+          // eslint-disable-next-line no-await-in-loop
+          doc = await UserModel.findByIdAndUpdate(
+            userid,
+            { $pull: objToBeHandled },
+            {
+              new: true,
+            }
+          );
+        }
+      } else {
+        // if it's just field value updating...
+
+        // create something like { price_suggestion_array: elementYouWannaPushOrPull }
+        objToBeHandled[currentKey] = req.body[currentKey];
+
+        // eslint-disable-next-line no-await-in-loop
+        doc = await UserModel.findByIdAndUpdate(userid, objToBeHandled, {
+          new: true,
+        });
+      }
+
+      if (!doc) {
+        return res.status(404).json({
+          status: "fail",
+          message: "User not found",
+        });
+      }
+    }
+
     return res.status(201).json({
       status: "success",
       data: doc,
@@ -92,45 +169,43 @@ export const deleteUser = async (req, res) => {
 
 // Get all the inventory data based on user
 export const getAllInventories = async (req, res) => {
-
   try {
-      // GET INVENTORY INFO
-      const user = await UserModel.findById(req.params.userid)
-          .populate('inventory_amount_array');
+    // GET INVENTORY INFO
+    const user = await UserModel.findById(req.params.userid).populate(
+      "inventory_amount_array"
+    );
 
-      if (!user) {
-          return res.status(404).json({ 
-              status: "failed",
-              error: 'User not found' 
-          });
-      }
-      const data = user.inventory_amount_array;
-      await data.sort((a, b) => {
-        return new Date(b.time_stamp) - new Date(a.time_stamp);
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        error: "User not found",
       });
-      console.log("Inventories retrieved");
-      res.status(200).json({
-          status: "Success",
-          data: data
-        });
-  }
-  catch (err) {
-      res.status(500).json({
-          status: "failed",
-          error: err.message
-      });
+    }
+    const data = user.inventory_amount_array;
+    await data.sort((a, b) => {
+      return new Date(b.time_stamp) - new Date(a.time_stamp);
+    });
+    console.log("Inventories retrieved");
+    return res.status(200).json({
+      status: "Success",
+      data,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
   }
 };
 
 // Get all the inventory data based on duration
 // ex) http://localhost:5555/user/:userid/invd?start=2024-01-21T13:45:00.000Z&end=2024-05-25T13:45:00.000Z
 export const getInventoriesOnDuration = async (req, res) => {
-
   const { start, end } = req.query;
   if (!start || !end) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       status: "failed",
-      error: 'Please provide both start and end timestamps' 
+      error: "Please provide both start and end timestamps",
     });
   }
 
@@ -139,198 +214,193 @@ export const getInventoriesOnDuration = async (req, res) => {
     const endDate = new Date(end);
 
     const user = await UserModel.findById(req.params.userid)
-        .populate('inventory_amount_array')
-        .populate('sales_array');
+      .populate("inventory_amount_array")
+      .populate("sales_array");
 
     if (!user) {
-        return res.status(404).json({ 
-            status: "failed",
-            error: 'User not found' 
-        });
+      return res.status(404).json({
+        status: "failed",
+        error: "User not found",
+      });
     }
     const data = user.inventory_amount_array;
-    const dataBasedOnDuration = await data.filter(item => {
+    const dataBasedOnDuration = await data.filter((item) => {
       const itemDate = new Date(item.time_stamp);
       return itemDate >= startDate && itemDate <= endDate;
-    })
+    });
     await dataBasedOnDuration.sort((a, b) => {
       return new Date(b.time_stamp) - new Date(a.time_stamp);
     });
     console.log("Inventories retrieved");
-    res.status(200).json({
-        status: "Success",
-        data: dataBasedOnDuration });
-  }
-  catch (err) {
-      res.status(500).json({
-          status: "failed",
-          error: err.message
-      });
+    return res.status(200).json({
+      status: "Success",
+      data: dataBasedOnDuration,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
   }
 };
 
 // Get the maximum capacity based on user
 export const getMaximumCap = async (req, res) => {
-
   try {
-      // GET INVENTORY INFO
-      const user = await UserModel.findById(req.params.userid);
+    // GET INVENTORY INFO
+    const user = await UserModel.findById(req.params.userid);
 
-      if (!user) {
-          return res.status(404).json({ 
-              status: "failed",
-              error: 'User not found' 
-          });
-      }
-      console.log(user);
-      const data = user.max_inventory_amount;
-      console.log("Max Capacity retrieved");
-      res.status(200).json({
-          status: "Success",
-          data: data
-        });
-  }
-  catch (err) {
-      res.status(500).json({
-          status: "failed",
-          error: err.message
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        error: "User not found",
       });
+    }
+    console.log(user);
+    const data = user.max_inventory_amount;
+    console.log("Max Capacity retrieved");
+    return res.status(200).json({
+      status: "Success",
+      data,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
   }
 };
 
 // Get all the manufacturers based on user
 export const getAllManufacturers = async (req, res) => {
   try {
-      // GET MANUFACTURERS INFO
-      const user = await UserModel.findById(req.params.userid)
-          .populate('manufacturers_array');
+    // GET MANUFACTURERS INFO
+    const user = await UserModel.findById(req.params.userid).populate(
+      "manufacturers_array"
+    );
 
-      if (!user) {
-          return res.status(404).json({
-              status: "failed", 
-              error: 'User not found' 
-          });
-      }
-      const data = {
-          manufacturers: user.manufacturers_array,
-      }
-      console.log("Manufacturers retrieved");
-      res.status(200).json({
-          status: "success",
-          data: data
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        error: "User not found",
       });
+    }
+    const data = {
+      manufacturers: user.manufacturers_array,
+    };
+    console.log("Manufacturers retrieved");
+    return res.status(200).json({
+      status: "success",
+      data,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
   }
-  catch (err) {
-      res.status(500).json({
-          status: "failed",
-          error: err.message
-      });
-  }
-}
+};
 
 // Get all the Notifications based on user
 export const getAllNotifications = async (req, res) => {
   try {
-      // GET Notifications info
-      const user = await UserModel.findById(req.params.userid)
-          .populate('notification_array');
+    // GET Notifications info
+    const user = await UserModel.findById(req.params.userid).populate(
+      "notification_array"
+    );
 
-      if (!user) {
-          return res.status(404).json({
-              status: "failed", 
-              error: 'User not found' 
-          });
-      }
-      const data = {
-          Notifications: user.notification_array,
-      }
-      console.log("Notifications retrieved");
-      res.status(200).json({
-          status: "success",
-          data: data
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        error: "User not found",
       });
+    }
+    const data = {
+      Notifications: user.notification_array,
+    };
+    console.log("Notifications retrieved");
+    return res.status(200).json({
+      status: "success",
+      data,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
   }
-  catch (err) {
-      res.status(500).json({
-          status: "failed",
-          error: err.message
-      });
-  }
-}
+};
 
 // Get all the Notifications based on duration
 // SOMETHING IS WRONG AND COULDN'T FIGURE OUT WHY
 export const getNotificationsByDuration = async (req, res) => {
-
   const { start, end } = req.query;
   console.log(start, end);
   if (!start || !end) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       status: "failed",
-      error: 'Please provide both start and end timestamps' 
+      error: "Please provide both start and end timestamps",
     });
   }
 
   try {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    const user = await UserModel.findById(req.params.userid)
-        .populate('notification_array');
+    const user = await UserModel.findById(req.params.userid).populate(
+      "notification_array"
+    );
 
     if (!user) {
-        return res.status(404).json({
-            status: "failed", 
-            error: 'User not found' 
-        });
+      return res.status(404).json({
+        status: "failed",
+        error: "User not found",
+      });
     }
     const data = user.notification_array;
-    const dataBasedOnDuration = await data.filter(item => {
+    const dataBasedOnDuration = await data.filter((item) => {
       const itemDate = new Date(item.time_stamp);
       return itemDate >= startDate && itemDate <= endDate;
-    })
+    });
     console.log("Notifications retrieved");
-    res.status(200).json({
-        status: "success",
-        data: dataBasedOnDuration
+    return res.status(200).json({
+      status: "success",
+      data: dataBasedOnDuration,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      error: err.message,
     });
   }
-  catch (err) {
-    res.status(500).json({
-        status: "failed",
-        error: err.message
-    });
-  }
-}
+};
 
 export const getTopFiveSales = async (req, res) => {
-
   try {
-      // GET sales INFO
-      const user = await Sale.find({ user_id: req.params.userid })
-        .populate({
-          path: 'manufacturer_id',
-          model: 'Manufacturer'
-        })
-        .sort({'copra_ship_date': -1})
-        .limit(7);
+    // GET sales INFO
+    const user = await Sale.find({ user_id: req.params.userid })
+      .populate({
+        path: "manufacturer_id",
+        model: "Manufacturer",
+      })
+      .sort({ copra_ship_date: -1 })
+      .limit(7);
 
-      if (!user) {
-          return res.status(404).json({ 
-              status: "failed",
-              error: 'User not found' 
-          });
-      }
-      const data = user;
-      console.log("Sales retrieved");
-      res.status(200).json({
-          status: "Success",
-          data: data
-        });
-  }
-  catch (err) {
-      res.status(500).json({
-          status: "failed",
-          error: err.message
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        error: "User not found",
       });
+    }
+    const data = user;
+    console.log("Sales retrieved");
+    return res.status(200).json({
+      status: "Success",
+      data,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
   }
 };

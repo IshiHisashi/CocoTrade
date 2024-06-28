@@ -160,10 +160,12 @@ const AddPurchaseForm = ({
         // eslint-disable-next-line no-underscore-dangle
         const purchaseId = response.data._id;
 
-        const updatedPurchasesArray = [...user.purchases_array, purchaseId];
+        // const updatedPurchasesArray = [...user.purchases_array, purchaseId];
 
         await axios.patch(`http://localhost:5555/user/${userid}`, {
-          purchases_array: updatedPurchasesArray,
+
+          purchases_array: { action: "push", value: purchaseId },
+          
         });
         setShowAddForm(false);
         setPurchasesFromParent(response.data);
@@ -242,16 +244,7 @@ const AddPurchaseForm = ({
           onChange={handleChange}
           disabled
         />
-        <button
-          type="button"
-          onClick={() => {
-            setShowAddForm(false);
-            // set location.state.showAddForm to false
-            // (this is realted to reloading behaviour
-            // when users visiting purchase page from Add Purchase button on Dashboard)
-            navigate("/purchase", { state: { showAddForm: false } });
-          }}
-        >
+        <button type="button" onClick={() => setShowAddForm(false)}>
           Clear
         </button>
         <button type="submit">Save</button>

@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
 
-const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
+const AddPurchaseForm = ({
+  setShowAddForm,
+  purchase,
+  handleUpdate,
+  setPurchasesFromParent,
+}) => {
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
   const [user, setUser] = useState(null);
@@ -161,6 +166,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           purchases_array: updatedPurchasesArray,
         });
         setShowAddForm(false);
+        setPurchasesFromParent(response.data);
       }
       // set location.state.showAddForm to false
       // (this is realted to reloading behaviour

@@ -37,7 +37,7 @@ const Purchase = () => {
           purchase._id === updatedPurchase._id ? updatedPurchase : purchase
         )
       );
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Error updating purchase:", error);
     }
@@ -72,11 +72,13 @@ const Purchase = () => {
           setShowAddForm={setShowAddForm}
           purchase={selectedPurchase}
           handleUpdate={handleUpdate}
+          setPurchasesFromParent={setPurchases}
         />
       </Modal>
       <ViewPurchaseTable
         setShowAddForm={setShowAddForm}
         handleEdit={handleEdit}
+        purchasesFromParent={purchases}
       />
     </div>
   );

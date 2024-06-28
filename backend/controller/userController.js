@@ -51,7 +51,6 @@ export const readAllUsers = async (req, res) => {
         message: "Couldn't get all users",
       });
     }
-    // eslint-disable-next-line no-underscore-dangle
     const userIdsArray = docs.map((doc) => doc._id);
     return res.status(200).json({
       status: "success",
@@ -74,7 +73,6 @@ export const updateUser = async (req, res) => {
   try {
     let doc;
 
-    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < keysArray.length; i++) {
       const currentKey = keysArray[i];
 

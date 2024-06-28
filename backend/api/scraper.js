@@ -13,12 +13,9 @@ const postDataToPriceSuggestion = async () => {
         const resPriceSuggestionPost = await axios.post(
           `http://localhost:5555/user/${userId}/pricesuggestion`
         );
-        // eslint-disable-next-line no-underscore-dangle
-        console.log(resPriceSuggestionPost.data.data._id);
 
         // update price-suggestion-array in the user's doc
         await axios.patch(`http://localhost:5555/user/${userId}`, {
-          // eslint-disable-next-line no-underscore-dangle
           price_suggestion_array: [resPriceSuggestionPost.data.data._id],
         });
       } catch (error) {

@@ -16,7 +16,7 @@ const postDataToPriceSuggestion = async () => {
 
         // update price-suggestion-array in the user's doc
         await axios.patch(`http://localhost:5555/user/${userId}`, {
-          price_suggestion_array: [resPriceSuggestionPost.data.data._id],
+          price_suggestion_array: resPriceSuggestionPost.data.data._id,
         });
       } catch (error) {
         console.log(

@@ -66,6 +66,7 @@ export const readAllUsers = async (req, res) => {
 
 // Update a user
 export const updateUser = async (req, res) => {
+  console.log("req.body", req.body);
   const { userid } = req.params;
 
   const keysArray = Object.keys(req.body);
@@ -79,11 +80,12 @@ export const updateUser = async (req, res) => {
       const objToBePushed = {};
       objToBePushed[currentKey] = req.body[currentKey];
 
-      if (req.body[currentKey] instanceof Array) {
+      if (UserModel.schema.path(currentKey).instance === "Array") {
+        console.log("instance array");
         // eslint-disable-next-line no-await-in-loop
         doc = await UserModel.findByIdAndUpdate(
           userid,
-          { $push: { ...objToBePushed } },
+          { $push: objToBePushed },
           {
             new: true,
           }

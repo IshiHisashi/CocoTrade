@@ -131,10 +131,35 @@ const MonthlyTable = ({ selectedMonth }) => {
     setMonthTransactionArr(transactionArr.filter(extractSpecificMonth));
   }, [selectedMonth, transactionArr]);
 
+  const monthMapping = {
+    "01": "January",
+    "02": "February",
+    "03": "March",
+    "04": "April",
+    "05": "May",
+    "06": "June",
+    "07": "July",
+    "08": "August",
+    "09": "September",
+    10: "October",
+    11: "November",
+    12: "December",
+  };
+
+  const convertToMonth = (monthNumber) => {
+    return monthMapping[monthNumber];
+  };
+
   return (
     <div>
-      <section className="title">Your daily activity</section>
-      <section className="table">
+      <div className="title">
+        <h2 className="text-[24px]">Your daily activity</h2>
+        <h3>
+          For the month of {convertToMonth(selectedMonth.slice(5))}{" "}
+          {selectedMonth.slice(0, 4)}
+        </h3>
+      </div>
+      <div className="table">
         <table>
           <tbody>
             {/* Fixed table head */}
@@ -153,7 +178,7 @@ const MonthlyTable = ({ selectedMonth }) => {
             ))}
           </tbody>
         </table>
-      </section>
+      </div>
     </div>
   );
 };

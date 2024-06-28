@@ -82,6 +82,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
     if (purchase) {
       setFormData({
         ...purchase,
+        // eslint-disable-next-line no-underscore-dangle
         farmer_id: purchase.farmer_id?._id ?? "",
         sales_unit_price: parseFloat(
           purchase.sales_unit_price?.$numberDecimal ?? purchase.sales_unit_price
@@ -151,9 +152,10 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           formData
         );
         console.log("Purchase created:", response.data);
+        // eslint-disable-next-line no-underscore-dangle
         const purchaseId = response.data._id;
 
-        const updatedPurchasesArray = [...user.purchases_array, purchaseId];
+        // const updatedPurchasesArray = [...user.purchases_array, purchaseId];
 
         await axios.patch(`http://localhost:5555/user/${userid}`, {
           purchases_array: [purchaseId],
@@ -191,6 +193,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
           type="dropdown"
           value={formData.farmer_id}
           options={farmers.map((farmer) => ({
+            // eslint-disable-next-line no-underscore-dangle
             value: farmer._id,
             label: farmer.full_name,
           }))}

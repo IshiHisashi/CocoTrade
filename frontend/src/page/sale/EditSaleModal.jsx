@@ -126,7 +126,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
         // const updatedSalesArray = [...user.sales_array, saleId];
 
         await axios.patch(`http://localhost:5555/user/${userid}`, {
-          sales_array: saleId,
+          sales_array: { action: "push", value: saleId },
         });
         setShowAddForm(false);
       }

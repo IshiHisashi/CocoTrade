@@ -158,7 +158,7 @@ const AddPurchaseForm = ({ setShowAddForm, purchase, handleUpdate }) => {
         // const updatedPurchasesArray = [...user.purchases_array, purchaseId];
 
         await axios.patch(`http://localhost:5555/user/${userid}`, {
-          purchases_array: purchaseId,
+          purchases_array: { action: "push", value: purchaseId },
         });
         setShowAddForm(false);
       }

@@ -86,7 +86,7 @@ const PlanShipment = ({ userId, setShowModal }) => {
       const updatedSalesArray = [...user.sales_array, saleId];
       const patchedSalesArray = await axios.patch(
         `http://localhost:5555/user/${userId}`,
-        { sales_array: saleId }
+        { sales_array: { action: "push", value: saleId } }
       );
       console.log("Sales data in user's doc updated: ", patchedSalesArray.data);
 
@@ -127,7 +127,7 @@ const PlanShipment = ({ userId, setShowModal }) => {
         const updatedInvArray = [...user.inventory_amount_array, invId];
         const patchedInvArray = await axios.patch(
           `http://localhost:5555/user/${userId}`,
-          { inventory_amount_array: invId }
+          { inventory_amount_array: { action: "push", value: invId } }
         );
         console.log("Inv data in user's doc updated: ", patchedInvArray.data);
       } else {

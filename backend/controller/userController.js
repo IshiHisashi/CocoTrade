@@ -65,6 +65,12 @@ export const readAllUsers = async (req, res) => {
 };
 
 // Update a user
+// For array updating, expect to receive something like this as req.body:
+// { price_suggestion_array: {
+//   "action": "push" or "pull",
+//   "value": elementYouWannaPushOrPull
+//   }
+// }
 export const updateUser = async (req, res) => {
   console.log("req.body", req.body);
   const { userid } = req.params;
@@ -73,26 +79,47 @@ export const updateUser = async (req, res) => {
 
   try {
     let doc;
-
     for (let i = 0; i < keysArray.length; i++) {
       const currentKey = keysArray[i];
-
-      const objToBePushed = {};
-      objToBePushed[currentKey] = req.body[currentKey];
+      const objToBeHandled = {};
 
       if (UserModel.schema.path(currentKey).instance === "Array") {
+        // if it's array updating...
         console.log("instance array");
-        // eslint-disable-next-line no-await-in-loop
-        doc = await UserModel.findByIdAndUpdate(
-          userid,
-          { $push: objToBePushed },
-          {
-            new: true,
-          }
-        );
+
+        const { action } = req.body[currentKey];
+        const { value } = req.body[currentKey];
+
+        // create something like { price_suggestion_array: elementYouWannaPushOrPull }
+        objToBeHandled[currentKey] = value;
+
+        if (action === "push") {
+          // eslint-disable-next-line no-await-in-loop
+          doc = await UserModel.findByIdAndUpdate(
+            userid,
+            { $push: objToBeHandled },
+            {
+              new: true,
+            }
+          );
+        } else if (action === "pull") {
+          // eslint-disable-next-line no-await-in-loop
+          doc = await UserModel.findByIdAndUpdate(
+            userid,
+            { $pull: objToBeHandled },
+            {
+              new: true,
+            }
+          );
+        }
       } else {
+        // if it's just field value updating...
+
+        // create something like { price_suggestion_array: elementYouWannaPushOrPull }
+        objToBeHandled[currentKey] = req.body[currentKey];
+
         // eslint-disable-next-line no-await-in-loop
-        doc = await UserModel.findByIdAndUpdate(userid, objToBePushed, {
+        doc = await UserModel.findByIdAndUpdate(userid, objToBeHandled, {
           new: true,
         });
       }

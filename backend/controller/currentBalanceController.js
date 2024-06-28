@@ -80,6 +80,38 @@ export const getCurrentBalance = async (req, res) => {
   }
 };
 
+// Read the most latest one
+export const getLatestBalance = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.userid);
+    // Read the docs
+    // const docs = await CurrentBalanceModel.find({});
+    const doc = await CurrentBalanceModel.aggregate([
+      {
+        $match: { _id: { $in: user.balance_array } },
+      },
+      {
+        $sort: { date: -1 },
+      },
+      {
+        $limit: 1,
+      },
+    ]);
+    res.status(201).json({
+      status: "success",
+      data: {
+        doc,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      status: "fail",
+      message: "failed",
+    });
+  }
+};
+
 // Update and Delete needs parameter (ID)
 // Update
 export const updateCurrentBalance = async (req, res) => {

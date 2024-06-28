@@ -149,6 +149,7 @@ const AddPurchaseForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Update purchase document
       if (purchase) {
         await handleUpdate(formData);
       } else {
@@ -160,12 +161,11 @@ const AddPurchaseForm = ({
         // eslint-disable-next-line no-underscore-dangle
         const purchaseId = response.data._id;
 
-        // const updatedPurchasesArray = [...user.purchases_array, purchaseId];
+        const updatedPurchasesArray = [...user.purchases_array, purchaseId];
 
+        // 4). Send ids to the corresponding user documents
         await axios.patch(`http://localhost:5555/user/${userid}`, {
-
-          purchases_array: { action: "push", value: purchaseId },
-          
+          purchases_array: updatedPurchasesArray,
         });
         setShowAddForm(false);
         setPurchasesFromParent(response.data);
@@ -174,6 +174,60 @@ const AddPurchaseForm = ({
       // (this is realted to reloading behaviour
       // when users visiting purchase page from Add Purchase button on Dashboard)
       navigate("/purchase", { state: { showAddForm: false } });
+    } catch (error) {
+      console.error("Error creating/updating purchase:", error);
+    }
+  };
+
+  const handleSubmit2 = async (e) => {
+    e.preventDefault();
+    try {
+      // Update purchase document
+      if (purchase) {
+        await handleUpdate(formData);
+      } else {
+        // 1). Create purchase document
+        const newPurchaseDoc = await axios.post(
+          "http://localhost:5555/purchase",
+          formData
+        );
+        // eslint-disable-next-line no-underscore-dangle
+        const purchaseId = newPurchaseDoc.data._id;
+        const updatedPurchasesArray = [...user.purchases_array, purchaseId];
+        // 2). Create cash_balance
+        // 2-1). get current cashbalance
+        const currentCashDoc = await axios.get(
+          `http://localhost:5555/tmpFinRoute/${userid}/currentbalance/latest`
+        );
+        const currentCash =
+          +currentCashDoc.data.data.doc[0].current_balance.$numberDecimal;
+        // 2-2). post new cashbalance
+        const newCashDoc = await axios.post(
+          "http://localhost:5555/currentbalance",
+          {
+            user_id: userid,
+            current_balance: currentCash - formData.total_purchase_price,
+            date: new Date(),
+          }
+        );
+        // eslint-disable-next-line no-underscore-dangle
+        const newCashBalanceId = newCashDoc.data.data.newCurrentBalance._id;
+        const updatedCashBalanceArray = [
+          ...user.balance_array,
+          newCashBalanceId,
+        ];
+
+        // 3). Create inventory
+        // 3-1). get current inventory
+        // 3-2). post new inventory
+
+        // 4). Send ids to the corresponding user documents
+        await axios.patch(`http://localhost:5555/user/${userid}`, {
+          purchases_array: updatedPurchasesArray,
+          balance_array: updatedCashBalanceArray,
+        });
+        setShowAddForm(false);
+      }
     } catch (error) {
       console.error("Error creating/updating purchase:", error);
     }
@@ -204,8 +258,8 @@ const AddPurchaseForm = ({
           name="farmer_id"
           type="dropdown"
           value={formData.farmer_id}
+          // eslint-disable-next-line no-underscore-dangle
           options={farmers.map((farmer) => ({
-            // eslint-disable-next-line no-underscore-dangle
             value: farmer._id,
             label: farmer.full_name,
           }))}

@@ -48,8 +48,15 @@ const NotificationDropdown = ({ isNotificationOpen, setIsNotificationOpen, userI
         {notifications.length > 0 ? (
           notifications.slice(0, 5).map((notification) => (
                                       // eslint-disable-next-line no-underscore-dangle 
-            <div key={notification._id} className="p-2 border-b border-gray-300 text-left">
-              <h2 className="font-semibold">{notification.title}</h2>
+                <div key={notification._id} className={`p-2 border-b border-gray-300 text-left pl-9 relative ${
+              notification.read ? "bg-white" : "bg-red-100"
+            }`}>
+              <div className="flex items-center">
+              {!notification.read && (
+  <div className="absolute top-50 left-2 w-3 h-3 bg-red-500 rounded-full" />
+)}
+                <h2 className="text-left flex-1 font-semibold">{notification.title}</h2>
+                </div>
               <p>{notification.message}</p>
               <small className="text-gray-500 block">{formatDistanceToNow(new Date(notification.createdAt))} ago</small>
             </div>

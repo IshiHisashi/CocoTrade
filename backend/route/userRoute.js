@@ -21,5 +21,6 @@ router.get("/:userid/manu", userController.getAllManufacturers);
 router.get("/:userid/ntf", userController.getAllNotifications);
 router.get("/:userid/ntfd", userController.getNotificationsByDuration);
 router.get("/:userid/fivesales", userController.getTopFiveSales);
+router.get("/:userid/latestInv", userController.getLatestInventory);
 
 export default router;

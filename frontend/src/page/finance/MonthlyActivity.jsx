@@ -29,7 +29,7 @@ const MonthlyActivity = () => {
         setMonthlySale(res.data.data.salesAggregation);
       })
       .catch();
-    // Read purchas
+    // Read purchase
     axios
       .get(
         `http://localhost:5555/tmpFinRoute/${userId}/purchase/monthly-aggregate`
@@ -51,7 +51,7 @@ const MonthlyActivity = () => {
   function getLast12MonthsDisplay() {
     const months = [];
     for (let i = 0; i < 12; i++) {
-      months.push(moment().subtract(i, "months").format("MMM YYYY"));
+      months.push(moment().subtract(i, "months").format("MM/YY"));
     }
     return months.reverse(); // To get them in chronological order
   }
@@ -90,6 +90,38 @@ const MonthlyActivity = () => {
       }
     });
 
+    const drawValues = {
+      id: "drawValues",
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          if (!meta.hidden) {
+            meta.data.forEach((element, index) => {
+              // Draw the text in black, with the specified font
+              ctx.fillStyle = "black";
+              ctx.font = "bold 12px Arial";
+
+              const dataString = dataset.data[index]
+                ? `${Math.round(Number(dataset?.data[index]) / 1000)}K`
+                : 0;
+              // Make sure alignment settings are correct
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+
+              const padding = 5;
+              const position = element.tooltipPosition();
+              ctx.fillText(
+                dataString,
+                position.x,
+                position.y - 12 / 2 - padding
+              );
+            });
+          }
+        });
+      },
+    };
+
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
@@ -101,16 +133,24 @@ const MonthlyActivity = () => {
           {
             label: "Monthly Sale",
             data: chartDataSale,
-            backgroundColor: "#F1F7F8",
-            hoverBackgroundColor: "#245E66",
+            backgroundColor: (context) => {
+              const index = context.dataIndex;
+              const month = labels[index];
+              return month === selectedMonth ? "#245E66" : "#F1F7F8";
+            },
             barThickness: 15,
+            barPercentage: 0.5,
           },
           {
             label: "Monthly Purchase",
             data: chartDataPurchase,
-            backgroundColor: "#F1F7F8",
-            hoverBackgroundColor: "#0C7F8E",
+            backgroundColor: (context) => {
+              const index = context.dataIndex;
+              const month = labels[index];
+              return month === selectedMonth ? "#0C7F8E" : "#F1F7F8";
+            },
             barThickness: 15,
+            barPercentage: 0.5,
           },
         ],
       },
@@ -119,9 +159,9 @@ const MonthlyActivity = () => {
           x: {
             stacked: false,
             // Controls the space between bars within a group
-            barPercentage: 0.8,
+            barPercentage: 0.4,
             // Controls the space between categories (groups of bars)
-            categoryPercentage: 0.3,
+            categoryPercentage: 0.5,
             grid: {
               display: false, // Disable grid lines on x-axis
             },
@@ -159,8 +199,9 @@ const MonthlyActivity = () => {
           }
         },
       },
+      plugins: [drawValues],
     });
-  }, [monthlySale, monthlyPurchase]);
+  }, [monthlySale, monthlyPurchase, selectedMonth]);
 
   return (
     <div>

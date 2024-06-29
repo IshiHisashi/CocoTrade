@@ -14,7 +14,9 @@ export const createPriceSuggestion = async (req, res) => {
       axios.get("http://localhost:5555/marketprice/latest"),
     ]);
 
-    const margin = Number(resUserDoc.data.data.margin.$numberDecimal);
+    const margin = resUserDoc.data.data.margin
+      ? Number(resUserDoc.data.data.margin.$numberDecimal)
+      : 0;
 
     // pricePHP is in ton. convert it in kg, and calculate price suggestion.
     const pricePHP = Number(
@@ -29,9 +31,6 @@ export const createPriceSuggestion = async (req, res) => {
     };
 
     const newPriceSuggestion = await PriceSuggestionModel.create(newDoc);
-
-    // here update the array in the user document as well!
-    // implement when I create update method for user collection.
 
     res.status(201).json({
       status: "success",

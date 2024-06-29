@@ -3,7 +3,10 @@ import * as userController from "../controller/userController.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", userController.createUser);
+router
+  .route("/")
+  .get(userController.readAllUsers)
+  .post(userController.createUser);
 
 router
   .route("/:userid")

@@ -15,6 +15,8 @@ module.exports = {
         "no-unused-vars": ["off"], // don't care about unused variables
         "import/extensions": ["off"], // use extentions for import from path
         "arrow-body-style": ["off"], // allow to use block statement for arrow functions
+        "no-plusplus": ["off"], // allow to use ++ operator
+        "no-underscore-dangle": ["off"], // allow to use dangling underscores in identifiers like "_id"
         // single quotations usage is turned off by Prettier.
         // trailing comma usage is set to be "es5" by Prettier.
       },

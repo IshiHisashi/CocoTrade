@@ -5,14 +5,40 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: "../config.env" });
 
-const postData = async (priceUSD, pricePHP, exchangeRate) => {
+const postDataToPriceSuggestion = async () => {
+  try {
+    const res = await axios.get("http://localhost:5555/user");
+    res.data.data.forEach(async (userId) => {
+      try {
+        const resPriceSuggestionPost = await axios.post(
+          `http://localhost:5555/user/${userId}/pricesuggestion`
+        );
+
+        // update price-suggestion-array in the user's doc
+        await axios.patch(`http://localhost:5555/user/${userId}`, {
+          price_suggestion_array: {
+            action: "push",
+            value: resPriceSuggestionPost.data.data._id,
+          },
+        });
+      } catch (error) {
+        console.log(
+          `Error posting price suggestion data for user ${userId}: ${error.message}`
+        );
+      }
+    });
+  } catch (error) {
+    console.log("Error getting all users: ", error.message);
+  }
+};
+
+const postDataToMarketPrice = async (priceUSD, pricePHP, exchangeRate) => {
   try {
     const res = await axios.post("http://localhost:5555/marketprice", {
       price_USD: priceUSD,
       price_PHP: pricePHP,
       exchange_rate: exchangeRate,
     });
-    console.log("data posted successfully", res.data);
   } catch (error) {
     console.log("Error posting data: ", error.message);
   }
@@ -54,6 +80,7 @@ const scraper = async () => {
 export default async function handler() {
   const priceUSD = await scraper();
   const { pricePHP, exchangeRate } = await convertCurrency(priceUSD);
-  await postData(priceUSD, pricePHP, exchangeRate);
+  await postDataToMarketPrice(priceUSD, pricePHP, exchangeRate);
+  postDataToPriceSuggestion();
 }
 // );

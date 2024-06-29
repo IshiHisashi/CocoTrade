@@ -167,7 +167,7 @@ const AddPurchaseForm = ({
           {
             user_id: userid,
             changeValue: formData.total_purchase_price,
-            date: new Date(),
+            date: formData.purchase_date,
             type: "purchase",
           }
         );
@@ -180,7 +180,7 @@ const AddPurchaseForm = ({
           {
             user_id: userid,
             changeValue: formData.amount_of_copra_purchased,
-            date: new Date(),
+            date: formData.purchase_date,
             type: "purchase",
           }
         );

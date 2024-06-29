@@ -17,7 +17,6 @@ export const createInventory = async (req, res) => {
         $limit: 1,
       },
     ]);
-    console.log(doc.length);
     const currentInventoryLeft = doc[0] ? +doc[0].current_amount_left : 0;
     const currentInventoryPending = doc[0]
       ? +doc[0].current_amount_with_pending

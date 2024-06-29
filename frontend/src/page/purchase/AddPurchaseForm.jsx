@@ -175,13 +175,23 @@ const AddPurchaseForm = ({
         const newCashBalanceId = newCashDoc.data.data.newCurrentBalance._id;
 
         // 3). Create inventory
-        // 3-1). get current inventory
-        // 3-2). post new inventory
+        const newInventoryDoc = await axios.post(
+          `http://localhost:5555/tmpFinRoute/${userid}/inventory`,
+          {
+            user_id: userid,
+            changeValue: formData.amount_of_copra_purchased,
+            date: new Date(),
+            type: "purchase",
+          }
+        );
+        // eslint-disable-next-line no-underscore-dangle
+        const newInventoryId = newInventoryDoc.data.data.newInventory._id;
 
         // 4). Send ids to the corresponding user documents
         await axios.patch(`http://localhost:5555/user/${userid}`, {
           purchases_array: { action: "push", value: purchaseId },
           balance_array: { action: "push", value: newCashBalanceId },
+          inventory_amount_array: { action: "push", value: newInventoryId },
         });
         setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);

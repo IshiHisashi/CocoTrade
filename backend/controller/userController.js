@@ -229,7 +229,7 @@ export const getLatestInventory = async (req, res) => {
       {
         $limit: 1,
       },
-    ])
+    ]);
     console.log("Latest inventories retrieved");
     return res.status(200).json({
       status: "Success",

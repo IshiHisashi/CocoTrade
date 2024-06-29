@@ -14,7 +14,7 @@ import Purchase from "./page/purchase/purchase.jsx";
 import Sale from "./page/sale/sale.jsx";
 import ViewSalesTable from "./page/sale/ViewSalesTable.jsx";
 import Layout from "./Layout.jsx";
-import Auth from "./page/auth/Auth.jsx"
+import Auth from "./page/auth/Auth.jsx";
 // import Settings from "";
 
 const App = () => {
@@ -22,7 +22,14 @@ const App = () => {
     createRoutesFromElements(
       <>
         <Route path="/auth" element={<Auth />} />
-        <Route path="/" element={<Landing />} />
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Landing />
+            </Layout>
+          }
+        />
         <Route
           path="/dashboard"
           element={

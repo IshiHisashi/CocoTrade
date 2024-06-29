@@ -1,5 +1,5 @@
 import { Notification } from "../model/notificationModel.js";
-import { UserModel as User } from "../model/userModel.js"
+import { UserModel as User } from "../model/userModel.js";
 
 // Create Notification
 export const createNotification = async (req, res) => {
@@ -19,28 +19,42 @@ export const createNotification = async (req, res) => {
         });
     }
 };
-
 export const getNotificationById = async (req, res) => {
     try {
-        const Notification = await Notification.findById(req.params.id);
-        if(!Notification) {
-            return res.status(404).json({
-                status: "failed", 
-                error: 'Notification not found' 
-            });
-        }
-        res.status(200).json({
-            status: "success",
-            data: Notification
+      const notification = await Notification.findById(req.params.id);
+      if (!notification) {
+        return res.status(404).json({
+          status: "failed",
+          error: 'Notification not found',
         });
+      }
+      res.status(200).json({
+        status: "success",
+        data: notification,
+      });
+    } catch (err) {
+      res.status(500).json({
+        status: "failed",
+        error: err.message,
+      });
     }
-    catch (err) {
-        res.status(500).json({
-            status: "failed",
-            error: err.message
-        });
+  };
+  
+  export const getNotificationsByUserId = async (req, res) => {
+    try {
+      const notifications = await Notification.find({ user_id: req.params.userId });
+      res.status(200).json({
+        status: "success",
+        data: notifications,
+      });
+    } catch (err) {
+      res.status(500).json({
+        status: "failed",
+        error: err.message,
+      });
     }
-};
+  };
+  
 
 export const updateNotification = async (req, res) => {
     try {
@@ -92,3 +106,21 @@ export const deleteNotification = async (req, res) => {
         });
     }
 }
+
+export const markNotificationsAsRead = async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { user_id: req.params.userId, read: false },
+      { $set: { read: true } }
+    );
+    res.status(200).json({
+      status: 'success',
+      message: 'Notifications marked as read'
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'failed',
+      error: err.message
+    });
+  }
+};

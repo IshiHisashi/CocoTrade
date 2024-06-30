@@ -5,12 +5,21 @@ import { Inventory } from "../model/inventoryModel.js";
 // Create a user
 export const createUser = async (req, res) => {
   try {
-    const newUser = await UserModel.create(req.body);
+    const newUser = await UserModel.create({
+      _id: req.body.firebaseUserId,  // Firebase UID received from the frontend
+      company_name: req.body.companyName, // User's company name
+      full_name: req.body.fullName, // User's full name
+      email: req.body.email, // User's email
+      // Include additional fields as needed, ensure they are included in the UserModel schema
+    });
+
+    // Successfully created the user, return success response
     res.status(201).json({
       status: "success",
       data: newUser,
     });
   } catch (error) {
+    // Handle any errors during user creation
     res.status(500).json({
       status: "fail",
       message: error.message,

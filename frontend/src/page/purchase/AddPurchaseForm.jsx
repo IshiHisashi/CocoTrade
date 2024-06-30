@@ -172,7 +172,7 @@ const AddPurchaseForm = ({
           }
         );
         // eslint-disable-next-line no-underscore-dangle
-        const newCashBalanceId = newCashDoc.data.data.newCurrentBalance._id;
+        const newCashBalanceId = newCashDoc?.data?.data?.newCurrentBalance._id;
 
         // 3). Create inventory
         const newInventoryDoc = await axios.post(
@@ -185,14 +185,25 @@ const AddPurchaseForm = ({
           }
         );
         // eslint-disable-next-line no-underscore-dangle
-        const newInventoryId = newInventoryDoc.data.data.newInventory._id;
+        const newInventoryId = newInventoryDoc?.data?.data?.newInventory._id;
 
         // 4). Send ids to the corresponding user documents
-        await axios.patch(`http://localhost:5555/user/${userid}`, {
+        const updateData = {
           purchases_array: { action: "push", value: purchaseId },
-          balance_array: { action: "push", value: newCashBalanceId },
-          inventory_amount_array: { action: "push", value: newInventoryId },
-        });
+        };
+        if (newCashBalanceId) {
+          updateData.balance_array = {
+            action: "push",
+            value: newCashBalanceId,
+          };
+        }
+        if (newInventoryId) {
+          updateData.inventory_amount_array = {
+            action: "push",
+            value: newInventoryId,
+          };
+        }
+        await axios.patch(`http://localhost:5555/user/${userid}`, updateData);
         setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);
       }

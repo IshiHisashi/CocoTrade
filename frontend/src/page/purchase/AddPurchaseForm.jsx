@@ -191,6 +191,7 @@ const AddPurchaseForm = ({
         const updateData = {
           purchases_array: { action: "push", value: purchaseId },
         };
+        // add an arrays if there's any new document created under CashBalance, Inventory collection
         if (newCashBalanceId) {
           updateData.balance_array = {
             action: "push",

@@ -14,7 +14,8 @@ Chart.register(...registerables);
 const MonthlyActivity = () => {
   const [monthlySale, setMonthlySale] = useState([]);
   const [monthlyPurchase, setMonthlyPurchase] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(
+  const [selectedMonth, setSelectedMonth] = useState("all");
+  const [selectedTableMonth, setSelectedTableMonth] = useState(
     moment().format("YYYY-MM")
   );
   const userId = useContext(UserIdContext);
@@ -104,7 +105,7 @@ const MonthlyActivity = () => {
 
               const dataString = dataset.data[index]
                 ? `${Math.round(Number(dataset?.data[index]) / 1000)}K`
-                : 0;
+                : "";
               // Make sure alignment settings are correct
               ctx.textAlign = "center";
               ctx.textBaseline = "middle";
@@ -136,7 +137,9 @@ const MonthlyActivity = () => {
             backgroundColor: (context) => {
               const index = context.dataIndex;
               const month = labels[index];
-              return month === selectedMonth ? "#245E66" : "#F1F7F8";
+              return month === selectedMonth || selectedMonth === "all"
+                ? "#245E66"
+                : "#F1F7F8";
             },
             barThickness: 15,
             barPercentage: 0.5,
@@ -147,7 +150,9 @@ const MonthlyActivity = () => {
             backgroundColor: (context) => {
               const index = context.dataIndex;
               const month = labels[index];
-              return month === selectedMonth ? "#0C7F8E" : "#F1F7F8";
+              return month === selectedMonth || selectedMonth === "all"
+                ? "#0C7F8E"
+                : "#F1F7F8";
             },
             barThickness: 15,
             barPercentage: 0.5,
@@ -155,6 +160,8 @@ const MonthlyActivity = () => {
         ],
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           x: {
             stacked: false,
@@ -195,6 +202,7 @@ const MonthlyActivity = () => {
             const chartElement = elements[0];
             const clickedMonth = labels[chartElement.index];
             setSelectedMonth(clickedMonth);
+            setSelectedTableMonth(clickedMonth);
             console.log(`Selected Month: ${clickedMonth}`);
           }
         },
@@ -206,8 +214,14 @@ const MonthlyActivity = () => {
   return (
     <div>
       <h1>MonthlyActivity</h1>
-      <canvas ref={chartRef}> </canvas>
-      <MonthlyTable selectedMonth={selectedMonth} />
+      <div className="grid grid-cols-[80%_20%]">
+        <section>
+          <canvas ref={chartRef} className="">
+            {" "}
+          </canvas>
+        </section>
+        <MonthlyTable selectedTableMonth={selectedTableMonth} />
+      </div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  // _id: { type: String, required: true, unique: true },
+  _id: { type: String, required: true, unique: true },
   company_name: { type: String, required: true },
   full_name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -25,7 +25,7 @@ const userSchema = new Schema({
     { type: Schema.Types.ObjectId, ref: "Price_Suggestion" },
   ],
 }
-// ,{_id: false }
+,{_id: false }
 );
 
 export const UserModel = mongoose.model("User", userSchema);

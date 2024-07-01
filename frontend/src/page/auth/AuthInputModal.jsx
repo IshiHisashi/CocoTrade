@@ -202,7 +202,16 @@ const AuthInputModal = (props) => {
           />
         </>
       ) : (
-        <p>else</p>
+        <>
+          <h1>Something went wrong...</h1>
+          <p>Please try again.</p>
+          <CtaBtn
+            size="M"
+            level="P"
+            innerTxt="Close"
+            onClickFnc={() => fnToCloseThisModal(false)}
+          />
+        </>
       )}
     </div>
   );

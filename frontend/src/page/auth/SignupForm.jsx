@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import signUp from '../../services/authService'; 
 
 const SignupForm = () => {
@@ -10,24 +11,32 @@ const SignupForm = () => {
     const [successMessage, setSuccessMessage] = useState('');
   
     const handleSignup = async () => {
-      try {
-        const user = await signUp(email, password, fullName, companyName);
-        setSuccessMessage('Signup successful!');  
-      } catch (err) {
-        setError(err.message);
-        setSuccessMessage('');
-      }
-    };
+        try {
+          const user = await signUp(email, password, fullName, companyName);
+          setSuccessMessage('Signup successful!');
+          setEmail('');
+          setPassword('');
+          setFullName('');
+          setCompanyName('');
+          setError(''); 
+        } catch (err) {
+          setError(err.message);
+          setSuccessMessage('');
+        }
+      };  
   
     return (
       <div>
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+
         <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Enter your full name" />
         <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Enter your company name" />
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" />
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
         <button type="button" onClick={handleSignup}>Sign Up</button>
+        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+        <p>Already have an account? <Link to="/auth/login">Log in</Link>.</p>
+
       </div>
     );
 };

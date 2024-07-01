@@ -165,7 +165,7 @@ const AuthInputModal = (props) => {
             />
             <button
               type="button"
-              className="block"
+              className="block underline mb-8"
               onClick={() => fnToChangeAuthType("passwordReset")}
             >
               Forgot password?
@@ -178,7 +178,16 @@ const AuthInputModal = (props) => {
                 await handleLogin();
               }}
             />
-            <p>Don&apos;t have an account? Sign up</p>
+            <p className="text-center mt-8">
+              Don&apos;t have an account?{" "}
+              <button
+                type="button"
+                className="underline"
+                onClick={() => fnToChangeAuthType("signup")}
+              >
+                Sign up
+              </button>
+            </p>
           </form>
         </>
       ) : authType === "passwordReset" ? (

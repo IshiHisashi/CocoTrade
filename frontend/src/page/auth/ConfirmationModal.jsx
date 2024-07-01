@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
 
 const ConfirmationModal = (props) => {
@@ -18,7 +19,9 @@ const ConfirmationModal = (props) => {
       {confirmationType === "accountCreated" ? (
         <>
           <h1>Account created</h1>
-          <CtaBtn size="M" level="P" innerTxt="Set up account" />
+          <CtaBtn size="M" level="P" innerTxt="Set up account">
+            <Link to="/onboarding" />
+          </CtaBtn>
           {/* onClickFnc={} */}
         </>
       ) : confirmationType === "PasswordRequest" ? (

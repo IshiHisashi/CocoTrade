@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Routes,
   Route,
@@ -14,15 +14,27 @@ import Purchase from "./page/purchase/purchase.jsx";
 import Sale from "./page/sale/sale.jsx";
 import ViewSalesTable from "./page/sale/ViewSalesTable.jsx";
 import Layout from "./Layout.jsx";
-import Auth from "./page/auth/Auth.jsx"
+import Auth from "./page/auth/Auth.jsx";
+import Onboarding from "./page/onboarding/Onboarding.jsx";
+import UserIdProvider from "./contexts/UserIdContext.jsx";
 // import Settings from "";
 
 const App = () => {
+  const [user, setUser] = useState(null);
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
         <Route path="/auth/*" element={<Auth />} />
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Landing fnToSetUser={setUser} />} />
+        <Route
+          path="/onboarding"
+          element={
+            <UserIdProvider>
+              <Onboarding />
+            </UserIdProvider>
+          }
+        />
         <Route
           path="/dashboard"
           element={

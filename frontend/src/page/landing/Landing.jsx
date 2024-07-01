@@ -52,6 +52,7 @@ const Landing = () => {
       >
         <AuthInputModal
           authType={authType}
+          fnToChangeAuthType={setAuthType}
           fnToSetNextModalType={setConfirmationType}
           fnToOpenNextModal={setIsConfirmationModalOpen}
           fnToCloseThisModal={setIsAuthModalOpen}
@@ -64,7 +65,10 @@ const Landing = () => {
         className={classNameForModal}
         style={styleForModal}
       >
-        <ConfirmationModal confirmationType={confirmationType} />
+        <ConfirmationModal
+          confirmationType={confirmationType}
+          fnToCloseThisModal={setIsConfirmationModalOpen}
+        />
       </Modal>
     </>
   );

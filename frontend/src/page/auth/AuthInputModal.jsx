@@ -5,10 +5,12 @@ import CtaBtn from "../../component/btn/CtaBtn.jsx";
 import Field from "../../component/field-filter/Field.jsx";
 import signUp from "../../services/authService.jsx";
 import login from "../../services/login.jsx";
+import resetPassword from "../../services/resetPassword.jsx";
 
 const AuthInputModal = (props) => {
   const {
     authType,
+    fnToChangeAuthType,
     fnToSetNextModalType,
     fnToOpenNextModal,
     fnToCloseThisModal,
@@ -68,6 +70,21 @@ const AuthInputModal = (props) => {
     }
   };
 
+  const handleResetPassword = async () => {
+    if (email === "") {
+      window.alert("Please fill out all the input fields.");
+    } else {
+      try {
+        await resetPassword(email);
+        fnToSetNextModalType("PasswordRequest");
+        fnToOpenNextModal(true);
+        fnToCloseThisModal(false);
+      } catch (error) {
+        window.alert(`Firebase Auth error: ${error.message}`);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center m-7 gap-5">
       <button
@@ -78,6 +95,7 @@ const AuthInputModal = (props) => {
         x
       </button>
 
+      {/* eslint-disable-next-line no-nested-ternary */}
       {authType === "signup" ? (
         <>
           <h1>Create an account</h1>
@@ -124,7 +142,8 @@ const AuthInputModal = (props) => {
             />
           </form>
         </>
-      ) : (
+      ) : // eslint-disable-next-line no-nested-ternary
+      authType === "login" ? (
         <>
           <h1>Welcome back</h1>
           <form>
@@ -144,7 +163,13 @@ const AuthInputModal = (props) => {
               type="password"
               required
             />
-            <p>Forgot password?</p>
+            <button
+              type="button"
+              className="block"
+              onClick={() => fnToChangeAuthType("passwordReset")}
+            >
+              Forgot password?
+            </button>
             <CtaBtn
               size="L"
               level="P"
@@ -156,6 +181,28 @@ const AuthInputModal = (props) => {
             <p>Don&apos;t have an account? Sign up</p>
           </form>
         </>
+      ) : authType === "passwordReset" ? (
+        <>
+          <h1>Forgot your password?</h1>
+          <Field
+            label="Email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            required
+          />
+          <CtaBtn
+            size="L"
+            level="P"
+            innerTxt="Request to reset password"
+            onClickFnc={async () => {
+              await handleResetPassword();
+            }}
+          />
+        </>
+      ) : (
+        <p>else</p>
       )}
     </div>
   );

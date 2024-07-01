@@ -1,12 +1,23 @@
-import React from 'react';
+import React from "react";
 
-const Field = ({ label, name, value, onChange, type = 'text', options, disabled = false, required = false }) => {
+const Field = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  options,
+  disabled = false,
+  required = false,
+}) => {
   let inputElement = null;
 
   switch (type) {
-    case 'text':
-    case 'number':
-    case 'date':
+    case "text":
+    case "number":
+    case "date":
+    case "email":
+    case "password":
       inputElement = (
         <input
           type={type}
@@ -20,7 +31,7 @@ const Field = ({ label, name, value, onChange, type = 'text', options, disabled 
         />
       );
       break;
-    case 'dropdown':
+    case "dropdown":
       inputElement = (
         <select
           name={name}
@@ -32,7 +43,9 @@ const Field = ({ label, name, value, onChange, type = 'text', options, disabled 
         >
           <option value="">Select...</option>
           {options.map((option) => (
-            <option key={option.value} value={option.value}>{option.label}</option>
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
         </select>
       );
@@ -42,8 +55,15 @@ const Field = ({ label, name, value, onChange, type = 'text', options, disabled 
   }
 
   return (
-    <div className="mb-4">
-      {label && <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>}
+    <div className="mb-4 w-full">
+      {label && (
+        <label
+          htmlFor={name}
+          className="block text-sm font-medium text-gray-700"
+        >
+          {label} {required && <span className="text-[#FE2E00]">*</span>}
+        </label>
+      )}
       {inputElement}
     </div>
   );

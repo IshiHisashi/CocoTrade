@@ -16,6 +16,8 @@ const Field = ({
     case "text":
     case "number":
     case "date":
+    case "email":
+    case "password":
       inputElement = (
         <input
           type={type}
@@ -53,7 +55,7 @@ const Field = ({
   }
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 w-full">
       {label && (
         <label
           htmlFor={name}

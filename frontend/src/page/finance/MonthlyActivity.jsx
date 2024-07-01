@@ -213,7 +213,7 @@ const MonthlyActivity = () => {
 
   return (
     <div>
-      <h1>MonthlyActivity</h1>
+      <h1>Monthly Activity</h1>
       <div className="grid grid-cols-[80%_20%]">
         <section>
           <canvas ref={chartRef} className="">

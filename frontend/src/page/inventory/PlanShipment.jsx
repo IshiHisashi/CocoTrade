@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import CtaBtn from "../../component/btn/CtaBtn";
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
+import { format } from 'date-fns';
+import CtaBtn from '../../component/btn/CtaBtn';
 
-const PlanShipment = ({ userId, setShowModal }) => {
+const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
   const [latestInv, setLatestInv] = useState([]);
@@ -143,15 +144,29 @@ const PlanShipment = ({ userId, setShowModal }) => {
         );
       }
 
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error creating/updating sale:", error);
-    }
-  };
+       // Create notification
+      const formattedDate = format(new Date(formData.copra_ship_date), "MMMM do, yyyy");
+      const notificationData = {
+        user_id: userId,
+        title: "Prepare your trucks!",
+        message: `You have an upcoming shipment on ${formattedDate}!`,
+      };
+      const notificationResponse = await axios.post('http://localhost:5555/notification', notificationData);
+      console.log("Notification created:", notificationResponse.data);
 
-  const fncCloseModal = () => {
-    setShowModal(false);
-  };
+      // Refresh unread notifications count
+      if (refreshNotifications) {
+        refreshNotifications();
+      }
+      window.location.reload();
+       setShowModal(false);
+     }
+     catch (error) {
+       console.error('Error creating/updating sale or notification:', error);
+     }
+   }
+ 
+  const fncCloseModal = () => {setShowModal(false);}
 
   return (
     <div>

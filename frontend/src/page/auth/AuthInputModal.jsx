@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
 import Field from "../../component/field-filter/Field.jsx";
 import signUp from "../../services/authService.jsx";
+import login from "../../services/login.jsx";
 
 const AuthInputModal = (props) => {
   const {
@@ -16,7 +19,7 @@ const AuthInputModal = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const hadleSignup = async () => {
+  const handleSignup = async () => {
     if (
       email === "" ||
       password === "" ||
@@ -31,6 +34,33 @@ const AuthInputModal = (props) => {
           fnToSetNextModalType("accountCreated");
           fnToOpenNextModal(true);
           fnToCloseThisModal(false);
+        }
+      } catch (error) {
+        window.alert(`Firebase Auth error: ${error.message}`);
+      }
+    }
+  };
+
+  const handleLogin = async () => {
+    if (email === "" || password === "") {
+      window.alert("Please fill out all the input fields.");
+    } else {
+      try {
+        const user = await login(email, password);
+        try {
+          const res = await axios.get(`http://localhost:5555/user/${user.uid}`);
+          const userDoc = res.data.data;
+          console.log(userDoc);
+          // if (
+          //   !userDoc.country ||
+          //   !userDoc.currency ||
+          //   !userDoc.margin ||
+          //   !userDoc.max_inventory_amount ||
+          //   !userDoc.amount_per_ship
+          // ) {
+          // }
+        } catch (error) {
+          console.log(`Error getting user doc from DB: ${error.message}`);
         }
       } catch (error) {
         window.alert(`Firebase Auth error: ${error.message}`);
@@ -89,7 +119,7 @@ const AuthInputModal = (props) => {
               level="P"
               innerTxt="Sign up"
               onClickFnc={async () => {
-                await hadleSignup();
+                await handleSignup();
               }}
             />
           </form>
@@ -115,8 +145,14 @@ const AuthInputModal = (props) => {
               required
             />
             <p>Forgot password?</p>
-            <CtaBtn type="submit" size="L" level="P" innerTxt="Log in" />
-            {/* onClickFnc={} */}
+            <CtaBtn
+              size="L"
+              level="P"
+              innerTxt="Log in"
+              onClickFnc={async () => {
+                await handleLogin();
+              }}
+            />
             <p>Don&apos;t have an account? Sign up</p>
           </form>
         </>

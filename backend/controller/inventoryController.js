@@ -50,8 +50,8 @@ export const createInventory = async (req, res) => {
           await Inventory.findByIdAndUpdate(doc._id, {
             current_amount_left:
               req.body.type === "purchase"
-                ? doc.current_amount_left - req.body.changeValue
-                : doc.current_amount_left + req.body.changeValue,
+                ? doc.current_amount_left + req.body.changeValue
+                : doc.current_amount_left - req.body.changeValue,
           });
         });
       };
@@ -73,8 +73,8 @@ export const createInventory = async (req, res) => {
           time_stamp: req.body.date,
           current_amount_left:
             req.body.type === "purchase"
-              ? currentInventoryLeft - req.body.changeValue
-              : currentInventoryLeft + req.body.changeValue,
+              ? currentInventoryLeft + req.body.changeValue
+              : currentInventoryLeft - req.body.changeValue,
           current_amount_with_pending: currentInventoryPending,
         };
         const newInventory = await Inventory.create(newDoc);
@@ -97,8 +97,8 @@ export const createInventory = async (req, res) => {
         time_stamp: req.body.date,
         current_amount_left:
           req.body.type === "purchase"
-            ? currentInventoryLeft - req.body.changeValue
-            : currentInventoryLeft + req.body.changeValue,
+            ? currentInventoryLeft + req.body.changeValue
+            : currentInventoryLeft - req.body.changeValue,
         current_amount_with_pending: currentInventoryPending,
       };
       const newInventory = await Inventory.create(newDoc);

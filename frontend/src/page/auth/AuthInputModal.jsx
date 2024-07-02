@@ -24,15 +24,10 @@ const AuthInputModal = (props) => {
 
   const navigate = useNavigate();
 
-  const handleSignup = async () => {
-    if (
-      email === "" ||
-      password === "" ||
-      fullName === "" ||
-      companyName === ""
-    ) {
-      window.alert("Please fill out all the input fields.");
-    } else {
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    if (email && password && fullName && companyName) {
       try {
         const newUserDoc = await signUp(email, password, fullName, companyName);
         if (newUserDoc.status === "success") {
@@ -43,22 +38,22 @@ const AuthInputModal = (props) => {
       } catch (error) {
         window.alert(`Firebase Auth error: ${error.message}`);
       }
+    } else {
+      window.alert("Please fill out all the input fields.");
     }
   };
 
-  const handleLogin = async () => {
-    if (email === "" || password === "") {
-      window.alert("Please fill out all the input fields.");
-    } else {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (email && password) {
       try {
         const user = await login(email, password);
         try {
           const res = await axios.get(`http://localhost:5555/user/${user.uid}`);
           const userDoc = res.data.data;
-          console.log(userDoc);
           if (
             userDoc.country &&
-            userDoc.currency &&
             userDoc.margin &&
             userDoc.max_inventory_amount &&
             userDoc.amount_per_ship
@@ -73,13 +68,15 @@ const AuthInputModal = (props) => {
       } catch (error) {
         window.alert(`Firebase Auth error: ${error.message}`);
       }
+    } else {
+      window.alert("Please fill out all the input fields.");
     }
   };
 
-  const handleResetPassword = async () => {
-    if (email === "") {
-      window.alert("Please fill out all the input fields.");
-    } else {
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+
+    if (email) {
       try {
         await resetPassword(email);
         fnToSetNextModalType("PasswordRequest");
@@ -88,24 +85,23 @@ const AuthInputModal = (props) => {
       } catch (error) {
         window.alert(`Firebase Auth error: ${error.message}`);
       }
+    } else {
+      window.alert("Please fill out all the input fields.");
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center m-7 gap-5">
-      <button
-        type="button"
-        className="absolute top-8 right-8"
-        onClick={() => fnToCloseThisModal(false)}
-      >
-        <img src={Exit} alt="close" />
-      </button>
+  let elementToReturn;
 
-      {/* eslint-disable-next-line no-nested-ternary */}
-      {authType === "signup" ? (
+  switch (authType) {
+    case "signup":
+      elementToReturn = (
         <>
           <h1>Create an account</h1>
-          <form>
+          <form
+            onSubmit={async (e) => {
+              await handleSignup(e);
+            }}
+          >
             <Field
               label="Full Name"
               name="fullName"
@@ -139,20 +135,25 @@ const AuthInputModal = (props) => {
               required
             />
             <CtaBtn
+              type="submit"
               size="L"
               level="P"
               innerTxt="Sign up"
-              onClickFnc={async () => {
-                await handleSignup();
-              }}
+              // onClickFnc={}
             />
           </form>
         </>
-      ) : // eslint-disable-next-line no-nested-ternary
-      authType === "login" ? (
+      );
+      break;
+    case "login":
+      elementToReturn = (
         <>
           <h1>Welcome back</h1>
-          <form>
+          <form
+            onSubmit={async (e) => {
+              await handleLogin(e);
+            }}
+          >
             <Field
               label="Email"
               name="email"
@@ -177,12 +178,11 @@ const AuthInputModal = (props) => {
               Forgot password?
             </button>
             <CtaBtn
+              type="submit"
               size="L"
               level="P"
               innerTxt="Log in"
-              onClickFnc={async () => {
-                await handleLogin();
-              }}
+              // onClickFnc={}
             />
             <p className="text-center mt-8">
               Don&apos;t have an account?{" "}
@@ -196,27 +196,38 @@ const AuthInputModal = (props) => {
             </p>
           </form>
         </>
-      ) : authType === "passwordReset" ? (
+      );
+      break;
+    case "passwordReset":
+      elementToReturn = (
         <>
           <h1>Forgot your password?</h1>
-          <Field
-            label="Email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            required
-          />
-          <CtaBtn
-            size="L"
-            level="P"
-            innerTxt="Request to reset password"
-            onClickFnc={async () => {
-              await handleResetPassword();
+          <form
+            onSubmit={async (e) => {
+              await handleResetPassword(e);
             }}
-          />
+          >
+            <Field
+              label="Email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+            />
+            <CtaBtn
+              type="submit"
+              size="L"
+              level="P"
+              innerTxt="Request to reset password"
+              // onClickFnc={}
+            />
+          </form>
         </>
-      ) : (
+      );
+      break;
+    default:
+      elementToReturn = (
         <>
           <h1>Something went wrong...</h1>
           <p>Please try again.</p>
@@ -227,7 +238,20 @@ const AuthInputModal = (props) => {
             onClickFnc={() => fnToCloseThisModal(false)}
           />
         </>
-      )}
+      );
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center m-7 gap-5">
+      <button
+        type="button"
+        className="absolute top-8 right-8"
+        onClick={() => fnToCloseThisModal(false)}
+      >
+        <img src={Exit} alt="close" />
+      </button>
+
+      {elementToReturn}
     </div>
   );
 };

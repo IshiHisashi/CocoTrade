@@ -18,7 +18,7 @@ const ConfirmationModal = (props) => {
             size="M"
             level="P"
             innerTxt="Set up account"
-            onClickFnc={() => navigate("/onboarding")}
+            onClickFnc={() => navigate("/onboarding/business")}
           />
         </>
       );

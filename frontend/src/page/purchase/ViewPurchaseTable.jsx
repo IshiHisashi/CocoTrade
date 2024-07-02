@@ -25,7 +25,7 @@ const ViewPurchaseTable = ({
   const recordsPerPage = 10;
 
   const fetchPurchases = () => {
-    const userId = "66640d8158d2c8dc4cedaf1e";
+    const userId = "66654dc4c6e950671e988962";
     const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)

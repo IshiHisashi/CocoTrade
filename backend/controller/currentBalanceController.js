@@ -206,17 +206,200 @@ export const getLatestBalance = async (req, res) => {
 // Update and Delete needs parameter (ID)
 // Update
 export const updateCurrentBalance = async (req, res) => {
+  // console.log(req.body);
   try {
-    const result = await CurrentBalanceModel.findByIdAndUpdate(
-      req.params.id,
-      req.body
-    );
-    if (!result) {
-      return res.status(404).json({ message: "not found" });
+    const user = await UserModel.findById(req.params.userid);
+    const isDateChange = req.body.currentPurchaseDate !== req.body.updatedDate;
+    console.log(isDateChange);
+    const difCash = req.body.updatedPrice - req.body.currentPrice;
+
+    const loopUpdate = (docs, changevalue) => {
+      docs.forEach(async (doc) => {
+        await CurrentBalanceModel.findByIdAndUpdate(doc._id, {
+          current_balance:
+            req.body.type === "purchase"
+              ? doc.current_balance - changevalue
+              : doc.current_balance + changevalue,
+        });
+      });
+    };
+    if (!isDateChange) {
+      console.log("in scenario1");
+      // Scenraio 1). No date change
+      // Step1). FIND OUT SUBSEQUENT TRANSACTIONS
+      const docsLater = await CurrentBalanceModel.aggregate([
+        {
+          $match: {
+            _id: { $in: user.balance_array },
+            date: {
+              $gte: new Date(req.body.updatedDate),
+            },
+          },
+        },
+        {
+          $sort: { date: 1 },
+        },
+      ]);
+      //  Step2). Update cash balance
+      loopUpdate(docsLater, difCash);
+      return res.status(201).json({
+        status: "success in updating",
+      });
+    } else {
+      //Scenario 2). Date change
+      // download common docs in scenario2-1 and 2-2
+      const docUpdatedDay = await CurrentBalanceModel.aggregate([
+        {
+          $match: {
+            _id: { $in: user.balance_array },
+            date: new Date(req.body.updatedDate),
+          },
+        },
+        {
+          $sort: { date: 1 },
+        },
+      ]);
+      const docLatestOfUpdateDay = await CurrentBalanceModel.aggregate([
+        {
+          $match: {
+            _id: { $in: user.balance_array },
+            date: { $lt: new Date(req.body.updatedDate) },
+          },
+        },
+        {
+          $sort: { date: -1 },
+        },
+        {
+          $limit: 1,
+        },
+      ]);
+      // Scenario 2-1). date is move back
+      if (req.body.currentPurchaseDate > req.body.updatedDate) {
+        console.log("in scenario2-1");
+        // downloadn necessary docs
+        const docUpdateUntilCurrent = await CurrentBalanceModel.aggregate([
+          {
+            $match: {
+              _id: { $in: user.balance_array },
+              date: {
+                $gte: new Date(req.body.updatedDate),
+                $lt: new Date(req.body.currentPurchaseDate),
+              },
+            },
+          },
+          {
+            $sort: { date: 1 },
+          },
+        ]);
+        const docSubsequent = await CurrentBalanceModel.aggregate([
+          {
+            $match: {
+              _id: { $in: user.balance_array },
+              date: { $gt: new Date(req.body.updatePurchaseDate) },
+            },
+          },
+          {
+            $sort: { date: 1 },
+          },
+        ]);
+
+        // updated date is newly created or updated (register the updated value)
+        if (docUpdatedDay.length > 0) {
+          console.log("doc already exists");
+          // if there's already another doc on the date of updated, override with the updatedPrice. This should be extended until the current date.
+          loopUpdate(docUpdateUntilCurrent, req.body.updatedPrice);
+          // update all the subsequent dates after current date (value is based on dif cash).
+          loopUpdate(docSubsequent, difCash);
+          // Return
+          return res.status(201).json({
+            status: "success in updating",
+          });
+        } else {
+          console.log("no doc");
+          // if no doc on the day updated, create a new doc
+          const newDoc = {
+            user_id: req.body.user_id,
+            date: req.body.updatedDate,
+            current_balance:
+              req.body.type === "purchase"
+                ? docLatestOfUpdateDay[0].current_balance -
+                  req.body.updatedPrice
+                : docLatestOfUpdateDay[0].current_balance +
+                  req.body.updatedPrice,
+          };
+          const newCurrentBalance = await CurrentBalanceModel.create(newDoc);
+          // update all the subsequent dates (value is based on dif cash)
+          loopUpdate(docUpdateUntilCurrent, req.body.updatedPrice);
+          loopUpdate(docSubsequent, difCash);
+          res.status(201).json({
+            status: "success",
+            data: {
+              newCurrentBalance,
+            },
+          });
+        }
+      }
+      // Scenario 2-2). date is move forward
+      if (req.body.currentPurchaseDate < req.body.updatedDate) {
+        console.log("in scenario2-2");
+        // Download necessrary docs
+        const docCurrentUntilUpdate = await CurrentBalanceModel.aggregate([
+          {
+            $match: {
+              _id: { $in: user.balance_array },
+              date: {
+                $gte: new Date(req.body.currentPurchaseDate),
+                $lt: new Date(req.body.updatedDate),
+              },
+            },
+          },
+          {
+            $sort: { date: 1 },
+          },
+        ]);
+        const docSubsequent = await CurrentBalanceModel.aggregate([
+          {
+            $match: {
+              _id: { $in: user.balance_array },
+              date: { $gt: new Date(req.body.updatedDate) },
+            },
+          },
+          {
+            $sort: { date: 1 },
+          },
+        ]);
+        // Cancel the balance of current day and subsequent days until update day.
+        loopUpdate(docCurrentUntilUpdate, -req.body.currentPrice);
+        if (docUpdatedDay.length > 0) {
+          console.log("doc already exists");
+          loopUpdate(docUpdatedDay, difCash);
+          loopUpdate(docSubsequent, difCash);
+          return res.status(201).json({
+            status: "success in updating",
+          });
+        } else {
+          console.log("no doc");
+          // if no doc on the day updated, create a new doc
+          const newDoc = {
+            user_id: req.body.user_id,
+            date: req.body.updatedDate,
+            current_balance:
+              req.body.type === "purchase"
+                ? docLatestOfUpdateDay[0].current_balance - difCash
+                : docLatestOfUpdateDay[0].current_balance + difCash,
+          };
+          const newCurrentBalance = await CurrentBalanceModel.create(newDoc);
+          // update all the subsequent dates (value is based on dif cash)
+          loopUpdate(docSubsequent, difCash);
+          res.status(201).json({
+            status: "success",
+            data: {
+              newCurrentBalance,
+            },
+          });
+        }
+      }
     }
-    return res.status(201).json({
-      status: "success in updating",
-    });
   } catch (err) {
     console.log(err);
     return res.status(400).json({

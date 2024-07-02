@@ -22,13 +22,41 @@ const Purchase = () => {
     setSelectedPurchase(purchase);
   };
 
-  const handleUpdate = async (updatedPurchase) => {
+  const handleUpdate = async (updatedPurchase, currentPurchase, userid) => {
     try {
       await axios.patch(
         // eslint-disable-next-line no-underscore-dangle
         `http://localhost:5555/purchase/${updatedPurchase._id}`,
         updatedPurchase
       );
+      // update cach_balance
+      const cashDif =
+        +updatedPurchase.total_purchase_price -
+        currentPurchase.total_purchase_price.$numberDecimal;
+      const updateCash = await axios.patch(
+        // eslint-disable-next-line no-underscore-dangle
+        `http://localhost:5555/tmpFinRoute/${userid}/currentbalance`,
+        {
+          user_id: userid,
+          updatedPrice: updatedPurchase.total_purchase_price,
+          currentPrice: currentPurchase.total_purchase_price.$numberDecimal,
+          updatedDate: new Date(updatedPurchase.purchase_date),
+          currentPurchaseDate: currentPurchase.purchase_date,
+          type: "purchase",
+        }
+      );
+
+      // update inventory_balance
+      const newCashBalanceId = updateCash?.data?.data?.newCurrentBalance._id;
+      console.log(newCashBalanceId);
+      // Send ids to the coresponding user documents
+      if (newCashBalanceId) {
+        await axios.patch(`http://localhost:5555/user/${userid}`, {
+          balance_array: { action: "push", value: newCashBalanceId },
+        });
+      }
+
+      // UI control
       setShowAddForm(false);
       setSelectedPurchase(null);
       setPurchases((prevPurchases) =>

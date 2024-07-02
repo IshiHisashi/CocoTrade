@@ -149,10 +149,12 @@ const AddPurchaseForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // -----UPDATE PURCHASE LOG-----
       // Update purchase document
       if (purchase) {
-        await handleUpdate(formData);
+        await handleUpdate(formData, purchase, userid);
       } else {
+        // -----NEW PURCHASE LOG-----
         // 1). Create purchase document
         const newPurchaseDoc = await axios.post(
           "http://localhost:5555/purchase",

@@ -28,7 +28,7 @@ const App = () => {
         <Route path="/auth/*" element={<Auth />} />
         <Route path="/" element={<Landing fnToSetUser={setUser} />} />
         <Route
-          path="/onboarding"
+          path="/onboarding/*"
           element={
             <UserIdProvider>
               <Onboarding />
@@ -38,42 +38,52 @@ const App = () => {
         <Route
           path="/dashboard"
           element={
+            // <UserIdProvider>
             <Layout>
               <Dashboard />
             </Layout>
+            // </UserIdProvider>
           }
         />
         <Route
           path="/inventory"
           element={
+            // <UserIdProvider>
             <Layout>
               <Inventory />
             </Layout>
+            // </UserIdProvider>
           }
         />
         <Route
           path="/purchase"
           element={
+            // <UserIdProvider>
             <Layout>
               <Purchase />
             </Layout>
+            // </UserIdProvider>
           }
         />
         <Route
           path="/sales"
           element={
+            // <UserIdProvider>
             <Layout>
               <Sale />
             </Layout>
+            // </UserIdProvider>
           }
         />
         <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
         <Route
           path="/finances"
           element={
+            // <UserIdProvider>
             <Layout>
               <Finance />
             </Layout>
+            // </UserIdProvider>
           }
         />
       </>

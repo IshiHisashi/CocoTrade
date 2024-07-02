@@ -1,30 +1,44 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import Field from "../../component/field-filter/Field";
 import CtaBtn from "../../component/btn/CtaBtn";
 
-const BusinessProfile = () => {
-  const [fullName, setFullName] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [email, setEmail] = useState("");
-  const [country, setCountry] = useState("");
+const BusinessProfile = (props) => {
+  const {
+    fullName,
+    setFullName,
+    companyName,
+    setCompanyName,
+    email,
+    setEmail,
+    country,
+    setCountry,
+  } = props;
 
-  const storeInputInSession1 = () => {
-    sessionStorage.setItem("fullName", fullName);
-    sessionStorage.setItem("email", email);
-    sessionStorage.setItem("companyName", companyName);
-    sessionStorage.setItem("country", country);
+  const navigate = useNavigate();
+
+  const onClickNext = () => {
+    if (fullName && email && companyName && country) {
+      sessionStorage.setItem("fullName", fullName);
+      sessionStorage.setItem("email", email);
+      sessionStorage.setItem("companyName", companyName);
+      sessionStorage.setItem("country", country);
+      navigate("/onboarding/operations");
+    } else {
+      window.alert("Please fill out all the input fields.");
+    }
   };
 
   return (
     <>
       <div>
-        <h1>Business Profile</h1>
+        <h1>BUSINESS PROFILE</h1>
       </div>
 
       <h2 className="text-4xl">Let&apos;s set up your profile</h2>
       <p>Provide basic business information to start</p>
 
-      <div className="grid grid-cols-2 gap-6 pt-8">
+      <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
         <Field
           label="Full name"
           name="fullName"
@@ -60,6 +74,9 @@ const BusinessProfile = () => {
           onChange={(e) => setCountry(e.target.value)}
           type="text"
           required
+          disabled
+          info
+          infoText="Location will provide information on which currency will be used &#8212;currently our app is optimized only for Philippines"
         />
       </div>
 
@@ -67,9 +84,7 @@ const BusinessProfile = () => {
         size="M"
         level="P"
         innerTxt="Next"
-        onClickFnc={() => {
-          storeInputInSession1();
-        }}
+        onClickFnc={() => onClickNext()}
       />
     </>
   );

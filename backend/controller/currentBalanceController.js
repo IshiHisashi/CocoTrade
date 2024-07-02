@@ -206,20 +206,19 @@ export const getLatestBalance = async (req, res) => {
 // Update and Delete needs parameter (ID)
 // Update
 export const updateCurrentBalance = async (req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
   try {
     const user = await UserModel.findById(req.params.userid);
     const isDateChange = req.body.currentPurchaseDate !== req.body.updatedDate;
-    console.log(isDateChange);
-    const difCash = req.body.updatedPrice - req.body.currentPrice;
+    const difCash = +req.body.updatedPrice - req.body.currentPrice;
 
     const loopUpdate = (docs, changevalue) => {
       docs.forEach(async (doc) => {
         await CurrentBalanceModel.findByIdAndUpdate(doc._id, {
           current_balance:
             req.body.type === "purchase"
-              ? doc.current_balance - changevalue
-              : doc.current_balance + changevalue,
+              ? +doc.current_balance - changevalue
+              : +doc.current_balance + changevalue,
         });
       });
     };
@@ -295,7 +294,7 @@ export const updateCurrentBalance = async (req, res) => {
           {
             $match: {
               _id: { $in: user.balance_array },
-              date: { $gt: new Date(req.body.updatePurchaseDate) },
+              date: { $gte: new Date(req.body.currentPurchaseDate) },
             },
           },
           {
@@ -307,7 +306,7 @@ export const updateCurrentBalance = async (req, res) => {
         if (docUpdatedDay.length > 0) {
           console.log("doc already exists");
           // if there's already another doc on the date of updated, override with the updatedPrice. This should be extended until the current date.
-          loopUpdate(docUpdateUntilCurrent, req.body.updatedPrice);
+          loopUpdate(docUpdateUntilCurrent, +req.body.updatedPrice);
           // update all the subsequent dates after current date (value is based on dif cash).
           loopUpdate(docSubsequent, difCash);
           // Return
@@ -329,7 +328,7 @@ export const updateCurrentBalance = async (req, res) => {
           };
           const newCurrentBalance = await CurrentBalanceModel.create(newDoc);
           // update all the subsequent dates (value is based on dif cash)
-          loopUpdate(docUpdateUntilCurrent, req.body.updatedPrice);
+          loopUpdate(docUpdateUntilCurrent, +req.body.updatedPrice);
           loopUpdate(docSubsequent, difCash);
           res.status(201).json({
             status: "success",

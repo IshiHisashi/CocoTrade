@@ -177,17 +177,17 @@ const AddPurchaseForm = ({
         const newCashBalanceId = newCashDoc?.data?.data?.newCurrentBalance._id;
 
         // 3). Create inventory
-        const newInventoryDoc = await axios.post(
-          `http://localhost:5555/tmpFinRoute/${userid}/inventory`,
-          {
-            user_id: userid,
-            changeValue: formData.amount_of_copra_purchased,
-            date: formData.purchase_date,
-            type: "purchase",
-          }
-        );
+        // const newInventoryDoc = await axios.post(
+        //   `http://localhost:5555/tmpFinRoute/${userid}/inventory`,
+        //   {
+        //     user_id: userid,
+        //     changeValue: formData.amount_of_copra_purchased,
+        //     date: formData.purchase_date,
+        //     type: "purchase",
+        //   }
+        // );
         // eslint-disable-next-line no-underscore-dangle
-        const newInventoryId = newInventoryDoc?.data?.data?.newInventory._id;
+        // const newInventoryId = newInventoryDoc?.data?.data?.newInventory._id;
 
         // 4). Send ids to the corresponding user documents
         const updateData = {
@@ -200,12 +200,12 @@ const AddPurchaseForm = ({
             value: newCashBalanceId,
           };
         }
-        if (newInventoryId) {
-          updateData.inventory_amount_array = {
-            action: "push",
-            value: newInventoryId,
-          };
-        }
+        // if (newInventoryId) {
+        //   updateData.inventory_amount_array = {
+        //     action: "push",
+        //     value: newInventoryId,
+        //   };
+        // }
         await axios.patch(`http://localhost:5555/user/${userid}`, updateData);
         setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);

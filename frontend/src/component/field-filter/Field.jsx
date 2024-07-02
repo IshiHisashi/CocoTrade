@@ -1,4 +1,14 @@
+import {
+  FormControl,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
 import React, { useState } from "react";
+import VisibilityOn from "../../assets/icons/Eye-On.svg";
+import VisibilityOff from "../../assets/icons/Eye-Off.svg";
+import Info from "../../assets/icons/Information.svg";
 
 const Field = ({
   label,
@@ -10,19 +20,109 @@ const Field = ({
   disabled = false,
   required = false,
   showChangeButton = false,
+  unit = "",
+  adornment = "end",
+  info = false,
+  infoText = "",
 }) => {
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isShowChangeButton, setIsShowChangeButton] =
     useState(showChangeButton);
+  const [isShowInfoText, setIsShowInfoText] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   let inputElement = null;
 
   switch (type) {
-    case "text":
     case "number":
-    case "date":
+      inputElement = (
+        <FormControl fullWidth>
+          <TextField
+            type={type}
+            name={name}
+            id={name}
+            value={value}
+            onChange={onChange}
+            disabled={isDisabled}
+            required={required}
+            sx={{ py: 1 }}
+            InputProps={
+              adornment === "end"
+                ? {
+                    endAdornment: (
+                      <InputAdornment position="end">{unit}</InputAdornment>
+                    ),
+                  }
+                : {
+                    startAdornment: (
+                      <InputAdornment position="start">{unit}</InputAdornment>
+                    ),
+                  }
+            }
+          />
+          {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
+        </FormControl>
+      );
+      break;
+    case "text":
     case "email":
+      inputElement = (
+        <FormControl fullWidth>
+          <TextField
+            type={type}
+            name={name}
+            id={name}
+            value={value}
+            onChange={onChange}
+            disabled={isDisabled}
+            required={required}
+            // wanna customize disabled style
+            sx={isDisabled ? { py: 1 } : { py: 1 }}
+          />
+          {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
+        </FormControl>
+      );
+      break;
     case "password":
+      inputElement = (
+        <TextField
+          type={showPassword ? "text" : "password"}
+          name={name}
+          id={name}
+          value={value}
+          onChange={onChange}
+          disabled={isDisabled}
+          required={required}
+          sx={{ py: 1 }}
+          fullWidth
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="start"
+                >
+                  {showPassword ? (
+                    <img src={VisibilityOff} alt="visibility off" />
+                  ) : (
+                    <img src={VisibilityOn} alt="visibility on" />
+                  )}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      );
+      break;
+    case "date":
       inputElement = (
         <input
           type={type}
@@ -60,13 +160,26 @@ const Field = ({
   }
 
   return (
-    <div className="mb-4 w-full flex flex-wrap justify-between">
+    <div className="mb-4 w-full flex flex-wrap justify-between content-start">
       {label && (
         <label
           htmlFor={name}
           className="block text-sm font-medium text-gray-700"
         >
           {label} {required && <span className="text-[#FE2E00]">*</span>}
+          {info && (
+            <button
+              type="button"
+              className="mx-2"
+              onClick={() => setIsShowInfoText(!isShowInfoText)}
+            >
+              <img
+                src={Info}
+                alt="toggle helper text"
+                className="inline-block"
+              />
+            </button>
+          )}
         </label>
       )}
       {isShowChangeButton && (

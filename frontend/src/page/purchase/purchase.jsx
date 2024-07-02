@@ -12,7 +12,8 @@ const Purchase = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [purchases, setPurchases] = useState([]);
+  // const [purchases, setPurchases] = useState([]);
+  const [purchases, setPurchases] = useState({});
   const [showAddForm, setShowAddForm] = useState(
     location.state ? location.state.showAddForm : false
   );
@@ -45,26 +46,25 @@ const Purchase = () => {
           type: "purchase",
         }
       );
-
-      // update inventory_balance
       const newCashBalanceId = updateCash?.data?.data?.newCurrentBalance._id;
-      console.log(newCashBalanceId);
+      // update inventory_balance => Coming soon...
       // Send ids to the coresponding user documents
       if (newCashBalanceId) {
         await axios.patch(`http://localhost:5555/user/${userid}`, {
           balance_array: { action: "push", value: newCashBalanceId },
         });
       }
-
       // UI control
       setShowAddForm(false);
       setSelectedPurchase(null);
-      setPurchases((prevPurchases) =>
-        prevPurchases.map((purchase) =>
-          // eslint-disable-next-line no-underscore-dangle
-          purchase._id === updatedPurchase._id ? updatedPurchase : purchase
-        )
-      );
+      setPurchases(updatedPurchase);
+      // --- Previouse version ----
+      // setPurchases((prevPurchases) => {
+      //   prevPurchases.map((purchase) =>
+      //     // eslint-disable-next-line no-underscore-dangle
+      //     purchase._id === updatedPurchase._id ? updatedPurchase : purchase
+      //   );
+      // });
       // window.location.reload();
     } catch (error) {
       console.error("Error updating purchase:", error);

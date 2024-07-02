@@ -57,7 +57,7 @@ const BusinessProfile = (props) => {
           type="email"
           required
           disabled
-          showChangeButton
+          // showChangeButton
         />
         <Field
           label="Company name"

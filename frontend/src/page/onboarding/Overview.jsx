@@ -52,7 +52,7 @@ const Overview = (props) => {
         full_name: fullName,
         email,
         country,
-        margin,
+        margin: margin / 100,
         max_inventory_amount: maxInventoryAmount,
         amount_per_ship: amountPerShip,
         inventory_amount_array: {

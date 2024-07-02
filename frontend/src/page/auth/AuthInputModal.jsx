@@ -22,6 +22,8 @@ const AuthInputModal = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSignup = async () => {
     if (
       email === "" ||
@@ -54,14 +56,17 @@ const AuthInputModal = (props) => {
           const res = await axios.get(`http://localhost:5555/user/${user.uid}`);
           const userDoc = res.data.data;
           console.log(userDoc);
-          // if (
-          //   !userDoc.country ||
-          //   !userDoc.currency ||
-          //   !userDoc.margin ||
-          //   !userDoc.max_inventory_amount ||
-          //   !userDoc.amount_per_ship
-          // ) {
-          // }
+          if (
+            userDoc.country &&
+            userDoc.currency &&
+            userDoc.margin &&
+            userDoc.max_inventory_amount &&
+            userDoc.amount_per_ship
+          ) {
+            navigate("/dashboard");
+          } else {
+            navigate("/onboarding/business");
+          }
         } catch (error) {
           console.log(`Error getting user doc from DB: ${error.message}`);
         }

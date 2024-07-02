@@ -6,6 +6,7 @@ import Field from "../../component/field-filter/Field.jsx";
 import signUp from "../../services/authService.jsx";
 import login from "../../services/login.jsx";
 import resetPassword from "../../services/resetPassword.jsx";
+import Exit from "../../assets/icons/Exit.svg";
 
 const AuthInputModal = (props) => {
   const {
@@ -92,7 +93,7 @@ const AuthInputModal = (props) => {
         className="absolute top-8 right-8"
         onClick={() => fnToCloseThisModal(false)}
       >
-        x
+        <img src={Exit} alt="close" />
       </button>
 
       {/* eslint-disable-next-line no-nested-ternary */}

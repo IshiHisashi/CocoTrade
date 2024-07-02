@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
+import Exit from "../../assets/icons/Exit.svg";
 
 const ConfirmationModal = (props) => {
   const { confirmationType, fnToCloseThisModal } = props;
@@ -12,7 +13,7 @@ const ConfirmationModal = (props) => {
         className="absolute top-8 right-8"
         onClick={() => fnToCloseThisModal(false)}
       >
-        x
+        <img src={Exit} alt="close" />
       </button>
 
       {/* eslint-disable-next-line no-nested-ternary  */}

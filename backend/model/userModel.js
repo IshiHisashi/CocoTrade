@@ -4,12 +4,11 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
-    _id: { type: String, required: true, unique: true },
+    _id: { type: String, required: true },
     company_name: { type: String, required: true },
     full_name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     country: String,
-    email: String,
     email_verification: Boolean,
     currency: String,
     margin: mongoose.Types.Decimal128,

@@ -6,7 +6,7 @@ import FormModal from "./component/modal/FormModal.jsx";
 import ConfirmationModal from "./page/auth/ConfirmationModal.jsx";
 
 const classNameForModal =
-  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px]";
+  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[95vh] overflow-scroll";
 
 const styleForModal = {
   overlay: {

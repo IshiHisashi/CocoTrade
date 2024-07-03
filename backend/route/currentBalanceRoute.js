@@ -11,4 +11,6 @@ router.post("/", currentBalanceController.createCurrentBalance);
 router.patch("/", currentBalanceController.updateCurrentBalance);
 router.delete("/:id", currentBalanceController.deleteCurrentBalance);
 
+router.post("/first", currentBalanceController.createFirstCurrentBalance);
+
 export default router;

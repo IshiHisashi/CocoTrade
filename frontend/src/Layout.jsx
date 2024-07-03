@@ -19,7 +19,6 @@ const Layout = (props) => {
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [confirmationType, setConfirmationType] = useState("");
 
   return (
     <>
@@ -35,7 +34,6 @@ const Layout = (props) => {
       >
         <FormModal
           formType="support"
-          // fnToSetConfirmationModalType={setConfirmationType}
           fnToOpenConfirmationModal={setIsConfirmationModalOpen}
           fnToCloseThisModal={setIsFormModalOpen}
         />

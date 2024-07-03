@@ -4,12 +4,7 @@ import Field from "../field-filter/Field.jsx";
 import Exit from "../../assets/icons/Exit.svg";
 
 const FormModal = (props) => {
-  const {
-    formType,
-    // fnToSetConfirmationModalType,
-    fnToOpenConfirmationModal,
-    fnToCloseThisModal,
-  } = props;
+  const { formType, fnToOpenConfirmationModal, fnToCloseThisModal } = props;
 
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -27,7 +22,6 @@ const FormModal = (props) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              // fnToSetConfirmationModalType("contact");
               fnToOpenConfirmationModal(true);
               fnToCloseThisModal(false);
             }}
@@ -78,7 +72,6 @@ const FormModal = (props) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              // fnToSetConfirmationModalType("support");
               fnToOpenConfirmationModal(true);
               fnToCloseThisModal(false);
             }}

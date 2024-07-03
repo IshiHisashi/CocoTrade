@@ -14,7 +14,9 @@ const styleForModal = {
   },
 };
 
-const Landing = () => {
+const Landing = (props) => {
+  const { fnToSetUser } = props;
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [authType, setAuthType] = useState("");

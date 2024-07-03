@@ -99,6 +99,7 @@ const getData = async (userId) => {
 const Dashboard = () => {
   const userId = useContext(UserIdContext);
   const [data, setData] = useState(null);
+  const [upcomingShipDate, setUpcomingShipDate] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -108,24 +109,47 @@ const Dashboard = () => {
     })();
   }, [userId]);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5555/sale/latest-pending/${userId}`
+        );
+        setUpcomingShipDate(
+          `You have an upcoming shipment on ${res.data.date}.`
+        );
+      } catch (error) {
+        if (error.response.status === 404) {
+          setUpcomingShipDate("You have no upcoming shipment.");
+        }
+      }
+    })();
+  });
+
   return (
     <UserIdContext.Provider value={userId}>
-      <p>You have an upcoming shipment on May 8, 2024</p>
-      <CtaBtn
-        size="M"
-        level="S"
-        innerTxt="Add Purchase"
-        onClickFnc={() =>
-          navigate("/purchase", { state: { showAddForm: true } })
-        }
-      />
+      <div className="flex justify-between items-center">
+        {!upcomingShipDate ? (
+          <p>getting your upcoming shipment information...</p>
+        ) : (
+          <p>{upcomingShipDate}</p>
+        )}
+        <CtaBtn
+          size="M"
+          level="S"
+          innerTxt="Add Purchase"
+          onClickFnc={() =>
+            navigate("/purchase", { state: { showAddForm: true } })
+          }
+        />
+      </div>
 
-      <section className="grid grid-cols-2">
+      <section className="grid sm:grid-cols-2">
         <PriceIndicatorCard type="market" />
         <PriceIndicatorCard type="suggestion" />
       </section>
 
-      <div className="grid grid-cols-3">
+      <div className="grid sm:grid-cols-3">
         <section className="col-span-2 border-2 p-4">
           <h2>Activity this month vs last month</h2>
           {!data ? (

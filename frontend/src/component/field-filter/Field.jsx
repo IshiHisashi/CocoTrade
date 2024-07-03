@@ -125,13 +125,16 @@ const Field = ({
       break;
     case "textarea":
       inputElement = (
-        <TextareaAutosize
-          name={name}
-          id={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-        />
+        <FormControl fullWidth>
+          <TextareaAutosize
+            name={name}
+            id={name}
+            value={value}
+            onChange={onChange}
+            required={required}
+            minRows={5}
+          />
+        </FormControl>
       );
       break;
     case "date":

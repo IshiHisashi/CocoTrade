@@ -7,6 +7,7 @@ import PriceIndicatorCard from "../../component/card/PriceIndicatorCard.jsx";
 import UserIdContext from "./UserIdContext.jsx";
 import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
+import LineChartRevised from "../inventory/LineChartRevised.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -147,6 +148,11 @@ const Dashboard = () => {
       <section className="grid sm:grid-cols-2">
         <PriceIndicatorCard type="market" />
         <PriceIndicatorCard type="suggestion" />
+      </section>
+
+      <section>
+        <h2>Today&apos;s inventory is 00,000kg</h2>
+        <LineChartRevised userId={userId} dashboard />
       </section>
 
       <div className="grid sm:grid-cols-3">

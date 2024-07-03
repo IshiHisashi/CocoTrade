@@ -1,8 +1,20 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import logout from '../../services/logout';
 
 const UserMenuDropdown = (props) => {
   const { isUserMenuOpen } = props;
+  const navigate = useNavigate();
+
+  const handleLogout = async (event) => {
+    event.preventDefault(); // Prevent the default link behavior
+    try {
+      await logout();
+      navigate('/'); // Redirect to the login page after logout
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
+  };
 
   return (
     <div
@@ -25,6 +37,7 @@ const UserMenuDropdown = (props) => {
           <li>
             <NavLink
               to="/"
+              onClick={handleLogout}
               className="block p-2 cursor-pointer hover:bg-slate-300"
             >
               Logout

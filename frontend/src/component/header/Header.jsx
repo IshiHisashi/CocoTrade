@@ -4,7 +4,7 @@ import UserIdContext from "../../page/dashboard/UserIdContext.jsx";
 import UserMenuDropdown from "./UserMenuDropdown.jsx";
 import NotificationDropdown from "./NotificationDropdown.jsx";
 import PlanShipment from "../../page/inventory/LineChartRevised.jsx"; // Update the path accordingly
-import NotificationIcon from "../../assets/Notification.svg";
+import NotificationIcon from "../../assets/icons/Notification.svg";
 
 const Header = () => {
   const userId = useContext(UserIdContext);

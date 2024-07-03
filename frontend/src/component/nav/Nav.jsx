@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import NavList from "./NavList";
 import CtaBtn from "../btn/CtaBtn.jsx";
-import Support from "../../assets/support.svg";
+import Support from "../../assets/icons/support.svg";
 import CocoTradeLogo from "../../assets/CocoTradeLogo.svg";
 
 const Nav = (props) => {

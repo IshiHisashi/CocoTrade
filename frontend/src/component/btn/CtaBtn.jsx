@@ -1,17 +1,22 @@
-import React from 'react'
+import React from "react";
 
 /* eslint-disable react/button-has-type */
 /* eslint-disable no-unused-expressions */
 
-const CtaBtn = ({ size = "L", level = "P", onClickFnc = "", type = "button", innerTxt = "Button"}) => {
-
+const CtaBtn = ({
+  size = "L",
+  level = "P",
+  onClickFnc = "",
+  type = "button",
+  innerTxt = "Button",
+}) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
   let width = "w-96";
   let height = "h-16";
-  let bgc = "bg-orange-500";
-  let hoverBgc = "hover:bg-orange-400";
-  let activeBgc = "active:bg-orange-600";
+  let bgc = "bg-[#FF5b04]";
+  let hoverBgc = "hover:bg-[#FF8340]";
+  let activeBgc = "active:bg-[#FE2E00]";
   let txtColor = "text-white";
   let activeTxtColor = "active:text-white";
   const fontWeight = "font-semibold";
@@ -50,17 +55,37 @@ const CtaBtn = ({ size = "L", level = "P", onClickFnc = "", type = "button", inn
   }
 
   // Conctenate all the class names
-  const tailwindClass = [width, height, bgc, hoverBgc, activeBgc, txtColor, activeTxtColor, fontWeight, fontSize, fontFamily,  radius, border, borderColor].join(" ");
+  const tailwindClass = [
+    width,
+    height,
+    bgc,
+    hoverBgc,
+    activeBgc,
+    txtColor,
+    activeTxtColor,
+    fontWeight,
+    fontSize,
+    fontFamily,
+    radius,
+    border,
+    borderColor,
+  ].join(" ");
 
   return (
-    <button 
+    <button
       type={type}
       className={tailwindClass}
-      onClick={onClickFnc === "" ? () => {} : () => {onClickFnc()}}
+      onClick={
+        onClickFnc === ""
+          ? () => {}
+          : () => {
+              onClickFnc();
+            }
+      }
     >
       {innerTxt}
     </button>
-  )
-}
+  );
+};
 
-export default CtaBtn
+export default CtaBtn;

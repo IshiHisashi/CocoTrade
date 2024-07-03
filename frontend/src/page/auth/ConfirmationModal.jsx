@@ -51,6 +51,37 @@ const ConfirmationModal = (props) => {
         </>
       );
       break;
+    case "contact":
+      elementToReturn = (
+        <>
+          <h1>Talk to you soon!</h1>
+          <p>
+            Thank you for your inquiry! We&apos;ve received your inquiry and
+            will respond as soon as possible.
+          </p>
+          <CtaBtn
+            size="M"
+            level="P"
+            innerTxt="Close"
+            onClickFnc={() => fnToCloseThisModal(false)}
+          />
+        </>
+      );
+      break;
+    case "support":
+      elementToReturn = (
+        <>
+          <h1>Talk to you soon!</h1>
+          <p>We’ve received your message and will respond within 24 hours</p>
+          <CtaBtn
+            size="M"
+            level="P"
+            innerTxt="Close"
+            onClickFnc={() => fnToCloseThisModal(false)}
+          />
+        </>
+      );
+      break;
     default:
       elementToReturn = (
         <>

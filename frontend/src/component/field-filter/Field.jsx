@@ -5,6 +5,7 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
+import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import React, { useState } from "react";
 import VisibilityOn from "../../assets/icons/Eye-On.svg";
 import VisibilityOff from "../../assets/icons/Eye-Off.svg";
@@ -120,6 +121,20 @@ const Field = ({
             ),
           }}
         />
+      );
+      break;
+    case "textarea":
+      inputElement = (
+        <FormControl fullWidth>
+          <TextareaAutosize
+            name={name}
+            id={name}
+            value={value}
+            onChange={onChange}
+            required={required}
+            minRows={5}
+          />
+        </FormControl>
       );
       break;
     case "date":

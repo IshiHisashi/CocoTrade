@@ -23,9 +23,9 @@ const ViewPurchaseTable = ({
   const [dateLabel, setDateLabel] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
+  const userId = "66654dc4c6e950671e988962";
 
   const fetchPurchases = () => {
-    const userId = "66640d8158d2c8dc4cedaf1e";
     const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
@@ -49,10 +49,31 @@ const ViewPurchaseTable = ({
     return parseFloat(decimal128.$numberDecimal).toFixed(2);
   };
 
-  const handleDeleteClick = async (purchaseId) => {
+  const handleDeleteClick = async (purchase) => {
     try {
-      await axios.delete(`http://localhost:5555/purchase/${purchaseId}`);
-      fetchPurchases(); // Refresh the purchases list
+      await axios.patch(
+        // eslint-disable-next-line no-underscore-dangle
+        `http://localhost:5555/tmpFinRoute/${userId}/currentbalance`,
+        {
+          user_id: userId,
+          updatedPrice: 0,
+          currentPrice: purchase.total_purchase_price.$numberDecimal,
+          updatedDate: new Date(purchase.purchase_date),
+          currentPurchaseDate: purchase.purchase_date,
+          type: "purchase",
+        }
+      );
+
+      // delete the id from user document
+      await axios.patch(`http://localhost:5555/user/${userId}`, {
+        purchases_array: { action: "pull", value: purchase._id },
+      });
+
+      // delete the doc
+      await axios.delete(`http://localhost:5555/purchase/${purchase._id}`);
+
+      // Refresh the purchases list
+      fetchPurchases();
     } catch (error) {
       console.error("Error deleting purchase:", error);
     }
@@ -299,7 +320,7 @@ const ViewPurchaseTable = ({
                         type="button"
                         onClick={() =>
                           // eslint-disable-next-line no-underscore-dangle
-                          handleDeleteClick(purchase._id)
+                          handleDeleteClick(purchase)
                         }
                       >
                         Delete

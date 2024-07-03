@@ -6,7 +6,7 @@ import { Inventory } from "../model/inventoryModel.js";
 export const createUser = async (req, res) => {
   try {
     const newUser = await UserModel.create({
-      _id: req.body.firebaseUserId,  // Firebase UID received from the frontend
+      _id: req.body.firebaseUserId, // Firebase UID received from the frontend
       company_name: req.body.companyName, // User's company name
       full_name: req.body.fullName, // User's full name
       email: req.body.email, // User's email

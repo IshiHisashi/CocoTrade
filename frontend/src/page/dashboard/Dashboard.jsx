@@ -30,71 +30,78 @@ const getLatestDate = (
 const getData = async (userId) => {
   // 66654dc4c6e950671e988962
 
-  const [purchaseRes, salesRes] = await Promise.all([
-    axios.get(
-      `http://localhost:5555/tmpFinRoute/${userId}/purchase/monthly-aggregate`
-    ),
-    axios.get(
-      `http://localhost:5555/tmpFinRoute/${userId}/sale/monthly-aggregate`
-    ),
-  ]);
+  try {
+    const [purchaseRes, salesRes] = await Promise.all([
+      axios.get(
+        `http://localhost:5555/tmpFinRoute/${userId}/purchase/monthly-aggregate`
+      ),
+      axios.get(
+        `http://localhost:5555/tmpFinRoute/${userId}/sale/monthly-aggregate`
+      ),
+    ]);
 
-  const purchaseResArray = purchaseRes.data.data.purchaseAggregation;
-  const salesResArray = salesRes.data.data.salesAggregation;
+    const purchaseResArray = purchaseRes.data.data.purchaseAggregation;
+    const salesResArray = salesRes.data.data.salesAggregation;
 
-  const [secondLatestDate, latestDate] = getLatestDate(
-    // eslint-disable-next-line no-underscore-dangle
-    purchaseResArray[purchaseResArray.length - 1]._id.year,
-    // eslint-disable-next-line no-underscore-dangle
-    purchaseResArray[purchaseResArray.length - 1]._id.month,
-    // eslint-disable-next-line no-underscore-dangle
-    salesResArray[salesResArray.length - 1]._id.year,
-    // eslint-disable-next-line no-underscore-dangle
-    salesResArray[salesResArray.length - 1]._id.month
-  );
+    const [secondLatestDate, latestDate] = getLatestDate(
+      purchaseResArray[purchaseResArray.length - 1]._id.year,
+      purchaseResArray[purchaseResArray.length - 1]._id.month,
+      salesResArray[salesResArray.length - 1]._id.year,
+      salesResArray[salesResArray.length - 1]._id.month
+    );
 
-  const latestMonthNum = latestDate.getMonth() + 1;
-  const latestYearNum = latestDate.getFullYear();
-  const secondLatestMonthNum = secondLatestDate.getMonth() + 1;
-  const secondLatestYearNum = secondLatestDate.getFullYear();
+    const latestMonthNum = latestDate.getMonth() + 1;
+    const latestYearNum = latestDate.getFullYear();
+    const secondLatestMonthNum = secondLatestDate.getMonth() + 1;
+    const secondLatestYearNum = secondLatestDate.getFullYear();
 
-  const latestPurchaseObj = purchaseResArray.find(
-    // eslint-disable-next-line no-underscore-dangle
-    (obj) => obj._id.year === latestYearNum && obj._id.month === latestMonthNum
-  );
-  const secondLatestPurchaseObj = purchaseResArray.find(
-    (obj) =>
-      // eslint-disable-next-line no-underscore-dangle
-      obj._id.year === secondLatestYearNum &&
-      // eslint-disable-next-line no-underscore-dangle
-      obj._id.month === secondLatestMonthNum
-  );
-  const latestSalesObj = salesResArray.find(
-    // eslint-disable-next-line no-underscore-dangle
-    (obj) => obj._id.year === latestYearNum && obj._id.month === latestMonthNum
-  );
-  const secondLatestSalesObj = salesResArray.find(
-    (obj) =>
-      // eslint-disable-next-line no-underscore-dangle
-      obj._id.year === secondLatestYearNum &&
-      // eslint-disable-next-line no-underscore-dangle
-      obj._id.month === secondLatestMonthNum
-  );
+    const latestPurchaseObj = purchaseResArray.find(
+      (obj) =>
+        obj._id.year === latestYearNum && obj._id.month === latestMonthNum
+    );
+    const secondLatestPurchaseObj = purchaseResArray.find(
+      (obj) =>
+        obj._id.year === secondLatestYearNum &&
+        obj._id.month === secondLatestMonthNum
+    );
+    const latestSalesObj = salesResArray.find(
+      (obj) =>
+        obj._id.year === latestYearNum && obj._id.month === latestMonthNum
+    );
+    const secondLatestSalesObj = salesResArray.find(
+      (obj) =>
+        obj._id.year === secondLatestYearNum &&
+        obj._id.month === secondLatestMonthNum
+    );
 
-  return {
-    latestMonthName: latestDate.toLocaleString("default", { month: "long" }),
-    secondLatestMonthName: secondLatestDate.toLocaleString("default", {
-      month: "long",
-    }),
-    purchase: {
-      latest: latestPurchaseObj,
-      secondLatest: secondLatestPurchaseObj,
-    },
-    sales: {
-      latest: latestSalesObj,
-      secondLatest: secondLatestSalesObj,
-    },
-  };
+    return {
+      latestMonthName: latestDate.toLocaleString("default", { month: "long" }),
+      secondLatestMonthName: secondLatestDate.toLocaleString("default", {
+        month: "long",
+      }),
+      purchase: {
+        latest: latestPurchaseObj,
+        secondLatest: secondLatestPurchaseObj,
+      },
+      sales: {
+        latest: latestSalesObj,
+        secondLatest: secondLatestSalesObj,
+      },
+    };
+  } catch (error) {
+    if (error.response.status === 404) {
+      const today = new Date();
+      const thisMonth = today.toLocaleString("default", { month: "long" });
+      const lastMonth = new Date()
+        .setMonth(today.getMonth() - 1)
+        .toLocaleString("default", { month: "long" });
+      return {
+        latestMonthName: thisMonth,
+        secondLatestMonthName: lastMonth,
+      };
+    }
+    return null;
+  }
 };
 
 const Dashboard = () => {

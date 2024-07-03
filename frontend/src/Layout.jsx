@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import Nav from "./component/nav/Nav";
-import Header from "./component/header/Header";
+import Nav from "./component/nav/Nav.jsx";
+import Header from "./component/header/Header.jsx";
+import FormModal from "./component/modal/FormModal.jsx";
+import ConfirmationModal from "./page/auth/ConfirmationModal.jsx";
 
 const classNameForModal =
   "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px]";
@@ -16,11 +18,13 @@ const Layout = (props) => {
   const { children } = props;
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [confirmationType, setConfirmationType] = useState("");
 
   return (
     <>
       <Header />
-      <Nav />
+      <Nav fnToOpenFormModal={setIsFormModalOpen} />
       <main className="ml-64 p-8 bg-[#F1F7F8] h-screen">{children}</main>
 
       <Modal
@@ -29,13 +33,24 @@ const Layout = (props) => {
         className={classNameForModal}
         style={styleForModal}
       >
-        {/* <AuthInputModal
-          authType={authType}
-          fnToChangeAuthType={setAuthType}
-          fnToSetNextModalType={setConfirmationType}
-          fnToOpenNextModal={setIsConfirmationModalOpen}
-          fnToCloseThisModal={setIsAuthModalOpen}
-        /> */}
+        <FormModal
+          formType="support"
+          // fnToSetConfirmationModalType={setConfirmationType}
+          fnToOpenConfirmationModal={setIsConfirmationModalOpen}
+          fnToCloseThisModal={setIsFormModalOpen}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={isConfirmationModalOpen}
+        onRequestClose={() => setIsConfirmationModalOpen(false)}
+        className={classNameForModal}
+        style={styleForModal}
+      >
+        <ConfirmationModal
+          confirmationType="support"
+          fnToCloseThisModal={setIsConfirmationModalOpen}
+        />
       </Modal>
     </>
   );

@@ -6,6 +6,8 @@ import Support from "../../assets/icons/support.svg";
 import CocoTradeLogo from "../../assets/CocoTradeLogo.svg";
 
 const Nav = (props) => {
+  const { fnToOpenFormModal } = props;
+
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -43,7 +45,9 @@ const Nav = (props) => {
           size="S"
           level="P"
           innerTxt="Contact us"
-          onClickFnc={() => {}}
+          onClickFnc={() => {
+            fnToOpenFormModal(true);
+          }}
         />
       </div>
     </nav>

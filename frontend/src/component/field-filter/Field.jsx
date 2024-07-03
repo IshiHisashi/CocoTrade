@@ -5,6 +5,7 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
+import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import React, { useState } from "react";
 import VisibilityOn from "../../assets/icons/Eye-On.svg";
 import VisibilityOff from "../../assets/icons/Eye-Off.svg";
@@ -119,6 +120,17 @@ const Field = ({
               </InputAdornment>
             ),
           }}
+        />
+      );
+      break;
+    case "textarea":
+      inputElement = (
+        <TextareaAutosize
+          name={name}
+          id={name}
+          value={value}
+          onChange={onChange}
+          required={required}
         />
       );
       break;

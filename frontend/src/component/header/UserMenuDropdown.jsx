@@ -6,10 +6,10 @@ const UserMenuDropdown = (props) => {
 
   return (
     <div
-      className={`absolute right-0 cursor-default bg-slate-100 transition-all ease-in-out ${
+      className={`absolute right-0 cursor-default bg-white text-black shadow-lg transition-all ease-in-out ${
         isUserMenuOpen
-          ? "translate-y-2 opacity-1"
-          : "translate-y-0 opacity-0 invisible"
+          ? "translate-y-6 opacity-1"
+          : "translate-y-4 opacity-0 invisible"
       }`}
     >
       <nav>

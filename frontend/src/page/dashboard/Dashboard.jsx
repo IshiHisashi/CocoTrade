@@ -144,7 +144,7 @@ const Dashboard = () => {
         )}
         <CtaBtn
           size="M"
-          level="S"
+          level="P"
           innerTxt="Add Purchase"
           onClickFnc={() =>
             navigate("/purchase", { state: { showAddForm: true } })
@@ -157,13 +157,13 @@ const Dashboard = () => {
         <PriceIndicatorCard type="suggestion" />
       </section>
 
-      <section>
+      <section className="bg-white">
         <h2>Today&apos;s inventory is 00,000kg</h2>
         <LineChartRevised userId={userId} dashboard />
       </section>
 
       <div className="grid sm:grid-cols-3">
-        <section className="col-span-2 border-2 p-4">
+        <section className="col-span-2 p-4 bg-white">
           <h2>Activity this month vs last month</h2>
           {!data ? (
             <p>loading...</p>

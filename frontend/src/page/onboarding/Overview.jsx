@@ -40,9 +40,9 @@ const Overview = (props) => {
 
     try {
       const [resInventoryDoc, resBalanceDoc] = await Promise.all([
-        axios.post("http://localhost:5555/inventory", inventoryInfo),
+        axios.post("http://localhost:5555/inventory/first", inventoryInfo),
         axios.post(
-          `http://localhost:5555/tmpFinRoute/${userId}/currentbalance`,
+          `http://localhost:5555/tmpFinRoute/${userId}/currentbalance/first`,
           balanceInfo
         ),
       ]);

@@ -1,6 +1,23 @@
 import { Inventory } from "../model/inventoryModel.js";
 import { UserModel } from "../model/userModel.js";
 
+// Create the very first inentory at the end of the onboarding
+export const createFirstInventory = async (req, res) => {
+  try {
+    const newInventory = new Inventory(req.body);
+    const savedInventory = await newInventory.save();
+    res.status(201).json({
+      status: "success",
+      data: savedInventory,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "failed",
+      error: error.message,
+    });
+  }
+};
+
 // Create inventory
 export const createInventory = async (req, res) => {
   try {

@@ -1,5 +1,24 @@
 import { CurrentBalanceModel } from "../model/currentBalanceModel.js";
 import { UserModel } from "../model/userModel.js";
+
+// Create the very first balance at the end of the onboarding
+export const createFirstCurrentBalance = async (req, res) => {
+  try {
+    const newCurrentBalance = await CurrentBalanceModel.create(req.body);
+    res.status(201).json({
+      status: "success",
+      data: {
+        newCurrentBalance,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
 // Define fnc to read the data
 // Create
 export const createCurrentBalance = async (req, res) => {

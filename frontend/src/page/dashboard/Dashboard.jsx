@@ -4,7 +4,7 @@ import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PriceIndicatorCard from "../../component/card/PriceIndicatorCard.jsx";
-import UserIdContext from "./UserIdContext.jsx";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
 import LineChartRevised from "../inventory/LineChartRevised.jsx";

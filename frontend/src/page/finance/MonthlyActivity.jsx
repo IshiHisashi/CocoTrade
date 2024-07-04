@@ -6,7 +6,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import moment from "moment";
 import { Chart, registerables } from "chart.js";
-import UserIdContext from "./UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import MonthlyTable from "./MonthlyTable";
 
 Chart.register(...registerables);

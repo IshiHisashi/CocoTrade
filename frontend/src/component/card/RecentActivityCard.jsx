@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import UserIdContext from "../../page/dashboard/UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext";
 
 const getTotalSum = async (type, userId) => {
   let totalSum;
@@ -30,7 +30,6 @@ const RecentActivityCard = (props) => {
   const { type } = props;
   const userId = useContext(UserIdContext);
   const [totalSum, setTotalSum] = useState(null);
-
   useEffect(() => {
     (async () => {
       const totalSumRes = await getTotalSum(type, userId);

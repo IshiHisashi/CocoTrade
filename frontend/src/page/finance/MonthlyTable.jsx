@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
-import UserIdContext from "./UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const MonthlyTable = ({ selectedTableMonth }) => {
   const [dailyTransactionSale, setDailyTransactionSale] = useState([]);

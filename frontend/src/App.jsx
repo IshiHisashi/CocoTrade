@@ -16,7 +16,7 @@ import ViewSalesTable from "./page/sale/ViewSalesTable.jsx";
 import Layout from "./Layout.jsx";
 import Auth from "./page/auth/Auth.jsx";
 import Onboarding from "./page/onboarding/Onboarding.jsx";
-import UserIdProvider from "./contexts/UserIdContext.jsx";
+// import UserIdProvider from "./contexts/UserIdContext.jsx";
 // import Settings from "";
 
 const App = () => {
@@ -30,9 +30,9 @@ const App = () => {
         <Route
           path="/onboarding/*"
           element={
-            <UserIdProvider>
-              <Onboarding />
-            </UserIdProvider>
+            // <UserIdProvider>
+            <Onboarding />
+            // </UserIdProvider>
           }
         />
         <Route

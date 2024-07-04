@@ -6,7 +6,7 @@ import axios from "axios";
 import moment from "moment";
 import { Chart } from "chart.js";
 import "chartjs-adapter-moment";
-import UserIdContext from "./UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import DurationSelecter from "../../component/field-filter/DurationSelecter.jsx";
 
 const LineChart = (t) => {
@@ -31,12 +31,14 @@ const LineChart = (t) => {
         })
         .catch(console.log("waiting..."));
     } else if (type === "cashflow") {
+      console.log(userId);
       // for cash flow
       axios
         .get(
           `http://localhost:5555/tmpFinRoute/${userId}/currentbalance/byuser`
         )
         .then((res) => {
+          console.log(res);
           setRetrievedData(res.data.data.docs);
         })
         .catch(console.log("waiting..."));

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
+  const userid = useContext(UserIdContext);
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
@@ -15,10 +17,8 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
     copra_ship_date: "",
     cheque_receive_date: "",
     total_sales_price: "",
-    user_id: "66640d8158d2c8dc4cedaf1e",
+    user_id: userid,
   });
-
-  const userid = "66640d8158d2c8dc4cedaf1e";
 
   useEffect(() => {
     // Fetch user data
@@ -57,7 +57,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
       .catch((error) => {
         console.error("Error fetching price suggestion:", error);
       });
-  }, [sale]); // Include purchase in the dependency array
+  }, [sale, userid]); // Include purchase in the dependency array
 
   useEffect(() => {
     if (sale) {
@@ -136,6 +136,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
   };
   return (
     <div className="modal">
+      {console.log(manufacturers)}
       <h2>Edit Sale</h2>
       <form onSubmit={handleSubmit}>
         <Field

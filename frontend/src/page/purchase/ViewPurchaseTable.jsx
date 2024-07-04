@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const ViewPurchaseTable = ({
   setShowAddForm,
@@ -23,9 +24,22 @@ const ViewPurchaseTable = ({
   const [dateLabel, setDateLabel] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
-  const userId = "bSBRC92GPJdQuLvYvFoYey9STue2";
+  const userId = useContext(UserIdContext);
 
-  const fetchPurchases = () => {
+  // const fetchPurchases = () => {
+  //   const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
+  //   axios
+  //     .get(url)
+  //     .then((response) => {
+  //       setPurchases(response.data);
+  //       setFilteredPurchases(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching purchases:", error);
+  //     });
+  // };
+
+  useEffect(() => {
     const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
@@ -36,11 +50,7 @@ const ViewPurchaseTable = ({
       .catch((error) => {
         console.error("Error fetching purchases:", error);
       });
-  };
-
-  useEffect(() => {
-    fetchPurchases();
-  }, [purchasesFromParent]);
+  }, [purchasesFromParent, userId]);
 
   const formatDecimal = (decimal128) => {
     if (!decimal128 || !decimal128.$numberDecimal) {
@@ -73,7 +83,16 @@ const ViewPurchaseTable = ({
       await axios.delete(`http://localhost:5555/purchase/${purchase._id}`);
 
       // Refresh the purchases list
-      fetchPurchases();
+      const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
+      axios
+        .get(url)
+        .then((response) => {
+          setPurchases(response.data);
+          setFilteredPurchases(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching purchases:", error);
+        });
     } catch (error) {
       console.error("Error deleting purchase:", error);
     }

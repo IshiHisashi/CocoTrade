@@ -1,24 +1,28 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Modal from 'react-modal';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Modal from "react-modal";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
+  const userId = useContext(UserIdContext);
   const [sales, setSales] = useState([]);
   const [filteredSales, setFilteredSales] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
-  const [dateRange, setDateRange] = useState({startDate: null, endDate: null});
-  const [isDateModalOpen, setIsDateModalOpen] = useState(false);   
+  const [dateRange, setDateRange] = useState({
+    startDate: null,
+    endDate: null,
+  });
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [dateLabel, setDateLabel] = useState('');  
+  const [dateLabel, setDateLabel] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
   const fetchSales = () => {
-    const userId = "66640d8158d2c8dc4cedaf1e";
     const url = `http://localhost:5555/tmpFinRoute/${userId}/sale`;
     axios
       .get(url)
@@ -32,8 +36,17 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
   };
 
   useEffect(() => {
-    fetchSales();
-  }, []);
+    const url = `http://localhost:5555/tmpFinRoute/${userId}/sale`;
+    axios
+      .get(url)
+      .then((response) => {
+        setSales(response.data);
+        setFilteredSales(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching sales:", error);
+      });
+  }, [userId]);
 
   const formatDecimal = (decimal128) => {
     if (!decimal128 || !decimal128.$numberDecimal) {
@@ -44,12 +57,19 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
 
   useEffect(() => {
     const filterSales = () => {
-      const filtered = sales.filter(sale => {
+      const filtered = sales.filter((sale) => {
         const saleDate = new Date(sale.copra_ship_date);
-        const start = dateRange.startDate ? new Date(dateRange.startDate).setHours(0, 0, 0, 0) : null;
-        const end = dateRange.endDate ? new Date(dateRange.endDate).setHours(23, 59, 59, 999) : null;
-        return (!start || saleDate >= start) && (!end || saleDate <= end) &&
-               (statusFilter === "all" || sale.status === statusFilter);
+        const start = dateRange.startDate
+          ? new Date(dateRange.startDate).setHours(0, 0, 0, 0)
+          : null;
+        const end = dateRange.endDate
+          ? new Date(dateRange.endDate).setHours(23, 59, 59, 999)
+          : null;
+        return (
+          (!start || saleDate >= start) &&
+          (!end || saleDate <= end) &&
+          (statusFilter === "all" || sale.status === statusFilter)
+        );
       });
       setFilteredSales(filtered);
       setCurrentPage(1); // Reset to first page on filter change
@@ -61,45 +81,46 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
     setIsDateModalOpen(!isDateModalOpen);
     setIsDatePickerVisible(false); // Reset to initial state when closing the modal
     setDateRange({ startDate: null, endDate: null }); // Reset date range when opening the modal
-    setDateLabel(''); // Clear the date label
+    setDateLabel(""); // Clear the date label
   };
   const handleDateChange = (update) => {
     setDateRange({ startDate: update[0], endDate: update[1] });
-    setDateLabel('');
+    setDateLabel("");
   };
 
   const handlePredefinedRange = (range) => {
     const today = new Date();
     let start;
     let end;
-    let label = '';
+    let label = "";
     switch (range) {
-      case 'today':
-        label = 'Today';
+      case "today":
+        label = "Today";
         start = new Date(today.setHours(0, 0, 0, 0));
         end = new Date(today.setHours(23, 59, 59, 999));
         break;
-      case 'thisWeek':
-        label = 'This Week';
-        {const dayOfWeek = today.getDay();
-        start = new Date(today.setDate(today.getDate() - dayOfWeek));
-        start.setHours(0, 0, 0, 0);
-        end = new Date(start);
-        end.setDate(end.getDate() + 6);
-        end.setHours(23, 59, 59, 999);
+      case "thisWeek":
+        label = "This Week";
+        {
+          const dayOfWeek = today.getDay();
+          start = new Date(today.setDate(today.getDate() - dayOfWeek));
+          start.setHours(0, 0, 0, 0);
+          end = new Date(start);
+          end.setDate(end.getDate() + 6);
+          end.setHours(23, 59, 59, 999);
         }
         break;
-      case 'thisMonth':
-        label = 'This Month';
+      case "thisMonth":
+        label = "This Month";
         start = new Date(today.getFullYear(), today.getMonth(), 1);
         end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         break;
-      case 'lastMonth':
-        label = 'Last Month';
+      case "lastMonth":
+        label = "Last Month";
         start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
         end = new Date(today.getFullYear(), today.getMonth(), 0);
         break;
-        default:
+      default:
         start = today;
         end = today;
     }
@@ -123,7 +144,7 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
   const handleDeleteClick = async (saleId) => {
     try {
       await axios.delete(`http://localhost:5555/sale/${saleId}`);
-      fetchSales(); 
+      fetchSales();
     } catch (error) {
       console.error("Error deleting sale:", error);
     }
@@ -174,11 +195,14 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
         <label>
           Date Filter:
           <input
-          type="text"
-          readOnly
-          value={dateLabel || `${dateRange.startDate ? new Date(dateRange.startDate).toLocaleDateString() : ''} - ${dateRange.endDate ? new Date(dateRange.endDate).toLocaleDateString() : ''}`}
-          onClick={() => setIsDateModalOpen(true)}
-        />
+            type="text"
+            readOnly
+            value={
+              dateLabel ||
+              `${dateRange.startDate ? new Date(dateRange.startDate).toLocaleDateString() : ""} - ${dateRange.endDate ? new Date(dateRange.endDate).toLocaleDateString() : ""}`
+            }
+            onClick={() => setIsDateModalOpen(true)}
+          />
         </label>
       </div>
       <Modal isOpen={isDateModalOpen} onRequestClose={toggleDateModal}>
@@ -192,31 +216,55 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
               onChange={handleDateChange}
               inline
             />
-            <button type="button" onClick={hideDatePicker}>Back</button>
-            <button type="button" onClick={submitDateRange}>Submit</button>
+            <button type="button" onClick={hideDatePicker}>
+              Back
+            </button>
+            <button type="button" onClick={submitDateRange}>
+              Submit
+            </button>
           </>
         ) : (
           <>
-           <label>
-          <input
-          type="text"
-          placeholder="MM/DD/YY - MM/DD/YY"
-          readOnly
-          onClick={showDatePicker}
-        />
-        </label>
-        <div>
-      <button type="button" onClick={() => handlePredefinedRange('today')}>Today</button>
-    </div>
-    <div>
-      <button type="button" onClick={() => handlePredefinedRange('thisWeek')}>This Week</button>
-    </div>
-    <div>
-      <button type="button" onClick={() => handlePredefinedRange('thisMonth')}>This Month</button>
-    </div>
-    <div>
-      <button type="button" onClick={() => handlePredefinedRange('lastMonth')}>Last Month</button>
-    </div>
+            <label>
+              <input
+                type="text"
+                placeholder="MM/DD/YY - MM/DD/YY"
+                readOnly
+                onClick={showDatePicker}
+              />
+            </label>
+            <div>
+              <button
+                type="button"
+                onClick={() => handlePredefinedRange("today")}
+              >
+                Today
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => handlePredefinedRange("thisWeek")}
+              >
+                This Week
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => handlePredefinedRange("thisMonth")}
+              >
+                This Month
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => handlePredefinedRange("lastMonth")}
+              >
+                Last Month
+              </button>
+            </div>
           </>
         )}
       </Modal>

@@ -154,7 +154,6 @@ export const getAllCurrentBalanceByUser = async (req, res) => {
   try {
     const user = await UserModel.findById(req.params.userid);
     // Read the docs
-    // const docs = await CurrentBalanceModel.find({});
     const docs = await CurrentBalanceModel.aggregate([
       { $match: { _id: { $in: user.balance_array } } },
     ]);
@@ -194,6 +193,7 @@ export const getCurrentBalance = async (req, res) => {
 export const getLatestBalance = async (req, res) => {
   try {
     const user = await UserModel.findById(req.params.userid);
+
     // Read the docs
     // const docs = await CurrentBalanceModel.find({});
     const doc = await CurrentBalanceModel.aggregate([

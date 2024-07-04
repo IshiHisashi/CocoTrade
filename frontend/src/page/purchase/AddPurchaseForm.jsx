@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const AddPurchaseForm = ({
   setShowAddForm,
@@ -9,6 +10,7 @@ const AddPurchaseForm = ({
   handleUpdate,
   setPurchasesFromParent,
 }) => {
+  const userid = useContext(UserIdContext);
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
   const [user, setUser] = useState(null);
@@ -20,10 +22,8 @@ const AddPurchaseForm = ({
     amount_of_copra_purchased: "",
     moisture_test_details: "",
     total_purchase_price: "",
-    user_id: "bSBRC92GPJdQuLvYvFoYey9STue2",
+    user_id: userid,
   });
-
-  const userid = "bSBRC92GPJdQuLvYvFoYey9STue2";
 
   useEffect(() => {
     // Fetch user data
@@ -81,7 +81,7 @@ const AddPurchaseForm = ({
         invoice_number: generateInvoiceNumber(),
       }));
     }
-  }, [purchase]); // Include purchase in the dependency array
+  }, [purchase, userid]); // Include purchase in the dependency array
 
   useEffect(() => {
     if (purchase) {
@@ -110,7 +110,7 @@ const AddPurchaseForm = ({
         user_id: userid,
       });
     }
-  }, [purchase]); // Include purchase in the dependency array
+  }, [purchase, userid]); // Include purchase in the dependency array
 
   useEffect(() => {
     const calculateTotalPurchasePrice = () => {
@@ -177,17 +177,17 @@ const AddPurchaseForm = ({
         const newCashBalanceId = newCashDoc?.data?.data?.newCurrentBalance._id;
 
         // 3). Create inventory
-        // const newInventoryDoc = await axios.post(
-        //   `http://localhost:5555/tmpFinRoute/${userid}/inventory`,
-        //   {
-        //     user_id: userid,
-        //     changeValue: formData.amount_of_copra_purchased,
-        //     date: formData.purchase_date,
-        //     type: "purchase",
-        //   }
-        // );
+        const newInventoryDoc = await axios.post(
+          `http://localhost:5555/tmpFinRoute/${userid}/inventory`,
+          {
+            user_id: userid,
+            changeValue: formData.amount_of_copra_purchased,
+            date: formData.purchase_date,
+            type: "purchase",
+          }
+        );
         // eslint-disable-next-line no-underscore-dangle
-        // const newInventoryId = newInventoryDoc?.data?.data?.newInventory._id;
+        const newInventoryId = newInventoryDoc?.data?.data?.newInventory._id;
 
         // 4). Send ids to the corresponding user documents
         const updateData = {
@@ -200,12 +200,12 @@ const AddPurchaseForm = ({
             value: newCashBalanceId,
           };
         }
-        // if (newInventoryId) {
-        //   updateData.inventory_amount_array = {
-        //     action: "push",
-        //     value: newInventoryId,
-        //   };
-        // }
+        if (newInventoryId) {
+          updateData.inventory_amount_array = {
+            action: "push",
+            value: newInventoryId,
+          };
+        }
         await axios.patch(`http://localhost:5555/user/${userid}`, updateData);
         setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);

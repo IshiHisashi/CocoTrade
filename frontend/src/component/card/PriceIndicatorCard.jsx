@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import UserIdContext from "../../page/dashboard/UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext";
 
 const getDataObjRes = async (type, userId) => {
   let dataObj;

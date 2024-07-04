@@ -33,6 +33,7 @@ const Onboarding = () => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const userId = useContext(UserIdContext);
+  console.log(userId);
 
   useEffect(() => {
     (async () => {

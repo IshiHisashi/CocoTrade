@@ -28,8 +28,6 @@ const getLatestDate = (
 };
 
 const getData = async (userId, URL) => {
-  // 66654dc4c6e950671e988962
-
   try {
     const [purchaseRes, salesRes] = await Promise.all([
       axios.get(`${URL}/tmpFinRoute/${userId}/purchase/monthly-aggregate`),
@@ -126,7 +124,7 @@ const Dashboard = ({ URL }) => {
         }
       }
     })();
-  });
+  }, [userId, URL]);
 
   return (
     <UserIdContext.Provider value={userId}>

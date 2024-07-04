@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios';
-import { format } from 'date-fns';
-import CtaBtn from '../../component/btn/CtaBtn';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { format } from "date-fns";
+import CtaBtn from "../../component/btn/CtaBtn";
 
 const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
   const [manufacturers, setManufacturers] = useState([]);
@@ -75,6 +75,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
 
   // function to handle submit
   const handleSubmit = async (e) => {
+    console.log(userId);
     e.preventDefault();
     try {
       // Create a new sales log with pending status
@@ -116,6 +117,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
           current_amount_left: newCurrentAmntLft,
           current_amount_with_pending: latestInv.current_amount_with_pending,
         };
+        // (TO Aki FROM Ishi) Now you need to add userid into the param
         const createdInv = await axios.post(
           "http://localhost:5555/inventory",
           newInvData
@@ -144,14 +146,20 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
         );
       }
 
-       // Create notification
-      const formattedDate = format(new Date(formData.copra_ship_date), "MMMM do, yyyy");
+      // Create notification
+      const formattedDate = format(
+        new Date(formData.copra_ship_date),
+        "MMMM do, yyyy"
+      );
       const notificationData = {
         user_id: userId,
         title: "Prepare your trucks!",
         message: `You have an upcoming shipment on ${formattedDate}!`,
       };
-      const notificationResponse = await axios.post('http://localhost:5555/notification', notificationData);
+      const notificationResponse = await axios.post(
+        "http://localhost:5555/notification",
+        notificationData
+      );
       console.log("Notification created:", notificationResponse.data);
 
       // Refresh unread notifications count
@@ -159,14 +167,15 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
         refreshNotifications();
       }
       window.location.reload();
-       setShowModal(false);
-     }
-     catch (error) {
-       console.error('Error creating/updating sale or notification:', error);
-     }
-   }
- 
-  const fncCloseModal = () => {setShowModal(false);}
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error creating/updating sale or notification:", error);
+    }
+  };
+
+  const fncCloseModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <div>

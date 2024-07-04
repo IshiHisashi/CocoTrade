@@ -5,8 +5,8 @@ const { Schema } = mongoose;
 const priceSuggestionSchema = new Schema(
   {
     userID: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
+      // ref: "User",
     },
     price_suggestion: mongoose.Types.Decimal128,
   },

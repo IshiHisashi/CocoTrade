@@ -22,7 +22,7 @@ const Layout = (props) => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Nav fnToOpenFormModal={setIsFormModalOpen} />
       <main className="ml-64 p-8 bg-[#F1F7F8] h-screen">{children}</main>
 

@@ -20,10 +20,10 @@ const AddPurchaseForm = ({
     amount_of_copra_purchased: "",
     moisture_test_details: "",
     total_purchase_price: "",
-    user_id: "66654dc4c6e950671e988962",
+    user_id: "bSBRC92GPJdQuLvYvFoYey9STue2",
   });
 
-  const userid = "66654dc4c6e950671e988962";
+  const userid = "bSBRC92GPJdQuLvYvFoYey9STue2";
 
   useEffect(() => {
     // Fetch user data

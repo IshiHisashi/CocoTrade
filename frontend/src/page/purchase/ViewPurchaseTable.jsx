@@ -23,7 +23,7 @@ const ViewPurchaseTable = ({
   const [dateLabel, setDateLabel] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
-  const userId = "66654dc4c6e950671e988962";
+  const userId = "bSBRC92GPJdQuLvYvFoYey9STue2";
 
   const fetchPurchases = () => {
     const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;

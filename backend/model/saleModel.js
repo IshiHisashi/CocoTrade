@@ -2,9 +2,12 @@ import mongoose from "mongoose";
 
 export { Sale };
 
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 const saleSchema = new Schema({
-  user_id: { type: Schema.Types.ObjectId, ref: "User" },
+  user_id: {
+    type: String,
+    //  ref: "User"
+  },
   manufacturer_id: { type: Schema.Types.ObjectId, ref: "Manufacturer" },
   amount_of_copra_sold: mongoose.Types.Decimal128,
   sales_unit_price: mongoose.Types.Decimal128,

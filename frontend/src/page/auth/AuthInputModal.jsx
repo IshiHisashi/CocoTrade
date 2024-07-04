@@ -17,7 +17,7 @@ const AuthInputModal = (props) => {
     fnToCloseThisModal,
     URL,
   } = props;
-  console.log(URL);
+  // console.log(URL);
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,7 +30,13 @@ const AuthInputModal = (props) => {
 
     if (email && password && fullName && companyName) {
       try {
-        const newUserDoc = await signUp(email, password, fullName, companyName);
+        const newUserDoc = await signUp(
+          email,
+          password,
+          fullName,
+          companyName,
+          URL
+        );
         if (newUserDoc.status === "success") {
           fnToSetNextModalType("accountCreated");
           fnToOpenNextModal(true);

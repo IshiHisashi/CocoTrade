@@ -8,6 +8,7 @@ import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
 import LineChartRevised from "../inventory/LineChartRevised.jsx";
+import Info from "../../assets/icons/Information.svg";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -148,11 +149,16 @@ const Dashboard = ({ URL }) => {
   return (
     <UserIdContext.Provider value={userId}>
       <div className="flex justify-between items-center">
-        {!upcomingShipDate ? (
-          <p>getting your upcoming shipment information...</p>
-        ) : (
-          <p>{upcomingShipDate}</p>
-        )}
+        <div className="flex items-center">
+          {!upcomingShipDate ? (
+            <p>getting your upcoming shipment information...</p>
+          ) : (
+            <p>{upcomingShipDate}</p>
+          )}
+          <button type="button" className="mx-2" onClick={() => {}}>
+            <img src={Info} alt="toggle tooltip" className="inline-block" />
+          </button>
+        </div>
         <CtaBtn
           size="M"
           level="P"

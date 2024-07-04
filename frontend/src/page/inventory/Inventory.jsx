@@ -10,7 +10,7 @@ import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 Modal.setAppElement("#root");
 
-const Inventory = () => {
+const Inventory = ({ URL }) => {
   const [showModal, setShowModal] = useState(false);
   const userId = useContext(UserIdContext);
   const fncShowMedal = () => {
@@ -32,11 +32,11 @@ const Inventory = () => {
         }}
         contentLabel="Plan Your Shipment"
       >
-        <PlanShipment userId={userId} setShowModal={setShowModal} />
+        <PlanShipment userId={userId} setShowModal={setShowModal} URL={URL} />
       </Modal>
-      <BarChart userId={userId} />
-      <LineChartRevised userId={userId} />
-      <SalesTable userId={userId} />
+      <BarChart userId={userId} URL={URL} />
+      <LineChartRevised userId={userId} URL={URL} />
+      <SalesTable userId={userId} URL={URL} />
     </div>
   );
 };

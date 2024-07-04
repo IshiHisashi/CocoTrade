@@ -11,7 +11,7 @@ import MonthlyTable from "./MonthlyTable";
 
 Chart.register(...registerables);
 
-const MonthlyActivity = () => {
+const MonthlyActivity = ({ URL }) => {
   const [monthlySale, setMonthlySale] = useState([]);
   const [monthlyPurchase, setMonthlyPurchase] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState("all");
@@ -25,21 +25,19 @@ const MonthlyActivity = () => {
   // Read sales
   useEffect(() => {
     axios
-      .get(`http://localhost:5555/tmpFinRoute/${userId}/sale/monthly-aggregate`)
+      .get(`${URL}/tmpFinRoute/${userId}/sale/monthly-aggregate`)
       .then((res) => {
         setMonthlySale(res.data.data.salesAggregation);
       })
       .catch();
     // Read purchase
     axios
-      .get(
-        `http://localhost:5555/tmpFinRoute/${userId}/purchase/monthly-aggregate`
-      )
+      .get(`${URL}/tmpFinRoute/${userId}/purchase/monthly-aggregate`)
       .then((res) => {
         setMonthlyPurchase(res.data.data.purchaseAggregation);
       })
       .catch();
-  }, [userId]);
+  }, [userId, URL]);
 
   function getLast12Months() {
     const months = [];
@@ -220,7 +218,7 @@ const MonthlyActivity = () => {
             {" "}
           </canvas>
         </section>
-        <MonthlyTable selectedTableMonth={selectedTableMonth} />
+        <MonthlyTable selectedTableMonth={selectedTableMonth} URL={URL} />
       </div>
     </div>
   );

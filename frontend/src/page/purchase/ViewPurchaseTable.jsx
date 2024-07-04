@@ -11,6 +11,7 @@ const ViewPurchaseTable = ({
   setShowAddForm,
   handleEdit,
   purchasesFromParent,
+  URL,
 }) => {
   const [purchases, setPurchases] = useState([]);
   const [filteredPurchases, setFilteredPurchases] = useState([]);
@@ -40,17 +41,18 @@ const ViewPurchaseTable = ({
   // };
 
   useEffect(() => {
-    const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
+    const url = `${URL}/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
       .then((response) => {
+        console.log(response);
         setPurchases(response.data);
         setFilteredPurchases(response.data);
       })
       .catch((error) => {
         console.error("Error fetching purchases:", error);
       });
-  }, [purchasesFromParent, userId]);
+  }, [purchasesFromParent, userId, URL]);
 
   const formatDecimal = (decimal128) => {
     if (!decimal128 || !decimal128.$numberDecimal) {
@@ -63,7 +65,7 @@ const ViewPurchaseTable = ({
     try {
       await axios.patch(
         // eslint-disable-next-line no-underscore-dangle
-        `http://localhost:5555/tmpFinRoute/${userId}/currentbalance`,
+        `${URL}/tmpFinRoute/${userId}/currentbalance`,
         {
           user_id: userId,
           updatedPrice: 0,
@@ -75,15 +77,15 @@ const ViewPurchaseTable = ({
       );
 
       // delete the id from user document
-      await axios.patch(`http://localhost:5555/user/${userId}`, {
+      await axios.patch(`${URL}/user/${userId}`, {
         purchases_array: { action: "pull", value: purchase._id },
       });
 
       // delete the doc
-      await axios.delete(`http://localhost:5555/purchase/${purchase._id}`);
+      await axios.delete(`${URL}/purchase/${purchase._id}`);
 
       // Refresh the purchases list
-      const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
+      const url = `${URL}/tmpFinRoute/${userId}/purchase`;
       axios
         .get(url)
         .then((response) => {

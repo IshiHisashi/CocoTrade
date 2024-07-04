@@ -4,7 +4,7 @@ import axios from "axios";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
-const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
+const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
   const userid = useContext(UserIdContext);
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
@@ -23,7 +23,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
   useEffect(() => {
     // Fetch user data
     axios
-      .get(`http://localhost:5555/user/${userid}`)
+      .get(`${URL}/user/${userid}`)
       .then((response) => {
         setUser(response.data.data);
       })
@@ -33,7 +33,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
 
     // Fetch manufacturers
     axios
-      .get("http://localhost:5555/manufacturer")
+      .get(`${URL}/manufacturer`)
       .then((response) => {
         setManufacturers(response.data);
       })
@@ -43,7 +43,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
 
     // Fetch price suggestion
     axios
-      .get(`http://localhost:5555/user/${userid}/pricesuggestion/getone`)
+      .get(`${URL}/user/${userid}/pricesuggestion/getone`)
       .then((response) => {
         if (response.data.status === "success") {
           setFormData((prevData) => ({
@@ -57,7 +57,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
       .catch((error) => {
         console.error("Error fetching price suggestion:", error);
       });
-  }, [sale, userid]); // Include purchase in the dependency array
+  }, [sale, userid, URL]); // Include purchase in the dependency array
 
   useEffect(() => {
     if (sale) {
@@ -115,17 +115,14 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate }) => {
       if (sale) {
         await handleUpdate(formData);
       } else {
-        const response = await axios.post(
-          "http://localhost:5555/sale",
-          formData
-        );
+        const response = await axios.post(`${URL}/sale`, formData);
         console.log("Sale created:", response.data);
         // eslint-disable-next-line no-underscore-dangle
         const saleId = response.data._id;
 
         // const updatedSalesArray = [...user.sales_array, saleId];
 
-        await axios.patch(`http://localhost:5555/user/${userid}`, {
+        await axios.patch(`${URL}/user/${userid}`, {
           sales_array: { action: "push", value: saleId },
         });
         setShowAddForm(false);

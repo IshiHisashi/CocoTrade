@@ -3,7 +3,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import CtaBtn from "../../component/btn/CtaBtn";
 
-const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
+const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
   const [latestInv, setLatestInv] = useState([]);
@@ -22,7 +22,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
     () => {
       // Fetch user data
       axios
-        .get(`http://localhost:5555/user/${userId}`)
+        .get(`${URL}/user/${userId}`)
         .then((response) => {
           console.log(response.data.data);
           setUser(response.data.data);
@@ -33,7 +33,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
 
       // Fetch manufacturers
       axios
-        .get(`http://localhost:5555/user/${userId}/manu`)
+        .get(`${URL}/user/${userId}/manu`)
         .then((response) => {
           console.log(response.data.data.manufacturers);
           setManufacturers(response.data.data.manufacturers);
@@ -44,7 +44,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
 
       // Fetch the latest inventory data to make a new inventory log or to modify the log
       axios
-        .get(`http://localhost:5555/user/${userId}/inv`)
+        .get(`${URL}/user/${userId}/inv`)
         .then((res) => {
           // setMaximumInv(res.data.data.max_amount);
           const invArray = res.data.data;
@@ -79,17 +79,16 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
     e.preventDefault();
     try {
       // Create a new sales log with pending status
-      const response = await axios.post("http://localhost:5555/sale", formData);
+      const response = await axios.post(`${URL}/sale`, formData);
       console.log("Shipment/sale created:", response.data);
 
       // Add a new id of the sales log into sales_array in the user document.
       // eslint-disable-next-line no-underscore-dangle
       const saleId = response.data._id;
       const updatedSalesArray = [...user.sales_array, saleId];
-      const patchedSalesArray = await axios.patch(
-        `http://localhost:5555/user/${userId}`,
-        { sales_array: { action: "push", value: saleId } }
-      );
+      const patchedSalesArray = await axios.patch(`${URL}/user/${userId}`, {
+        sales_array: { action: "push", value: saleId },
+      });
       console.log("Sales data in user's doc updated: ", patchedSalesArray.data);
 
       // Add a new id of the sales log into sales_array in the inventory document.
@@ -118,26 +117,22 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
           current_amount_with_pending: latestInv.current_amount_with_pending,
         };
         // (TO Aki FROM Ishi) Now you need to add userid into the param
-        const createdInv = await axios.post(
-          "http://localhost:5555/inventory",
-          newInvData
-        );
+        const createdInv = await axios.post(`${URL}/inventory`, newInvData);
         console.log("New inv doc created: ", createdInv.data);
 
         // Add this new inv doc to "inventory_amount_array" in user's doc
         // eslint-disable-next-line no-underscore-dangle
         const invId = createdInv.data.data._id;
         const updatedInvArray = [...user.inventory_amount_array, invId];
-        const patchedInvArray = await axios.patch(
-          `http://localhost:5555/user/${userId}`,
-          { inventory_amount_array: { action: "push", value: invId } }
-        );
+        const patchedInvArray = await axios.patch(`${URL}/user/${userId}`, {
+          inventory_amount_array: { action: "push", value: invId },
+        });
         console.log("Inv data in user's doc updated: ", patchedInvArray.data);
       } else {
         // eslint-disable-next-line no-underscore-dangle
         const currentInvId = latestInv._id;
         const patchedInvDoc = await axios.patch(
-          `http://localhost:5555/inventory/${currentInvId}`,
+          `${URL}/inventory/${currentInvId}`,
           { sales_array: updatedSalesArray }
         );
         console.log(
@@ -157,7 +152,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications }) => {
         message: `You have an upcoming shipment on ${formattedDate}!`,
       };
       const notificationResponse = await axios.post(
-        "http://localhost:5555/notification",
+        `${URL}/notification`,
         notificationData
       );
       console.log("Notification created:", notificationResponse.data);

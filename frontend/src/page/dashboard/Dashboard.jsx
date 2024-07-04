@@ -27,17 +27,13 @@ const getLatestDate = (
   return [new Date(salesDate - 1), salesDate];
 };
 
-const getData = async (userId) => {
+const getData = async (userId, URL) => {
   // 66654dc4c6e950671e988962
 
   try {
     const [purchaseRes, salesRes] = await Promise.all([
-      axios.get(
-        `http://localhost:5555/tmpFinRoute/${userId}/purchase/monthly-aggregate`
-      ),
-      axios.get(
-        `http://localhost:5555/tmpFinRoute/${userId}/sale/monthly-aggregate`
-      ),
+      axios.get(`${URL}/tmpFinRoute/${userId}/purchase/monthly-aggregate`),
+      axios.get(`${URL}/tmpFinRoute/${userId}/sale/monthly-aggregate`),
     ]);
 
     const purchaseResArray = purchaseRes.data.data.purchaseAggregation;
@@ -104,7 +100,7 @@ const getData = async (userId) => {
   }
 };
 
-const Dashboard = () => {
+const Dashboard = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const [data, setData] = useState(null);
   const [upcomingShipDate, setUpcomingShipDate] = useState("");
@@ -112,17 +108,15 @@ const Dashboard = () => {
 
   useEffect(() => {
     (async () => {
-      const dataObj = await getData(userId);
+      const dataObj = await getData(userId, URL);
       setData(dataObj);
     })();
-  }, [userId]);
+  }, [userId, URL]);
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5555/sale/latest-pending/${userId}`
-        );
+        const res = await axios.get(`${URL}/sale/latest-pending/${userId}`);
         setUpcomingShipDate(
           `You have an upcoming shipment on ${res.data.date}.`
         );
@@ -153,13 +147,13 @@ const Dashboard = () => {
       </div>
 
       <section className="grid sm:grid-cols-2">
-        <PriceIndicatorCard type="market" />
-        <PriceIndicatorCard type="suggestion" />
+        <PriceIndicatorCard type="market" URL={URL} />
+        <PriceIndicatorCard type="suggestion" URL={URL} />
       </section>
 
       <section className="bg-white">
         <h2>Today&apos;s inventory is 00,000kg</h2>
-        <LineChartRevised userId={userId} dashboard />
+        <LineChartRevised userId={userId} dashboard URL={URL} />
       </section>
 
       <div className="grid sm:grid-cols-3">
@@ -215,8 +209,8 @@ const Dashboard = () => {
         </section>
 
         <section>
-          <RecentActivityCard type="purchase" />
-          <RecentActivityCard type="sales" />
+          <RecentActivityCard type="purchase" URL={URL} />
+          <RecentActivityCard type="sales" URL={URL} />
         </section>
       </div>
     </UserIdContext.Provider>

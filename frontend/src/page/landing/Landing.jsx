@@ -65,6 +65,7 @@ const Landing = (props) => {
             fnToSetNextModalType={setConfirmationType}
             fnToOpenNextModal={setIsConfirmationModalOpen}
             fnToCloseThisModal={setIsAuthModalOpen}
+            URL={URL}
           />
         </Modal>
         <Modal

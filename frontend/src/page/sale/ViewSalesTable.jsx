@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
-const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
+const ViewSalesTable = ({ setShowAddForm, handleEdit, URL }) => {
   const userId = useContext(UserIdContext);
   const [sales, setSales] = useState([]);
   const [filteredSales, setFilteredSales] = useState([]);
@@ -23,7 +23,7 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
   const recordsPerPage = 10;
 
   const fetchSales = () => {
-    const url = `http://localhost:5555/tmpFinRoute/${userId}/sale`;
+    const url = `${URL}/tmpFinRoute/${userId}/sale`;
     axios
       .get(url)
       .then((response) => {
@@ -36,7 +36,7 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
   };
 
   useEffect(() => {
-    const url = `http://localhost:5555/tmpFinRoute/${userId}/sale`;
+    const url = `${URL}/tmpFinRoute/${userId}/sale`;
     axios
       .get(url)
       .then((response) => {
@@ -46,7 +46,7 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
       .catch((error) => {
         console.error("Error fetching sales:", error);
       });
-  }, [userId]);
+  }, [userId, URL]);
 
   const formatDecimal = (decimal128) => {
     if (!decimal128 || !decimal128.$numberDecimal) {
@@ -143,7 +143,7 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit }) => {
   };
   const handleDeleteClick = async (saleId) => {
     try {
-      await axios.delete(`http://localhost:5555/sale/${saleId}`);
+      await axios.delete(`${URL}/sale/${saleId}`);
       fetchSales();
     } catch (error) {
       console.error("Error deleting sale:", error);

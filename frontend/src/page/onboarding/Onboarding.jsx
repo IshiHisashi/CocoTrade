@@ -19,7 +19,7 @@ const styleForModal = {
   },
 };
 
-const Onboarding = () => {
+const Onboarding = ({ URL }) => {
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,7 +37,7 @@ const Onboarding = () => {
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get(`http://localhost:5555/user/${userId}`);
+      const res = await axios.get(`${URL}/user/${userId}`);
       setFullName(
         sessionStorage.getItem("fullName") || res.data.data.full_name
       );
@@ -60,7 +60,7 @@ const Onboarding = () => {
       setCurrentAmountLeft(sessionStorage.getItem("currentAmountLeft"));
       setCurrentBalance(sessionStorage.getItem("currentBalance"));
     })();
-  }, [userId]);
+  }, [userId, URL]);
 
   return (
     <>
@@ -112,6 +112,7 @@ const Onboarding = () => {
                 currentAmountLeft={currentAmountLeft}
                 currentBalance={currentBalance}
                 fnToShowModal={setIsConfirmationModalOpen}
+                URL={URL}
               />
             }
           />

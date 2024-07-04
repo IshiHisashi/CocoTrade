@@ -9,6 +9,7 @@ const AddPurchaseForm = ({
   purchase,
   handleUpdate,
   setPurchasesFromParent,
+  URL,
 }) => {
   const userid = useContext(UserIdContext);
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const AddPurchaseForm = ({
   useEffect(() => {
     // Fetch user data
     axios
-      .get(`http://localhost:5555/user/${userid}`)
+      .get(`${URL}/user/${userid}`)
       .then((response) => {
         setUser(response.data.data);
       })
@@ -38,7 +39,7 @@ const AddPurchaseForm = ({
 
     // Fetch farmers
     axios
-      .get("http://localhost:5555/farmer")
+      .get(`${URL}/farmer`)
       .then((response) => {
         setFarmers(response.data);
       })
@@ -48,7 +49,7 @@ const AddPurchaseForm = ({
 
     // Fetch price suggestion
     axios
-      .get(`http://localhost:5555/user/${userid}/pricesuggestion/getone`)
+      .get(`${URL}/user/${userid}/pricesuggestion/getone`)
       .then((response) => {
         if (response.data.status === "success") {
           setFormData((prevData) => ({
@@ -81,7 +82,7 @@ const AddPurchaseForm = ({
         invoice_number: generateInvoiceNumber(),
       }));
     }
-  }, [purchase, userid]); // Include purchase in the dependency array
+  }, [purchase, userid, URL]); // Include purchase in the dependency array
 
   useEffect(() => {
     if (purchase) {
@@ -156,16 +157,13 @@ const AddPurchaseForm = ({
       } else {
         // -----NEW PURCHASE LOG-----
         // 1). Create purchase document
-        const newPurchaseDoc = await axios.post(
-          "http://localhost:5555/purchase",
-          formData
-        );
+        const newPurchaseDoc = await axios.post(`${URL}/purchase`, formData);
         // eslint-disable-next-line no-underscore-dangle
         const purchaseId = newPurchaseDoc.data._id;
 
         // 2). Create cash_balance:
         const newCashDoc = await axios.post(
-          `http://localhost:5555/tmpFinRoute/${userid}/currentbalance`,
+          `${URL}/tmpFinRoute/${userid}/currentbalance`,
           {
             user_id: userid,
             changeValue: formData.total_purchase_price,
@@ -178,7 +176,7 @@ const AddPurchaseForm = ({
 
         // 3). Create inventory
         const newInventoryDoc = await axios.post(
-          `http://localhost:5555/tmpFinRoute/${userid}/inventory`,
+          `${URL}/tmpFinRoute/${userid}/inventory`,
           {
             user_id: userid,
             changeValue: formData.amount_of_copra_purchased,
@@ -206,7 +204,7 @@ const AddPurchaseForm = ({
             value: newInventoryId,
           };
         }
-        await axios.patch(`http://localhost:5555/user/${userid}`, updateData);
+        await axios.patch(`${URL}/user/${userid}`, updateData);
         setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);
       }

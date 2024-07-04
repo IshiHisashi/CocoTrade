@@ -15,14 +15,14 @@ const styleForModal = {
 };
 
 const Layout = (props) => {
-  const { children } = props;
+  const { children, URL } = props;
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   return (
     <>
-      <Header />
+      <Header URL={URL} />
       <Nav fnToOpenFormModal={setIsFormModalOpen} />
       <main className="ml-64 p-8 bg-[#F1F7F8] h-screen">{children}</main>
 

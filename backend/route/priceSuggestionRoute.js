@@ -6,6 +6,11 @@ router
   .route("/:userid/pricesuggestion")
   .post(priceSuggestionController.createPriceSuggestion);
 
+router.post(
+  "/:userid/pricesuggestion/first",
+  priceSuggestionController.createFirstPriceSuggestion
+);
+
 router.get(
   "/:userid/pricesuggestion/getone",
   priceSuggestionController.readOneRecentPriceSuggestion

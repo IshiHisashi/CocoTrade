@@ -2,6 +2,40 @@ import axios from "axios";
 import { PriceSuggestionModel } from "../model/priceSuggestionModel.js";
 import { UserModel } from "../model/userModel.js";
 
+// Create the very first price suggestion at the end of the onboarding
+export const createFirstPriceSuggestion = async (req, res) => {
+  try {
+    const { userid } = req.params;
+    const { margin } = req.body;
+
+    const resMarketPriceDoc = await axios.get(
+      "http://localhost:5555/marketprice/latest"
+    );
+    // pricePHP is in ton. convert it in kg, and calculate price suggestion.
+    const pricePHP = Number(
+      resMarketPriceDoc.data.data.doc.price_PHP.$numberDecimal
+    );
+    const pricePHPInKg = pricePHP / 1000;
+    const priceSuggestion = pricePHPInKg * (1 + margin);
+
+    const newDoc = {
+      userID: userid,
+      price_suggestion: priceSuggestion,
+    };
+
+    const newPriceSuggestion = await PriceSuggestionModel.create(newDoc);
+    res.status(201).json({
+      status: "success",
+      data: newPriceSuggestion,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
 // Create a price suggestion document
 export const createPriceSuggestion = async (req, res) => {
   try {

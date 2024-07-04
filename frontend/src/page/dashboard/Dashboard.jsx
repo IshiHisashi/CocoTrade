@@ -13,6 +13,8 @@ import Info from "../../assets/icons/Information.svg";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const today = new Date();
+
 // get the latest month among the purchase and sales logs.
 const getLatestDate = (
   purchaseYear,
@@ -40,10 +42,18 @@ const getData = async (userId, URL) => {
     const salesResArray = salesRes.data.data.salesAggregation;
 
     const [secondLatestDate, latestDate] = getLatestDate(
-      purchaseResArray[purchaseResArray.length - 1]._id.year,
-      purchaseResArray[purchaseResArray.length - 1]._id.month,
-      salesResArray[salesResArray.length - 1]._id.year,
-      salesResArray[salesResArray.length - 1]._id.month
+      purchaseResArray.length
+        ? purchaseResArray[purchaseResArray.length - 1]._id.year
+        : today.getFullYear(),
+      purchaseResArray.length
+        ? purchaseResArray[purchaseResArray.length - 1]._id.month
+        : today.getMonth() + 1,
+      salesResArray.length
+        ? salesResArray[salesResArray.length - 1]._id.year
+        : today.getFullYear(),
+      salesResArray.length
+        ? salesResArray[salesResArray.length - 1]._id.month
+        : today.getMonth() + 1
     );
 
     const latestMonthNum = latestDate.getMonth() + 1;
@@ -86,7 +96,7 @@ const getData = async (userId, URL) => {
     };
   } catch (error) {
     if (error.response.status === 404) {
-      const today = new Date();
+      // const today = new Date();
       const thisMonth = today.toLocaleString("default", { month: "long" });
       const lastMonth = new Date()
         .setMonth(today.getMonth() - 1)

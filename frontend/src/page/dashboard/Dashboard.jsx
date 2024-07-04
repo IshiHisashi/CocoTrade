@@ -102,6 +102,7 @@ const Dashboard = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const [data, setData] = useState(null);
   const [upcomingShipDate, setUpcomingShipDate] = useState("");
+  const [todaysInventory, setTodaysInventory] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,6 +122,24 @@ const Dashboard = ({ URL }) => {
       } catch (error) {
         if (error.response.status === 404) {
           setUpcomingShipDate("You have no upcoming shipment.");
+        }
+      }
+    })();
+  }, [userId, URL]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await axios.get(`${URL}/user/${userId}/latestInv`);
+        const formatted = Number(
+          res.data.latestInv[0].current_amount_left.$numberDecimal
+        ).toLocaleString();
+        setTodaysInventory(`Today's inventory is ${formatted}kg`);
+      } catch (error) {
+        if (error.respose.status === 404) {
+          setTodaysInventory(
+            "Something went wrong while getting your today's inventory amount :("
+          );
         }
       }
     })();
@@ -150,7 +169,11 @@ const Dashboard = ({ URL }) => {
       </section>
 
       <section className="bg-white">
-        <h2>Today&apos;s inventory is 00,000kg</h2>
+        {!todaysInventory ? (
+          <h2>getting your today&apos;s inventory amount...</h2>
+        ) : (
+          <h2>{todaysInventory}</h2>
+        )}
         <LineChartRevised userId={userId} dashboard URL={URL} />
       </section>
 

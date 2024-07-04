@@ -24,11 +24,9 @@ const Header = ({ URL }) => {
     }
   }, [userId, URL]);
 
-  console.log(userId);
   useEffect(() => {
     (async () => {
       const res = await axios.get(`${URL}/user/${userId}`);
-      console.log(res.data.data);
       setCompanyName(res.data.data.company_name);
     })();
   }, [userId, URL]);

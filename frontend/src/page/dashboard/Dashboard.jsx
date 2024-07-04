@@ -193,7 +193,7 @@ const Dashboard = ({ URL }) => {
         <PriceIndicatorCard type="suggestion" URL={URL} />
       </section>
 
-      <section className="bg-white">
+      <section className="p-4 bg-white rounded-lg">
         {!todaysInventory ? (
           <h2>getting your today&apos;s inventory amount...</h2>
         ) : (
@@ -203,7 +203,7 @@ const Dashboard = ({ URL }) => {
       </section>
 
       <div className="grid sm:grid-cols-3">
-        <section className="col-span-2 p-4 bg-white">
+        <section className="col-span-2 p-4 bg-white rounded-lg">
           <h2>Activity this month vs last month</h2>
           {!data ? (
             <p>loading...</p>

@@ -3,6 +3,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Tooltip as TooltipMUI, styled, tooltipClasses } from "@mui/material";
 import PriceIndicatorCard from "../../component/card/PriceIndicatorCard.jsx";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
@@ -146,6 +147,18 @@ const Dashboard = ({ URL }) => {
     })();
   }, [userId, URL]);
 
+  const InfoTooltip = styled(({ className, ...props }) => (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <TooltipMUI {...props} arrow classes={{ popper: className }} />
+  ))(() => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: "#243037",
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: "#243037",
+    },
+  }));
+
   return (
     <UserIdContext.Provider value={userId}>
       <div className="flex justify-between items-center">
@@ -155,9 +168,15 @@ const Dashboard = ({ URL }) => {
           ) : (
             <p>{upcomingShipDate}</p>
           )}
-          <button type="button" className="mx-2" onClick={() => {}}>
-            <img src={Info} alt="toggle tooltip" className="inline-block" />
-          </button>
+          <InfoTooltip title="View shipment on Sales." placement="right" arrow>
+            <button
+              type="button"
+              className="mx-2"
+              onClick={() => navigate("/sales")}
+            >
+              <img src={Info} alt="toggle tooltip" className="inline-block" />
+            </button>
+          </InfoTooltip>
         </div>
         <CtaBtn
           size="M"

@@ -17,7 +17,7 @@ const AuthInputModal = (props) => {
     fnToCloseThisModal,
     URL,
   } = props;
-
+  console.log(URL);
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
@@ -53,6 +53,7 @@ const AuthInputModal = (props) => {
         try {
           const res = await axios.get(`${URL}/user/${user.uid}`);
           const userDoc = res.data.data;
+          console.log(URL);
           if (
             userDoc.country &&
             userDoc.margin &&

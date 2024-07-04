@@ -12,8 +12,8 @@ const LandingHeader = () => {
         <li>Contact</li>
       </ul>
       <ul className=" flex gap-4">
-        <li>Sign up</li>
-        <li>Log In</li>
+        {/* <li>Sign up</li>
+        <li>Log In</li> */}
         <li>
           <CtaBtn innerTxt="Request a Demo" size="M" />
         </li>

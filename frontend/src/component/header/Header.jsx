@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import UserIdContext from "../../page/dashboard/UserIdContext.jsx";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import UserMenuDropdown from "./UserMenuDropdown.jsx";
 import NotificationDropdown from "./NotificationDropdown.jsx";
 import PlanShipment from "../../page/inventory/LineChartRevised.jsx"; // Update the path accordingly
@@ -12,7 +12,6 @@ const Header = ({ URL }) => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-
   const fetchUnreadCount = useCallback(async () => {
     try {
       const response = await axios.get(`${URL}/notification/user/${userId}`);
@@ -25,9 +24,11 @@ const Header = ({ URL }) => {
     }
   }, [userId, URL]);
 
+  console.log(userId);
   useEffect(() => {
     (async () => {
       const res = await axios.get(`${URL}/user/${userId}`);
+      console.log(res.data.data);
       setCompanyName(res.data.data.company_name);
     })();
   }, [userId, URL]);

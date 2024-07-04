@@ -6,15 +6,16 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import moment from "moment";
 import { Chart, registerables } from "chart.js";
-import UserIdContext from "./UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import MonthlyTable from "./MonthlyTable";
 
 Chart.register(...registerables);
 
-const MonthlyActivity = () => {
+const MonthlyActivity = ({ URL }) => {
   const [monthlySale, setMonthlySale] = useState([]);
   const [monthlyPurchase, setMonthlyPurchase] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(
+  const [selectedMonth, setSelectedMonth] = useState("all");
+  const [selectedTableMonth, setSelectedTableMonth] = useState(
     moment().format("YYYY-MM")
   );
   const userId = useContext(UserIdContext);
@@ -24,21 +25,19 @@ const MonthlyActivity = () => {
   // Read sales
   useEffect(() => {
     axios
-      .get(`http://localhost:5555/tmpFinRoute/${userId}/sale/monthly-aggregate`)
+      .get(`${URL}/tmpFinRoute/${userId}/sale/monthly-aggregate`)
       .then((res) => {
         setMonthlySale(res.data.data.salesAggregation);
       })
       .catch();
     // Read purchase
     axios
-      .get(
-        `http://localhost:5555/tmpFinRoute/${userId}/purchase/monthly-aggregate`
-      )
+      .get(`${URL}/tmpFinRoute/${userId}/purchase/monthly-aggregate`)
       .then((res) => {
         setMonthlyPurchase(res.data.data.purchaseAggregation);
       })
       .catch();
-  }, [userId]);
+  }, [userId, URL]);
 
   function getLast12Months() {
     const months = [];
@@ -104,7 +103,7 @@ const MonthlyActivity = () => {
 
               const dataString = dataset.data[index]
                 ? `${Math.round(Number(dataset?.data[index]) / 1000)}K`
-                : 0;
+                : "";
               // Make sure alignment settings are correct
               ctx.textAlign = "center";
               ctx.textBaseline = "middle";
@@ -136,7 +135,9 @@ const MonthlyActivity = () => {
             backgroundColor: (context) => {
               const index = context.dataIndex;
               const month = labels[index];
-              return month === selectedMonth ? "#245E66" : "#F1F7F8";
+              return month === selectedMonth || selectedMonth === "all"
+                ? "#245E66"
+                : "#F1F7F8";
             },
             barThickness: 15,
             barPercentage: 0.5,
@@ -147,7 +148,9 @@ const MonthlyActivity = () => {
             backgroundColor: (context) => {
               const index = context.dataIndex;
               const month = labels[index];
-              return month === selectedMonth ? "#0C7F8E" : "#F1F7F8";
+              return month === selectedMonth || selectedMonth === "all"
+                ? "#0C7F8E"
+                : "#F1F7F8";
             },
             barThickness: 15,
             barPercentage: 0.5,
@@ -155,6 +158,8 @@ const MonthlyActivity = () => {
         ],
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           x: {
             stacked: false,
@@ -195,6 +200,7 @@ const MonthlyActivity = () => {
             const chartElement = elements[0];
             const clickedMonth = labels[chartElement.index];
             setSelectedMonth(clickedMonth);
+            setSelectedTableMonth(clickedMonth);
             console.log(`Selected Month: ${clickedMonth}`);
           }
         },
@@ -205,9 +211,15 @@ const MonthlyActivity = () => {
 
   return (
     <div>
-      <h1>MonthlyActivity</h1>
-      <canvas ref={chartRef}> </canvas>
-      <MonthlyTable selectedMonth={selectedMonth} />
+      <h1>Monthly Activity</h1>
+      <div className="grid grid-cols-[80%_20%]">
+        <section>
+          <canvas ref={chartRef} className="">
+            {" "}
+          </canvas>
+        </section>
+        <MonthlyTable selectedTableMonth={selectedTableMonth} URL={URL} />
+      </div>
     </div>
   );
 };

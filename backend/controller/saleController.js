@@ -222,3 +222,39 @@ export const getWeeklyCompletedSalesSumByUserSalesArray = async (req, res) => {
     });
   }
 };
+
+export const getNearestPendingSaleDate = async (req, res) => {
+  try {
+    const userId = req.params.userid;
+    const currentDate = new Date();
+
+    const nearestPendingSale = await Sale.findOne({ 
+      user_id: userId, 
+      status: "pending",
+      copra_ship_date: { $gt: currentDate }
+    })
+    .sort({ copra_ship_date: 1 }); 
+
+    if (!nearestPendingSale) {
+      return res.status(404).json({
+        status: "fail",
+        message: "No pending sales found for this user",
+      });
+    }
+    const formattedDate = nearestPendingSale.copra_ship_date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit'
+    });
+
+    res.status(200).json({
+      status: "success",
+      date: formattedDate,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+};

@@ -1,15 +1,17 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const ViewPurchaseTable = ({
   setShowAddForm,
   handleEdit,
   purchasesFromParent,
+  URL,
 }) => {
   const [purchases, setPurchases] = useState([]);
   const [filteredPurchases, setFilteredPurchases] = useState([]);
@@ -23,24 +25,34 @@ const ViewPurchaseTable = ({
   const [dateLabel, setDateLabel] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
+  const userId = useContext(UserIdContext);
 
-  const fetchPurchases = () => {
-    const userId = "66640d8158d2c8dc4cedaf1e";
-    const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
+  // const fetchPurchases = () => {
+  //   const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
+  //   axios
+  //     .get(url)
+  //     .then((response) => {
+  //       setPurchases(response.data);
+  //       setFilteredPurchases(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching purchases:", error);
+  //     });
+  // };
+
+  useEffect(() => {
+    const url = `${URL}/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
       .then((response) => {
+        console.log(response);
         setPurchases(response.data);
         setFilteredPurchases(response.data);
       })
       .catch((error) => {
         console.error("Error fetching purchases:", error);
       });
-  };
-
-  useEffect(() => {
-    fetchPurchases();
-  }, [purchasesFromParent]);
+  }, [purchasesFromParent, userId, URL]);
 
   const formatDecimal = (decimal128) => {
     if (!decimal128 || !decimal128.$numberDecimal) {
@@ -49,10 +61,54 @@ const ViewPurchaseTable = ({
     return parseFloat(decimal128.$numberDecimal).toFixed(2);
   };
 
-  const handleDeleteClick = async (purchaseId) => {
+  const handleDeleteClick = async (purchase) => {
     try {
-      await axios.delete(`http://localhost:5555/purchase/${purchaseId}`);
-      fetchPurchases(); // Refresh the purchases list
+      // cash balance
+      await axios.patch(
+        // eslint-disable-next-line no-underscore-dangle
+        `${URL}/tmpFinRoute/${userId}/currentbalance`,
+        {
+          user_id: userId,
+          updatedPrice: 0,
+          currentPrice: purchase.total_purchase_price.$numberDecimal,
+          updatedDate: new Date(purchase.purchase_date),
+          currentPurchaseDate: purchase.purchase_date,
+          type: "purchase",
+        }
+      );
+      // inventory
+      await axios.patch(
+        // eslint-disable-next-line no-underscore-dangle
+        `http://localhost:5555/tmpFinRoute/${userId}/inventory/updatepurchase`,
+        {
+          user_id: userId,
+          updatedCopra: 0,
+          currentCopra: purchase.amount_of_copra_purchased.$numberDecimal,
+          updatedDate: new Date(purchase.purchase_date),
+          currentPurchaseDate: purchase.purchase_date,
+          type: "purchase",
+        }
+      );
+
+      // delete the id from user document(**CurrentBalance and inventory are not deleted. It's not necessary)
+      await axios.patch(`${URL}/user/${userId}`, {
+        purchases_array: { action: "pull", value: purchase._id },
+      });
+
+      // delete the doc
+      await axios.delete(`${URL}/purchase/${purchase._id}`);
+
+      // Refresh the purchases list
+      const url = `${URL}/tmpFinRoute/${userId}/purchase`;
+      axios
+        .get(url)
+        .then((response) => {
+          setPurchases(response.data);
+          setFilteredPurchases(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching purchases:", error);
+        });
     } catch (error) {
       console.error("Error deleting purchase:", error);
     }
@@ -299,7 +355,7 @@ const ViewPurchaseTable = ({
                         type="button"
                         onClick={() =>
                           // eslint-disable-next-line no-underscore-dangle
-                          handleDeleteClick(purchase._id)
+                          handleDeleteClick(purchase)
                         }
                       >
                         Delete

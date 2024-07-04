@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
-import UserIdContext from "./UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
-const MonthlyTable = ({ selectedMonth }) => {
+const MonthlyTable = ({ selectedTableMonth, URL }) => {
   const [dailyTransactionSale, setDailyTransactionSale] = useState([]);
   const [dailyTransactionPurchase, setDailyTransactionPurchase] = useState([]);
   const [transactionArr, setTransactionArr] = useState([]);
@@ -11,19 +11,19 @@ const MonthlyTable = ({ selectedMonth }) => {
   // Would be transferred
   useEffect(() => {
     axios
-      .get(`http://localhost:5555/tmpFinRoute/${userId}/sale`)
+      .get(`${URL}/tmpFinRoute/${userId}/sale`)
       .then((res) => {
         setDailyTransactionSale(res.data);
       })
       .catch();
     // Read purchas
     axios
-      .get(`http://localhost:5555/tmpFinRoute/${userId}/purchase`)
+      .get(`${URL}/tmpFinRoute/${userId}/purchase`)
       .then((res) => {
         setDailyTransactionPurchase(res.data);
       })
       .catch();
-  }, [userId]);
+  }, [userId, URL]);
 
   // Date reducer
   const consolidateByDate = (data, type) => {
@@ -126,10 +126,10 @@ const MonthlyTable = ({ selectedMonth }) => {
 
   useEffect(() => {
     const extractSpecificMonth = (data) => {
-      return data.date.slice(0, 7) === selectedMonth;
+      return data.date.slice(0, 7) === selectedTableMonth;
     };
     setMonthTransactionArr(transactionArr.filter(extractSpecificMonth));
-  }, [selectedMonth, transactionArr]);
+  }, [selectedTableMonth, transactionArr]);
 
   const monthMapping = {
     "01": "January",
@@ -155,8 +155,8 @@ const MonthlyTable = ({ selectedMonth }) => {
       <div className="title">
         <h2 className="text-[24px]">Your daily activity</h2>
         <h3>
-          For the month of {convertToMonth(selectedMonth.slice(5))}{" "}
-          {selectedMonth.slice(0, 4)}
+          For the month of {convertToMonth(selectedTableMonth.slice(5))}{" "}
+          {selectedTableMonth.slice(0, 4)}
         </h3>
       </div>
       <div className="table">

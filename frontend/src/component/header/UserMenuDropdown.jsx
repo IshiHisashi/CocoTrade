@@ -1,15 +1,27 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import logout from '../../services/logout';
 
 const UserMenuDropdown = (props) => {
   const { isUserMenuOpen } = props;
+  const navigate = useNavigate();
+
+  const handleLogout = async (event) => {
+    event.preventDefault(); // Prevent the default link behavior
+    try {
+      await logout();
+      navigate('/'); // Redirect to the login page after logout
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
+  };
 
   return (
     <div
-      className={`absolute right-0 cursor-default bg-slate-100 transition-all ease-in-out ${
+      className={`absolute right-0 cursor-default bg-white text-black shadow-lg transition-all ease-in-out ${
         isUserMenuOpen
-          ? "translate-y-2 opacity-1"
-          : "translate-y-0 opacity-0 invisible"
+          ? "translate-y-6 opacity-1"
+          : "translate-y-4 opacity-0 invisible"
       }`}
     >
       <nav>
@@ -25,6 +37,7 @@ const UserMenuDropdown = (props) => {
           <li>
             <NavLink
               to="/"
+              onClick={handleLogout}
               className="block p-2 cursor-pointer hover:bg-slate-300"
             >
               Logout

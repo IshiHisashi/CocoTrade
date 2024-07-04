@@ -1,38 +1,44 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import UserIdContext from "../../page/dashboard/UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext";
 
-const getTotalSum = async (type, userId) => {
+const getTotalSum = async (type, userId, URL) => {
   let totalSum;
-  if (type === "purchase") {
-    const res = await axios.get(
-      `http://localhost:5555/tmpFinRoute/${userId}/purchase/today-total`
-    );
-    totalSum = res.data.totalSum.$numberDecimal;
+  try {
+    if (type === "purchase") {
+      const res = await axios.get(
+        `${URL}/tmpFinRoute/${userId}/purchase/today-total`
+      );
+      totalSum = res.data.totalSum.$numberDecimal;
+    } else if (type === "sales") {
+      const res = await axios.get(
+        `${URL}/tmpFinRoute/${userId}/sale//weekly-sales-sum`
+      );
+      totalSum = res.data.data.totalSales.$numberDecimal;
+    }
+    return Number(totalSum).toFixed(2).toLocaleString();
+  } catch (error) {
+    if (error.response.status === 404) {
+      totalSum = 0;
+      return Number(totalSum).toFixed(2).toLocaleString();
+    }
+    return null;
   }
-  if (type === "sales") {
-    const res = await axios.get(
-      `http://localhost:5555/tmpFinRoute/${userId}/sale//weekly-sales-sum`
-    );
-    totalSum = res.data.data.totalSales.$numberDecimal;
-  }
-  return Number(totalSum).toFixed(2).toLocaleString();
 };
 
 const RecentActivityCard = (props) => {
-  const { type } = props;
+  const { type, URL } = props;
   const userId = useContext(UserIdContext);
   const [totalSum, setTotalSum] = useState(null);
-
   useEffect(() => {
     (async () => {
-      const totalSumRes = await getTotalSum(type, userId);
+      const totalSumRes = await getTotalSum(type, userId, URL);
       setTotalSum(totalSumRes);
     })();
-  }, [type, userId]);
+  }, [type, userId, URL]);
 
   return (
-    <div className="border-2 p-4">
+    <div className="p-4 bg-white">
       <h3>Recent {type.charAt(0).toUpperCase() + type.slice(1)}</h3>
       <p>{type === "purchase" ? "from today" : "over the last week"}</p>
       <p className="text-3xl">{totalSum ? `Php ${totalSum}` : "loading..."}</p>

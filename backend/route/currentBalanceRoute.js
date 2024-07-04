@@ -5,9 +5,12 @@ import * as currentBalanceController from "../controller/currentBalanceControlle
 const router = express.Router({ mergeParams: true });
 router.get("/", currentBalanceController.getAllCurrentBalance);
 router.get("/byuser", currentBalanceController.getAllCurrentBalanceByUser);
+router.get("/latest", currentBalanceController.getLatestBalance);
 router.get("/:id", currentBalanceController.getCurrentBalance);
 router.post("/", currentBalanceController.createCurrentBalance);
-router.patch("/:id", currentBalanceController.updateCurrentBalance);
+router.patch("/", currentBalanceController.updateCurrentBalance);
 router.delete("/:id", currentBalanceController.deleteCurrentBalance);
+
+router.post("/first", currentBalanceController.createFirstCurrentBalance);
 
 export default router;

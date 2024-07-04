@@ -8,11 +8,12 @@ import AddPurchaseForm from "./AddPurchaseForm.jsx";
 // Set the app element for accessibility
 Modal.setAppElement("#root");
 
-const Purchase = () => {
+const Purchase = ({ URL }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [purchases, setPurchases] = useState([]);
+  // const [purchases, setPurchases] = useState([]);
+  const [purchases, setPurchases] = useState({});
   const [showAddForm, setShowAddForm] = useState(
     location.state ? location.state.showAddForm : false
   );
@@ -22,22 +23,63 @@ const Purchase = () => {
     setSelectedPurchase(purchase);
   };
 
-  const handleUpdate = async (updatedPurchase) => {
+  const handleUpdate = async (updatedPurchase, currentPurchase, userid) => {
     try {
       await axios.patch(
         // eslint-disable-next-line no-underscore-dangle
-        `http://localhost:5555/purchase/${updatedPurchase._id}`,
+        `${URL}/purchase/${updatedPurchase._id}`,
         updatedPurchase
       );
+      // update cach_balance
+      const updateCash = await axios.patch(
+        // eslint-disable-next-line no-underscore-dangle
+        `${URL}/tmpFinRoute/${userid}/currentbalance`,
+        {
+          user_id: userid,
+          updatedPrice: updatedPurchase.total_purchase_price,
+          currentPrice: currentPurchase.total_purchase_price.$numberDecimal,
+          updatedDate: new Date(updatedPurchase.purchase_date),
+          currentPurchaseDate: currentPurchase.purchase_date,
+          type: "purchase",
+        }
+      );
+      const newCashBalanceId = updateCash?.data?.data?.newCurrentBalance._id;
+      // update inventory_balance
+      const updateInventory = await axios.patch(
+        // eslint-disable-next-line no-underscore-dangle
+        `${URL}/tmpFinRoute/${userid}/inventory/updatepurchase`,
+        {
+          user_id: userid,
+          updatedCopra: updatedPurchase.amount_of_copra_purchased,
+          currentCopra:
+            currentPurchase.amount_of_copra_purchased.$numberDecimal,
+          updatedDate: new Date(updatedPurchase.purchase_date),
+          currentPurchaseDate: currentPurchase.purchase_date,
+          type: "purchase",
+        }
+      );
+      const newInventoryId = updateInventory?.data?.data?.newInventory._id;
+      // Send ids to the coresponding user documents
+      const updateData = {};
+      if (newCashBalanceId) {
+        updateData.balance_array = {
+          action: "push",
+          value: newCashBalanceId,
+        };
+      }
+      if (newInventoryId) {
+        updateData.inventory_amount_array = {
+          action: "push",
+          value: newInventoryId,
+        };
+      }
+      if (newCashBalanceId || newInventoryId) {
+        await axios.patch(`http://localhost:5555/user/${userid}`, updateData);
+      }
+      // UI control
       setShowAddForm(false);
       setSelectedPurchase(null);
-      setPurchases((prevPurchases) =>
-        prevPurchases.map((purchase) =>
-          // eslint-disable-next-line no-underscore-dangle
-          purchase._id === updatedPurchase._id ? updatedPurchase : purchase
-        )
-      );
-      // window.location.reload();
+      setPurchases(updatedPurchase);
     } catch (error) {
       console.error("Error updating purchase:", error);
     }
@@ -73,12 +115,14 @@ const Purchase = () => {
           purchase={selectedPurchase}
           handleUpdate={handleUpdate}
           setPurchasesFromParent={setPurchases}
+          URL={URL}
         />
       </Modal>
       <ViewPurchaseTable
         setShowAddForm={setShowAddForm}
         handleEdit={handleEdit}
         purchasesFromParent={purchases}
+        URL={URL}
       />
     </div>
   );

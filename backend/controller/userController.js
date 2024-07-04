@@ -5,12 +5,21 @@ import { Inventory } from "../model/inventoryModel.js";
 // Create a user
 export const createUser = async (req, res) => {
   try {
-    const newUser = await UserModel.create(req.body);
+    const newUser = await UserModel.create({
+      _id: req.body.firebaseUserId, // Firebase UID received from the frontend
+      company_name: req.body.companyName, // User's company name
+      full_name: req.body.fullName, // User's full name
+      email: req.body.email, // User's email
+      // Include additional fields as needed, ensure they are included in the UserModel schema
+    });
+
+    // Successfully created the user, return success response
     res.status(201).json({
       status: "success",
       data: newUser,
     });
   } catch (error) {
+    // Handle any errors during user creation
     res.status(500).json({
       status: "fail",
       message: error.message,
@@ -189,6 +198,42 @@ export const getAllInventories = async (req, res) => {
     return res.status(200).json({
       status: "Success",
       data,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
+  }
+};
+
+export const getLatestInventory = async (req, res) => {
+  try {
+    // GET INVENTORY INFO
+    const user = await UserModel.findById(req.params.userid);
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        error: "User not found",
+      });
+    }
+
+    // GEt the latest inv data
+    const latestInv = await Inventory.aggregate([
+      {
+        $match: { _id: { $in: user.inventory_amount_array } },
+      },
+      {
+        $sort: { time_stamp: -1 },
+      },
+      {
+        $limit: 1,
+      },
+    ]);
+    console.log("Latest inventories retrieved");
+    return res.status(200).json({
+      status: "Success",
+      latestInv,
     });
   } catch (err) {
     return res.status(500).json({

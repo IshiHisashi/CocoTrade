@@ -12,9 +12,16 @@
     "prettier": "prettier --write src/"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/base": "^5.0.0-beta.40",
+    "@mui/material": "^5.15.21",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
     "chartjs-adapter-moment": "^1.0.1",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
+    "firebase": "^10.12.2",
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",

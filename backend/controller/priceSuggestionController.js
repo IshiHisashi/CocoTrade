@@ -2,15 +2,15 @@ import axios from "axios";
 import { PriceSuggestionModel } from "../model/priceSuggestionModel.js";
 import { UserModel } from "../model/userModel.js";
 
+const URL = "http://localhost:5555";
+
 // Create the very first price suggestion at the end of the onboarding
 export const createFirstPriceSuggestion = async (req, res) => {
   try {
     const { userid } = req.params;
     const { margin } = req.body;
 
-    const resMarketPriceDoc = await axios.get(
-      "http://localhost:5555/marketprice/latest"
-    );
+    const resMarketPriceDoc = await axios.get(`${URL}/marketprice/latest`);
     // pricePHP is in ton. convert it in kg, and calculate price suggestion.
     const pricePHP = Number(
       resMarketPriceDoc.data.data.doc.price_PHP.$numberDecimal
@@ -44,8 +44,8 @@ export const createPriceSuggestion = async (req, res) => {
     // access to the user document to get margin,
     // and the latest market price document to get market price.
     const [resUserDoc, resMarketPriceDoc] = await Promise.all([
-      axios.get(`http://localhost:5555/user/${userid}`),
-      axios.get("http://localhost:5555/marketprice/latest"),
+      axios.get(`${URL}/user/${userid}`),
+      axios.get(`${URL}/marketprice/latest`),
     ]);
 
     const margin = resUserDoc.data.data.margin

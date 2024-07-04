@@ -1,6 +1,10 @@
 import { Inventory } from "../model/inventoryModel.js";
 import { UserModel } from "../model/userModel.js";
 
+const sum = (arg1, arg2) => {
+  return Number(arg1) + Number(arg2);
+};
+
 // Create the very first inentory at the end of the onboarding
 export const createFirstInventory = async (req, res) => {
   try {
@@ -69,12 +73,12 @@ export const createInventory = async (req, res) => {
           await Inventory.findByIdAndUpdate(doc._id, {
             current_amount_left:
               req.body.type === "purchase"
-                ? +doc.current_amount_left + req.body.changeValue
-                : +doc.current_amount_left - req.body.changeValue,
+                ? sum(doc.current_amount_left, req.body.changeValue)
+                : sum(doc.current_amount_left, -req.body.changeValue),
             current_amount_with_pending:
               req.body.type === "purchase"
-                ? +doc.current_amount_with_pending + req.body.changeValue
-                : +doc.current_amount_with_pending - req.body.changeValue,
+                ? sum(doc.current_amount_with_pending, req.body.changeValue)
+                : sum(doc.current_amount_with_pending, -req.body.changeValue),
           });
         });
       };
@@ -96,12 +100,12 @@ export const createInventory = async (req, res) => {
           time_stamp: req.body.date,
           current_amount_left:
             req.body.type === "purchase"
-              ? +currentInventoryLeft + req.body.changeValue
-              : +currentInventoryLeft - req.body.changeValue,
+              ? sum(currentInventoryLeft, req.body.changeValue)
+              : sum(currentInventoryLeft, -req.body.changeValue),
           current_amount_with_pending:
             req.body.type === "purchase"
-              ? +currentInventoryPending + req.body.changeValue
-              : +currentInventoryPending - req.body.changeValue,
+              ? sum(currentInventoryPending, req.body.changeValue)
+              : sum(currentInventoryPending, -req.body.changeValue),
         };
         const newInventory = await Inventory.create(newDoc);
         // 1-3-2 then, update all the subsequenst docs
@@ -124,12 +128,12 @@ export const createInventory = async (req, res) => {
         time_stamp: req.body.date,
         current_amount_left:
           req.body.type === "purchase"
-            ? +currentInventoryLeft + req.body.changeValue
-            : +currentInventoryLeft - req.body.changeValue,
+            ? sum(currentInventoryLeft, req.body.changeValue)
+            : sum(currentInventoryLeft, -req.body.changeValue),
         current_amount_with_pending:
           req.body.type === "purchase"
-            ? +currentInventoryPending + req.body.changeValue
-            : +currentInventoryPending - req.body.changeValue,
+            ? sum(currentInventoryPending, req.body.changeValue)
+            : sum(currentInventoryPending, -req.body.changeValue),
       };
       const newInventory = await Inventory.create(newDoc);
       res.status(201).json({
@@ -219,6 +223,235 @@ export const deleteInventorById = async (req, res) => {
     res.status(500).json({
       status: "failed",
       error: err.message,
+    });
+  }
+};
+
+export const updateInventoryPurchase = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.userid);
+    const isDateChange = req.body.currentPurchaseDate !== req.body.updatedDate;
+    const difCopra = +req.body.updatedCopra - req.body.currentCopra;
+    const loopUpdate = (docs, changevalue) => {
+      docs.forEach(async (doc) => {
+        await Inventory.findByIdAndUpdate(doc._id, {
+          current_amount_left:
+            req.body.type === "purchase"
+              ? sum(doc.current_amount_left, changevalue)
+              : sum(doc.current_amount_left, -changevalue),
+          current_amount_with_pending:
+            req.body.type === "purchase"
+              ? sum(doc.current_amount_with_pending, changevalue)
+              : sum(doc.current_amount_with_pending, -changevalue),
+        });
+      });
+    };
+    if (!isDateChange) {
+      console.log("in scenario1");
+      // Scenraio 1). No date change
+      // Step1). FIND OUT SUBSEQUENT TRANSACTIONS
+      const docsLater = await Inventory.aggregate([
+        {
+          $match: {
+            _id: { $in: user.inventory_amount_array },
+            time_stamp: {
+              $gte: new Date(req.body.updatedDate),
+            },
+          },
+        },
+        {
+          $sort: { time_stamp: 1 },
+        },
+      ]);
+      //  Step2). Update cash balance
+      loopUpdate(docsLater, difCopra);
+      return res.status(201).json({
+        status: "success in updating",
+      });
+    } else {
+      //Scenario 2). Date change
+      // download common docs in scenario2-1 and 2-2
+      const docUpdatedDay = await Inventory.aggregate([
+        {
+          $match: {
+            _id: { $in: user.inventory_amount_array },
+            time_stamp: new Date(req.body.updatedDate),
+          },
+        },
+        {
+          $sort: { time_stamp: 1 },
+        },
+      ]);
+      const docLatestOfUpdateDay = await Inventory.aggregate([
+        {
+          $match: {
+            _id: { $in: user.inventory_amount_array },
+            time_stamp: { $lt: new Date(req.body.updatedDate) },
+          },
+        },
+        {
+          $sort: { time_stamp: -1 },
+        },
+        {
+          $limit: 1,
+        },
+      ]);
+      // Scenario 2-1). date is move back
+      if (req.body.currentPurchaseDate > req.body.updatedDate) {
+        console.log("in scenario2-1");
+        // downloadn necessary docs
+        const docUpdateUntilCurrent = await Inventory.aggregate([
+          {
+            $match: {
+              _id: { $in: user.inventory_amount_array },
+              time_stamp: {
+                $gte: new Date(req.body.updatedDate),
+                $lt: new Date(req.body.currentPurchaseDate),
+              },
+            },
+          },
+          {
+            $sort: { time_stamp: 1 },
+          },
+        ]);
+        const docSubsequent = await Inventory.aggregate([
+          {
+            $match: {
+              _id: { $in: user.inventory_amount_array },
+              time_stamp: { $gte: new Date(req.body.currentPurchaseDate) },
+            },
+          },
+          {
+            $sort: { time_stamp: 1 },
+          },
+        ]);
+        // updated date is newly created or updated (register the updated value)
+        if (docUpdatedDay.length > 0) {
+          console.log("doc already exists");
+          // if there's already another doc on the date of updated, override with the updatedPrice. This should be extended until the current date.
+          loopUpdate(docUpdateUntilCurrent, +req.body.updatedCopra);
+          // update all the subsequent dates after current date (value is based on dif cash).
+          loopUpdate(docSubsequent, +difCopra);
+          // Return
+          return res.status(201).json({
+            status: "success in updating",
+          });
+        } else {
+          console.log("no doc");
+          // if no doc on the day updated, create a new doc
+          const newDoc = {
+            user_id: req.body.user_id,
+            time_stamp: req.body.updatedDate,
+            current_amount_left:
+              req.body.type === "purchase"
+                ? sum(
+                    docLatestOfUpdateDay[0].current_amount_left,
+                    req.body.updatedCopra
+                  )
+                : sum(
+                    docLatestOfUpdateDay[0].current_amount_left,
+                    -req.body.updatedCopra
+                  ),
+            current_amount_with_pending:
+              req.body.type === "purchase"
+                ? sum(
+                    docLatestOfUpdateDay[0].current_amount_with_pending,
+                    req.body.updatedCopra
+                  )
+                : sum(
+                    docLatestOfUpdateDay[0].current_amount_with_pending,
+                    -req.body.updatedCopra
+                  ),
+          };
+          const newInventory = await Inventory.create(newDoc);
+          // update all the subsequent dates (value is based on dif cash)
+          loopUpdate(docUpdateUntilCurrent, +req.body.updatedCopra);
+          loopUpdate(docSubsequent, +difCopra);
+          res.status(201).json({
+            status: "success",
+            data: {
+              newInventory,
+            },
+          });
+        }
+      }
+      // Scenario 2-2). date is move forward
+      if (req.body.currentPurchaseDate < req.body.updatedDate) {
+        console.log("in scenario2-2");
+        // Download necessrary docs
+        const docCurrentUntilUpdate = await Inventory.aggregate([
+          {
+            $match: {
+              _id: { $in: user.inventory_amount_array },
+              time_stamp: {
+                $gte: new Date(req.body.currentPurchaseDate),
+                $lt: new Date(req.body.updatedDate),
+              },
+            },
+          },
+          {
+            $sort: { time_stamp: 1 },
+          },
+        ]);
+        const docSubsequent = await Inventory.aggregate([
+          {
+            $match: {
+              _id: { $in: user.inventory_amount_array },
+              time_stamp: { $gt: new Date(req.body.updatedDate) },
+            },
+          },
+          {
+            $sort: { time_stamp: 1 },
+          },
+        ]);
+        // Cancel the balance of current day and subsequent days until update day.
+        loopUpdate(docCurrentUntilUpdate, -req.body.currentCopra);
+        if (docUpdatedDay.length > 0) {
+          console.log("doc already exists");
+          loopUpdate(docUpdatedDay, +difCopra);
+          loopUpdate(docSubsequent, +difCopra);
+          return res.status(201).json({
+            status: "success in updating",
+          });
+        } else {
+          console.log("no doc");
+          // if no doc on the day updated, create a new doc
+          const newDoc = {
+            user_id: req.body.user_id,
+            time_stamp: req.body.updatedDate,
+            current_amount_left:
+              req.body.type === "purchase"
+                ? sum(docLatestOfUpdateDay[0].current_amount_left, difCopra)
+                : sum(docLatestOfUpdateDay[0].current_amount_left, -difCopra),
+            current_amount_with_pending:
+              req.body.type === "purchase"
+                ? sum(
+                    docLatestOfUpdateDay[0].current_amount_with_pending,
+                    difCopra
+                  )
+                : sum(
+                    docLatestOfUpdateDay[0].current_amount_with_pending,
+                    -difCopra
+                  ),
+          };
+          const newInventory = await Inventory.create(newDoc);
+          // update all the subsequent dates (value is based on dif cash)
+          loopUpdate(docSubsequent, +difCopra);
+          res.status(201).json({
+            status: "success",
+            data: {
+              newInventory,
+            },
+          });
+        }
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    console.log(req.body);
+    return res.status(400).json({
+      status: "fail",
+      message: err,
     });
   }
 };

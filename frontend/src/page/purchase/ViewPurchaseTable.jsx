@@ -63,6 +63,7 @@ const ViewPurchaseTable = ({
 
   const handleDeleteClick = async (purchase) => {
     try {
+      // cash balance
       await axios.patch(
         // eslint-disable-next-line no-underscore-dangle
         `${URL}/tmpFinRoute/${userId}/currentbalance`,
@@ -75,8 +76,21 @@ const ViewPurchaseTable = ({
           type: "purchase",
         }
       );
+      // inventory
+      await axios.patch(
+        // eslint-disable-next-line no-underscore-dangle
+        `http://localhost:5555/tmpFinRoute/${userId}/inventory/updatepurchase`,
+        {
+          user_id: userId,
+          updatedCopra: 0,
+          currentCopra: purchase.amount_of_copra_purchased.$numberDecimal,
+          updatedDate: new Date(purchase.purchase_date),
+          currentPurchaseDate: purchase.purchase_date,
+          type: "purchase",
+        }
+      );
 
-      // delete the id from user document
+      // delete the id from user document(**CurrentBalance and inventory are not deleted. It's not necessary)
       await axios.patch(`${URL}/user/${userId}`, {
         purchases_array: { action: "pull", value: purchase._id },
       });

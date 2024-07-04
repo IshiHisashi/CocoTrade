@@ -5,8 +5,8 @@ const { Schema } = mongoose;
 
 const currentBalanceSchema = new Schema({
   user_id: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
+    // ref: "User",
   },
   purchases_array: {
     type: Array,

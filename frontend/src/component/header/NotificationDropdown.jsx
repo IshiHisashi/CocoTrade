@@ -6,15 +6,14 @@ const NotificationDropdown = ({
   isNotificationOpen,
   setIsNotificationOpen,
   userId,
+  URL,
 }) => {
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState(null);
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5555/notification/user/${userId}`
-        );
+        const response = await axios.get(`${URL}/notification/user/${userId}`);
         console.log("Fetched notifications:", response.data); // Debugging line
         const sortedNotifications = response.data.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -29,7 +28,7 @@ const NotificationDropdown = ({
     if (isNotificationOpen) {
       fetchNotifications();
     }
-  }, [isNotificationOpen, userId]);
+  }, [isNotificationOpen, userId, URL]);
 
   return (
     <div

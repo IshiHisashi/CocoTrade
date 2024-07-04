@@ -17,6 +17,7 @@ const Overview = (props) => {
     currentAmountLeft,
     currentBalance,
     fnToShowModal,
+    URL,
   } = props;
 
   const userId = useContext(UserIdContext);
@@ -40,9 +41,9 @@ const Overview = (props) => {
 
     try {
       const [resInventoryDoc, resBalanceDoc] = await Promise.all([
-        axios.post("http://localhost:5555/inventory/first", inventoryInfo),
+        axios.post(`${URL}/inventory/first`, inventoryInfo),
         axios.post(
-          `http://localhost:5555/tmpFinRoute/${userId}/currentbalance/first`,
+          `${URL}/tmpFinRoute/${userId}/currentbalance/first`,
           balanceInfo
         ),
       ]);
@@ -65,7 +66,7 @@ const Overview = (props) => {
         },
       };
 
-      await axios.patch(`http://localhost:5555/user/${userId}`, userInfo);
+      await axios.patch(`${URL}/user/${userId}`, userInfo);
 
       fnToShowModal(true);
     } catch (error) {

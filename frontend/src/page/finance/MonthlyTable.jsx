@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
-import UserIdContext from "./UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
-const MonthlyTable = ({ selectedTableMonth }) => {
+const MonthlyTable = ({ selectedTableMonth, URL }) => {
   const [dailyTransactionSale, setDailyTransactionSale] = useState([]);
   const [dailyTransactionPurchase, setDailyTransactionPurchase] = useState([]);
   const [transactionArr, setTransactionArr] = useState([]);
@@ -11,19 +11,19 @@ const MonthlyTable = ({ selectedTableMonth }) => {
   // Would be transferred
   useEffect(() => {
     axios
-      .get(`http://localhost:5555/tmpFinRoute/${userId}/sale`)
+      .get(`${URL}/tmpFinRoute/${userId}/sale`)
       .then((res) => {
         setDailyTransactionSale(res.data);
       })
       .catch();
     // Read purchas
     axios
-      .get(`http://localhost:5555/tmpFinRoute/${userId}/purchase`)
+      .get(`${URL}/tmpFinRoute/${userId}/purchase`)
       .then((res) => {
         setDailyTransactionPurchase(res.data);
       })
       .catch();
-  }, [userId]);
+  }, [userId, URL]);
 
   // Date reducer
   const consolidateByDate = (data, type) => {

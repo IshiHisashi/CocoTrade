@@ -16,41 +16,43 @@ import ViewSalesTable from "./page/sale/ViewSalesTable.jsx";
 import Layout from "./Layout.jsx";
 import Auth from "./page/auth/Auth.jsx";
 import Onboarding from "./page/onboarding/Onboarding.jsx";
-import UserIdProvider from "./contexts/UserIdContext.jsx";
+// import { UserIdContext } from "./contexts/UserIdContext.jsx";
+// import UserIdProvider from "./contexts/UserIdContext.jsx";
 // import Settings from "";
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [URL, setURL] = useState("http://localhost:5555");
 
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/auth/*" element={<Auth />} />
-        <Route path="/" element={<Landing fnToSetUser={setUser} />} />
+        <Route path="/auth/*" element={<Auth URL={URL} />} />
+        <Route path="/" element={<Landing fnToSetUser={setUser} URL={URL} />} />
         <Route
           path="/onboarding/*"
           element={
-            <UserIdProvider>
-              <Onboarding />
-            </UserIdProvider>
+            // <UserIdProvider>
+            <Onboarding URL={URL} />
+            // </UserIdProvider>
           }
         />
         <Route
           path="/dashboard"
           element={
             // <UserIdProvider>
-            <Layout>
-              <Dashboard />
+            <Layout URL={URL}>
+              <Dashboard URL={URL} />
             </Layout>
-            // </UserIdProvider>
+            // <UserIdProvider>
           }
         />
         <Route
           path="/inventory"
           element={
             // <UserIdProvider>
-            <Layout>
-              <Inventory />
+            <Layout URL={URL}>
+              <Inventory URL={URL} />
             </Layout>
             // </UserIdProvider>
           }
@@ -59,8 +61,8 @@ const App = () => {
           path="/purchase"
           element={
             // <UserIdProvider>
-            <Layout>
-              <Purchase />
+            <Layout URL={URL}>
+              <Purchase URL={URL} />
             </Layout>
             // </UserIdProvider>
           }
@@ -69,8 +71,8 @@ const App = () => {
           path="/sales"
           element={
             // <UserIdProvider>
-            <Layout>
-              <Sale />
+            <Layout URL={URL}>
+              <Sale URL={URL} />
             </Layout>
             // </UserIdProvider>
           }
@@ -80,8 +82,8 @@ const App = () => {
           path="/finances"
           element={
             // <UserIdProvider>
-            <Layout>
-              <Finance />
+            <Layout URL={URL}>
+              <Finance URL={URL} />
             </Layout>
             // </UserIdProvider>
           }

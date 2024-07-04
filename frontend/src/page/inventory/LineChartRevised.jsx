@@ -23,7 +23,7 @@ Chart.register(
   Legend
 );
 
-const LineChartRevised = ({ userId, dashboard = false }) => {
+const LineChartRevised = ({ userId, URL, dashboard = false }) => {
   const today = useMemo(() => new Date(), []);
   const thisYear = today.toLocaleDateString().split("/")[2];
   const thisMonth = today.toLocaleDateString().split("/")[0].padStart(2, "0");
@@ -40,8 +40,9 @@ const LineChartRevised = ({ userId, dashboard = false }) => {
     () => {
       // Current inventory
       axios
-        .get(`http://localhost:5555/user/${userId}/inv`)
+        .get(`${URL}/user/${userId}/inv`)
         .then((res) => {
+          console.log(res.data.data);
           setInventory(res.data.data);
         })
         .catch((err) => {
@@ -49,7 +50,7 @@ const LineChartRevised = ({ userId, dashboard = false }) => {
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userId]
+    [userId, URL]
   );
 
   // Recalculate based on duration selector and rerender the chart

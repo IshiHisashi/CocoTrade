@@ -23,6 +23,7 @@ export const createInventory = async (req, res) => {
   try {
     // Get the latest inventory
     const user = await UserModel.findById(req.params.userid);
+    console.log(req.params.userid);
     const docLatest = await Inventory.aggregate([
       {
         $match: {

@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const AddPurchaseForm = ({
   setShowAddForm,
   purchase,
   handleUpdate,
   setPurchasesFromParent,
+  URL,
 }) => {
+  const userid = useContext(UserIdContext);
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
   const [user, setUser] = useState(null);
@@ -20,15 +23,13 @@ const AddPurchaseForm = ({
     amount_of_copra_purchased: "",
     moisture_test_details: "",
     total_purchase_price: "",
-    user_id: "66654dc4c6e950671e988962",
+    user_id: userid,
   });
-
-  const userid = "66654dc4c6e950671e988962";
 
   useEffect(() => {
     // Fetch user data
     axios
-      .get(`http://localhost:5555/user/${userid}`)
+      .get(`${URL}/user/${userid}`)
       .then((response) => {
         setUser(response.data.data);
       })
@@ -38,7 +39,7 @@ const AddPurchaseForm = ({
 
     // Fetch farmers
     axios
-      .get("http://localhost:5555/farmer")
+      .get(`${URL}/farmer`)
       .then((response) => {
         setFarmers(response.data);
       })
@@ -48,7 +49,7 @@ const AddPurchaseForm = ({
 
     // Fetch price suggestion
     axios
-      .get(`http://localhost:5555/user/${userid}/pricesuggestion/getone`)
+      .get(`${URL}/user/${userid}/pricesuggestion/getone`)
       .then((response) => {
         if (response.data.status === "success") {
           setFormData((prevData) => ({
@@ -81,7 +82,7 @@ const AddPurchaseForm = ({
         invoice_number: generateInvoiceNumber(),
       }));
     }
-  }, [purchase]); // Include purchase in the dependency array
+  }, [purchase, userid, URL]); // Include purchase in the dependency array
 
   useEffect(() => {
     if (purchase) {
@@ -110,7 +111,7 @@ const AddPurchaseForm = ({
         user_id: userid,
       });
     }
-  }, [purchase]); // Include purchase in the dependency array
+  }, [purchase, userid]); // Include purchase in the dependency array
 
   useEffect(() => {
     const calculateTotalPurchasePrice = () => {
@@ -156,16 +157,13 @@ const AddPurchaseForm = ({
       } else {
         // -----NEW PURCHASE LOG-----
         // 1). Create purchase document
-        const newPurchaseDoc = await axios.post(
-          "http://localhost:5555/purchase",
-          formData
-        );
+        const newPurchaseDoc = await axios.post(`${URL}/purchase`, formData);
         // eslint-disable-next-line no-underscore-dangle
         const purchaseId = newPurchaseDoc.data._id;
 
         // 2). Create cash_balance:
         const newCashDoc = await axios.post(
-          `http://localhost:5555/tmpFinRoute/${userid}/currentbalance`,
+          `${URL}/tmpFinRoute/${userid}/currentbalance`,
           {
             user_id: userid,
             changeValue: formData.total_purchase_price,
@@ -177,17 +175,17 @@ const AddPurchaseForm = ({
         const newCashBalanceId = newCashDoc?.data?.data?.newCurrentBalance._id;
 
         // 3). Create inventory
-        // const newInventoryDoc = await axios.post(
-        //   `http://localhost:5555/tmpFinRoute/${userid}/inventory`,
-        //   {
-        //     user_id: userid,
-        //     changeValue: formData.amount_of_copra_purchased,
-        //     date: formData.purchase_date,
-        //     type: "purchase",
-        //   }
-        // );
+        const newInventoryDoc = await axios.post(
+          `${URL}/tmpFinRoute/${userid}/inventory`,
+          {
+            user_id: userid,
+            changeValue: formData.amount_of_copra_purchased,
+            date: formData.purchase_date,
+            type: "purchase",
+          }
+        );
         // eslint-disable-next-line no-underscore-dangle
-        // const newInventoryId = newInventoryDoc?.data?.data?.newInventory._id;
+        const newInventoryId = newInventoryDoc?.data?.data?.newInventory._id;
 
         // 4). Send ids to the corresponding user documents
         const updateData = {
@@ -200,13 +198,13 @@ const AddPurchaseForm = ({
             value: newCashBalanceId,
           };
         }
-        // if (newInventoryId) {
-        //   updateData.inventory_amount_array = {
-        //     action: "push",
-        //     value: newInventoryId,
-        //   };
-        // }
-        await axios.patch(`http://localhost:5555/user/${userid}`, updateData);
+        if (newInventoryId) {
+          updateData.inventory_amount_array = {
+            action: "push",
+            value: newInventoryId,
+          };
+        }
+        await axios.patch(`${URL}/user/${userid}`, updateData);
         setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);
       }

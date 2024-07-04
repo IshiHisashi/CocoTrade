@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import UserIdContext from "../../page/dashboard/UserIdContext";
+import { UserIdContext } from "../../contexts/UserIdContext";
 
-const getDataObjRes = async (type, userId) => {
+const getDataObjRes = async (type, userId, URL) => {
   let dataObj;
 
   if (type === "market") {
-    const res = await axios.get("http://localhost:5555/marketprice/latest-2");
+    const res = await axios.get(`${URL}/marketprice/latest-2`);
 
     const resArray = res.data.data.docs;
 
@@ -17,9 +17,7 @@ const getDataObjRes = async (type, userId) => {
       current: Number(resArray[0].price_PHP.$numberDecimal / 1000).toFixed(2),
     };
   } else if (type === "suggestion") {
-    const res = await axios.get(
-      `http://localhost:5555/user/${userId}/pricesuggestion/gettwo`
-    );
+    const res = await axios.get(`${URL}/user/${userId}/pricesuggestion/gettwo`);
 
     dataObj = {
       comparison: res.data.data.comparison,
@@ -45,16 +43,16 @@ const calculateDiff = (obj) => {
 };
 
 const PriceIndicatorCard = (props) => {
-  const { type } = props;
+  const { type, URL } = props;
   const userId = useContext(UserIdContext);
   const [dataObj, setDataObj] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const dataObjRes = await getDataObjRes(type, userId);
+      const dataObjRes = await getDataObjRes(type, userId, URL);
       setDataObj(dataObjRes);
     })();
-  }, [type, userId]);
+  }, [type, userId, URL]);
 
   let diffObj;
   if (dataObj) {

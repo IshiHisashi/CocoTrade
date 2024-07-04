@@ -15,6 +15,7 @@ const AuthInputModal = (props) => {
     fnToSetNextModalType,
     fnToOpenNextModal,
     fnToCloseThisModal,
+    URL,
   } = props;
 
   const [fullName, setFullName] = useState("");
@@ -50,7 +51,7 @@ const AuthInputModal = (props) => {
       try {
         const user = await login(email, password);
         try {
-          const res = await axios.get(`http://localhost:5555/user/${user.uid}`);
+          const res = await axios.get(`${URL}/user/${user.uid}`);
           const userDoc = res.data.data;
           if (
             userDoc.country &&

@@ -6,7 +6,7 @@ import NotificationDropdown from "./NotificationDropdown.jsx";
 import PlanShipment from "../../page/inventory/LineChartRevised.jsx"; // Update the path accordingly
 import NotificationIcon from "../../assets/icons/Notification.svg";
 
-const Header = () => {
+const Header = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const [companyName, setCompanyName] = useState("");
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -15,9 +15,7 @@ const Header = () => {
 
   const fetchUnreadCount = useCallback(async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:5555/notification/user/${userId}`
-      );
+      const response = await axios.get(`${URL}/notification/user/${userId}`);
       const notifications = response.data.data || [];
       setUnreadCount(
         notifications.filter((notification) => !notification.read).length
@@ -25,14 +23,14 @@ const Header = () => {
     } catch (err) {
       console.error("Error fetching unread notifications:", err);
     }
-  }, [userId]);
+  }, [userId, URL]);
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get(`http://localhost:5555/user/${userId}`);
+      const res = await axios.get(`${URL}/user/${userId}`);
       setCompanyName(res.data.data.company_name);
     })();
-  }, [userId]);
+  }, [userId, URL]);
 
   useEffect(() => {
     fetchUnreadCount();
@@ -58,9 +56,7 @@ const Header = () => {
 
     if (!isNotificationOpen) {
       try {
-        await axios.patch(
-          `http://localhost:5555/notification/user/${userId}/mark-read`
-        );
+        await axios.patch(`${URL}/notification/user/${userId}/mark-read`);
         setUnreadCount(0);
       } catch (err) {
         console.error("Error marking notifications as read:", err);
@@ -87,6 +83,7 @@ const Header = () => {
             isNotificationOpen={isNotificationOpen}
             setIsNotificationOpen={setIsNotificationOpen}
             userId={userId}
+            URL={URL}
             onClick={(e) => e.stopPropagation()}
           />
         </button>

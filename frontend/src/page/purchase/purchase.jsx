@@ -31,9 +31,6 @@ const Purchase = ({ URL }) => {
         updatedPurchase
       );
       // update cach_balance
-      const cashDif =
-        +updatedPurchase.total_purchase_price -
-        currentPurchase.total_purchase_price.$numberDecimal;
       const updateCash = await axios.patch(
         // eslint-disable-next-line no-underscore-dangle
         `${URL}/tmpFinRoute/${userid}/currentbalance`,
@@ -47,25 +44,42 @@ const Purchase = ({ URL }) => {
         }
       );
       const newCashBalanceId = updateCash?.data?.data?.newCurrentBalance._id;
-      // update inventory_balance => Coming soon...
+      // update inventory_balance
+      const updateInventory = await axios.patch(
+        // eslint-disable-next-line no-underscore-dangle
+        `${URL}/tmpFinRoute/${userid}/inventory/updatepurchase`,
+        {
+          user_id: userid,
+          updatedCopra: updatedPurchase.amount_of_copra_purchased,
+          currentCopra:
+            currentPurchase.amount_of_copra_purchased.$numberDecimal,
+          updatedDate: new Date(updatedPurchase.purchase_date),
+          currentPurchaseDate: currentPurchase.purchase_date,
+          type: "purchase",
+        }
+      );
+      const newInventoryId = updateInventory?.data?.data?.newInventory._id;
       // Send ids to the coresponding user documents
+      const updateData = {};
       if (newCashBalanceId) {
-        await axios.patch(`${URL}/user/${userid}`, {
-          balance_array: { action: "push", value: newCashBalanceId },
-        });
+        updateData.balance_array = {
+          action: "push",
+          value: newCashBalanceId,
+        };
+      }
+      if (newInventoryId) {
+        updateData.inventory_amount_array = {
+          action: "push",
+          value: newInventoryId,
+        };
+      }
+      if (newCashBalanceId || newInventoryId) {
+        await axios.patch(`http://localhost:5555/user/${userid}`, updateData);
       }
       // UI control
       setShowAddForm(false);
       setSelectedPurchase(null);
       setPurchases(updatedPurchase);
-      // --- Previouse version ----
-      // setPurchases((prevPurchases) => {
-      //   prevPurchases.map((purchase) =>
-      //     // eslint-disable-next-line no-underscore-dangle
-      //     purchase._id === updatedPurchase._id ? updatedPurchase : purchase
-      //   );
-      // });
-      // window.location.reload();
     } catch (error) {
       console.error("Error updating purchase:", error);
     }

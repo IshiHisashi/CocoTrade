@@ -27,7 +27,7 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/auth/*" element={<Auth URL={URL} />} />
+        {/* <Route path="/auth/*" element={<Auth URL={URL} />} /> */}
         <Route path="/" element={<Landing fnToSetUser={setUser} URL={URL} />} />
         <Route
           path="/onboarding/*"

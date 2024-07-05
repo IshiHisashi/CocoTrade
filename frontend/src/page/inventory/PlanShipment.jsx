@@ -140,23 +140,35 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
           patchedInvDoc.data
         );
       }
+// Create notification
+const formattedDate = format(
+  new Date(formData.copra_ship_date),
+  "MMMM do, yyyy"
+);
+const notificationData1 = {
+  user_id: userId,
+  title: "Prepare your trucks!",
+  message: `You have an upcoming shipment on ${formattedDate}!`,
+};
+const notificationResponse1 = await axios.post(
+  `${URL}/notification`,
+  notificationData1
+);
+console.log("Notification created:", notificationResponse1.data);
 
-      // Create notification
-      const formattedDate = format(
-        new Date(formData.copra_ship_date),
-        "MMMM do, yyyy"
-      );
-      const notificationData = {
-        user_id: userId,
-        title: "Prepare your trucks!",
-        message: `You have an upcoming shipment on ${formattedDate}!`,
-      };
-      const notificationResponse = await axios.post(
-        `${URL}/notification`,
-        notificationData
-      );
-      console.log("Notification created:", notificationResponse.data);
-
+// Create notification to generate when current amount left become 50% ox maxcapacity
+if (newCurrentAmntLft >= user.max_inventory_amount / 2) {
+  const notificationData2 = {
+  user_id: userId,
+  title: "Your inventory is 50% full!",
+  message: `It's time to plan your shipment!`,
+};
+const notificationResponse2 = await axios.post(
+  `${URL}/notification`,
+  notificationData2
+);
+console.log("Notification created:", notificationResponse2.data);
+}
       // Refresh unread notifications count
       if (refreshNotifications) {
         refreshNotifications();

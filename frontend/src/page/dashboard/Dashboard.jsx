@@ -3,13 +3,17 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Tooltip as TooltipMUI, styled, tooltipClasses } from "@mui/material";
 import PriceIndicatorCard from "../../component/card/PriceIndicatorCard.jsx";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
 import LineChartRevised from "../inventory/LineChartRevised.jsx";
+import Info from "../../assets/icons/Information.svg";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+
+const today = new Date();
 
 // get the latest month among the purchase and sales logs.
 const getLatestDate = (
@@ -28,8 +32,6 @@ const getLatestDate = (
 };
 
 const getData = async (userId, URL) => {
-  // 66654dc4c6e950671e988962
-
   try {
     const [purchaseRes, salesRes] = await Promise.all([
       axios.get(`${URL}/tmpFinRoute/${userId}/purchase/monthly-aggregate`),
@@ -40,10 +42,18 @@ const getData = async (userId, URL) => {
     const salesResArray = salesRes.data.data.salesAggregation;
 
     const [secondLatestDate, latestDate] = getLatestDate(
-      purchaseResArray[purchaseResArray.length - 1]._id.year,
-      purchaseResArray[purchaseResArray.length - 1]._id.month,
-      salesResArray[salesResArray.length - 1]._id.year,
-      salesResArray[salesResArray.length - 1]._id.month
+      purchaseResArray.length
+        ? purchaseResArray[purchaseResArray.length - 1]._id.year
+        : today.getFullYear(),
+      purchaseResArray.length
+        ? purchaseResArray[purchaseResArray.length - 1]._id.month
+        : today.getMonth() + 1,
+      salesResArray.length
+        ? salesResArray[salesResArray.length - 1]._id.year
+        : today.getFullYear(),
+      salesResArray.length
+        ? salesResArray[salesResArray.length - 1]._id.month
+        : today.getMonth() + 1
     );
 
     const latestMonthNum = latestDate.getMonth() + 1;
@@ -86,7 +96,7 @@ const getData = async (userId, URL) => {
     };
   } catch (error) {
     if (error.response.status === 404) {
-      const today = new Date();
+      // const today = new Date();
       const thisMonth = today.toLocaleString("default", { month: "long" });
       const lastMonth = new Date()
         .setMonth(today.getMonth() - 1)
@@ -104,6 +114,7 @@ const Dashboard = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const [data, setData] = useState(null);
   const [upcomingShipDate, setUpcomingShipDate] = useState("");
+  const [todaysInventory, setTodaysInventory] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -126,16 +137,57 @@ const Dashboard = ({ URL }) => {
         }
       }
     })();
-  });
+  }, [userId, URL]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await axios.get(`${URL}/user/${userId}/latestInv`);
+        const formatted = Number(
+          res.data.latestInv[0].current_amount_left.$numberDecimal
+        ).toLocaleString();
+        setTodaysInventory(`Today's inventory is ${formatted}kg`);
+      } catch (error) {
+        if (error.respose.status === 404) {
+          setTodaysInventory(
+            "Something went wrong while getting your today's inventory amount :("
+          );
+        }
+      }
+    })();
+  }, [userId, URL]);
+
+  const InfoTooltip = styled(({ className, ...props }) => (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <TooltipMUI {...props} arrow classes={{ popper: className }} />
+  ))(() => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: "#243037",
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: "#243037",
+    },
+  }));
 
   return (
     <UserIdContext.Provider value={userId}>
       <div className="flex justify-between items-center">
-        {!upcomingShipDate ? (
-          <p>getting your upcoming shipment information...</p>
-        ) : (
-          <p>{upcomingShipDate}</p>
-        )}
+        <div className="flex items-center">
+          {!upcomingShipDate ? (
+            <p>getting your upcoming shipment information...</p>
+          ) : (
+            <p>{upcomingShipDate}</p>
+          )}
+          <InfoTooltip title="View shipment on Sales." placement="right" arrow>
+            <button
+              type="button"
+              className="mx-2"
+              onClick={() => navigate("/sales")}
+            >
+              <img src={Info} alt="toggle tooltip" className="inline-block" />
+            </button>
+          </InfoTooltip>
+        </div>
         <CtaBtn
           size="M"
           level="P"
@@ -151,13 +203,17 @@ const Dashboard = ({ URL }) => {
         <PriceIndicatorCard type="suggestion" URL={URL} />
       </section>
 
-      <section className="bg-white">
-        <h2>Today&apos;s inventory is 00,000kg</h2>
+      <section className="p-4 bg-white rounded-lg">
+        {!todaysInventory ? (
+          <h2>getting your today&apos;s inventory amount...</h2>
+        ) : (
+          <h2>{todaysInventory}</h2>
+        )}
         <LineChartRevised userId={userId} dashboard URL={URL} />
       </section>
 
       <div className="grid sm:grid-cols-3">
-        <section className="col-span-2 p-4 bg-white">
+        <section className="col-span-2 p-4 bg-white rounded-lg">
           <h2>Activity this month vs last month</h2>
           {!data ? (
             <p>loading...</p>

@@ -17,7 +17,7 @@ const AuthInputModal = (props) => {
     fnToCloseThisModal,
     URL,
   } = props;
-  console.log(URL);
+  // console.log(URL);
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");

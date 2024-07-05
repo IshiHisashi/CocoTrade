@@ -24,11 +24,19 @@ const Overview = (props) => {
   const navigate = useNavigate();
 
   const onClickSave = async () => {
+    console.log(userId);
     const inventoryInfo = {
       user_id: userId,
       current_amount_left: currentAmountLeft,
-      current_amount_with_pending: 0,
+      current_amount_with_pending: currentAmountLeft,
       time_stamp: new Date(),
+    };
+
+    const inventoryInfoInitial = {
+      user_id: userId,
+      current_amount_left: currentAmountLeft,
+      current_amount_with_pending: currentAmountLeft,
+      time_stamp: new Date(1),
     };
 
     const balanceInfo = {
@@ -39,13 +47,39 @@ const Overview = (props) => {
       date: new Date(),
     };
 
+    const balanceInfoInitial = {
+      user_id: userId,
+      purchases_sum: 0,
+      sales_sum: 0,
+      current_balance: currentBalance,
+      date: new Date(1),
+    };
+
     try {
-      const [resInventoryDoc, resBalanceDoc] = await Promise.all([
+      const [
+        resInventoryDoc,
+        resInventoryInitialDoc,
+        resBalanceDoc,
+        resBalanceInitialDoc,
+        resPriceSuggestionDoc1,
+        resPriceSuggestionDoc2,
+      ] = await Promise.all([
         axios.post(`${URL}/inventory/first`, inventoryInfo),
+        axios.post(`${URL}/inventory/first`, inventoryInfoInitial),
         axios.post(
           `${URL}/tmpFinRoute/${userId}/currentbalance/first`,
           balanceInfo
         ),
+        axios.post(
+          `${URL}/tmpFinRoute/${userId}/currentbalance/first`,
+          balanceInfoInitial
+        ),
+        axios.post(`${URL}/user/${userId}/pricesuggestion/first`, {
+          margin: margin / 100,
+        }),
+        axios.post(`${URL}/user/${userId}/pricesuggestion/first`, {
+          margin: margin / 100,
+        }),
       ]);
 
       const userInfo = {
@@ -58,11 +92,24 @@ const Overview = (props) => {
         amount_per_ship: amountPerShip,
         inventory_amount_array: {
           action: "push",
-          value: resInventoryDoc.data.data._id,
+          value: [
+            resInventoryDoc.data.data._id,
+            resInventoryInitialDoc.data.data._id,
+          ],
         },
         balance_array: {
           action: "push",
-          value: resBalanceDoc.data.data.newCurrentBalance._id,
+          value: [
+            resBalanceDoc.data.data.newCurrentBalance._id,
+            resBalanceInitialDoc.data.data.newCurrentBalance._id,
+          ],
+        },
+        price_suggestion_array: {
+          action: "push",
+          value: [
+            resPriceSuggestionDoc1.data.data._id,
+            resPriceSuggestionDoc2.data.data._id,
+          ],
         },
       };
 

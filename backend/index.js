@@ -39,7 +39,11 @@ app.options(
   "*",
   cors({
     credentials: true,
-    origin: ["http://localhost:5173", "https://coco-trade.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://coco-trade.vercel.app",
+      "https://cocotrade.net",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })

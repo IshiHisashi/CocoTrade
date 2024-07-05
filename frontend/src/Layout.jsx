@@ -24,7 +24,7 @@ const Layout = (props) => {
     <>
       <Header URL={URL} />
       <Nav fnToOpenFormModal={setIsFormModalOpen} />
-      <main className="ml-64 p-8 bg-[#F1F7F8] h-screen">{children}</main>
+      <main className="ml-64 p-8 bg-[#F1F7F8] min-h-screen">{children}</main>
 
       <Modal
         isOpen={isFormModalOpen}

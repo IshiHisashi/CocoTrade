@@ -154,6 +154,25 @@ export const createInventory = async (req, res) => {
   }
 };
 
+// Create simple Inventory
+export const createSimpleInventory = async (req, res) => {
+  try {
+      const newInventoryLog = new Inventory(req.body);
+      const savedInventoryLog = await newInventoryLog.save();
+      console.log("newInventory Added!");
+      res.status(201).json({
+          status: "Success",
+          data: savedInventoryLog
+      });
+  }
+  catch(err) {
+      res.status(500).json({
+          status: "failed",
+          error: err.message
+      });
+  }
+};
+
 export const getInventoryById = async (req, res) => {
   // To test this try path "id", value "665bc229cfc7cb78a6a6a956"
 
@@ -454,6 +473,207 @@ export const updateInventoryPurchase = async (req, res) => {
     return res.status(400).json({
       status: "fail",
       message: err,
+    });
+  }
+};
+
+export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const prevShipDate = req.body.prevShipDate;
+    const newShipDate = req.body.newShipDate;
+    const prevAmount = req.body.prevAmount;
+    const newAmount = req.body.newAmount;
+
+    const loopUpdateInvWithPending = (docs, number, type) => {
+      if (type === "subtract" || type === "modify") {
+        docs.forEach(async (doc) => {
+          await Inventory.findByIdAndUpdate(doc._id, {
+            current_amount_with_pending: Number(doc.current_amount_with_pending) - Number(number),
+          });
+        });
+      } else if (type === "reverse") {
+        docs.forEach(async (doc) => {
+          await Inventory.findByIdAndUpdate(doc._id, {
+            current_amount_with_pending: Number(doc.current_amount_with_pending) + Number(number),
+          });
+        });
+      }
+    };
+
+    console.log(prevAmount);
+    console.log(newAmount);
+    // Get user
+    const user = await UserModel.findById(userId);
+
+    // Route shared with all the patterns
+    if ( prevAmount !== newAmount.toString() ) {
+      const rawLatestInv = await Inventory.aggregate([
+        {
+          $match: { _id: { $in: user.inventory_amount_array } },
+        },
+        {
+          $sort: { time_stamp: -1 },
+        },
+        {
+          $limit: 1,
+        },
+      ])
+      console.log("raw last inv,", rawLatestInv);
+      const latestInv = await rawLatestInv[0];
+      const difference = newAmount - Number(prevAmount);
+      const newInvAmount = Number(latestInv.current_amount_left) - difference;
+      const updatedLatestInv = await Inventory.findByIdAndUpdate(latestInv._id, {
+        current_amount_left: newInvAmount.toString(),
+      })
+      console.log("copra_amount_left updated/subtracted");
+
+      // When current_amount_with_pending has to be subtracted with difference
+      if (req.body.modifInvWithDiffNeeded === true) {
+        const invsOnAndAfterOriginalShipmentDate = await Inventory.aggregate([
+          {
+            $match: {
+              _id: { $in: user.inventory_amount_array },
+              time_stamp: { $gte: new Date(req.body.prevShipDate) },
+              // Should I setDate(data.getDate - 1) ???
+            },
+          },
+          {
+            $sort: { time_stamp: 1 },
+          },
+        ]);
+        console.log(new Date(req.body.prevShipDate));
+        console.log(invsOnAndAfterOriginalShipmentDate[0]);
+        // Subtract the difference from current_amount_with_pending of all the documents that have time_stamp after prevShipDate.
+        loopUpdateInvWithPending(invsOnAndAfterOriginalShipmentDate, difference, "modify");
+      }
+    }
+
+    if(prevShipDate.split('T')[0] !== newShipDate) {
+      if (newShipDate < prevShipDate) {
+        const invsBetweenTwoDates = await Inventory.aggregate([
+          {
+            $match: {
+              _id: { $in: user.inventory_amount_array },
+              time_stamp: { 
+                $gte: new Date(req.body.newShipDate),
+                $lt: new Date(req.body.prevShipDate),
+              },
+            },
+          },
+          {
+            $sort: { time_stamp: 1 },
+          },
+        ]);
+        if (invsBetweenTwoDates.length !== 0) {
+          console.log(invsBetweenTwoDates[0]);
+          loopUpdateInvWithPending(invsBetweenTwoDates, newAmount, "subtract");
+        }
+      } else {
+        const invsBetweenTwoDates = await Inventory.aggregate([
+          {
+            $match: {
+              _id: { $in: user.inventory_amount_array },
+              time_stamp: { 
+                $gte: new Date(req.body.prevShipDate),
+                $lt: new Date(req.body.newShipDate),
+              },
+            },
+          },
+          {
+            $sort: { time_stamp: 1 },
+          },
+        ]);
+        if (invsBetweenTwoDates.length !== 0) {
+          console.log(invsBetweenTwoDates[0]);
+          loopUpdateInvWithPending(invsBetweenTwoDates, newAmount, "reverse");
+        }
+      }
+
+    }
+
+    // When current_amount_with_pending has to be subtracted with the copra_amount_sold
+    if (req.body.subtractInvNeeded === true) {
+      console.log("subtracting inv_left here");
+      const invsOnAndAfterShipmentDate = await Inventory.aggregate([
+        {
+          $match: {
+            _id: { $in: user.inventory_amount_array },
+            time_stamp: { $gte: new Date(req.body.newShipDate) },
+          },
+        },
+        {
+          $sort: { time_stamp: 1 },
+        },
+      ])
+
+      // Subtract the number of copra sold (newAmount) from current_amount_with_pending of all the documents that have time_stamp after newShipDate.
+      loopUpdateInvWithPending(invsOnAndAfterShipmentDate, newAmount, "subtract");
+
+      // If there is no inventory log on the exact day of shipment, create a new one with the closest data
+      if (invsOnAndAfterShipmentDate[0].time_stamp.toISOString().split('T')[0] !== newShipDate) {
+        const closestInv = await Inventory.aggregate([
+          {
+            $match: { 
+              _id: { $in: user.inventory_amount_array},
+              time_stamp: { $lte: new Date(req.body.newShipDate) },
+            },
+          },
+          {
+            $sort: { time_stamp: -1 },
+          },
+          {
+            $limit: 1,
+          },
+        ])
+        const invWithPending = await closestInv[0].current_amount_with_pending - newAmount;
+        const newInvDocData = {
+          user_id: closestInv[0].user_id,
+          purchase_array: closestInv[0].purchase_array,
+          sales_array: closestInv[0].sales_array,
+          current_amount_left: closestInv[0].current_amount_left,
+          current_amount_with_pending: invWithPending.toString(),
+          time_stamp: new Date(req.body.newShipDate),
+        };
+        console.log(newInvDocData);
+        const newInvDoc = new Inventory(newInvDocData);
+        const savedNewInvDoc = await newInvDoc.save();
+        const id = savedNewInvDoc._id;
+        const newInventoryArray = [...user.inventory_amount_array, id];
+        await UserModel.findByIdAndUpdate(user._id, {
+          inventory_amount_array: newInventoryArray,
+        });
+
+      }
+    }
+
+    // When current_amount_with_pending has to be reversed/added back with the copra_amount_sold
+    if (req.body.reverseInvNeeded === true) {
+      const invsOnAndAfterOriginalShipmentDate = await Inventory.aggregate([
+        {
+          $match: {
+            _id: { $in: user.inventory_amount_array },
+            time_stamp: { $gte: new Date(req.body.prevShipDate) },
+          },
+        },
+        {
+          $sort: { time_stamp: 1 },
+        },
+      ]);
+      console.log(invsOnAndAfterOriginalShipmentDate[0]);
+
+      // Add the number of copra sold (newAmount) from current_amount_with_pending of all the documents that have time_stamp after newShipDate.
+      loopUpdateInvWithPending(invsOnAndAfterOriginalShipmentDate, prevAmount, "reverse");
+    }
+
+    res.status(200).json({
+      status: "success",
+    })
+
+  } catch (err) {
+    res.status(500).json({
+      status: "failed",
+      error: err.message,
     });
   }
 };

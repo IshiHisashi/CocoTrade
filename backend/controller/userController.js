@@ -460,3 +460,32 @@ export const getTopFiveSales = async (req, res) => {
     });
   }
 };
+
+export const getSalesByUserId = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.userid);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const sales = await Sale.find({
+      _id: { $in: user.sales_array },
+    })
+    .populate({
+      path: 'manufacturer_id',
+      select: 'full_name'  // Assuming the manufacturer's name is stored in the 'full_name' field
+    });
+
+    res.status(200).json(sales.map(sale => {
+      // Transforming the data structure a bit to make it easier to handle on the frontend
+      return {
+        ...sale.toObject(),
+        manufacturer_name: sale.manufacturer_id ? sale.manufacturer_id.full_name : 'N/A' // Include manufacturer name directly
+      };
+    }));
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+};

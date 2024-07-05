@@ -80,6 +80,12 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
   };
 
   // function to handle submit
+  // How this submit works in terms of log creation/modification
+  // 1. It creates a new sales log.
+  // 2. Add a new id of the new sales log into sales_array in a user doc.
+  // 3. Check if there is already an invetory document for today.
+  // 4. If there is not an inv doc for today, create a new inventory doc with the sales id in sales_array. And after that, push this inv doc id to "inventory_amount_array" in user doc.
+  // 5. If there is an inv doc for today, add a new id of the new sales log into sales_array in the latest inventory doc
   const handleSubmit = async (e) => {
     console.log(userId);
     e.preventDefault();

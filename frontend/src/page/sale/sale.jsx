@@ -10,50 +10,34 @@ Modal.setAppElement("#root");
 const Sale = ({ URL }) => {
   const [sales, setSales] = useState([]);
   const [selectedSale, setSelectedSale] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditForm, setshowEditForm] = useState(false);
 
   const handleEdit = (sale) => {
     setSelectedSale(sale);
-  };
-
-  const handleUpdate = async (updatedSale) => {
-    try {
-      // eslint-disable-next-line no-underscore-dangle
-      await axios.patch(`${URL}/sale/${updatedSale._id}`, updatedSale);
-      setShowAddForm(false);
-      setSelectedSale(null);
-      setSales((prevSales) =>
-        prevSales.map((sale) =>
-          // eslint-disable-next-line no-underscore-dangle
-          sale._id === updatedSale._id ? updatedSale : sale
-        )
-      );
-      window.location.reload();
-    } catch (error) {
-      console.error("Error updating sale:", error);
-    }
   };
 
   return (
     <div>
       <div>Sales Log</div>
       <Modal
-        isOpen={showAddForm}
+        isOpen={showEditForm}
         onRequestClose={() => {
-          setShowAddForm(false);
-          window.location.reload();
+          setshowEditForm(false);
         }}
         contentLabel="Edit Sales Form"
       >
         <EditSaleModal
-          setShowAddForm={setShowAddForm}
-          sale={selectedSale}
-          handleUpdate={handleUpdate}
+          showEditForm={showEditForm} 
+          setshowEditForm={setshowEditForm} 
+          selectedSale={selectedSale} 
+          setSelectedSale={setSelectedSale} 
+          setSales={setSales} 
           URL={URL}
         />
       </Modal>
       <ViewSalesTable
-        setShowAddForm={setShowAddForm}
+        showEditForm={showEditForm}
+        setshowEditForm={setshowEditForm}
         handleEdit={handleEdit}
         URL={URL}
       />

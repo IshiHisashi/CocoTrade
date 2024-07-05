@@ -42,12 +42,7 @@ export const createInventory = async (req, res) => {
         $limit: 1,
       },
     ]);
-    const currentInventoryLeft = docLatest[0]
-      ? +docLatest[0].current_amount_left
-      : 0;
-    const currentInventoryPending = docLatest[0]
-      ? +docLatest[0].current_amount_with_pending
-      : 0;
+
     // See if there is any doc which is later than the date
     const docsLater = await Inventory.aggregate([
       {
@@ -60,12 +55,18 @@ export const createInventory = async (req, res) => {
         $sort: { time_stamp: 1 },
       },
     ]);
+    const currentInventoryLeft = docLatest[0]
+      ? +docLatest[0].current_amount_left
+      : +docsLater[0].current_amount_left;
+    const currentInventoryPending = docLatest[0]
+      ? +docLatest[0].current_amount_with_pending
+      : +docsLater[0].current_amount_with_pending;
 
     // ----- Execute ------
     // Scenario 1. if the new transaction is NOT the latest one.
     if (+docsLater.length !== 0) {
       // 1-1 get the nearest balance
-      const docNearest = docLatest[0];
+      const docNearest = docLatest[0] || docsLater[0];
       console.log(docNearest);
       // set the function to update doc(s)
       const loopUpdate = (docs) => {
@@ -82,6 +83,7 @@ export const createInventory = async (req, res) => {
           });
         });
       };
+      console.log(docNearest);
       // 1-2 if the same day, just update the balance
       if (
         docNearest.time_stamp.getTime() === new Date(req.body.date).getTime()

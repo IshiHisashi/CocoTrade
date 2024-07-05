@@ -28,7 +28,7 @@ app.use(
       "http://localhost:5175",
       // Diployment
       "https://coco-trade.vercel.app",
-      "https://cocotrade.net",
+      "https://cocotrade.net"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],

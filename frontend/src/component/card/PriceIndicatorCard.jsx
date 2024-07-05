@@ -60,7 +60,7 @@ const PriceIndicatorCard = (props) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4 bg-white">
+    <div className="flex flex-col gap-4 p-4 bg-white rounded-lg">
       <h3 className="text-base">
         {type === "market" ? "PALM OIL PRICE" : "SUGGESTED PURCHASE PRICE"}
       </h3>

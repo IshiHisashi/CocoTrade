@@ -96,13 +96,18 @@ export const updateUser = async (req, res) => {
         // if it's array updating...
         console.log("instance array");
 
-        const { action } = req.body[currentKey];
-        const { value } = req.body[currentKey];
+        const { action, value } = req.body[currentKey];
 
         // create something like { price_suggestion_array: elementYouWannaPushOrPull }
-        objToBeHandled[currentKey] = value;
+        // objToBeHandled[currentKey] = value;
 
         if (action === "push") {
+          if (Array.isArray(value)) {
+            objToBeHandled[currentKey] = { $each: value };
+          } else {
+            objToBeHandled[currentKey] = value;
+          }
+
           // eslint-disable-next-line no-await-in-loop
           doc = await UserModel.findByIdAndUpdate(
             userid,
@@ -112,6 +117,12 @@ export const updateUser = async (req, res) => {
             }
           );
         } else if (action === "pull") {
+          if (Array.isArray(value)) {
+            objToBeHandled[currentKey] = { $in: value };
+          } else {
+            objToBeHandled[currentKey] = value;
+          }
+
           // eslint-disable-next-line no-await-in-loop
           doc = await UserModel.findByIdAndUpdate(
             userid,

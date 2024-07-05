@@ -5,17 +5,19 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: "../config.env" });
 
+const URL = "http://localhost:5555";
+
 const postDataToPriceSuggestion = async () => {
   try {
-    const res = await axios.get("http://localhost:5555/user");
+    const res = await axios.get(`${URL}/user`);
     res.data.data.forEach(async (userId) => {
       try {
         const resPriceSuggestionPost = await axios.post(
-          `http://localhost:5555/user/${userId}/pricesuggestion`
+          `${URL}/user/${userId}/pricesuggestion`
         );
 
         // update price-suggestion-array in the user's doc
-        await axios.patch(`http://localhost:5555/user/${userId}`, {
+        await axios.patch(`${URL}/user/${userId}`, {
           price_suggestion_array: {
             action: "push",
             value: resPriceSuggestionPost.data.data._id,
@@ -34,7 +36,7 @@ const postDataToPriceSuggestion = async () => {
 
 const postDataToMarketPrice = async (priceUSD, pricePHP, exchangeRate) => {
   try {
-    const res = await axios.post("http://localhost:5555/marketprice", {
+    const res = await axios.post(`${URL}/marketprice`, {
       price_USD: priceUSD,
       price_PHP: pricePHP,
       exchange_rate: exchangeRate,

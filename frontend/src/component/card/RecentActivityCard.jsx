@@ -38,7 +38,7 @@ const RecentActivityCard = (props) => {
   }, [type, userId, URL]);
 
   return (
-    <div className="p-4 bg-white">
+    <div className="p-4 bg-white rounded-lg">
       <h3>Recent {type.charAt(0).toUpperCase() + type.slice(1)}</h3>
       <p>{type === "purchase" ? "from today" : "over the last week"}</p>
       <p className="text-3xl">{totalSum ? `Php ${totalSum}` : "loading..."}</p>

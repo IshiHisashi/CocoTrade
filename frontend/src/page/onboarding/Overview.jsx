@@ -40,12 +40,23 @@ const Overview = (props) => {
     };
 
     try {
-      const [resInventoryDoc, resBalanceDoc] = await Promise.all([
+      const [
+        resInventoryDoc,
+        resBalanceDoc,
+        resPriceSuggestionDoc1,
+        resPriceSuggestionDoc2,
+      ] = await Promise.all([
         axios.post(`${URL}/inventory/first`, inventoryInfo),
         axios.post(
           `${URL}/tmpFinRoute/${userId}/currentbalance/first`,
           balanceInfo
         ),
+        axios.post(`${URL}/user/${userId}/pricesuggestion/first`, {
+          margin: margin / 100,
+        }),
+        axios.post(`${URL}/user/${userId}/pricesuggestion/first`, {
+          margin: margin / 100,
+        }),
       ]);
 
       const userInfo = {
@@ -63,6 +74,13 @@ const Overview = (props) => {
         balance_array: {
           action: "push",
           value: resBalanceDoc.data.data.newCurrentBalance._id,
+        },
+        price_suggestion_array: {
+          action: "push",
+          value: [
+            resPriceSuggestionDoc1.data.data._id,
+            resPriceSuggestionDoc2.data.data._id,
+          ],
         },
       };
 

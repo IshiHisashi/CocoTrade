@@ -9,8 +9,6 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
-  const [latestInv, setLatestInv] = useState([]);
-  const [latestFin, setLatestFin] = useState([]);
 
   // To controll update behaivior in API
   const [previousStatus, setPreviousStatus] = useState(null); 
@@ -51,16 +49,6 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       })
       .catch((error) => {
         console.error("Error fetching manufacturers:", error);
-      });
-
-    // Fetch the latest inventory doc
-    axios.get(`${URL}/user/${userId}/latestInv`)
-      .then(response => {
-        setLatestInv(response.data.latestInv[0]);
-        // console.log(response.data.latestInv[0]);
-      })
-      .catch((error) => {
-        console.error("Error fetching latest inventory:", error);
       });
   }, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,9 +114,9 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   // Common throughout all the sales edit patterns => Good to go
   const updateSales = async () => {
     try {
-      // await axios.patch(`http://localhost:5555/sale/${selectedSale._id}`, formData);
-      // // console.log(patchedSales.data.data);
-      // // 👆 This never shows proper response for some reasons.
+      await axios.patch(`${URL}/sale/${selectedSale._id}`, formData);
+      // console.log(patchedSales.data.data);
+      // 👆 This never shows proper response for some reasons.
       console.log("Sales updated");
     }
     catch(err) {
@@ -136,60 +124,13 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     }
   }
 
-  const createNewInventory = async (shipDate) => {
-    // Here is gonna be http request to make a new inv doc on the shipDate if there is no inv doc on the date. But if there is, the request does nothing and returns just "Did nothing. To specify the date, I have to pass shipDate"
-    console.log("Created a new inventory doc for the date: ", shipDate);
-  }
-
-  const createNewFinance = async (receivedDate) => {
-    // Here is gonna be http request to make a new fin doc on the ReceivedDate if there is no fin doc on the date. But if there is, the request does nothing and returns just "Did nothing. To specify the date, I have to pass ReceivedDate"
-    console.log("Created a new finance doc for the date: ", receivedDate);
-  }
-
-  // 1. update inventory. All the manipulations are done in the backend API
-  const updateInventory = async () => {
-    try {
-      // Pass prevShipDate, newShipDate, preAmount, newAmount, subtractInvNeeded, reverseInvNeeded, and modifInvWithDiffNeeded as a json object in req.body
-      // if copra_amount changed, and if shipDate changed, they are examined in the api
-      // Update inventorie docs in one single http request based on the req.body
-
-      // const newInvAmountLeft = Number(latestInv.current_amount_left.$numberDecimal) - difference;
-      // // eslint-disable-next-line no-underscore-dangle
-      // const currentInvId = latestInv._id;
-      // await axios.patch(
-      //   `http://localhost:5555/inventory/${currentInvId}`,
-      //   {
-      //     $set: {
-      //       current_amount_left: {
-      //         $numberDecimal: newInvAmountLeft.toString(),
-      //       }
-      //     }
-      //   }
-      // );
-      console.log("Inventory update");
-    }
-    catch(err) {
-      console.error("Failed to update", err);
-    }
-  }
-
-  const updateFinance = async () => {
-    try {
-      // Pass prevReceivedDate, newReceivedDate, prePrice, newPrice, addFinNeeded, reverseFinNeeded, and modifyFinWithDiffNeeded as a json object in req.body
-      // Update finance docs in one single http request based on the req.body
-
-      console.log("Finance updated");
-    }
-    catch(err) {
-      console.error("Failed to update", err);
-    }
-  }
-
+  // Object to pass to inventory update api
   const createObjectToPassForInv = (sub, rev, mod) => {
     const object = {
+      userId,
       prevShipDate: previousShipDate,
       newShipDate: formData.copra_ship_date,
-      preAmount: previousAmount,
+      prevAmount: previousAmount,
       newAmount: formData.amount_of_copra_sold,
       subtractInvNeeded: sub,
       reverseInvNeeded: rev,
@@ -197,13 +138,13 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     }
     return object;
   }
-
+  // Object to pass to finance upate api
   const createObjectToPassForFin = (add, rev, mod) => {
-    // Pass prevReceivedDate, newReceivedDate, prePrice, newPrice, addFinNeeded, reverseFinNeeded, and modifyFinWithDiffNeeded as a json object in req.body
     const object = {
+      userId,
       prevRecievedDate: previousReceivedDate,
       newReceivedDate: formData.cheque_receive_date,
-      prePrice: previousPrice,
+      prevPrice: previousPrice,
       newPrice: formData.total_sales_price,
       addFinNeeded: add,
       reverseFinNeeded: rev,
@@ -212,70 +153,12 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     return object;
   }
 
-  const updateInvWithPending = async () => {
-    // // Calculate the updated number of copra in a warehouse after shipment is done
-    // const afterSubtractingPending = Number(latestInv.current_amount_with_pending.$numberDecimal) - formData.amount_of_copra_sold;
-    // // eslint-disable-next-line no-underscore-dangle
-    // const currentInvId = latestInv._id;
-    // await axios.patch(
-    //   `http://localhost:5555/inventory/${currentInvId}`,
-    //   {
-    //     $set: {
-    //       current_amount_with_pending: {
-    //         $numberDecimal: afterSubtractingPending.toString(),
-    //       }
-    //     }
-    //   }
-    // );
-    console.log("Now copra is shipped and inv_amount_with_pending is updated");
-  }  
-
-  const reverseInvWithPending = async () => {
-    // const reversedInventory = Number(latestInv.current_amount_with_pending.$numberDecimal) + Number(previousAmount);
-    // // eslint-disable-next-line no-underscore-dangle
-    // const currentInvId = latestInv._id;
-    // await axios.patch(
-    //   `http://localhost:5555/inventory/${currentInvId}`,
-    //   {
-    //     $set: {
-    //       current_amount_with_pending: {
-    //         $numberDecimal: reversedInventory.toString(),
-    //       }
-    //     }
-    //   }
-    // );
-  }
-
-  const modifyInvWithPendingWithDiff = async () => {
-    try {
-    //   const difference = formData.amount_of_copra_sold - Number(previousAmount);
-    //   const newInvAmountWithPending = Number(latestInv.current_amount_with_pending.$numberDecimal) - difference;
-    //   // eslint-disable-next-line no-underscore-dangle
-    //   const currentInvId = latestInv._id;
-    //   await axios.patch(
-    //     `http://localhost:5555/inventory/${currentInvId}`,
-    //     {
-    //       $set: {
-    //         current_amount_with_pending: {
-    //           $numberDecimal: newInvAmountWithPending.toString(),
-    //         }
-    //       }
-    //     }
-    //   );
-      console.log("Inventory amount with pending is updated with the difference between prevAmount and new data amount of copra sold");
-    }
-    catch(err) {
-      console.error("Failed to update inventory data based on the difference between prevAmount and new data amount of copra sold: ", err);
-    }
-  }
-
   const prevWasPending = previousStatus === "pending";
   const prevWasOngoing = previousStatus === "ongoing";
   const prevWasCompleted = previousStatus === "completed";
   const updateToPending = formData.status === "pending";
   const updateToOngoing = formData.status === "ongoing";
   const updateToCompleted = formData.status === "completed";
-  const copraAmountSoldIsUpdated = previousAmount !== formData.amount_of_copra_sold.toString();
 
 
   const handleSubmit = async (e) => {
@@ -284,14 +167,13 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       //  Update selected sales document based on id in any case of updating
       await updateSales();
 
+      let objectToPassI;
+
       if (prevWasPending) {
         if (updateToPending) {
-          const objectToPassI = createObjectToPassForInv(false, false, false);
-          console.log(objectToPassI);
-          // axios.patch(`http://localhost:5555/inventory/updateForSales`, objectToPassI);
+          objectToPassI = createObjectToPassForInv(false, false, false);
         } else if (updateToOngoing || updateToCompleted) {
-          const objectToPassI = createObjectToPassForInv(true, false, false);
-          console.log(objectToPassI);
+          objectToPassI = createObjectToPassForInv(true, false, false);
           if (updateToCompleted) {
             const objectToPassF = createObjectToPassForFin(true, false, false);
             console.log(objectToPassF);
@@ -299,11 +181,9 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         }
       } else if (prevWasOngoing) {
         if (updateToPending) {
-          const objectToPassI = createObjectToPassForInv(false, true, false);
-          console.log(objectToPassI);
+          objectToPassI = createObjectToPassForInv(false, true, false);
         } else if (updateToOngoing) {
-          const objectToPassI = createObjectToPassForInv(false, false, true);
-          console.log(objectToPassI);
+          objectToPassI = createObjectToPassForInv(false, false, true);
           if (updateToCompleted) {
             const objectToPassF = createObjectToPassForFin(true, false, false);
             console.log(objectToPassF);
@@ -311,22 +191,21 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         }
       } else if (prevWasCompleted) {
         if (updateToPending) {
-          const objectToPassI = createObjectToPassForInv(false, true, false);
-          console.log(objectToPassI);
+          objectToPassI = createObjectToPassForInv(false, true, false);
           const objectToPassF = createObjectToPassForFin(false, true, false);
           console.log(objectToPassF);
         } else if (updateToOngoing) {
-          const objectToPassI = createObjectToPassForInv(false, false, true);
-          console.log(objectToPassI);
+          objectToPassI = createObjectToPassForInv(false, false, true);
           const objectToPassF = createObjectToPassForFin(false, true, false);
           console.log(objectToPassF);
         } else if (updateToCompleted) {
-          const objectToPassI = createObjectToPassForInv(false, false, true);
-          console.log(objectToPassI);
+          objectToPassI = createObjectToPassForInv(false, false, true);
           const objectToPassF = createObjectToPassForFin(false, false, true);
           console.log(objectToPassF);
         }
       }
+
+      axios.patch(`${URL}/inventory/updateForSales`, objectToPassI);
 
       setshowEditForm(false);
       setSelectedSale(null);

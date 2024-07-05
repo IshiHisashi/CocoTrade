@@ -100,7 +100,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
       const newCurrentAmntLft =
         latestInv.current_amount_left.$numberDecimal -
         response.data.amount_of_copra_sold.$numberDecimal;
-      IF THERE IS NO INVENTORY LOG FOR TODAY, CREATE A NEW ONE
+      //IF THERE IS NO INVENTORY LOG FOR TODAY, CREATE A NEW ONE
       if (
         !(
           today.getFullYear() === invDate.getFullYear() &&

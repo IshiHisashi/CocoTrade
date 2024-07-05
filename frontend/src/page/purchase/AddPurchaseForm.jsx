@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import CtaBtn from "../../component/btn/CtaBtn";
+import Exit from "../../assets/icons/Exit.svg";
+import purchaseConfirmationModal from "./purchaseConfirmationModal.jsx";
 
 const AddPurchaseForm = ({
   setShowAddForm,
   purchase,
   handleUpdate,
   setPurchasesFromParent,
+  fnToCloseThisModal,
   URL,
 }) => {
   const userid = useContext(UserIdContext);
@@ -25,6 +29,11 @@ const AddPurchaseForm = ({
     total_purchase_price: "",
     user_id: userid,
   });
+  const location = useLocation();
+
+  const [showConfirmationModal, setShowConfirmationModal] = useState(
+    location.state ? location.state.showConfirmationModal : false
+  );
 
   useEffect(() => {
     // Fetch user data
@@ -219,8 +228,17 @@ const AddPurchaseForm = ({
 
   return (
     <div className="modal">
-      <h2>{purchase ? "Edit Purchase" : "New Purchase"}</h2>
+      <h1>{purchase ? "Edit Purchase" : "New Purchase"}</h1>
+      <small>Add a new puchase for today</small>
       <form onSubmit={handleSubmit}>
+      <button
+        type="button"
+        className="absolute top-8 right-8"
+        onClick={() => setShowAddForm(false)}
+      >
+        <img src={Exit} alt="close" />
+      </button>
+      <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
         <Field
           label="Invoice No"
           name="invoice_number"
@@ -237,6 +255,7 @@ const AddPurchaseForm = ({
           onChange={handleChange}
           required
         />
+        </div>
         <Field
           label="Farmer Name"
           name="farmer_id"
@@ -251,13 +270,16 @@ const AddPurchaseForm = ({
           onChange={handleChange}
           required
         />
-        <Field
+      <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
+      <Field
           label="Price per kilo (PHP)"
           name="sales_unit_price"
           type="number"
           value={formData.sales_unit_price}
           onChange={handleChange}
           required
+          unit="PHP"
+          adornment="start"
         />
         <Field
           label="Copra bought (kg)"
@@ -266,27 +288,47 @@ const AddPurchaseForm = ({
           value={formData.amount_of_copra_purchased}
           onChange={handleChange}
           required
+          unit="kg"
+          adornment="end"
         />
         <Field
           label="Moisture Test Details"
           name="moisture_test_details"
-          type="text"
+          type="number"
           value={formData.moisture_test_details}
           onChange={handleChange}
           required
+          unit="%"
+          adornment="end"
         />
         <Field
           label="Total Sale (PHP)"
           name="total_purchase_price"
-          type="text"
+          type="number"
           value={formData.total_purchase_price}
           onChange={handleChange}
           disabled
+          unit="PHP"
+          adornment="start"
         />
-        <button type="button" onClick={() => setShowAddForm(false)}>
-          Clear
-        </button>
-        <button type="submit">Save</button>
+</div>   
+<div className="grid sm:grid-cols-2 gap-x-6 pt-8">   
+ <CtaBtn
+        size="M"
+        level="O"
+        innerTxt="Clear"
+        onClickFnc={() => {
+          setShowAddForm(false);
+          window.location.reload();
+        }}
+      />
+        <CtaBtn
+        size="M"
+        level="P"
+        innerTxt="Save"
+        type="submit"
+      />
+      </div> 
       </form>
     </div>
   );

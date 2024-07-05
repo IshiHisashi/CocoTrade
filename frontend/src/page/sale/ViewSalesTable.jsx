@@ -178,7 +178,7 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit, URL }) => {
 
   return (
     <div>
-      <div>
+      <div className="flex justify-end mb-4 gap-3 py-4">
         <label>
           Status Filter:
           <select
@@ -268,9 +268,8 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit, URL }) => {
           </>
         )}
       </Modal>
-      <table>
-        <thead>
-          <tr>
+      <table className="min-w-full bg-white border-collapse">        <thead>
+      <tr className="bg-black text-white text-left">
             <th>Ship Date</th>
             <th>Manufacturer</th>
             <th>Sales Unit Price</th>

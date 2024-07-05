@@ -227,8 +227,8 @@ const ViewPurchaseTable = ({
 
   return (
     <div>
-      <div>
-        <label>
+<div className="flex justify-end mb-4 py-5">
+          <label>
           Date Filter:
           <input
             type="text"
@@ -303,9 +303,9 @@ const ViewPurchaseTable = ({
           </>
         )}
       </Modal>
-      <table>
-        <thead>
-          <tr>
+      <table className="min-w-full bg-white border-collapse"> 
+               <thead>
+          <tr className="bg-black text-white text-left">
             <th>Invoice No.</th>
             <th>Date</th>
             <th>Farmers Name</th>

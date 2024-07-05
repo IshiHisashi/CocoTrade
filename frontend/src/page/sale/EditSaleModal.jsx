@@ -9,13 +9,17 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
-
   const [latestInv, setLatestInv] = useState([]);
   const [latestFin, setLatestFin] = useState([]);
+
+  // To controll update behaivior in API
   const [previousStatus, setPreviousStatus] = useState(null); 
   const [previousAmount, setPreviousAmount] = useState(null);
   const [previousPrice, setPreviousPrice] = useState(null);
+  const [previousShipDate, setPreviousShipDate] = useState(null);
+  const [previousReceivedDate, setPreviousReceivedDate] = useState(null);
 
+  // To store data filled in an edit form
   const [formData, setFormData] = useState({
     manufacturer_id: "",
     amount_of_copra_sold: "",
@@ -97,11 +101,15 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   useEffect(() => {
     if(selectedSale){
       setPreviousStatus(selectedSale.status);
-      // console.log("Status: ", selectedSale.status);
+      console.log("Status: ", selectedSale.status);
       setPreviousAmount(selectedSale.amount_of_copra_sold.$numberDecimal);
-      // console.log("Amount of copra sold: ", selectedSale.amount_of_copra_sold.$numberDecimal);
+      console.log("Amount of copra sold: ", selectedSale.amount_of_copra_sold.$numberDecimal);
       setPreviousPrice(selectedSale.total_sales_price.$numberDecimal);
-      // console.log("Total price: ", selectedSale.total_sales_price.$numberDecimal);
+      console.log("Total price: ", selectedSale.total_sales_price.$numberDecimal);
+      setPreviousShipDate(selectedSale.copra_ship_date);
+      console.log("Shipment date: ", selectedSale.copra_ship_date);
+      setPreviousReceivedDate(selectedSale.cheque_receive_date);
+      console.log("Money received date: ", selectedSale.cheque_receive_date);
     }
   }, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,95 +123,145 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     });
   };
 
+  // Common throughout all the sales edit patterns => Good to go
   const updateSales = async () => {
     try {
-      await axios.patch(`http://localhost:5555/sale/${selectedSale._id}`, formData);
-      // console.log(patchedSales.data.data);
-      // 👆 This never shows proper response for some reasons.
-      console.log("Sales updated with this data: ", formData);
+      // await axios.patch(`http://localhost:5555/sale/${selectedSale._id}`, formData);
+      // // console.log(patchedSales.data.data);
+      // // 👆 This never shows proper response for some reasons.
+      console.log("Sales updated");
     }
     catch(err) {
       console.error("Failed to update sales: ", err);
     }
   }
 
-  const updateInvLeftWithDiff = async () => {
-    try {
-      const difference = formData.amount_of_copra_sold - Number(previousAmount);
-      const newInvAmountLeft = Number(latestInv.current_amount_left.$numberDecimal) - difference;
-      // eslint-disable-next-line no-underscore-dangle
-      const currentInvId = latestInv._id;
-      await axios.patch(
-        `http://localhost:5555/inventory/${currentInvId}`,
-        {
-          $set: {
-            current_amount_left: {
-              $numberDecimal: newInvAmountLeft.toString(),
-            }
-          }
-        }
-      );
-      console.log("Inventory amount left is updated with the difference between prevAmount and new data amount of copra sold");
-    }
-    catch(err) {
-      console.error("Failed to update inventory data based on the difference between prevAmount and new data amount of copra sold: ", err);
-    }
+  const createNewInventory = async (shipDate) => {
+    // Here is gonna be http request to make a new inv doc on the shipDate if there is no inv doc on the date. But if there is, the request does nothing and returns just "Did nothing. To specify the date, I have to pass shipDate"
+    console.log("Created a new inventory doc for the date: ", shipDate);
   }
 
-  const updateInvWithPending = async () => {
-    // Calculate the updated number of copra in a warehouse after shipment is done
-    const afterSubtractingPending = Number(latestInv.current_amount_with_pending.$numberDecimal) - formData.amount_of_copra_sold;
-    // eslint-disable-next-line no-underscore-dangle
-    const currentInvId = latestInv._id;
-    await axios.patch(
-      `http://localhost:5555/inventory/${currentInvId}`,
-      {
-        $set: {
-          current_amount_with_pending: {
-            $numberDecimal: afterSubtractingPending.toString(),
-          }
-        }
-      }
-    );
-    console.log("Now copra is shipped and inv_amount_with_pending is updated");
+  const createNewFinance = async (receivedDate) => {
+    // Here is gonna be http request to make a new fin doc on the ReceivedDate if there is no fin doc on the date. But if there is, the request does nothing and returns just "Did nothing. To specify the date, I have to pass ReceivedDate"
+    console.log("Created a new finance doc for the date: ", receivedDate);
+  }
+
+  // 1. update inventory. All the manipulations are done in the backend API
+  const updateInventory = async () => {
+    try {
+      // Pass prevShipDate, newShipDate, preAmount, newAmount, subtractInvNeeded, reverseInvNeeded, and modifInvWithDiffNeeded as a json object in req.body
+      // if copra_amount changed, and if shipDate changed, they are examined in the api
+      // Update inventorie docs in one single http request based on the req.body
+
+      // const newInvAmountLeft = Number(latestInv.current_amount_left.$numberDecimal) - difference;
+      // // eslint-disable-next-line no-underscore-dangle
+      // const currentInvId = latestInv._id;
+      // await axios.patch(
+      //   `http://localhost:5555/inventory/${currentInvId}`,
+      //   {
+      //     $set: {
+      //       current_amount_left: {
+      //         $numberDecimal: newInvAmountLeft.toString(),
+      //       }
+      //     }
+      //   }
+      // );
+      console.log("Inventory update");
+    }
+    catch(err) {
+      console.error("Failed to update", err);
+    }
   }
 
   const updateFinance = async () => {
-    console.log("Finance data updated");
+    try {
+      // Pass prevReceivedDate, newReceivedDate, prePrice, newPrice, addFinNeeded, reverseFinNeeded, and modifyFinWithDiffNeeded as a json object in req.body
+      // Update finance docs in one single http request based on the req.body
+
+      console.log("Finance updated");
+    }
+    catch(err) {
+      console.error("Failed to update", err);
+    }
   }
 
+  const createObjectToPassForInv = (sub, rev, mod) => {
+    const object = {
+      prevShipDate: previousShipDate,
+      newShipDate: formData.copra_ship_date,
+      preAmount: previousAmount,
+      newAmount: formData.amount_of_copra_sold,
+      subtractInvNeeded: sub,
+      reverseInvNeeded: rev,
+      modifInvWithDiffNeeded: mod
+    }
+    return object;
+  }
+
+  const createObjectToPassForFin = (add, rev, mod) => {
+    // Pass prevReceivedDate, newReceivedDate, prePrice, newPrice, addFinNeeded, reverseFinNeeded, and modifyFinWithDiffNeeded as a json object in req.body
+    const object = {
+      prevRecievedDate: previousReceivedDate,
+      newReceivedDate: formData.cheque_receive_date,
+      prePrice: previousPrice,
+      newPrice: formData.total_sales_price,
+      addFinNeeded: add,
+      reverseFinNeeded: rev,
+      modifFinWithDiffNeeded: mod
+    }
+    return object;
+  }
+
+  const updateInvWithPending = async () => {
+    // // Calculate the updated number of copra in a warehouse after shipment is done
+    // const afterSubtractingPending = Number(latestInv.current_amount_with_pending.$numberDecimal) - formData.amount_of_copra_sold;
+    // // eslint-disable-next-line no-underscore-dangle
+    // const currentInvId = latestInv._id;
+    // await axios.patch(
+    //   `http://localhost:5555/inventory/${currentInvId}`,
+    //   {
+    //     $set: {
+    //       current_amount_with_pending: {
+    //         $numberDecimal: afterSubtractingPending.toString(),
+    //       }
+    //     }
+    //   }
+    // );
+    console.log("Now copra is shipped and inv_amount_with_pending is updated");
+  }  
+
   const reverseInvWithPending = async () => {
-    const reversedInventory = Number(latestInv.current_amount_with_pending.$numberDecimal) + Number(previousAmount);
-    // eslint-disable-next-line no-underscore-dangle
-    const currentInvId = latestInv._id;
-    await axios.patch(
-      `http://localhost:5555/inventory/${currentInvId}`,
-      {
-        $set: {
-          current_amount_with_pending: {
-            $numberDecimal: reversedInventory.toString(),
-          }
-        }
-      }
-    );
+    // const reversedInventory = Number(latestInv.current_amount_with_pending.$numberDecimal) + Number(previousAmount);
+    // // eslint-disable-next-line no-underscore-dangle
+    // const currentInvId = latestInv._id;
+    // await axios.patch(
+    //   `http://localhost:5555/inventory/${currentInvId}`,
+    //   {
+    //     $set: {
+    //       current_amount_with_pending: {
+    //         $numberDecimal: reversedInventory.toString(),
+    //       }
+    //     }
+    //   }
+    // );
   }
 
   const modifyInvWithPendingWithDiff = async () => {
     try {
-      const difference = formData.amount_of_copra_sold - Number(previousAmount);
-      const newInvAmountWithPending = Number(latestInv.current_amount_with_pending.$numberDecimal) - difference;
-      // eslint-disable-next-line no-underscore-dangle
-      const currentInvId = latestInv._id;
-      await axios.patch(
-        `http://localhost:5555/inventory/${currentInvId}`,
-        {
-          $set: {
-            current_amount_with_pending: {
-              $numberDecimal: newInvAmountWithPending.toString(),
-            }
-          }
-        }
-      );
+    //   const difference = formData.amount_of_copra_sold - Number(previousAmount);
+    //   const newInvAmountWithPending = Number(latestInv.current_amount_with_pending.$numberDecimal) - difference;
+    //   // eslint-disable-next-line no-underscore-dangle
+    //   const currentInvId = latestInv._id;
+    //   await axios.patch(
+    //     `http://localhost:5555/inventory/${currentInvId}`,
+    //     {
+    //       $set: {
+    //         current_amount_with_pending: {
+    //           $numberDecimal: newInvAmountWithPending.toString(),
+    //         }
+    //       }
+    //     }
+    //   );
       console.log("Inventory amount with pending is updated with the difference between prevAmount and new data amount of copra sold");
     }
     catch(err) {
@@ -226,63 +284,47 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       //  Update selected sales document based on id in any case of updating
       await updateSales();
 
-      // Check if the change is "pending => ongoing/completed"
       if (prevWasPending) {
         if (updateToPending) {
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
-          }
-        } else if (updateToOngoing) {
-          updateInvWithPending();
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
-          }
-        } else if (updateToCompleted){
-          updateFinance();
-          updateInvWithPending();
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
+          const objectToPassI = createObjectToPassForInv(false, false, false);
+          console.log(objectToPassI);
+          // axios.patch(`http://localhost:5555/inventory/updateForSales`, objectToPassI);
+        } else if (updateToOngoing || updateToCompleted) {
+          const objectToPassI = createObjectToPassForInv(true, false, false);
+          console.log(objectToPassI);
+          if (updateToCompleted) {
+            const objectToPassF = createObjectToPassForFin(true, false, false);
+            console.log(objectToPassF);
           }
         }
       } else if (prevWasOngoing) {
         if (updateToPending) {
-          reverseInvWithPending();
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
-          }
+          const objectToPassI = createObjectToPassForInv(false, true, false);
+          console.log(objectToPassI);
         } else if (updateToOngoing) {
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
-            modifyInvWithPendingWithDiff();
-          }
-        } else if (updateToCompleted){
-          updateFinance();
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
-            modifyInvWithPendingWithDiff();
+          const objectToPassI = createObjectToPassForInv(false, false, true);
+          console.log(objectToPassI);
+          if (updateToCompleted) {
+            const objectToPassF = createObjectToPassForFin(true, false, false);
+            console.log(objectToPassF);
           }
         }
       } else if (prevWasCompleted) {
         if (updateToPending) {
-          reverseInvWithPending();
-          updateFinance();
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
-          }
+          const objectToPassI = createObjectToPassForInv(false, true, false);
+          console.log(objectToPassI);
+          const objectToPassF = createObjectToPassForFin(false, true, false);
+          console.log(objectToPassF);
         } else if (updateToOngoing) {
-          updateFinance();
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
-            modifyInvWithPendingWithDiff();
-          }
-        } else if (updateToCompleted){
-          if (previousPrice !== formData.total_sales_price.toString()) {
-            updateFinance();
-          }
-          if (copraAmountSoldIsUpdated) {
-            updateInvLeftWithDiff();
-            modifyInvWithPendingWithDiff();
-          }
+          const objectToPassI = createObjectToPassForInv(false, false, true);
+          console.log(objectToPassI);
+          const objectToPassF = createObjectToPassForFin(false, true, false);
+          console.log(objectToPassF);
+        } else if (updateToCompleted) {
+          const objectToPassI = createObjectToPassForInv(false, false, true);
+          console.log(objectToPassI);
+          const objectToPassF = createObjectToPassForFin(false, false, true);
+          console.log(objectToPassF);
         }
       }
 

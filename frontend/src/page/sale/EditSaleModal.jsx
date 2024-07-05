@@ -10,6 +10,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
 
+  // Just for PR
   // To controll update behaivior in API
   const [previousStatus, setPreviousStatus] = useState(null); 
   const [previousAmount, setPreviousAmount] = useState(null);

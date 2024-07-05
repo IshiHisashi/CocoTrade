@@ -30,7 +30,13 @@ const AuthInputModal = (props) => {
 
     if (email && password && fullName && companyName) {
       try {
-        const newUserDoc = await signUp(email, password, fullName, companyName);
+        const newUserDoc = await signUp(
+          email,
+          password,
+          fullName,
+          companyName,
+          URL
+        );
         if (newUserDoc.status === "success") {
           fnToSetNextModalType("accountCreated");
           fnToOpenNextModal(true);

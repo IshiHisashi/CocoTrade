@@ -4,11 +4,18 @@ import axios from "axios";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
-const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
-  const userid = useContext(UserIdContext);
+const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL }) => {
+  const userId = useContext(UserIdContext);
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
+
+  const [latestInv, setLatestInv] = useState([]);
+  const [latestFin, setLatestFin] = useState([]);
+  const [previousStatus, setPreviousStatus] = useState(null); 
+  const [previousAmount, setPreviousAmount] = useState(null);
+  const [previousPrice, setPreviousPrice] = useState(null);
+
   const [formData, setFormData] = useState({
     manufacturer_id: "",
     amount_of_copra_sold: "",
@@ -17,13 +24,13 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
     copra_ship_date: "",
     cheque_receive_date: "",
     total_sales_price: "",
-    user_id: userid,
+    user_id: userId,
   });
 
   useEffect(() => {
     // Fetch user data
     axios
-      .get(`${URL}/user/${userid}`)
+      .get(`${URL}/user/${userId}`)
       .then((response) => {
         setUser(response.data.data);
       })
@@ -33,73 +40,72 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
 
     // Fetch manufacturers
     axios
-      .get(`${URL}/manufacturer`)
+      .get(`${URL}/user/${userId}/manu`)
       .then((response) => {
-        setManufacturers(response.data);
+        setManufacturers(response.data.data.manufacturers);
+        console.log(response.data.data.manufacturers);
       })
       .catch((error) => {
         console.error("Error fetching manufacturers:", error);
       });
 
-    // Fetch price suggestion
-    axios
-      .get(`${URL}/user/${userid}/pricesuggestion/getone`)
-      .then((response) => {
-        if (response.data.status === "success") {
-          setFormData((prevData) => ({
-            ...prevData,
-            sales_unit_price: parseFloat(
-              response.data.data?.$numberDecimal ?? response.data.data
-            ),
-          }));
-        }
+    // Fetch the latest inventory doc
+    axios.get(`${URL}/user/${userId}/latestInv`)
+      .then(response => {
+        setLatestInv(response.data.latestInv[0]);
+        // console.log(response.data.latestInv[0]);
       })
       .catch((error) => {
-        console.error("Error fetching price suggestion:", error);
+        console.error("Error fetching latest inventory:", error);
       });
-  }, [sale, userid, URL]); // Include purchase in the dependency array
+  }, 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [selectedSale]);
 
   useEffect(() => {
-    if (sale) {
+    if (selectedSale) {
       setFormData({
-        ...sale,
-        // eslint-disable-next-line no-underscore-dangle
-        manufacturer_id: sale.manufacturer_id?._id ?? "",
-        amount_of_copra_sold: parseFloat(
-          sale.amount_of_copra_sold?.$numberDecimal ?? sale.amount_of_copra_sold
-        ),
-        sales_unit_price: parseFloat(
-          sale.sales_unit_price?.$numberDecimal ?? sale.sales_unit_price
-        ),
-        copra_ship_date: sale.copra_ship_date
-          ? new Date(sale.copra_ship_date).toISOString().split("T")[0]
-          : "",
-        cheque_receive_date: sale.cheque_receive_date
-          ? new Date(sale.cheque_receive_date).toISOString().split("T")[0]
-          : "",
-        total_sales_price: parseFloat(
-          sale.total_sales_price?.$numberDecimal ?? sale.total_sales_price
-        ),
+        ...selectedSale,
+           // eslint-disable-next-line no-underscore-dangle 
+          manufacturer_id: selectedSale.manufacturer_id?._id ?? '',
+          amount_of_copra_sold: parseFloat(selectedSale.amount_of_copra_sold?.$numberDecimal ?? selectedSale.amount_of_copra_sold),
+          sales_unit_price: parseFloat(selectedSale.sales_unit_price?.$numberDecimal ?? selectedSale.sales_unit_price),
+          copra_ship_date: selectedSale.copra_ship_date ? new Date(selectedSale.copra_ship_date).toISOString().split('T')[0] : '',
+          cheque_receive_date: selectedSale.cheque_receive_date ? new Date(selectedSale.cheque_receive_date).toISOString().split('T')[0] : '',
+          total_sales_price: parseFloat(selectedSale.total_sales_price?.$numberDecimal ?? selectedSale.total_sales_price),
       });
     }
-  }, [sale]); // Depend on saleId and isOpen to re-run this effect
+  }, [selectedSale]);
 
-  // Calculate total sales price
+  // Calculate sales per unit and automatically update it in formData
   useEffect(() => {
     const calculateTotalSalesPrice = () => {
-      const unitPrice = parseFloat(formData.sales_unit_price);
+      const totalSales = parseFloat(formData.total_sales_price);
       const amountSold = parseFloat(formData.amount_of_copra_sold);
-      if (!Number.isNaN(unitPrice) && !Number.isNaN(amountSold)) {
-        const total = unitPrice * amountSold;
+      if ((!Number.isNaN(totalSales) && !Number.isNaN(amountSold)) && totalSales !== 0 && amountSold !== 0) {
+        const salesPerUnit = totalSales / amountSold;
         setFormData((prevData) => ({
           ...prevData,
-          total_sales_price: total.toFixed(2),
+          sales_unit_price: salesPerUnit.toFixed(2),
         }));
       }
     };
 
     calculateTotalSalesPrice();
-  }, [formData.sales_unit_price, formData.amount_of_copra_sold]);
+  }, [formData.total_sales_price, formData.amount_of_copra_sold]);
+
+  useEffect(() => {
+    if(selectedSale){
+      setPreviousStatus(selectedSale.status);
+      // console.log("Status: ", selectedSale.status);
+      setPreviousAmount(selectedSale.amount_of_copra_sold.$numberDecimal);
+      // console.log("Amount of copra sold: ", selectedSale.amount_of_copra_sold.$numberDecimal);
+      setPreviousPrice(selectedSale.total_sales_price.$numberDecimal);
+      // console.log("Total price: ", selectedSale.total_sales_price.$numberDecimal);
+    }
+  }, 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [showEditForm]) 
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -109,28 +115,189 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
     });
   };
 
+  const updateSales = async () => {
+    try {
+      await axios.patch(`http://localhost:5555/sale/${selectedSale._id}`, formData);
+      // console.log(patchedSales.data.data);
+      // 👆 This never shows proper response for some reasons.
+      console.log("Sales updated with this data: ", formData);
+    }
+    catch(err) {
+      console.error("Failed to update sales: ", err);
+    }
+  }
+
+  const updateInvLeftWithDiff = async () => {
+    try {
+      const difference = formData.amount_of_copra_sold - Number(previousAmount);
+      const newInvAmountLeft = Number(latestInv.current_amount_left.$numberDecimal) - difference;
+      // eslint-disable-next-line no-underscore-dangle
+      const currentInvId = latestInv._id;
+      await axios.patch(
+        `http://localhost:5555/inventory/${currentInvId}`,
+        {
+          $set: {
+            current_amount_left: {
+              $numberDecimal: newInvAmountLeft.toString(),
+            }
+          }
+        }
+      );
+      console.log("Inventory amount left is updated with the difference between prevAmount and new data amount of copra sold");
+    }
+    catch(err) {
+      console.error("Failed to update inventory data based on the difference between prevAmount and new data amount of copra sold: ", err);
+    }
+  }
+
+  const updateInvWithPending = async () => {
+    // Calculate the updated number of copra in a warehouse after shipment is done
+    const afterSubtractingPending = Number(latestInv.current_amount_with_pending.$numberDecimal) - formData.amount_of_copra_sold;
+    // eslint-disable-next-line no-underscore-dangle
+    const currentInvId = latestInv._id;
+    await axios.patch(
+      `http://localhost:5555/inventory/${currentInvId}`,
+      {
+        $set: {
+          current_amount_with_pending: {
+            $numberDecimal: afterSubtractingPending.toString(),
+          }
+        }
+      }
+    );
+    console.log("Now copra is shipped and inv_amount_with_pending is updated");
+  }
+
+  const updateFinance = async () => {
+    console.log("Finance data updated");
+  }
+
+  const reverseInvWithPending = async () => {
+    const reversedInventory = Number(latestInv.current_amount_with_pending.$numberDecimal) + Number(previousAmount);
+    // eslint-disable-next-line no-underscore-dangle
+    const currentInvId = latestInv._id;
+    await axios.patch(
+      `http://localhost:5555/inventory/${currentInvId}`,
+      {
+        $set: {
+          current_amount_with_pending: {
+            $numberDecimal: reversedInventory.toString(),
+          }
+        }
+      }
+    );
+  }
+
+  const modifyInvWithPendingWithDiff = async () => {
+    try {
+      const difference = formData.amount_of_copra_sold - Number(previousAmount);
+      const newInvAmountWithPending = Number(latestInv.current_amount_with_pending.$numberDecimal) - difference;
+      // eslint-disable-next-line no-underscore-dangle
+      const currentInvId = latestInv._id;
+      await axios.patch(
+        `http://localhost:5555/inventory/${currentInvId}`,
+        {
+          $set: {
+            current_amount_with_pending: {
+              $numberDecimal: newInvAmountWithPending.toString(),
+            }
+          }
+        }
+      );
+      console.log("Inventory amount with pending is updated with the difference between prevAmount and new data amount of copra sold");
+    }
+    catch(err) {
+      console.error("Failed to update inventory data based on the difference between prevAmount and new data amount of copra sold: ", err);
+    }
+  }
+
+  const prevWasPending = previousStatus === "pending";
+  const prevWasOngoing = previousStatus === "ongoing";
+  const prevWasCompleted = previousStatus === "completed";
+  const updateToPending = formData.status === "pending";
+  const updateToOngoing = formData.status === "ongoing";
+  const updateToCompleted = formData.status === "completed";
+  const copraAmountSoldIsUpdated = previousAmount !== formData.amount_of_copra_sold.toString();
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (sale) {
-        await handleUpdate(formData);
-      } else {
-        const response = await axios.post(`${URL}/sale`, formData);
-        console.log("Sale created:", response.data);
-        // eslint-disable-next-line no-underscore-dangle
-        const saleId = response.data._id;
+      //  Update selected sales document based on id in any case of updating
+      await updateSales();
 
-        // const updatedSalesArray = [...user.sales_array, saleId];
-
-        await axios.patch(`${URL}/user/${userid}`, {
-          sales_array: { action: "push", value: saleId },
-        });
-        setShowAddForm(false);
+      // Check if the change is "pending => ongoing/completed"
+      if (prevWasPending) {
+        if (updateToPending) {
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+          }
+        } else if (updateToOngoing) {
+          updateInvWithPending();
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+          }
+        } else if (updateToCompleted){
+          updateFinance();
+          updateInvWithPending();
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+          }
+        }
+      } else if (prevWasOngoing) {
+        if (updateToPending) {
+          reverseInvWithPending();
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+          }
+        } else if (updateToOngoing) {
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+            modifyInvWithPendingWithDiff();
+          }
+        } else if (updateToCompleted){
+          updateFinance();
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+            modifyInvWithPendingWithDiff();
+          }
+        }
+      } else if (prevWasCompleted) {
+        if (updateToPending) {
+          reverseInvWithPending();
+          updateFinance();
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+          }
+        } else if (updateToOngoing) {
+          updateFinance();
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+            modifyInvWithPendingWithDiff();
+          }
+        } else if (updateToCompleted){
+          if (previousPrice !== formData.total_sales_price.toString()) {
+            updateFinance();
+          }
+          if (copraAmountSoldIsUpdated) {
+            updateInvLeftWithDiff();
+            modifyInvWithPendingWithDiff();
+          }
+        }
       }
+
+      setshowEditForm(false);
+      setSelectedSale(null);
+      // setSales((prevSales) => prevSales.map((saleData) => 
+      // // eslint-disable-next-line no-underscore-dangle 
+      //   saleData._id === selectedSale._id ? updatedSalesData : saleData
+      // ));
+
     } catch (error) {
       console.error("Error creating/updating purchase:", error);
     }
   };
+
   return (
     <div className="modal">
       {console.log(manufacturers)}
@@ -174,7 +341,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
             { value: "pending", label: "Pending" },
             { value: "ongoing", label: "Ongoing" },
             { value: "completed", label: "Completed" },
-            { value: "cancelled", label: "Cancelled" },
+            // { value: "cancelled", label: "Cancelled" },
           ]}
         />
         <Field
@@ -201,8 +368,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
         <button
           type="button"
           onClick={() => {
-            setShowAddForm(false);
-            window.location.reload();
+            setshowEditForm(false);
           }}
         >
           Clear

@@ -40,7 +40,7 @@ export const createCurrentBalance = async (req, res) => {
         $limit: 1,
       },
     ]);
-    const currentCash = +docLatest[0].current_balance; // This currentCash should be the one to be updated regardless of the 'same day' or 'nearest latest day'.
+    // This currentCash should be the one to be updated regardless of the 'same day' or 'nearest latest day'.
     // See if there is any doc which is later than the date
     const docsLater = await CurrentBalanceModel.aggregate([
       {
@@ -53,12 +53,16 @@ export const createCurrentBalance = async (req, res) => {
         $sort: { date: 1 },
       },
     ]);
+    const currentCash = docLatest[0]
+      ? +docLatest[0].current_balance
+      : +docsLater[0].current_balance;
 
     // ----- Execute ------
     // Scenario 1. if the new transaction is NOT the latest one.
     if (+docsLater.length !== 0) {
       // 1-1 get the nearest balance
-      const docNearest = docsLater[0];
+      const docNearest = docLatest[0] || docsLater[0];
+      console.log(docNearest);
       // set the function to update doc(s)
       const loopUpdate = (docs) => {
         docs.forEach(async (doc) => {

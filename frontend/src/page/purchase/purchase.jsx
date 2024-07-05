@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import { useLocation, useNavigate } from "react-router-dom";
 import ViewPurchaseTable from "./ViewPurchaseTable";
 import AddPurchaseForm from "./AddPurchaseForm.jsx";
+import CtaBtn from "../../component/btn/CtaBtn";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -85,19 +86,26 @@ const Purchase = ({ URL }) => {
     }
   };
 
+  const classNameForModal =
+  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] max-w-[30vw] overflow-scroll p-2";
+
   return (
     <div>
-      <h2>Purchase Log</h2>
-      <button
-        type="button"
-        onClick={() => {
-          setShowAddForm(true);
-          setSelectedPurchase(null);
-        }}
-      >
-        Add New Purchase
-      </button>
+    <h1>Purchase Log</h1>
+<div className="flex justify-end mb-4">
+    <CtaBtn 
+
+      size="M"
+      level="P"
+      innerTxt="Add New Purchase"
+      onClickFnc={() => {
+        setShowAddForm(true);
+        setSelectedPurchase(null);
+      }}
+    />
+    </div>
       <Modal
+         className={classNameForModal}
         isOpen={showAddForm}
         onRequestClose={() => {
           setShowAddForm(false);

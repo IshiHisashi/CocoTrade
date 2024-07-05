@@ -154,6 +154,25 @@ export const createInventory = async (req, res) => {
   }
 };
 
+// Create simple Inventory
+export const createSimpleInventory = async (req, res) => {
+  try {
+      const newInventoryLog = new Inventory(req.body);
+      const savedInventoryLog = await newInventoryLog.save();
+      console.log("newInventory Added!");
+      res.status(201).json({
+          status: "Success",
+          data: savedInventoryLog
+      });
+  }
+  catch(err) {
+      res.status(500).json({
+          status: "failed",
+          error: err.message
+      });
+  }
+};
+
 export const getInventoryById = async (req, res) => {
   // To test this try path "id", value "665bc229cfc7cb78a6a6a956"
 

@@ -4,9 +4,10 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
+import Pagination from "../../component/btn/Pagination";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
-const ViewSalesTable = ({ setShowAddForm, handleEdit, URL }) => {
+const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const userId = useContext(UserIdContext);
   const [sales, setSales] = useState([]);
   const [filteredSales, setFilteredSales] = useState([]);
@@ -23,7 +24,7 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit, URL }) => {
   const recordsPerPage = 10;
 
   const fetchSales = () => {
-    const url = `${URL}/tmpFinRoute/${userId}/sale`;
+    const url = `${URL}/user/${userId}/sales`;
     axios
       .get(url)
       .then((response) => {
@@ -36,17 +37,10 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit, URL }) => {
   };
 
   useEffect(() => {
-    const url = `${URL}/tmpFinRoute/${userId}/sale`;
-    axios
-      .get(url)
-      .then((response) => {
-        setSales(response.data);
-        setFilteredSales(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching sales:", error);
-      });
-  }, [userId, URL]);
+    fetchSales();
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [userId, URL, showEditForm]);
 
   const formatDecimal = (decimal128) => {
     if (!decimal128 || !decimal128.$numberDecimal) {
@@ -151,7 +145,7 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit, URL }) => {
   };
 
   const handleEditClick = (sale) => {
-    setShowAddForm(true);
+    setshowEditForm(true);
     handleEdit(sale);
   };
 
@@ -344,30 +338,25 @@ const ViewSalesTable = ({ setShowAddForm, handleEdit, URL }) => {
         </tbody>
       </table>
       <div className="pagination">
-        <button
-          type="button"
-          onClick={handlePrevPage}
-          disabled={currentPage === 1}
-        >
-          &lt;
-        </button>
+        <Pagination
+          size = "M"
+          onClickFnc={handlePrevPage} 
+          pageNum = "L"
+          key = "L"
+        />
         {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            type="button"
-            key={index + 1}
-            onClick={() => setCurrentPage(index + 1)}
-            className={currentPage === index + 1 ? "active" : ""}
-          >
-            {index + 1}
-          </button>
+          <Pagination 
+            onClickFnc={() => setCurrentPage(index + 1)}
+            pageNum = {index + 1}
+            key = {index + 1}
+          />
         ))}
-        <button
-          type="button"
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-        >
-          &gt;
-        </button>
+        <Pagination
+          size = "M"
+          onClickFnc={handleNextPage} 
+          pageNum = "R"
+          key = "R"
+        />
       </div>
     </div>
   );

@@ -4,11 +4,21 @@ import axios from "axios";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
-const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
-  const userid = useContext(UserIdContext);
+const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL }) => {
+  const userId = useContext(UserIdContext);
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
+
+  // Just for PR
+  // To controll update behaivior in API
+  const [previousStatus, setPreviousStatus] = useState(null); 
+  const [previousAmount, setPreviousAmount] = useState(null);
+  const [previousPrice, setPreviousPrice] = useState(null);
+  const [previousShipDate, setPreviousShipDate] = useState(null);
+  const [previousReceivedDate, setPreviousReceivedDate] = useState(null);
+
+  // To store data filled in an edit form
   const [formData, setFormData] = useState({
     manufacturer_id: "",
     amount_of_copra_sold: "",
@@ -17,13 +27,13 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
     copra_ship_date: "",
     cheque_receive_date: "",
     total_sales_price: "",
-    user_id: userid,
+    user_id: userId,
   });
 
   useEffect(() => {
     // Fetch user data
     axios
-      .get(`${URL}/user/${userid}`)
+      .get(`${URL}/user/${userId}`)
       .then((response) => {
         setUser(response.data.data);
       })
@@ -33,73 +43,66 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
 
     // Fetch manufacturers
     axios
-      .get(`${URL}/manufacturer`)
+      .get(`${URL}/user/${userId}/manu`)
       .then((response) => {
-        setManufacturers(response.data);
+        setManufacturers(response.data.data.manufacturers);
+        console.log(response.data.data.manufacturers);
       })
       .catch((error) => {
         console.error("Error fetching manufacturers:", error);
       });
-
-    // Fetch price suggestion
-    axios
-      .get(`${URL}/user/${userid}/pricesuggestion/getone`)
-      .then((response) => {
-        if (response.data.status === "success") {
-          setFormData((prevData) => ({
-            ...prevData,
-            sales_unit_price: parseFloat(
-              response.data.data?.$numberDecimal ?? response.data.data
-            ),
-          }));
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching price suggestion:", error);
-      });
-  }, [sale, userid, URL]); // Include purchase in the dependency array
+  }, 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [selectedSale]);
 
   useEffect(() => {
-    if (sale) {
+    if (selectedSale) {
       setFormData({
-        ...sale,
-        // eslint-disable-next-line no-underscore-dangle
-        manufacturer_id: sale.manufacturer_id?._id ?? "",
-        amount_of_copra_sold: parseFloat(
-          sale.amount_of_copra_sold?.$numberDecimal ?? sale.amount_of_copra_sold
-        ),
-        sales_unit_price: parseFloat(
-          sale.sales_unit_price?.$numberDecimal ?? sale.sales_unit_price
-        ),
-        copra_ship_date: sale.copra_ship_date
-          ? new Date(sale.copra_ship_date).toISOString().split("T")[0]
-          : "",
-        cheque_receive_date: sale.cheque_receive_date
-          ? new Date(sale.cheque_receive_date).toISOString().split("T")[0]
-          : "",
-        total_sales_price: parseFloat(
-          sale.total_sales_price?.$numberDecimal ?? sale.total_sales_price
-        ),
+        ...selectedSale,
+           // eslint-disable-next-line no-underscore-dangle 
+          manufacturer_id: selectedSale.manufacturer_id?._id ?? '',
+          amount_of_copra_sold: parseFloat(selectedSale.amount_of_copra_sold?.$numberDecimal ?? selectedSale.amount_of_copra_sold),
+          sales_unit_price: parseFloat(selectedSale.sales_unit_price?.$numberDecimal ?? selectedSale.sales_unit_price),
+          copra_ship_date: selectedSale.copra_ship_date ? new Date(selectedSale.copra_ship_date).toISOString().split('T')[0] : '',
+          cheque_receive_date: selectedSale.cheque_receive_date ? new Date(selectedSale.cheque_receive_date).toISOString().split('T')[0] : '',
+          total_sales_price: parseFloat(selectedSale.total_sales_price?.$numberDecimal ?? selectedSale.total_sales_price),
       });
     }
-  }, [sale]); // Depend on saleId and isOpen to re-run this effect
+  }, [selectedSale]);
 
-  // Calculate total sales price
+  // Calculate sales per unit and automatically update it in formData
   useEffect(() => {
     const calculateTotalSalesPrice = () => {
-      const unitPrice = parseFloat(formData.sales_unit_price);
+      const totalSales = parseFloat(formData.total_sales_price);
       const amountSold = parseFloat(formData.amount_of_copra_sold);
-      if (!Number.isNaN(unitPrice) && !Number.isNaN(amountSold)) {
-        const total = unitPrice * amountSold;
+      if ((!Number.isNaN(totalSales) && !Number.isNaN(amountSold)) && totalSales !== 0 && amountSold !== 0) {
+        const salesPerUnit = totalSales / amountSold;
         setFormData((prevData) => ({
           ...prevData,
-          total_sales_price: total.toFixed(2),
+          sales_unit_price: salesPerUnit.toFixed(2),
         }));
       }
     };
 
     calculateTotalSalesPrice();
-  }, [formData.sales_unit_price, formData.amount_of_copra_sold]);
+  }, [formData.total_sales_price, formData.amount_of_copra_sold]);
+
+  useEffect(() => {
+    if(selectedSale){
+      setPreviousStatus(selectedSale.status);
+      console.log("Status: ", selectedSale.status);
+      setPreviousAmount(selectedSale.amount_of_copra_sold.$numberDecimal);
+      console.log("Amount of copra sold: ", selectedSale.amount_of_copra_sold.$numberDecimal);
+      setPreviousPrice(selectedSale.total_sales_price.$numberDecimal);
+      console.log("Total price: ", selectedSale.total_sales_price.$numberDecimal);
+      setPreviousShipDate(selectedSale.copra_ship_date);
+      console.log("Shipment date: ", selectedSale.copra_ship_date);
+      setPreviousReceivedDate(selectedSale.cheque_receive_date);
+      console.log("Money received date: ", selectedSale.cheque_receive_date);
+    }
+  }, 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [showEditForm]) 
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -109,28 +112,114 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
     });
   };
 
+  // Common throughout all the sales edit patterns => Good to go
+  const updateSales = async () => {
+    try {
+      await axios.patch(`${URL}/sale/${selectedSale._id}`, formData);
+      // console.log(patchedSales.data.data);
+      // 👆 This never shows proper response for some reasons.
+      console.log("Sales updated");
+    }
+    catch(err) {
+      console.error("Failed to update sales: ", err);
+    }
+  }
+
+  // Object to pass to inventory update api
+  const createObjectToPassForInv = (sub, rev, mod) => {
+    const object = {
+      userId,
+      prevShipDate: previousShipDate,
+      newShipDate: formData.copra_ship_date,
+      prevAmount: previousAmount,
+      newAmount: formData.amount_of_copra_sold,
+      subtractInvNeeded: sub,
+      reverseInvNeeded: rev,
+      modifInvWithDiffNeeded: mod
+    }
+    return object;
+  }
+  // Object to pass to finance upate api
+  const createObjectToPassForFin = (add, rev, mod) => {
+    const object = {
+      userId,
+      prevRecievedDate: previousReceivedDate,
+      newReceivedDate: formData.cheque_receive_date,
+      prevPrice: previousPrice,
+      newPrice: formData.total_sales_price,
+      addFinNeeded: add,
+      reverseFinNeeded: rev,
+      modifFinWithDiffNeeded: mod
+    }
+    return object;
+  }
+
+  const prevWasPending = previousStatus === "pending";
+  const prevWasOngoing = previousStatus === "ongoing";
+  const prevWasCompleted = previousStatus === "completed";
+  const updateToPending = formData.status === "pending";
+  const updateToOngoing = formData.status === "ongoing";
+  const updateToCompleted = formData.status === "completed";
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (sale) {
-        await handleUpdate(formData);
-      } else {
-        const response = await axios.post(`${URL}/sale`, formData);
-        console.log("Sale created:", response.data);
-        // eslint-disable-next-line no-underscore-dangle
-        const saleId = response.data._id;
+      //  Update selected sales document based on id in any case of updating
+      await updateSales();
 
-        // const updatedSalesArray = [...user.sales_array, saleId];
+      let objectToPassI;
 
-        await axios.patch(`${URL}/user/${userid}`, {
-          sales_array: { action: "push", value: saleId },
-        });
-        setShowAddForm(false);
+      if (prevWasPending) {
+        if (updateToPending) {
+          objectToPassI = createObjectToPassForInv(false, false, false);
+        } else if (updateToOngoing || updateToCompleted) {
+          objectToPassI = createObjectToPassForInv(true, false, false);
+          if (updateToCompleted) {
+            const objectToPassF = createObjectToPassForFin(true, false, false);
+            console.log(objectToPassF);
+          }
+        }
+      } else if (prevWasOngoing) {
+        if (updateToPending) {
+          objectToPassI = createObjectToPassForInv(false, true, false);
+        } else if (updateToOngoing) {
+          objectToPassI = createObjectToPassForInv(false, false, true);
+          if (updateToCompleted) {
+            const objectToPassF = createObjectToPassForFin(true, false, false);
+            console.log(objectToPassF);
+          }
+        }
+      } else if (prevWasCompleted) {
+        if (updateToPending) {
+          objectToPassI = createObjectToPassForInv(false, true, false);
+          const objectToPassF = createObjectToPassForFin(false, true, false);
+          console.log(objectToPassF);
+        } else if (updateToOngoing) {
+          objectToPassI = createObjectToPassForInv(false, false, true);
+          const objectToPassF = createObjectToPassForFin(false, true, false);
+          console.log(objectToPassF);
+        } else if (updateToCompleted) {
+          objectToPassI = createObjectToPassForInv(false, false, true);
+          const objectToPassF = createObjectToPassForFin(false, false, true);
+          console.log(objectToPassF);
+        }
       }
+
+      axios.patch(`${URL}/inventory/updateForSales`, objectToPassI);
+
+      setshowEditForm(false);
+      setSelectedSale(null);
+      // setSales((prevSales) => prevSales.map((saleData) => 
+      // // eslint-disable-next-line no-underscore-dangle 
+      //   saleData._id === selectedSale._id ? updatedSalesData : saleData
+      // ));
+
     } catch (error) {
       console.error("Error creating/updating purchase:", error);
     }
   };
+
   return (
     <div className="modal">
       {console.log(manufacturers)}
@@ -174,7 +263,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
             { value: "pending", label: "Pending" },
             { value: "ongoing", label: "Ongoing" },
             { value: "completed", label: "Completed" },
-            { value: "cancelled", label: "Cancelled" },
+            // { value: "cancelled", label: "Cancelled" },
           ]}
         />
         <Field
@@ -201,8 +290,7 @@ const EditSaleModal = ({ setShowAddForm, sale, handleUpdate, URL }) => {
         <button
           type="button"
           onClick={() => {
-            setShowAddForm(false);
-            window.location.reload();
+            setshowEditForm(false);
           }}
         >
           Clear

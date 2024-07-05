@@ -37,6 +37,12 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
         .then((response) => {
           console.log(response.data.data.manufacturers);
           setManufacturers(response.data.data.manufacturers);
+          // Will delete afterwards-----;
+          setManufacturers([
+            { _id: "665f847c5ae48bfeb7c41b56", full_name: "PlamOil.co" },
+            { _id: "665f848f5ae48bfeb7c41b58", full_name: "Coconut Langara" },
+          ]);
+          // ---------------------------;
         })
         .catch((error) => {
           console.error("Error fetching manufacturers:", error);
@@ -74,6 +80,12 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
   };
 
   // function to handle submit
+  // How this submit works in terms of log creation/modification
+  // 1. It creates a new sales log.
+  // 2. Add a new id of the new sales log into sales_array in a user doc.
+  // 3. Check if there is already an invetory document for today.
+  // 4. If there is not an inv doc for today, create a new inventory doc with the sales id in sales_array. And after that, push this inv doc id to "inventory_amount_array" in user doc.
+  // 5. If there is an inv doc for today, add a new id of the new sales log into sales_array in the latest inventory doc
   const handleSubmit = async (e) => {
     console.log(userId);
     e.preventDefault();
@@ -117,7 +129,10 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
           current_amount_with_pending: latestInv.current_amount_with_pending,
         };
         // (TO Aki FROM Ishi) Now you need to add userid into the param
-        const createdInv = await axios.post(`${URL}/inventory`, newInvData);
+        const createdInv = await axios.post(
+          `${URL}/tmpFinRoute/${userId}/inventory`,
+          newInvData
+        );
         console.log("New inv doc created: ", createdInv.data);
 
         // Add this new inv doc to "inventory_amount_array" in user's doc
@@ -140,35 +155,35 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
           patchedInvDoc.data
         );
       }
-// Create notification
-const formattedDate = format(
-  new Date(formData.copra_ship_date),
-  "MMMM do, yyyy"
-);
-const notificationData1 = {
-  user_id: userId,
-  title: "Prepare your trucks!",
-  message: `You have an upcoming shipment on ${formattedDate}!`,
-};
-const notificationResponse1 = await axios.post(
-  `${URL}/notification`,
-  notificationData1
-);
-console.log("Notification created:", notificationResponse1.data);
+      // Create notification
+      const formattedDate = format(
+        new Date(formData.copra_ship_date),
+        "MMMM do, yyyy"
+      );
+      const notificationData1 = {
+        user_id: userId,
+        title: "Prepare your trucks!",
+        message: `You have an upcoming shipment on ${formattedDate}!`,
+      };
+      const notificationResponse1 = await axios.post(
+        `${URL}/notification`,
+        notificationData1
+      );
+      console.log("Notification created:", notificationResponse1.data);
 
-// Create notification to generate when current amount left become 50% ox maxcapacity
-if (newCurrentAmntLft >= user.max_inventory_amount / 2) {
-  const notificationData2 = {
-  user_id: userId,
-  title: "Your inventory is 50% full!",
-  message: `It's time to plan your shipment!`,
-};
-const notificationResponse2 = await axios.post(
-  `${URL}/notification`,
-  notificationData2
-);
-console.log("Notification created:", notificationResponse2.data);
-}
+      // Create notification to generate when current amount left become 50% ox maxcapacity
+      if (newCurrentAmntLft >= user.max_inventory_amount / 2) {
+        const notificationData2 = {
+          user_id: userId,
+          title: "Your inventory is 50% full!",
+          message: `It's time to plan your shipment!`,
+        };
+        const notificationResponse2 = await axios.post(
+          `${URL}/notification`,
+          notificationData2
+        );
+        console.log("Notification created:", notificationResponse2.data);
+      }
       // Refresh unread notifications count
       if (refreshNotifications) {
         refreshNotifications();

@@ -100,7 +100,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
       const newCurrentAmntLft =
         latestInv.current_amount_left.$numberDecimal -
         response.data.amount_of_copra_sold.$numberDecimal;
-      // IF THERE IS NO INVENTORY LOG FOR TODAY, CREATE A NEW ONE
+      IF THERE IS NO INVENTORY LOG FOR TODAY, CREATE A NEW ONE
       if (
         !(
           today.getFullYear() === invDate.getFullYear() &&
@@ -146,17 +146,30 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
         new Date(formData.copra_ship_date),
         "MMMM do, yyyy"
       );
-      const notificationData = {
+      const notificationData1 = {
         user_id: userId,
         title: "Prepare your trucks!",
         message: `You have an upcoming shipment on ${formattedDate}!`,
       };
-      const notificationResponse = await axios.post(
+      const notificationResponse1 = await axios.post(
         `${URL}/notification`,
-        notificationData
+        notificationData1
       );
-      console.log("Notification created:", notificationResponse.data);
+      console.log("Notification created:", notificationResponse1.data);
 
+      // Create notification to generate when current amunt left become 50% ox maxcapacity
+      if (newCurrentAmntLft >= user.max_inventory_amount / 2) {
+        const notificationData2 = {
+        user_id: userId,
+        title: "Your inventory is 50% full!",
+        message: `It's time to plan your shipment!`,
+      };
+      const notificationResponse2 = await axios.post(
+        `${URL}/notification`,
+        notificationData2
+      );
+      console.log("Notification created:", notificationResponse2.data);
+    }
       // Refresh unread notifications count
       if (refreshNotifications) {
         refreshNotifications();

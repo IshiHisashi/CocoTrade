@@ -37,6 +37,12 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
         .then((response) => {
           console.log(response.data.data.manufacturers);
           setManufacturers(response.data.data.manufacturers);
+          // Will delete afterwards-----;
+          setManufacturers([
+            { _id: "665f847c5ae48bfeb7c41b56", full_name: "PlamOil.co" },
+            { _id: "665f848f5ae48bfeb7c41b58", full_name: "Coconut Langara" },
+          ]);
+          // ---------------------------;
         })
         .catch((error) => {
           console.error("Error fetching manufacturers:", error);
@@ -123,7 +129,10 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
           current_amount_with_pending: latestInv.current_amount_with_pending,
         };
         // (TO Aki FROM Ishi) Now you need to add userid into the param
-        const createdInv = await axios.post(`${URL}/inventory/simple`, newInvData);
+        const createdInv = await axios.post(
+          `${URL}/tmpFinRoute/${userId}/inventory`,
+          newInvData
+        );
         console.log("New inv doc created: ", createdInv.data);
 
         // Add this new inv doc to "inventory_amount_array" in user's doc
@@ -146,35 +155,35 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
           patchedInvDoc.data
         );
       }
-// Create notification
-const formattedDate = format(
-  new Date(formData.copra_ship_date),
-  "MMMM do, yyyy"
-);
-const notificationData1 = {
-  user_id: userId,
-  title: "Prepare your trucks!",
-  message: `You have an upcoming shipment on ${formattedDate}!`,
-};
-const notificationResponse1 = await axios.post(
-  `${URL}/notification`,
-  notificationData1
-);
-console.log("Notification created:", notificationResponse1.data);
+      // Create notification
+      const formattedDate = format(
+        new Date(formData.copra_ship_date),
+        "MMMM do, yyyy"
+      );
+      const notificationData1 = {
+        user_id: userId,
+        title: "Prepare your trucks!",
+        message: `You have an upcoming shipment on ${formattedDate}!`,
+      };
+      const notificationResponse1 = await axios.post(
+        `${URL}/notification`,
+        notificationData1
+      );
+      console.log("Notification created:", notificationResponse1.data);
 
-// Create notification to generate when current amount left become 50% ox maxcapacity
-if (newCurrentAmntLft >= user.max_inventory_amount / 2) {
-  const notificationData2 = {
-  user_id: userId,
-  title: "Your inventory is 50% full!",
-  message: `It's time to plan your shipment!`,
-};
-const notificationResponse2 = await axios.post(
-  `${URL}/notification`,
-  notificationData2
-);
-console.log("Notification created:", notificationResponse2.data);
-}
+      // Create notification to generate when current amount left become 50% ox maxcapacity
+      if (newCurrentAmntLft >= user.max_inventory_amount / 2) {
+        const notificationData2 = {
+          user_id: userId,
+          title: "Your inventory is 50% full!",
+          message: `It's time to plan your shipment!`,
+        };
+        const notificationResponse2 = await axios.post(
+          `${URL}/notification`,
+          notificationData2
+        );
+        console.log("Notification created:", notificationResponse2.data);
+      }
       // Refresh unread notifications count
       if (refreshNotifications) {
         refreshNotifications();

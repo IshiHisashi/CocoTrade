@@ -14,7 +14,11 @@ const Hero = () => {
         </p>
       </div>
       <CtaBtn innerTxt="Request a Demo" />
-      <img src="#" alt="hero" />
+      <div className="image-section">
+        <img src="./images/dashboard.png" alt="dashboard" />
+        <img src="./images/progress-bar.png" alt="progress bar" />
+        <img src="./images/new-purchase-form.png" alt="form" />
+      </div>
     </div>
   );
 };

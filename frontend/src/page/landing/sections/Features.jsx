@@ -13,19 +13,32 @@ const Features = () => {
           title="Simplify Finances"
           description="Take a quick glance at your monthly activity to track purchases and sales."
         >
-          Comlex image
+          <div>
+            <img
+              src="./images/simplify-finances.png"
+              alt="monthly transaction"
+            />
+            <img src="./photos/cocotrade-16.jpg" alt="copra pic" />
+          </div>
         </LandingFeatureCard>
         <LandingFeatureCard
           title="Real-time Market Pricing"
           description="Set your own copra price relative to the world market price."
         >
-          Comlex image
+          <div>
+            <img src="./photos/cocotrade-11.jpg" alt="copra pic" />
+            <img src="./images/palm-oil-price.png" alt="price_1" />
+            <img src="./images/copra-purchase-price.png" alt="price_2" />
+          </div>
         </LandingFeatureCard>
         <LandingFeatureCard
           title="Inventory Management"
           description="Keep track of your purchases and observe the trend from daily to yearly."
         >
-          Comlex image
+          <div>
+            <img src="./images/inventory-management.png" alt="inventory" />
+            <img src="./photos/cocotrade-14.jpg" alt="copra pic" />
+          </div>
         </LandingFeatureCard>
       </div>
     </div>

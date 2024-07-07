@@ -15,17 +15,17 @@ const Benefit = () => {
         <LandingBenefitsCard
           title="Increase Productivity"
           description="Get real-time data, from copra market price to finances."
-          imgurl=""
+          imgurl="./images/increase-productiviry.png"
         />
         <LandingBenefitsCard
           title="Calculate accurately"
           description="Reduce the room for error in finances and inventory logs."
-          imgurl=""
+          imgurl="./images/calculate-accurately.png"
         />
         <LandingBenefitsCard
           title="Expedite shipment"
           description="Keep track of your inventory and plan target shipment."
-          imgurl=""
+          imgurl="./images/expedite-shipment.png"
         />
       </div>
     </div>

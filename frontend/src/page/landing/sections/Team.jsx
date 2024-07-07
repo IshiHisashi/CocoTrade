@@ -11,14 +11,46 @@ const Team = () => {
         </p>
       </div>
       <div className="grid grid-cols-4 gap-4">
-        <LandingTeamCard name="XXX" position="project manager" />
-        <LandingTeamCard name="XXX" position="project manager" />
-        <LandingTeamCard name="XXX" position="project manager" />
-        <LandingTeamCard name="XXX" position="project manager" />
-        <LandingTeamCard name="XXX" position="project manager" />
-        <LandingTeamCard name="XXX" position="project manager" />
-        <LandingTeamCard name="XXX" position="project manager" />
-        <LandingTeamCard name="XXX" position="project manager" />
+        <LandingTeamCard
+          name="XXX"
+          position="project manager"
+          imgurl="./photos/cocotrade-12.jpg"
+        />
+        <LandingTeamCard
+          name="XXX"
+          position="project manager"
+          imgurl="./photos/cocotrade-12.jpg"
+        />
+        <LandingTeamCard
+          name="XXX"
+          position="project manager"
+          imgurl="./photos/cocotrade-12.jpg"
+        />
+        <LandingTeamCard
+          name="XXX"
+          position="project manager"
+          imgurl="./photos/cocotrade-12.jpg"
+        />
+        <LandingTeamCard
+          name="XXX"
+          position="project manager"
+          imgurl="./photos/cocotrade-12.jpg"
+        />
+        <LandingTeamCard
+          name="XXX"
+          position="project manager"
+          imgurl="./photos/cocotrade-12.jpg"
+        />
+        <LandingTeamCard
+          name="XXX"
+          position="project manager"
+          imgurl="./photos/cocotrade-12.jpg"
+        />
+        <LandingTeamCard
+          name="XXX"
+          position="project manager"
+          imgurl="./photos/cocotrade-12.jpg"
+        />
       </div>
     </div>
   );

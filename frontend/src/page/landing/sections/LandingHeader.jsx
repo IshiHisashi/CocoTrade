@@ -1,10 +1,11 @@
 import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
+import CocotradeLogo from "../../../assets/CocoTradeLogo.svg";
 
 const LandingHeader = () => {
   return (
     <div className="flex justify-between py-6">
-      <img src="#" alt="logo" />
+      <img src={CocotradeLogo} alt="logo" />
       <ul className="flex gap-4">
         <li>Benefits</li>
         <li>Features</li>

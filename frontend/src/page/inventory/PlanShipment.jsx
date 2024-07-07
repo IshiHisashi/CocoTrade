@@ -86,6 +86,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
   // 3. Check if there is already an invetory document for today.
   // 4. If there is not an inv doc for today, create a new inventory doc with the sales id in sales_array. And after that, push this inv doc id to "inventory_amount_array" in user doc.
   // 5. If there is an inv doc for today, add a new id of the new sales log into sales_array in the latest inventory doc
+  // 6. ⭕️⭕️⭕️⭕️ And after that reduce the number of copra from the latest inventory when there is already an existing data ⭕️⭕️⭕️⭕️
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -96,7 +97,6 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
       // Add a new id of the sales log into sales_array in the user document.
       // eslint-disable-next-line no-underscore-dangle
       const saleId = response.data._id;
-      const updatedSalesArray = [...user.sales_array, saleId];
       const patchedSalesArray = await axios.patch(`${URL}/user/${userId}`, {
         sales_array: { action: "push", value: saleId },
       });
@@ -127,9 +127,9 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
           current_amount_left: newCurrentAmntLft,
           current_amount_with_pending: latestInv.current_amount_with_pending,
         };
-        // (TO Aki FROM Ishi) Now you need to add userid into the param
+        // (FROM AKI TO ISHI) it's ok to use just post without userId as each inventory doc has userId in it and the id of the inventory is gonna be added to user doc in the http request below.
         const createdInv = await axios.post(
-          `${URL}/tmpFinRoute/${userId}/inventory`,
+          `${URL}/inventory/simple`,
           newInvData
         );
         console.log("New inv doc created: ", createdInv.data);
@@ -137,7 +137,6 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
         // Add this new inv doc to "inventory_amount_array" in user's doc
         // eslint-disable-next-line no-underscore-dangle
         const invId = createdInv.data.data._id;
-        const updatedInvArray = [...user.inventory_amount_array, invId];
         const patchedInvArray = await axios.patch(`${URL}/user/${userId}`, {
           inventory_amount_array: { action: "push", value: invId },
         });
@@ -145,9 +144,13 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
       } else {
         // eslint-disable-next-line no-underscore-dangle
         const currentInvId = latestInv._id;
+        const updatedSalesArray = [...latestInv.sales_array, saleId];
         const patchedInvDoc = await axios.patch(
           `${URL}/inventory/${currentInvId}`,
-          { sales_array: updatedSalesArray }
+          { 
+            sales_array: updatedSalesArray,
+            current_amount_left: newCurrentAmntLft,
+          }
         );
         console.log(
           "Sales data in sales_array in inv doc updated: ",

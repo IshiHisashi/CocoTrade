@@ -86,7 +86,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
   // 3. Check if there is already an invetory document for today.
   // 4. If there is not an inv doc for today, create a new inventory doc with the sales id in sales_array. And after that, push this inv doc id to "inventory_amount_array" in user doc.
   // 5. If there is an inv doc for today, add a new id of the new sales log into sales_array in the latest inventory doc
-  // 6. ⭕️⭕️⭕️⭕️ And after that reduce the number of copra from the latest inventory when there is already an existing data ⭕️⭕️⭕️⭕️
+  // 6. And after that reduce the number of copra from the latest inventory when there is already an existing data
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

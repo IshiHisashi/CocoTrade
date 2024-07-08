@@ -10,7 +10,9 @@
     {
       "src": "/(.*)",
       "dest": "/"
-    }
+    },
+    {"src":"/api/scraper",
+  "dest":"/api/scraper.js"}
   ],
   "crons": [
     {

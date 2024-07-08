@@ -3,7 +3,7 @@ import CtaBtn from "../../../component/btn/CtaBtn";
 
 const Hero = () => {
   return (
-    <div className="flex flex-col items-center bg-slate-800 pt-[95px] pb-[45px]">
+    <div className="flex flex-col items-center bg-neutral-600 pt-[95px] pb-[45px]">
       <div className="texts text-center flex flex-col gap-4">
         <h2 className="text-white display-serif">
           Streamline Your Copra Trading Operations

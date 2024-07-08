@@ -32,7 +32,7 @@ const Landing = (props) => {
   const [confirmationType, setConfirmationType] = useState("");
 
   return (
-    <div className=" bg-slate-200">
+    <div className=" bg-bluegreen-100">
       <LandingHeader />
       {/* This will be transferred inside the header. */}
       <div>

@@ -5,7 +5,7 @@ import AuthInputModal from "../auth/AuthInputModal";
 // import sections
 import Benefit from "./sections/Benefit";
 import Features from "./sections/Features";
-import FormEmail from "./sections/FormEmail";
+import TryCoco from "./sections/TryCoco";
 import FormTalkToUs from "./sections/FormTalkToUs";
 import Hero from "./sections/Hero";
 import Team from "./sections/Team";
@@ -84,7 +84,7 @@ const Landing = (props) => {
       <Hero />
       <Benefit />
       <Features />
-      <FormEmail />
+      <TryCoco />
       <Team />
       <FormTalkToUs />
       <LandingFooter />

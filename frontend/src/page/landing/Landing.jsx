@@ -33,27 +33,12 @@ const Landing = (props) => {
 
   return (
     <div className=" bg-bluegreen-100">
-      <LandingHeader />
-      {/* This will be transferred inside the header. */}
+      <LandingHeader
+        setAuthType={setAuthType}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+      />
+
       <div>
-        <button
-          type="button"
-          onClick={() => {
-            setAuthType("signup");
-            setIsAuthModalOpen(true);
-          }}
-        >
-          Sign up
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setAuthType("login");
-            setIsAuthModalOpen(true);
-          }}
-        >
-          Log in
-        </button>
         <Modal
           isOpen={isAuthModalOpen}
           onRequestClose={() => setIsAuthModalOpen(false)}
@@ -81,12 +66,22 @@ const Landing = (props) => {
           />
         </Modal>
       </div>
-      <Hero />
+      <Hero setAuthType={setAuthType} setIsAuthModalOpen={setIsAuthModalOpen} />
+      {/* onClickFnc={() => {
+              setAuthType("signup");
+              setIsAuthModalOpen(true);
+            }} */}
       <Benefit />
       <Features />
-      <TryCoco />
+      <TryCoco
+        setAuthType={setAuthType}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+      />
       <Team />
-      <FormTalkToUs />
+      <FormTalkToUs
+        setAuthType={setAuthType}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+      />
       <LandingFooter />
     </div>
   );

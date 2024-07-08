@@ -1,7 +1,7 @@
 import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
 
-const Hero = () => {
+const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   return (
     <div className="flex flex-col items-center bg-neutral-600 pt-[95px] pb-[45px]">
       <div className="texts text-center flex flex-col gap-4">
@@ -20,7 +20,14 @@ const Hero = () => {
         >
           Download proposal
         </button>
-        <CtaBtn innerTxt="Free 14-day trial" size="M" />
+        <CtaBtn
+          innerTxt="Free 14-day trial"
+          size="M"
+          onClickFnc={() => {
+            setAuthType("signup");
+            setIsAuthModalOpen(true);
+          }}
+        />
       </div>
       <div className="image-section px-[15%]">
         <img src="./images/hero-image_integrated.png" alt="dashboard" />

@@ -1,7 +1,7 @@
 import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
 
-const FormTalkToUs = () => {
+const FormTalkToUs = ({ setAuthType, setIsAuthModalOpen }) => {
   return (
     <div className="bg-bluegreen-700 py-[110px] flex flex-col gap-[50px] items-center">
       <div className="text-bluegreen-100 text-center">
@@ -11,7 +11,14 @@ const FormTalkToUs = () => {
           potential new users may have about cocotrade.
         </p>
       </div>
-      <CtaBtn innerTxt="Talk to us" size="M" />
+      <CtaBtn
+        innerTxt="Talk to us"
+        size="M"
+        onClickFnc={() => {
+          setAuthType("signup");
+          setIsAuthModalOpen(true);
+        }}
+      />
     </div>
   );
 };

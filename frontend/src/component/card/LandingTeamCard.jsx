@@ -6,10 +6,10 @@ const LandingTeamCard = ({ imgurl, linkedin, name, position }) => {
       <img src={imgurl} alt="member" />
       <div>
         <div className="flex justify-between">
-          <h3 className="">{name}</h3>
+          <h4 className="h4-serif text-bluegreen-700">{name}</h4>
           <img src={linkedin} alt="linkedin" />
         </div>
-        <p className="">{position}</p>
+        <p className="p14-uppercase text-neutral-600">{position}</p>
       </div>
     </div>
   );

@@ -126,7 +126,12 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   }
 
   // Object to pass to inventory update api
-  const createObjectToPassForInv = (sub, rev, mod) => {
+  // argument represents below
+  // add: when it's true, api subtract number from inv
+  // rev: when it's true, api reverse subtraction that occured before on inv
+  // mod: when it's true api modifies inv amount accoordingly
+  // shipDate: when it's true, api modifies inv amount between old ship date and new shipdate
+  const createObjectToPassForInv = (sub, rev, mod, ship) => {
     const object = {
       userId,
       prevShipDate: previousShipDate,
@@ -135,7 +140,8 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       newAmount: formData.amount_of_copra_sold,
       subtractInvNeeded: sub,
       reverseInvNeeded: rev,
-      modifInvWithDiffNeeded: mod
+      modifInvWithDiffNeeded: mod,
+      changeBasedOnShipDateNeeded: ship,
     }
     return object;
   }
@@ -172,9 +178,9 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
 
       if (prevWasPending) {
         if (updateToPending) {
-          objectToPassI = createObjectToPassForInv(false, false, false);
+          objectToPassI = createObjectToPassForInv(false, false, false, false);
         } else if (updateToOngoing || updateToCompleted) {
-          objectToPassI = createObjectToPassForInv(true, false, false);
+          objectToPassI = createObjectToPassForInv(true, false, false, false);
           if (updateToCompleted) {
             const objectToPassF = createObjectToPassForFin(true, false, false);
             console.log(objectToPassF);
@@ -182,9 +188,9 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         }
       } else if (prevWasOngoing) {
         if (updateToPending) {
-          objectToPassI = createObjectToPassForInv(false, true, false);
-        } else if (updateToOngoing) {
-          objectToPassI = createObjectToPassForInv(false, false, true);
+          objectToPassI = createObjectToPassForInv(false, true, false, false);
+        } else if (updateToOngoing || updateToCompleted) {
+          objectToPassI = createObjectToPassForInv(false, false, true, true);
           if (updateToCompleted) {
             const objectToPassF = createObjectToPassForFin(true, false, false);
             console.log(objectToPassF);
@@ -192,20 +198,21 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         }
       } else if (prevWasCompleted) {
         if (updateToPending) {
-          objectToPassI = createObjectToPassForInv(false, true, false);
+          objectToPassI = createObjectToPassForInv(false, true, false, false);
           const objectToPassF = createObjectToPassForFin(false, true, false);
           console.log(objectToPassF);
         } else if (updateToOngoing) {
-          objectToPassI = createObjectToPassForInv(false, false, true);
+          objectToPassI = createObjectToPassForInv(false, false, true, true);
           const objectToPassF = createObjectToPassForFin(false, true, false);
           console.log(objectToPassF);
         } else if (updateToCompleted) {
-          objectToPassI = createObjectToPassForInv(false, false, true);
+          objectToPassI = createObjectToPassForInv(false, false, true, true);
           const objectToPassF = createObjectToPassForFin(false, false, true);
           console.log(objectToPassF);
         }
       }
 
+      console.log(objectToPassI);
       axios.patch(`${URL}/inventory/updateForSales`, objectToPassI);
 
       setshowEditForm(false);

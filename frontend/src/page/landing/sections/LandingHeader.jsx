@@ -4,19 +4,18 @@ import CocotradeLogo from "../../../assets/CocoTradeLogo.svg";
 
 const LandingHeader = () => {
   return (
-    <div className="flex justify-between py-6">
-      <img src={CocotradeLogo} alt="logo" />
-      <ul className="flex gap-4">
+    <div className="flex justify-between py-6 px-[120px]">
+      <ul className="p16 flex items-center gap-[57px]">
+        <img src={CocotradeLogo} alt="logo" />
         <li>Benefits</li>
         <li>Features</li>
         <li>Team</li>
         <li>Contact</li>
       </ul>
-      <ul className=" flex gap-4">
-        {/* <li>Sign up</li>
-        <li>Log In</li> */}
+      <ul className=" flex items-center gap-[15px] p16 ">
+        <li>Log In</li>
         <li>
-          <CtaBtn innerTxt="Request a Demo" size="M" />
+          <CtaBtn innerTxt="Free 14-day trial" size="M" />
         </li>
       </ul>
     </div>

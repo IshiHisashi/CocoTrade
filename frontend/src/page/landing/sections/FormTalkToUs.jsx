@@ -3,10 +3,10 @@ import CtaBtn from "../../../component/btn/CtaBtn";
 
 const FormTalkToUs = () => {
   return (
-    <div className="bg-slate-700 py-10 flex flex-col gap-8 items-center">
-      <div className="texts text-white text-center">
-        <h3 className="text-[36px] font-bold">How can we help you?</h3>
-        <p>
+    <div className="bg-bluegreen-700 py-[110px] flex flex-col gap-[50px] items-center">
+      <div className="text-bluegreen-100 text-center">
+        <h2 className="h2-serif ">How can we help you?</h2>
+        <p className="p18">
           Our team is ready to provide the best support for our current and
           potential new users may have about cocotrade.
         </p>

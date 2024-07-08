@@ -34,6 +34,7 @@ const Landing = (props) => {
   return (
     <div className=" bg-slate-200">
       <LandingHeader />
+      {/* This will be transferred inside the header. */}
       <div>
         <button
           type="button"

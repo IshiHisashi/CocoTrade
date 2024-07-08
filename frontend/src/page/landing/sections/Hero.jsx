@@ -3,7 +3,7 @@ import CtaBtn from "../../../component/btn/CtaBtn";
 
 const Hero = () => {
   return (
-    <div className="flex flex-col items-center bg-slate-800 py-6">
+    <div className="flex flex-col items-center bg-slate-800 pt-[95px] pb-[45px]">
       <div className="texts text-center flex flex-col gap-4">
         <h2 className="text-white display-serif">
           Streamline Your Copra Trading Operations
@@ -22,7 +22,7 @@ const Hero = () => {
         </button>
         <CtaBtn innerTxt="Free 14-day trial" size="M" />
       </div>
-      <div className="image-section px-[15%] pb-[45px]">
+      <div className="image-section px-[15%]">
         <img src="./images/hero-image_integrated.png" alt="dashboard" />
       </div>{" "}
     </div>

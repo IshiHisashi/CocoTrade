@@ -18,7 +18,7 @@ const Features = () => {
               src="./images/simplify-finances.png"
               alt="monthly transaction"
             />
-            <img src="./photos/cocotrade-16_d.jpg" alt="copra pic" />
+            <img src="./photos/cocotrade-16_d.png" alt="copra pic" />
           </div>
         </LandingFeatureCard>
         <LandingFeatureCard
@@ -26,7 +26,7 @@ const Features = () => {
           description="Set your own copra price relative to the world market price."
         >
           <div>
-            <img src="./photos/cocotrade-11_d.jpg" alt="copra pic" />
+            <img src="./photos/cocotrade-11_d.png" alt="copra pic" />
             <img src="./images/palm-oil-price.png" alt="price_1" />
             <img src="./images/copra-purchase-price.png" alt="price_2" />
           </div>
@@ -37,7 +37,7 @@ const Features = () => {
         >
           <div>
             <img src="./images/inventory-management.png" alt="inventory" />
-            <img src="./photos/cocotrade-14_d.jpg" alt="copra pic" />
+            <img src="./photos/cocotrade-14_d.png" alt="copra pic" />
           </div>
         </LandingFeatureCard>
       </div>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import CtaBtn from "../../component/btn/CtaBtn";
 
 const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL }) => {
   const userId = useContext(UserIdContext);
@@ -85,7 +86,10 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     };
 
     calculateTotalSalesPrice();
-  }, [formData.total_sales_price, formData.amount_of_copra_sold]);
+    console.log(new Date(formData.copra_ship_date));
+    console.log(new Date());
+    console.log(new Date(formData.copra_ship_date) > new Date());
+  }, [formData.total_sales_price, formData.amount_of_copra_sold, formData.copra_ship_date]);
 
   useEffect(() => {
     if(selectedSale){
@@ -227,6 +231,10 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     }
   };
 
+  const fncCloseModal = () => {
+    setshowEditForm(false);
+  };
+
   return (
     <div className="modal">
       {console.log(manufacturers)}
@@ -294,15 +302,19 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           value={formData.total_sales_price}
           onChange={handleChange}
         />
-        <button
-          type="button"
-          onClick={() => {
-            setshowEditForm(false);
-          }}
-        >
-          Clear
-        </button>
-        <button type="submit">Save</button>
+        <CtaBtn
+          size="S"
+          level="O"
+          innerTxt="Clear"
+          onClickFnc={fncCloseModal}
+        />
+        <CtaBtn 
+          size="S" 
+          level={new Date(formData.copra_ship_date) > new Date() ? "D" : "P"} 
+          type="submit" 
+          innerTxt="Save" 
+          disabled = {new Date(formData.copra_ship_date) > new Date()}
+        />
       </form>
     </div>
   );

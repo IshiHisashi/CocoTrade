@@ -501,8 +501,6 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
       }
     };
 
-    console.log(prevAmount);
-    console.log(newAmount);
     // Get user
     const user = await UserModel.findById(userId);
 
@@ -526,7 +524,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
       const updatedLatestInv = await Inventory.findByIdAndUpdate(latestInv._id, {
         current_amount_left: newInvAmount.toString(),
       })
-      console.log("copra_amount_left updated/subtracted");
+      console.log("latest inv left updated");
 
       // When current_amount_with_pending has to be subtracted with difference
       if (req.body.modifInvWithDiffNeeded === true) {
@@ -546,10 +544,11 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
         console.log(invsOnAndAfterOriginalShipmentDate[0]);
         // Subtract the difference from current_amount_with_pending of all the documents that have time_stamp after prevShipDate.
         loopUpdateInvWithPending(invsOnAndAfterOriginalShipmentDate, difference, "modify");
+        console.log("modification with diff done");
       }
     }
 
-    if(prevShipDate.split('T')[0] !== newShipDate) {
+    if((prevShipDate.split('T')[0] !== newShipDate) && (req.body.changeBasedOnShipDateNeeded === true)) {
       if (newShipDate < prevShipDate) {
         const invsBetweenTwoDates = await Inventory.aggregate([
           {
@@ -568,6 +567,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
         if (invsBetweenTwoDates.length !== 0) {
           console.log(invsBetweenTwoDates[0]);
           loopUpdateInvWithPending(invsBetweenTwoDates, newAmount, "subtract");
+          console.log("inv update based on date diff done. new date is younger");
         }
       } else {
         const invsBetweenTwoDates = await Inventory.aggregate([
@@ -587,6 +587,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
         if (invsBetweenTwoDates.length !== 0) {
           console.log(invsBetweenTwoDates[0]);
           loopUpdateInvWithPending(invsBetweenTwoDates, newAmount, "reverse");
+          console.log("inv update based on date diff done. new date is older");
         }
       }
 
@@ -594,7 +595,6 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
 
     // When current_amount_with_pending has to be subtracted with the copra_amount_sold
     if (req.body.subtractInvNeeded === true) {
-      console.log("subtracting inv_left here");
       const invsOnAndAfterShipmentDate = await Inventory.aggregate([
         {
           $match: {
@@ -608,7 +608,10 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
       ])
 
       // Subtract the number of copra sold (newAmount) from current_amount_with_pending of all the documents that have time_stamp after newShipDate.
-      loopUpdateInvWithPending(invsOnAndAfterShipmentDate, newAmount, "subtract");
+      if (invsOnAndAfterShipmentDate.length !== 0) {
+        loopUpdateInvWithPending(invsOnAndAfterShipmentDate, newAmount, "subtract");
+        console.log("pending subtracted");
+      }
 
       // If there is no inventory log on the exact day of shipment, create a new one with the closest data
       if (invsOnAndAfterShipmentDate[0].time_stamp.toISOString().split('T')[0] !== newShipDate) {
@@ -643,7 +646,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
         await UserModel.findByIdAndUpdate(user._id, {
           inventory_amount_array: newInventoryArray,
         });
-
+        console.log("new inv created");
       }
     }
 
@@ -664,6 +667,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
 
       // Add the number of copra sold (newAmount) from current_amount_with_pending of all the documents that have time_stamp after newShipDate.
       loopUpdateInvWithPending(invsOnAndAfterOriginalShipmentDate, prevAmount, "reverse");
+      console.log("reversed");
     }
 
     res.status(200).json({

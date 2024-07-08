@@ -9,6 +9,7 @@ const CtaBtn = ({
   onClickFnc = "",
   type = "button",
   innerTxt = "Button",
+  disabled = false,
 }) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
@@ -82,6 +83,7 @@ const CtaBtn = ({
               onClickFnc();
             }
       }
+      disabled={disabled}
     >
       {innerTxt}
     </button>

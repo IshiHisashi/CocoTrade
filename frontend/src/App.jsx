@@ -22,7 +22,7 @@ import Onboarding from "./page/onboarding/Onboarding.jsx";
 
 const App = () => {
   const [user, setUser] = useState(null);
-  const [URL, setURL] = useState("https://coco-trade-backend.vercel.app");
+  const [URL, setURL] = useState("http://localhost:5555");
 
   const router = createBrowserRouter(
     createRoutesFromElements(

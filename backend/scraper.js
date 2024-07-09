@@ -11,6 +11,7 @@ const postDataToPriceSuggestion = async () => {
   try {
     const res = await axios.get(`${URL}/user`);
     const users = res.data.data;
+    console.log("USERS ARE", users);
     await Promise.all(
       users.map(async (userId) => {
         try {

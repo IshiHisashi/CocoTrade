@@ -16,6 +16,7 @@ const postDataToPriceSuggestion = async () => {
           `${URL}/user/${userId}/pricesuggestion`
         );
 
+        console.log(resPriceSuggestionPost);
         // update price-suggestion-array in the user's doc
         await axios.patch(`${URL}/user/${userId}`, {
           price_suggestion_array: {

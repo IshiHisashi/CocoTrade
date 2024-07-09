@@ -10,26 +10,28 @@ const URL = "https://coco-trade-backend.vercel.app";
 const postDataToPriceSuggestion = async () => {
   try {
     const res = await axios.get(`${URL}/user`);
-    res.data.data.forEach(async (userId) => {
-      try {
-        const resPriceSuggestionPost = await axios.post(
-          `${URL}/user/${userId}/pricesuggestion`
-        );
-
-        console.log(resPriceSuggestionPost);
-        // update price-suggestion-array in the user's doc
-        await axios.patch(`${URL}/user/${userId}`, {
-          price_suggestion_array: {
-            action: "push",
-            value: resPriceSuggestionPost.data.data._id,
-          },
-        });
-      } catch (error) {
-        console.log(
-          `Error posting price suggestion data for user ${userId}: ${error.message}`
-        );
-      }
-    });
+    const users = res.data.data;
+    await Promise.all(
+      users.map(async (userId) => {
+        try {
+          const resPriceSuggestionPost = await axios.post(
+            `${URL}/user/${userId}/pricesuggestion`
+          );
+          console.log(resPriceSuggestionPost);
+          // update price-suggestion-array in the user's doc
+          await axios.patch(`${URL}/user/${userId}`, {
+            price_suggestion_array: {
+              action: "push",
+              value: resPriceSuggestionPost.data.data._id,
+            },
+          });
+        } catch (error) {
+          console.log(
+            `Error posting price suggestion data for user ${userId}: ${error.message}`
+          );
+        }
+      })
+    );
   } catch (error) {
     console.log("Error getting all users: ", error.message);
   }

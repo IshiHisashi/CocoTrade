@@ -12,8 +12,9 @@ const postDataToPriceSuggestion = async () => {
     const res = await axios.get(`${URL}/user`);
     const users = res.data.data;
     console.log("USERS ARE", users);
-    await Promise.all(
-      users.map(async (userId) => {
+    // await Promise.all(
+    users.map(
+      async (userId) => {
         try {
           const resPriceSuggestionPost = await axios.post(
             `${URL}/user/${userId}/pricesuggestion`
@@ -31,7 +32,8 @@ const postDataToPriceSuggestion = async () => {
             `Error posting price suggestion data for user ${userId}: ${error.message}`
           );
         }
-      })
+      }
+      // )
     );
   } catch (error) {
     console.log("Error getting all users: ", error.message);

@@ -48,8 +48,14 @@ const LineChart = (t) => {
     // Visual setting
     const ctxx = chartRef.current.getContext("2d");
     const gradient = ctxx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, "rgba(75, 192, 192, 0.5)");
-    gradient.addColorStop(1, "rgba(75, 192, 192, 0)");
+    if (type === "market") {
+      gradient.addColorStop(0, "rgba(75, 192, 192, 0.5)");
+      gradient.addColorStop(1, "rgba(75, 192, 192, 0)");
+    } else {
+      // rgba(255, 131, 64, 1)
+      gradient.addColorStop(0, "rgba(255, 131, 64, 0.5)");
+      gradient.addColorStop(1, "rgba(255, 131, 64, 0)");
+    }
 
     // -----DATA processing ------
     // 1. Convert the data to simple obj array
@@ -157,7 +163,11 @@ const LineChart = (t) => {
           })),
           fill: true,
           backgroundColor: gradient,
-          borderColor: "rgba(75, 192, 192, 1)",
+          borderColor:
+            type === "market"
+              ? "rgba(75, 192, 192, 1)"
+              : "rgba(255, 131, 64, 1)",
+          borderWidth: 1,
           tension: 0.4,
         },
       ],
@@ -200,6 +210,7 @@ const LineChart = (t) => {
       data,
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             display: false,
@@ -248,6 +259,9 @@ const LineChart = (t) => {
             grid: {
               display: false,
             },
+            border: {
+              display: false,
+            },
             ticks: {
               callback(value) {
                 return `${value / 1000}k`; // Use template literals
@@ -284,11 +298,11 @@ const LineChart = (t) => {
   ]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 bg-white px-[27px] py-[25px] border border-bluegreen-200 ">
       <div className="flex gap-4 justify-between">
-        <p>
-          {type === "cashflow" ? "Cash balance trend" : "Market Price trend"}
-        </p>
+        <h3 className="h3-sans text-neutral-600">
+          {type === "cashflow" ? "Balance" : "Market Price Tracker"}
+        </h3>
         <DurationSelecter
           setDurationType={setDurationType}
           setDurationValue={setDurationValue}
@@ -296,7 +310,9 @@ const LineChart = (t) => {
           thisMonth={thisMonth}
         />
       </div>
-      <canvas ref={chartRef}> </canvas>
+      <div className="h-[200px]">
+        <canvas ref={chartRef}> </canvas>
+      </div>
     </div>
   );
 };

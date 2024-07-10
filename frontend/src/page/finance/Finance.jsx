@@ -6,15 +6,11 @@ import LineChart from "./LineChart.jsx";
 
 const Finance = ({ URL }) => {
   return (
-    // <UserIdContext.Provider value="66654dc4c6e950671e988962">
-    <div className="flex flex-col gap-8 mx-6 my-4">
-      <h1>Finance</h1>
+    <div className="flex flex-col gap-8 mx-[31px] py-[25px]">
       <LineChart type="cashflow" URL={URL} />
       <MonthlyActivity URL={URL} />
-
       <LineChart type="market" URL={URL} />
     </div>
-    // </UserIdContext.Provider>
   );
 };
 

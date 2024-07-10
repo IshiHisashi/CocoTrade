@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VisibilityOn from "../../assets/icons/Eye-On.svg";
 import VisibilityOff from "../../assets/icons/Eye-Off.svg";
 import Info from "../../assets/icons/Information.svg";
@@ -39,6 +39,13 @@ const Field = ({
   };
 
   let inputElement = null;
+
+  // (From Aki to Prathibha: I added this for EditSaleModal.jsx. I believe this is not gonna cause any issues in other areas. It's difficult to tell what I'm trying to do here. So pls let me explain tmr)
+  useEffect(() => {
+    if (disabled !== isDisabled) {
+      setIsDisabled(!isDisabled);
+    }
+  }, [disabled, isDisabled]);
 
   switch (type) {
     case "number":

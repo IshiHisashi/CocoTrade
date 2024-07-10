@@ -61,6 +61,36 @@ const Onboarding = ({ URL }) => {
     })();
   }, [userId, URL]);
 
+  const modifiedSetMargin = (num) => {
+    if (num >= 0 && num <= 100) {
+      setMargin(num);
+    }
+  };
+
+  const modifiedSetMaxInventoryAmount = (num) => {
+    if (num >= 0) {
+      setMaxInventoryAmount(num);
+    }
+  };
+
+  const modifiedSetAmoutPerShip = (num) => {
+    if (num >= 0 && num <= 100) {
+      setAmountPerShip(num);
+    }
+  };
+
+  const modifiedSetCurrentAmountLeft = (num) => {
+    if (num >= 0) {
+      setCurrentAmountLeft(num);
+    }
+  };
+
+  const modifiedSetCurrentBalance = (num) => {
+    if (num >= 0) {
+      setCurrentBalance(num);
+    }
+  };
+
   return (
     <>
       <div className="p-8">
@@ -85,15 +115,15 @@ const Onboarding = ({ URL }) => {
             element={
               <OperationsSettings
                 margin={margin}
-                setMargin={setMargin}
+                setMargin={modifiedSetMargin}
                 maxInventoryAmount={maxInventoryAmount}
-                setMaxInventoryAmount={setMaxInventoryAmount}
+                setMaxInventoryAmount={modifiedSetMaxInventoryAmount}
                 amountPerShip={amountPerShip}
-                setAmountPerShip={setAmountPerShip}
+                setAmountPerShip={modifiedSetAmoutPerShip}
                 currentAmountLeft={currentAmountLeft}
-                setCurrentAmountLeft={setCurrentAmountLeft}
+                setCurrentAmountLeft={modifiedSetCurrentAmountLeft}
                 currentBalance={currentBalance}
-                setCurrentBalance={setCurrentBalance}
+                setCurrentBalance={modifiedSetCurrentBalance}
               />
             }
           />

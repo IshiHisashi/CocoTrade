@@ -226,7 +226,10 @@ const LineChart = (t) => {
             type: "time",
             time: {
               unit: durationType === "yearly" ? "month" : "day",
-              tooltipFormat: "YYYY-MM-DD",
+              tooltipFormat: "MM-DD-YYYY",
+              displayFormats: {
+                day: "MM-DD-YYYY",
+              },
             },
             title: {
               display: false,
@@ -244,6 +247,11 @@ const LineChart = (t) => {
             },
             grid: {
               display: false,
+            },
+            ticks: {
+              callback(value) {
+                return `${value / 1000}k`; // Use template literals
+              },
             },
           },
         },

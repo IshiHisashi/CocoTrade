@@ -102,9 +102,9 @@ const LineChart = (t) => {
     let daysInDuration = [];
     if (durationType === "monthly") {
       // Monthly scenario
-      const startOfMonth = moment().startOf("month");
-      const endOfMonth = moment().endOf("month");
-      for (let day = startOfMonth; day <= endOfMonth; day.add(1, "day")) {
+      const startOfDuration = moment().subtract(30, "days");
+      const endOfDuration = moment();
+      for (let day = startOfDuration; day <= endOfDuration; day.add(1, "day")) {
         daysInDuration.push(day.format("YYYY-MM-DD"));
       }
       // Ensure each day in the current month has a corresponding data point

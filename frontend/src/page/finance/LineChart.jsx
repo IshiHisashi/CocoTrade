@@ -226,7 +226,7 @@ const LineChart = (t) => {
             type: "time",
             time: {
               unit: durationType === "yearly" ? "month" : "day",
-              tooltipFormat: "MM-DD-YYYY",
+              tooltipFormat: "MM/DD/YYYY",
               displayFormats: {
                 day: "MM-DD-YYYY",
               },

@@ -96,7 +96,7 @@ const AddPurchaseForm = ({
       setFormData({
         ...purchase,
         // eslint-disable-next-line no-underscore-dangle
-        farmer_id: purchase.farmer_id?._id ?? "",
+        farmer_name: purchase.farmer_id ? purchase.farmer_id.full_name : "",
         sales_unit_price: parseFloat(
           purchase.sales_unit_price?.$numberDecimal ?? purchase.sales_unit_price
         ),

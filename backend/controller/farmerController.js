@@ -37,7 +37,7 @@ export const getAllFarmers = async (req, res) => {
 
 export const getFarmerById = async (req, res) => {
     try {
-        const farmer = await Farmer.findById(req.params.id);
+        const farmer = await Farmer.findById(req.params.id).populate('farmer_id');
         if(!farmer) {
             return res.status(404).json({
                 status: "failed", 

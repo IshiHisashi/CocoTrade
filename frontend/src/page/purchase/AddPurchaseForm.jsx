@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
@@ -16,9 +16,10 @@ const AddPurchaseForm = ({
   const userid = useContext(UserIdContext);
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
+  const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
-    farmer_id: "",
+    farmer_name: "",
     invoice_number: "",
     purchase_date: "",
     sales_unit_price: "",
@@ -27,6 +28,9 @@ const AddPurchaseForm = ({
     total_purchase_price: "",
     user_id: userid,
   });
+
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     // Fetch user data
@@ -39,16 +43,17 @@ const AddPurchaseForm = ({
         console.error("Error fetching user:", error);
       });
 
-    // Fetch farmers
+      // Fetch farmers for the current user
     axios
-      .get(`${URL}/farmer`)
-      .then((response) => {
-        setFarmers(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching farmers:", error);
-      });
-
+    .get(`${URL}/farmer`, { params: { user_id: userid } })
+    .then((response) => {
+      setFarmers(response.data);
+      setFilteredFarmers(response.data); // Set initial filtered farmers
+    })
+    .catch((error) => {
+      console.error("Error fetching farmers:", error);
+    });
+    
     // Fetch price suggestion
     axios
       .get(`${URL}/user/${userid}/pricesuggestion/getone`)
@@ -141,25 +146,89 @@ const AddPurchaseForm = ({
     formData.moisture_test_details,
   ]);
 
+  const handleClickOutside = (event) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  }; 
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+    if (name === "farmer_name") {
+      const filtered = farmers.filter((farmer) =>
+        farmer.full_name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredFarmers(filtered);
+      setShowSuggestions(true);
+    }
   };
+
+  const handleSelectFarmer = (name) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      farmer_name: name,
+    }));
+    setFilteredFarmers(farmers);
+    setShowSuggestions(false);
+  };
+
+  const handleFocus = () => {
+    setShowSuggestions(true);
+  };
+
+  const handleBlur = () => {
+    // Delay hiding the suggestions to allow selection
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 200);
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // -----UPDATE PURCHASE LOG-----
       // Update purchase document
+      let farmerId = "";
+
+      if (formData.farmer_name) {
+        const existingFarmer = farmers.find(
+          (farmer) => farmer.full_name === formData.farmer_name
+        );
+
+        if (existingFarmer) {
+          farmerId = existingFarmer._id;
+        } else {
+          const farmerResponse = await axios.post(`${URL}/farmer`, {
+            user_id: userid,
+            full_name: formData.farmer_name,
+          });
+          farmerId = farmerResponse.data.data._id;
+        }
+      }
+
+      const updatedFormData = {
+        ...formData,
+        farmer_id: farmerId,
+      };
+
       if (purchase) {
-        await handleUpdate(formData, purchase, userid);
+        await handleUpdate(updatedFormData, purchase, userid);
       } else {
         // -----NEW PURCHASE LOG-----
         // 1). Create purchase document
-        const newPurchaseDoc = await axios.post(`${URL}/purchase`, formData);
+        const newPurchaseDoc = await axios.post(`${URL}/purchase`, updatedFormData);
         // eslint-disable-next-line no-underscore-dangle
         const purchaseId = newPurchaseDoc.data._id;
 
@@ -249,20 +318,32 @@ const AddPurchaseForm = ({
           required
         />
         </div>
+        <div className="relative" ref={wrapperRef}>
         <Field
           label="Farmer Name"
-          name="farmer_id"
-          type="dropdown"
-          value={formData.farmer_id}
-          // eslint-disable-next-line no-underscore-dangle
-          options={farmers.map((farmer) => ({
-            // eslint-disable-next-line no-underscore-dangle
-            value: farmer._id,
-            label: farmer.full_name,
-          }))}
+          name="farmer_name"
+          type="text"
+          value={formData.farmer_name}
           onChange={handleChange}
+          onFocus={handleFocus}
+            onBlur={handleBlur}
           required
         />
+        {showSuggestions && filteredFarmers.length > 0 && (
+          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+            {filteredFarmers.map((farmer) => (
+              <li key={farmer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => handleSelectFarmer(farmer.full_name)}
+                >
+                  {farmer.full_name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        </div>
         <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
         <Field
           label="Price per kilo (PHP)"

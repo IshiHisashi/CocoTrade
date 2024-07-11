@@ -259,6 +259,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           type="number"
           value={formData.amount_of_copra_sold}
           onChange={handleChange}
+          required
         />
         <Field
           label="Sales Unit Price"
@@ -280,6 +281,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
             { value: "completed", label: "Completed" },
             // { value: "cancelled", label: "Cancelled" },
           ]}
+          required
         />
         <Field
           label="Copra Ship Date"
@@ -287,6 +289,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           type="date"
           value={formData.copra_ship_date}
           onChange={handleChange}
+          required
         />
         <Field
           label="Cheque Receive Date"
@@ -294,6 +297,10 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           type="date"
           value={formData.cheque_receive_date}
           onChange={handleChange}
+          disabled={formData.status !== "completed"}
+          required={formData.status === "completed"}
+          info
+          infoText="You can choose the date only when you change status to completed."
         />
         <Field
           label="Total Sales Price"
@@ -301,6 +308,10 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           type="number"
           value={formData.total_sales_price}
           onChange={handleChange}
+          disabled={formData.status !== "completed"}
+          required={formData.status === "completed"}
+          info
+          infoText="You can type in total amount of sales only when you change status to completed."
         />
         <CtaBtn
           size="S"
@@ -310,10 +321,10 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         />
         <CtaBtn 
           size="S" 
-          level={new Date(formData.copra_ship_date) > new Date() ? "D" : "P"} 
+          level={new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" ? "D" : "P"}
           type="submit" 
           innerTxt="Save" 
-          disabled = {new Date(formData.copra_ship_date) > new Date()}
+          disabled = {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending"}
         />
       </form>
     </div>

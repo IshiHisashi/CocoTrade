@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 import CtaBtn from "../../component/btn/CtaBtn";
+import Field from "../../component/field-filter/Field";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
   const [manufacturers, setManufacturers] = useState([]);
+  const userid = useContext(UserIdContext);
   const [user, setUser] = useState(null);
+  const [filteredManufacturers, setFilteredManufacturers] = useState([]);
   const [latestInv, setLatestInv] = useState([]);
   const [formData, setFormData] = useState({
-    manufacturer_id: "",
+    manufacturer_name: "",
     amount_of_copra_sold: "",
     sales_unit_price: 0,
     status: "pending",
@@ -17,6 +21,9 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
     total_sales_price: 0,
     user_id: userId,
   });
+
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef(null);
 
   useEffect(
     () => {
@@ -31,22 +38,16 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
           console.error("Error fetching user:", error);
         });
 
-      // Fetch manufacturers
-      axios
-        .get(`${URL}/user/${userId}/manu`)
-        .then((response) => {
-          console.log(response.data.data.manufacturers);
-          setManufacturers(response.data.data.manufacturers);
-          // Will delete afterwards-----;
-          setManufacturers([
-            { _id: "665f847c5ae48bfeb7c41b56", full_name: "PlamOil.co" },
-            { _id: "665f848f5ae48bfeb7c41b58", full_name: "Coconut Langara" },
-          ]);
-          // ---------------------------;
-        })
-        .catch((error) => {
-          console.error("Error fetching manufacturers:", error);
-        });
+         // Fetch manufacturers for the current user
+    axios
+    .get(`${URL}/manufacturer`, { params: { user_id: userid } })
+    .then((response) => {
+      setManufacturers(response.data);
+      setFilteredManufacturers(response.data); // Set initial filtered manufacturer
+    })
+    .catch((error) => {
+      console.error("Error fetching manufacturers:", error);
+    });
 
       // Fetch the latest inventory data to make a new inventory log or to modify the log
       axios
@@ -70,6 +71,19 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
     [userId]
   );
 
+  const handleClickOutside = (event) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  }; 
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // function to handle changes in a form
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -77,6 +91,32 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+    if (name === "manufacturer_name") {
+      const filtered = manufacturers.filter((manufacturer) =>
+        manufacturer.full_name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredManufacturers(filtered);
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleSelectManufacturer = (name) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      manufacturer_name: name,
+    }));
+    setFilteredManufacturers(manufacturers);
+    setShowSuggestions(false);
+  };
+  const handleFocus = () => {
+    setShowSuggestions(true);
+  };
+
+  const handleBlur = () => {
+    // Delay hiding the suggestions to allow selection
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 200);
   };
 
   // function to handle submit
@@ -90,8 +130,30 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let manufacturerId = "";
+
+      if (formData.manufacturer_name) {
+        const existingManufacturer = manufacturers.find(
+          (manufacturer) => manufacturer.full_name === formData.manufacturer_name
+        );
+
+        if (existingManufacturer) {
+          manufacturerId = existingManufacturer._id;
+        } else {
+          const manufacturerResponse = await axios.post(`${URL}/manufacturer`, {
+            user_id: userid,
+            full_name: formData.manufacturer_name,
+          });
+          manufacturerId = manufacturerResponse.data.data._id;
+        }
+      }
+
+      const updatedFormData = {
+        ...formData,
+        manufacturer_id: manufacturerId,
+      };
       // Create a new sales log with pending status
-      const response = await axios.post(`${URL}/sale`, formData);
+      const response = await axios.post(`${URL}/sale`, updatedFormData);
       console.log("Shipment/sale created:", response.data);
 
       // Add a new id of the sales log into sales_array in the user document.
@@ -159,7 +221,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
       }
       // Create notification
       const formattedDate = format(
-        new Date(formData.copra_ship_date),
+        new Date(updatedFormData.copra_ship_date),
         "MMMM do, yyyy"
       );
       const notificationData1 = {
@@ -204,25 +266,31 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
     <div>
       <h2>Plan Your Shipment</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="manufacturer_id">
-            Company / Manufacturer Name:
-            <select
-              id="manufacturer_id"
-              name="manufacturer_id"
-              value={formData.manufacturer_id}
-              onChange={handleChange}
-              required
-            >
-              <option value="">First name / Last name</option>
-              {manufacturers.map((manu) => (
-                // eslint-disable-next-line no-underscore-dangle
-                <option key={manu._id} value={manu._id}>
-                  {manu.full_name}
-                </option>
-              ))}
-            </select>
-          </label>
+      <div className="relative" ref={wrapperRef}>
+        <Field
+          label="Manufacturer Name"
+          name="manufacturer_name"
+          type="text"
+          value={formData.manufacturer_name}
+          onChange={handleChange}
+          onFocus={handleFocus}
+            onBlur={handleBlur}
+          required
+        />
+        {showSuggestions && filteredManufacturers.length > 0 && (
+          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+            {filteredManufacturers.map((manufacturer) => (
+              <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => handleSelectManufacturer(manufacturer.full_name)}
+                >
+                  {manufacturer.full_name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
         </div>
         <div>
           <label htmlFor="copra_ship_date">

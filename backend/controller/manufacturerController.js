@@ -21,8 +21,12 @@ export const createManufacturer = async (req, res) => {
 
 export const getAllManufacturers = async (req, res) => {
     try {
-      const manufacturers = await Manufacturer.find({}, 'full_name');
-      console.log("Manufacturers retrieved");
+      // eslint-disable-next-line camelcase
+      const { user_id } = req.query;
+      // eslint-disable-next-line camelcase
+      const filter = user_id ? { user_id } : {};
+      const manufacturers = await Manufacturer.find(filter, 'full_name');
+      console.log("Manufacturers retrieved:");
       res.status(200).json(manufacturers);
     } catch (err) {
       res.status(500).json({

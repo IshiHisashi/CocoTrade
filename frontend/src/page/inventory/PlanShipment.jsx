@@ -3,6 +3,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Field from "../../component/field-filter/Field";
+import Exit from "../../assets/icons/Exit.svg";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 
 const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
@@ -282,6 +283,13 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
     <div>
       <h2>Plan Your Shipment</h2>
       <form onSubmit={handleSubmit}>
+      <button
+        type="button"
+        className="absolute top-8 right-8"
+        onClick={() => setShowModal(false)}
+      >
+        <img src={Exit} alt="close" />
+      </button>
       <div className="relative" ref={wrapperRef}>
         <Field
           label="Manufacturer Name"

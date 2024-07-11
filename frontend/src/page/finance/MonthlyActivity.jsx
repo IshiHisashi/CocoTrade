@@ -136,7 +136,7 @@ const MonthlyActivity = ({ URL }) => {
               const index = context.dataIndex;
               const month = labels[index];
               return month === selectedMonth || selectedMonth === "all"
-                ? "#245E66"
+                ? "#0C7F8E"
                 : "#F1F7F8";
             },
             barThickness: 15,
@@ -149,7 +149,7 @@ const MonthlyActivity = ({ URL }) => {
               const index = context.dataIndex;
               const month = labels[index];
               return month === selectedMonth || selectedMonth === "all"
-                ? "#0C7F8E"
+                ? "#FF8340"
                 : "#F1F7F8";
             },
             barThickness: 15,
@@ -170,6 +170,12 @@ const MonthlyActivity = ({ URL }) => {
             grid: {
               display: false, // Disable grid lines on x-axis
             },
+            ticks: {
+              font: {
+                size: 14,
+                weight: "bold",
+              },
+            },
           },
           y: {
             beginAtZero: true,
@@ -177,10 +183,15 @@ const MonthlyActivity = ({ URL }) => {
               callback(value) {
                 return `${value / 1000}k`; // Use template literals
               },
+              font: {
+                size: 14, // Change this to the desired font size
+              },
+              color: "#9C9C9C",
             },
             grid: {
               display: false, // Disable grid lines on x-axis
             },
+            border: { display: false },
           },
         },
         plugins: {
@@ -189,7 +200,7 @@ const MonthlyActivity = ({ URL }) => {
           },
           title: {
             display: true,
-            text: "Your monthly activity",
+            // text: "Your monthly activity",
             font: {
               size: 18,
             },
@@ -210,14 +221,31 @@ const MonthlyActivity = ({ URL }) => {
   }, [monthlySale, monthlyPurchase, selectedMonth]);
 
   return (
-    <div>
-      <h1>Monthly Activity</h1>
-      <div className="grid grid-cols-[80%_20%]">
-        <section>
+    <div className="grid grid-cols-[2fr_1fr] gap-[14px]">
+      <div className=" bg-white px-[27px] py-[25px] border border-bluegreen-200">
+        <h3 className="h3-sans text-neutral-600">Your Monthly Activity</h3>
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,
+    jsx-a11y/no-static-element-interactions */}
+        <section
+          className="h-[250px] mt-[30px]"
+          onClick={() => {
+            setSelectedMonth("all");
+            setSelectedTableMonth(moment().format("YYYY-MM"));
+            console.log("Reverted to default");
+          }}
+        >
           <canvas ref={chartRef} className="">
             {" "}
           </canvas>
         </section>
+        <div className="legend flex gap-1 items-center justify-center mt-[21px]">
+          <div className="w-[20px] h-[10px] bg-bluegreen-500"> </div>
+          <p className="mr-[14px] p12-medium">Sales</p>
+          <div className="w-[20px] h-[10px] bg-orange-400"> </div>
+          <p className="p12-medium">Purchase</p>
+        </div>
+      </div>
+      <div className="bg-white px-[27px] py-[25px] border border-bluegreen-200">
         <MonthlyTable selectedTableMonth={selectedTableMonth} URL={URL} />
       </div>
     </div>

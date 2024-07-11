@@ -151,29 +151,47 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
   };
 
   return (
-    <div>
-      <div className="title">
-        <h2 className="text-[24px]">Your daily activity</h2>
-        <h3>
+    <div className="flex flex-col gap-[32px]">
+      <div className="title flex flex-col gap-1">
+        <h3 className="h3-sans">Your daily activity</h3>
+        <h4 className="p16 text-neutral-300">
           For the month of {convertToMonth(selectedTableMonth.slice(5))}{" "}
           {selectedTableMonth.slice(0, 4)}
-        </h3>
+        </h4>
       </div>
-      <div className="table">
-        <table>
-          <tbody>
-            {/* Fixed table head */}
-            <tr>
-              <th>Date</th>
-              <th>Sales</th>
-              <th>Purchase</th>
+      <div className="table-container h-[270px] overflow-auto rounded-[12px]">
+        <table className="w-full border border-bluegreen-100">
+          <thead className="sticky top-0 text-white bg-neutral-600 rounded">
+            <tr className="legend14 rounded">
+              <th className="text-start p-[10px]">Date</th>
+              <th className="text-start p-[10px]">Sales</th>
+              <th className="text-start p-[10px]">Purchase</th>
             </tr>
+          </thead>
+          <tbody>
             {/* Loop over */}
             {monthTransactionArr.map((transaction) => (
-              <tr key={transaction.date} className="text-center">
-                <td>{transaction.date.slice(0, 10)}</td>
-                <td>{transaction.sale}</td>
-                <td>{transaction.purchase}</td>
+              <tr
+                key={transaction.date}
+                className="p14-medium odd:bg-bluegreen-100"
+              >
+                <td className="pl-[10px] py-[12.5px]">
+                  {/* {transaction.date.slice(0, 10)} */}
+                  {transaction.date.slice(5, 7)}/{transaction.date.slice(8, 10)}
+                  /{transaction.date.slice(2, 4)}
+                </td>
+                <td className="pl-[10px] py-[12.5px]">
+                  {transaction.sale === 0 ? "" : "php. "}
+                  {transaction.sale === 0
+                    ? "to be informed"
+                    : transaction.sale.toFixed(2)}
+                </td>
+                <td className="pl-[10px] py-[12.5px]">
+                  php.{" "}
+                  {transaction.purchase === 0
+                    ? "00.00"
+                    : transaction.purchase.toFixed(2)}
+                </td>
               </tr>
             ))}
           </tbody>

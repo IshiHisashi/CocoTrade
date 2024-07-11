@@ -25,6 +25,8 @@ const Field = ({
   adornment = "end",
   info = false,
   infoText = "",
+  error = false,
+  errorText = "",
 }) => {
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isShowChangeButton, setIsShowChangeButton] =
@@ -73,6 +75,8 @@ const Field = ({
                     ),
                   }
             }
+            error={error}
+            helperText={error && errorText}
           />
           {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
         </FormControl>

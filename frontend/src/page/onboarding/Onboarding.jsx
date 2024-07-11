@@ -24,11 +24,11 @@ const Onboarding = ({ URL }) => {
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState("Philippines");
-  const [margin, setMargin] = useState(null);
-  const [maxInventoryAmount, setMaxInventoryAmount] = useState(null);
-  const [amountPerShip, setAmountPerShip] = useState(null);
-  const [currentAmountLeft, setCurrentAmountLeft] = useState(null);
-  const [currentBalance, setCurrentBalance] = useState(null);
+  const [margin, setMargin] = useState("");
+  const [maxInventoryAmount, setMaxInventoryAmount] = useState("");
+  const [amountPerShip, setAmountPerShip] = useState("");
+  const [currentAmountLeft, setCurrentAmountLeft] = useState("");
+  const [currentBalance, setCurrentBalance] = useState("");
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 

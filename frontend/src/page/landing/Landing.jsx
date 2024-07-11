@@ -5,7 +5,7 @@ import AuthInputModal from "../auth/AuthInputModal";
 // import sections
 import Benefit from "./sections/Benefit";
 import Features from "./sections/Features";
-import FormEmail from "./sections/FormEmail";
+import TryCoco from "./sections/TryCoco";
 import FormTalkToUs from "./sections/FormTalkToUs";
 import Hero from "./sections/Hero";
 import Team from "./sections/Team";
@@ -32,27 +32,13 @@ const Landing = (props) => {
   const [confirmationType, setConfirmationType] = useState("");
 
   return (
-    <div className=" bg-slate-200">
-      <LandingHeader />
+    <div className=" bg-bluegreen-100">
+      <LandingHeader
+        setAuthType={setAuthType}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+      />
+
       <div>
-        <button
-          type="button"
-          onClick={() => {
-            setAuthType("signup");
-            setIsAuthModalOpen(true);
-          }}
-        >
-          Sign up
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setAuthType("login");
-            setIsAuthModalOpen(true);
-          }}
-        >
-          Log in
-        </button>
         <Modal
           isOpen={isAuthModalOpen}
           onRequestClose={() => setIsAuthModalOpen(false)}
@@ -80,12 +66,22 @@ const Landing = (props) => {
           />
         </Modal>
       </div>
-      <Hero />
+      <Hero setAuthType={setAuthType} setIsAuthModalOpen={setIsAuthModalOpen} />
+      {/* onClickFnc={() => {
+              setAuthType("signup");
+              setIsAuthModalOpen(true);
+            }} */}
       <Benefit />
       <Features />
-      <FormEmail />
+      <TryCoco
+        setAuthType={setAuthType}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+      />
       <Team />
-      <FormTalkToUs />
+      <FormTalkToUs
+        setAuthType={setAuthType}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+      />
       <LandingFooter />
     </div>
   );

@@ -320,10 +320,10 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         />
         <CtaBtn 
           size="S" 
-          level={new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" ? "D" : "P"}
+          level={new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" || formData.status === "completed" && Number(formData.total_sales_price) <= 0 ? "D" : "P"}
           type="submit" 
           innerTxt="Save" 
-          disabled = {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending"}
+          disabled = {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" || formData.status === "completed" && Number(formData.total_sales_price) <= 0}
         />
       </form>
     </div>

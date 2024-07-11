@@ -7,6 +7,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
   const [manufacturers, setManufacturers] = useState([]);
   const [user, setUser] = useState(null);
   const [latestInv, setLatestInv] = useState([]);
+  const [isIrrationalCalculation, setIsIrrationalCalculation] = useState(false);
   const [formData, setFormData] = useState({
     manufacturer_id: "",
     amount_of_copra_sold: "",
@@ -200,6 +201,21 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
     setShowModal(false);
   };
 
+  useEffect(() => {
+    if (
+      formData.amount_of_copra_sold &&
+      latestInv &&
+      latestInv.current_amount_left &&
+      latestInv.current_amount_left.$numberDecimal
+    ) {
+      if(Number(formData.amount_of_copra_sold) > Number(latestInv.current_amount_left.$numberDecimal)) {
+        setIsIrrationalCalculation(true);
+      } else {
+        setIsIrrationalCalculation(false);
+      }
+    }
+  }, [formData, latestInv])
+
   return (
     <div>
       <h2>Plan Your Shipment</h2>
@@ -261,7 +277,13 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
             innerTxt="Cancel"
             onClickFnc={fncCloseModal}
           />
-          <CtaBtn size="S" level="P" type="submit" innerTxt="Save" />
+          <CtaBtn 
+            size="S" 
+            level={ isIrrationalCalculation ? "D" : "P" } 
+            type="submit" 
+            innerTxt="Save" 
+            disabled={isIrrationalCalculation}
+          />
         </div>
       </form>
     </div>

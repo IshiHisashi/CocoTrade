@@ -151,22 +151,22 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
   };
 
   return (
-    <div>
-      <div className="title">
-        <h2 className="text-[24px]">Your daily activity</h2>
-        <h3>
+    <div className="flex flex-col gap-[32px]">
+      <div className="title flex flex-col gap-1">
+        <h3 className="h3-sans">Your daily activity</h3>
+        <h4 className="p16 text-neutral-300">
           For the month of {convertToMonth(selectedTableMonth.slice(5))}{" "}
           {selectedTableMonth.slice(0, 4)}
-        </h3>
+        </h4>
       </div>
       <div className="table">
-        <table>
+        <table className="w-full border border-bluegreen-100 rounded">
           <tbody>
             {/* Fixed table head */}
-            <tr>
-              <th>Date</th>
-              <th>Sales</th>
-              <th>Purchase</th>
+            <tr className="legend14 text-white bg-neutral-600">
+              <th className="text-start">Date</th>
+              <th className="text-start">Sales</th>
+              <th className="text-start">Purchase</th>
             </tr>
             {/* Loop over */}
             {monthTransactionArr.map((transaction) => (

@@ -224,7 +224,16 @@ const MonthlyActivity = ({ URL }) => {
     <div className="grid grid-cols-[2fr_1fr] gap-[14px]">
       <div className=" bg-white px-[27px] py-[25px] border border-bluegreen-200">
         <h3 className="h3-sans text-neutral-600">Your Monthly Activity</h3>
-        <section className="h-[250px]">
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,
+    jsx-a11y/no-static-element-interactions */}
+        <section
+          className="h-[250px] mt-[30px]"
+          onClick={() => {
+            setSelectedMonth("all");
+            setSelectedTableMonth(moment().format("YYYY-MM"));
+            console.log("Reverted to default");
+          }}
+        >
           <canvas ref={chartRef} className="">
             {" "}
           </canvas>

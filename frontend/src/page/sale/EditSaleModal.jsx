@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
@@ -9,6 +9,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   const userId = useContext(UserIdContext);
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
+  const [filteredManufacturers, setFilteredManufacturers] = useState([]);
   const [user, setUser] = useState(null);
 
   // Just for PR
@@ -22,6 +23,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   // To store data filled in an edit form
   const [formData, setFormData] = useState({
     manufacturer_id: "",
+    manufacturer_name: "",
     amount_of_copra_sold: "",
     sales_unit_price: "",
     status: "",
@@ -30,6 +32,9 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     total_sales_price: "",
     user_id: userId,
   });
+
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     // Fetch user data
@@ -42,16 +47,16 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         console.error("Error fetching user:", error);
       });
 
-    // Fetch manufacturers
+    // Fetch manufacturers for the current user
     axios
-      .get(`${URL}/user/${userId}/manu`)
-      .then((response) => {
-        setManufacturers(response.data.data.manufacturers);
-        console.log(response.data.data.manufacturers);
-      })
-      .catch((error) => {
-        console.error("Error fetching manufacturers:", error);
-      });
+    .get(`${URL}/manufacturer`, { params: { user_id: userId } })
+    .then((response) => {
+      setManufacturers(response.data);
+      setFilteredManufacturers(response.data); // Set initial filtered manufacturer
+    })
+    .catch((error) => {
+      console.error("Error fetching manufacturers:", error);
+    });
   }, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [selectedSale]);
@@ -108,27 +113,86 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [showEditForm]) 
 
+  const handleClickOutside = (event) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  }; 
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+    if (name === "manufacturer_name") {
+      const filtered = manufacturers.filter((manufacturer) =>
+        manufacturer.full_name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredManufacturers(filtered);
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleSelectManufacturer = (name) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      manufacturer_name: name,
+    }));
+    setFilteredManufacturers(manufacturers);
+    setShowSuggestions(false);
+  };
+  const handleFocus = () => {
+    setShowSuggestions(true);
+  };
+
+  const handleBlur = () => {
+    // Delay hiding the suggestions to allow selection
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 200);
   };
 
   // Common throughout all the sales edit patterns => Good to go
   const updateSales = async () => {
     try {
-      await axios.patch(`${URL}/sale/${selectedSale._id}`, formData);
-      // console.log(patchedSales.data.data);
-      // 👆 This never shows proper response for some reasons.
-      console.log("Sales updated");
-    }
-    catch(err) {
+      const existingManufacturer = manufacturers.find(manufacturer => manufacturer.full_name === formData.manufacturer_name);
+      let manufacturerId = existingManufacturer ? existingManufacturer._id : null;
+
+      if (!manufacturerId) {
+        const manufacturerResponse = await axios.post(`${URL}/manufacturer`, {
+          user_id: userId,
+          full_name: formData.manufacturer_name,
+        });
+        manufacturerId = manufacturerResponse.data.data._id;
+      }
+
+      const updatedFormData = {
+        ...formData,
+        manufacturer_id: manufacturerId,
+      };
+
+      const updatedSale = await axios.patch(`${URL}/sale/${selectedSale._id}`, updatedFormData);
+
+      setSales((prevSales) =>
+        prevSales.map((sale) =>
+          sale._id === selectedSale._id ? updatedSale.data.data : sale
+        )
+      );
+
+      setshowEditForm(false);
+      setSelectedSale(null);
+    } catch (err) {
       console.error("Failed to update sales: ", err);
     }
   }
-
   // Object to pass to inventory update api
   // argument represents below
   // add: when it's true, api subtract number from inv
@@ -239,19 +303,32 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       {console.log(manufacturers)}
       <h2>Edit Sale</h2>
       <form onSubmit={handleSubmit}>
+      <div className="relative" ref={wrapperRef}>
         <Field
           label="Manufacturer Name"
-          name="manufacturer_id"
-          value={formData.manufacturer_id}
+          name="manufacturer_name"
+          type="text"
+          value={formData.manufacturer_name}
           onChange={handleChange}
-          type="dropdown"
-          options={manufacturers.map((manufacturer) => ({
-            // eslint-disable-next-line no-underscore-dangle
-            value: manufacturer._id,
-            label: manufacturer.full_name,
-          }))}
+          onFocus={handleFocus}
+            onBlur={handleBlur}
           required
         />
+        {showSuggestions && filteredManufacturers.length > 0 && (
+          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+            {filteredManufacturers.map((manufacturer) => (
+              <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => handleSelectManufacturer(manufacturer.full_name)}
+                >
+                  {manufacturer.full_name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        </div>
         <Field
           label="Amount of Copra Sold"
           name="amount_of_copra_sold"
@@ -321,7 +398,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         <CtaBtn 
           size="S" 
           level={new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" || formData.status === "completed" && Number(formData.total_sales_price) <= 0 ? "D" : "P"}
-          type="submit" 
+          type="submit"
           innerTxt="Save" 
           disabled = {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" || formData.status === "completed" && Number(formData.total_sales_price) <= 0}
         />

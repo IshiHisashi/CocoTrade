@@ -52,7 +52,7 @@ export default {
         "h3-serif": "26px",
         "h4-serif": "20px",
         "display-sans": "40px",
-        "h1-sans": "50px",
+        "h1-sans": "28px",
         "h2-sans": "24px",
         "h3-sans": "20px",
         "h4-sans-uppercase": "18px",
@@ -162,12 +162,6 @@ export default {
           fontWeight: theme("fontWeight.h4-serif"),
           fontSize: theme("fontSize.h4-serif"),
           lineHeight: theme("lineHeight.h4-serif"),
-        },
-        ".h2-sans": {
-          fontFamily: theme("fontFamily.rasa"),
-          fontWeight: theme("fontWeight.h2-sans"),
-          fontSize: theme("fontSize.h2-sans"),
-          lineHeight: theme("lineHeight.h2-sans"),
         },
         ".display-sans": {
           fontFamily: theme("fontFamily.dm-sans"),

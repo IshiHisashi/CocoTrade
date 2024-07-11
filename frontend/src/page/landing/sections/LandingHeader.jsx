@@ -1,6 +1,6 @@
 import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
-import CocotradeLogo from "../../../assets/CocoTradeLogo.svg";
+import CocotradeLogo from "../../../assets/CocoTradeLogoForDarkBg.svg";
 
 const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
   return (

@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 const NavList = (props) => {
-  const { page } = props;
+  const { page, fnToToggleNav } = props;
   const pageName = page
     .split("")
     .map((el, index) => (index === 0 ? el.toUpperCase() : el))
@@ -18,6 +18,7 @@ const NavList = (props) => {
             ? "block p-4 w-full text-white border-r-8 border-r-[#FF5B04]"
             : "block p-4 w-full text-white"
         }
+        onClick={() => fnToToggleNav("-translate-x-full")}
       >
         {pageName}
       </NavLink>

@@ -3,13 +3,13 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Tooltip as TooltipMUI, styled, tooltipClasses } from "@mui/material";
 import PriceIndicatorCard from "../../component/card/PriceIndicatorCard.jsx";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import RecentActivityCard from "../../component/card/RecentActivityCard.jsx";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
 import LineChartRevised from "../inventory/LineChartRevised.jsx";
 import Info from "../../assets/icons/Information.svg";
+import InfoTooltip from "../../component/tooltip/InfoTooltip.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -156,18 +156,6 @@ const Dashboard = ({ URL }) => {
       }
     })();
   }, [userId, URL]);
-
-  const InfoTooltip = styled(({ className, ...props }) => (
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    <TooltipMUI {...props} arrow classes={{ popper: className }} />
-  ))(() => ({
-    [`& .${tooltipClasses.arrow}`]: {
-      color: "#243037",
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: "#243037",
-    },
-  }));
 
   return (
     <UserIdContext.Provider value={userId}>

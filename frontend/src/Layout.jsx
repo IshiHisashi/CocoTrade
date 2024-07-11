@@ -20,11 +20,28 @@ const Layout = (props) => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
+  const [translateX, setTranslateX] = useState("-translate-x-full");
+  // translate-x-0
+  // -translate-x-full
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
+
+  document.body.classList =
+    translateX === "translate-x-0" && windowWidth < 640
+      ? "overflow-clip"
+      : "overflow-scroll";
+
   return (
     <>
-      <Header URL={URL} />
-      <Nav fnToOpenFormModal={setIsFormModalOpen} />
-      <main className="ml-64 p-8 bg-[#F1F7F8] min-h-screen">{children}</main>
+      <Header URL={URL} translateX={translateX} fnToToggleNav={setTranslateX} />
+      <Nav
+        fnToOpenFormModal={setIsFormModalOpen}
+        translateX={translateX}
+        fnToToggleNav={setTranslateX}
+      />
+      <main className="sm:ml-64 p-4 pt-0 sm:p-8 bg-[#F1F7F8] min-h-screen">
+        {children}
+      </main>
 
       <Modal
         isOpen={isFormModalOpen}

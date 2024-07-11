@@ -3,10 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import NavList from "./NavList";
 import CtaBtn from "../btn/CtaBtn.jsx";
 import Support from "../../assets/icons/support.svg";
-import CocoTradeLogo from "../../assets/CocoTradeLogo.svg";
+import LogoForDarkBg from "../../assets/CocoTradeLogoForDarkBg.svg";
 
 const Nav = (props) => {
-  const { fnToOpenFormModal } = props;
+  const { fnToOpenFormModal, translateX, fnToToggleNav } = props;
 
   const { pathname } = useLocation();
 
@@ -15,10 +15,12 @@ const Nav = (props) => {
   }, [pathname]);
 
   return (
-    <nav className="bg-[#243037] fixed h-screen top-0 bottom-0 left-0 w-64">
-      <div className="w-64 h-24">
+    <nav
+      className={`bg-[#243037] ${translateX} sm:translate-x-0 transition-all sm:transition-none ease-in-out absolute sm:fixed sm:h-screen top-[60px] sm:top-0 bottom-0 left-0 w-full sm:w-64`}
+    >
+      <div className="w-64 h-24 hidden sm:block">
         <img
-          src={CocoTradeLogo}
+          src={LogoForDarkBg}
           alt="CocoTrade"
           className="relative top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
         />
@@ -28,11 +30,11 @@ const Nav = (props) => {
       </h1> */}
 
       <ul>
-        <NavList page="dashboard" />
-        <NavList page="inventory" />
-        <NavList page="purchase" />
-        <NavList page="sales" />
-        <NavList page="finances" />
+        <NavList page="dashboard" fnToToggleNav={fnToToggleNav} />
+        <NavList page="inventory" fnToToggleNav={fnToToggleNav} />
+        <NavList page="purchase" fnToToggleNav={fnToToggleNav} />
+        <NavList page="sales" fnToToggleNav={fnToToggleNav} />
+        <NavList page="finances" fnToToggleNav={fnToToggleNav} />
       </ul>
 
       <div className="bg-[#224F55] rounded-2xl text-white m-4 px-4 py-6 absolute bottom-0 left-0 right-0">

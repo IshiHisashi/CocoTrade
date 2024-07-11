@@ -29,7 +29,7 @@ const UserMenuDropdown = (props) => {
           <li>
             <NavLink
               to="/settings"
-              className="block p-2 cursor-pointer hover:bg-slate-300"
+              className="block p-2 cursor-pointer hover:bg-bluegreen-100"
             >
               Settings
             </NavLink>
@@ -38,7 +38,7 @@ const UserMenuDropdown = (props) => {
             <NavLink
               // to="/"
               onClick={handleLogout}
-              className="block p-2 cursor-pointer hover:bg-slate-300"
+              className="block p-2 cursor-pointer hover:bg-bluegreen-100"
             >
               Logout
             </NavLink>

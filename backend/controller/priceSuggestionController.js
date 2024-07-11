@@ -16,7 +16,7 @@ export const createFirstPriceSuggestion = async (req, res) => {
       resMarketPriceDoc.data.data.doc.price_PHP.$numberDecimal
     );
     const pricePHPInKg = pricePHP / 1000;
-    const priceSuggestion = pricePHPInKg * (1 + margin);
+    const priceSuggestion = pricePHPInKg * (1 - margin);
 
     const newDoc = {
       userID: userid,

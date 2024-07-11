@@ -153,7 +153,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   const createObjectToPassForFin = (add, rev, mod) => {
     const object = {
       userId,
-      prevRecievedDate: previousReceivedDate,
+      prevReceivedDate: previousReceivedDate,
       newReceivedDate: formData.cheque_receive_date,
       prevPrice: previousPrice,
       newPrice: formData.total_sales_price,
@@ -179,6 +179,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       await updateSales();
 
       let objectToPassI;
+      let objectToPassF = null;
 
       if (prevWasPending) {
         if (updateToPending) {
@@ -186,8 +187,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         } else if (updateToOngoing || updateToCompleted) {
           objectToPassI = createObjectToPassForInv(true, false, false, false);
           if (updateToCompleted) {
-            const objectToPassF = createObjectToPassForFin(true, false, false);
-            console.log(objectToPassF);
+            objectToPassF = createObjectToPassForFin(true, false, false);
           }
         }
       } else if (prevWasOngoing) {
@@ -196,28 +196,27 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         } else if (updateToOngoing || updateToCompleted) {
           objectToPassI = createObjectToPassForInv(false, false, true, true);
           if (updateToCompleted) {
-            const objectToPassF = createObjectToPassForFin(true, false, false);
-            console.log(objectToPassF);
+            objectToPassF = createObjectToPassForFin(true, false, false);
           }
         }
       } else if (prevWasCompleted) {
         if (updateToPending) {
           objectToPassI = createObjectToPassForInv(false, true, false, false);
-          const objectToPassF = createObjectToPassForFin(false, true, false);
-          console.log(objectToPassF);
+          objectToPassF = createObjectToPassForFin(false, true, false);
         } else if (updateToOngoing) {
           objectToPassI = createObjectToPassForInv(false, false, true, true);
-          const objectToPassF = createObjectToPassForFin(false, true, false);
-          console.log(objectToPassF);
+          objectToPassF = createObjectToPassForFin(false, true, false);
         } else if (updateToCompleted) {
           objectToPassI = createObjectToPassForInv(false, false, true, true);
-          const objectToPassF = createObjectToPassForFin(false, false, true);
-          console.log(objectToPassF);
+          objectToPassF = createObjectToPassForFin(false, false, true);
         }
       }
 
-      console.log(objectToPassI);
+      console.log(objectToPassF);
       axios.patch(`${URL}/inventory/updateForSales`, objectToPassI);
+      if (objectToPassF !== null) {
+        axios.patch(`${URL}/currentbalance/updateForSales`, objectToPassF);
+      }
 
       setshowEditForm(false);
       setSelectedSale(null);

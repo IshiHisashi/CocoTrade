@@ -447,3 +447,180 @@ export const deleteCurrentBalance = async (req, res) => {
     });
   }
 };
+
+export const updateCurrentBalanceAndCascade = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const prevReceivedDate = req.body.prevReceivedDate;
+    const newReceivedDate = req.body.newReceivedDate;
+    const prevPrice = req.body.prevPrice;
+    const newPrice = req.body.newPrice;
+  
+    // loop function to update and cascade the change in total_sales_price
+    const loopUpdateFinDocs = (docs, number, type) => {
+      if (type === "add" || type === "modify") {
+        docs.forEach(async (doc) => {
+          await CurrentBalanceModel.findByIdAndUpdate(doc._id, {
+            current_balance: Number(doc.current_balance) + Number(number),
+          });
+        });
+      } else if (type === "reverse") {
+        docs.forEach(async (doc) => {
+          await CurrentBalanceModel.findByIdAndUpdate(doc._id, {
+            current_balance: Number(doc.current_balance) - Number(number),
+          });
+        });
+      }
+    };
+  
+    // Get user
+    const user = await UserModel.findById(userId);
+
+    // Get a latest finance doc
+    const docLatest = await CurrentBalanceModel.aggregate([
+      {
+        $match: {
+          _id: { $in: user.balance_array },
+          date: { $lte: new Date(newReceivedDate) },
+        },
+      },
+      {
+        $sort: { date: -1 },
+      },
+      {
+        $limit: 1,
+      },
+    ]);
+
+    // If there is no fin doc for today, create a new one with the exact same current_balance num. Logic is a bit different from Inv controller here. 
+    if (docLatest[0].date.toISOString().split('T')[0] !== newReceivedDate) {
+      const newFinData = {
+        user_id: userId,
+        purchases_array: [],
+        purchases_sum: 0,
+        sales_array: [],
+        sales_sum: 0,
+        current_balance: docLatest[0].current_balance,
+        date: new Date(newReceivedDate),
+      }
+      console.log(newFinData);
+      const newFinDoc = CurrentBalanceModel(newFinData);
+      const savedNewFinDoc = await newFinDoc.save();
+      const id = savedNewFinDoc._id;
+      const newFinArray = [...user.balance_array, id];
+      await UserModel.findByIdAndUpdate(user._id, {
+        balance_array: newFinArray,
+      })
+    }
+
+    // When needed to add number to current_balance
+    if (req.body.addFinNeeded === true) {
+      const docsLater = await CurrentBalanceModel.aggregate([
+        {
+          $match: {
+            _id: { $in: user.balance_array },
+            date: {
+              $gte: new Date(newReceivedDate),
+            },
+          },
+        },
+        {
+          $sort: { date: 1 },
+        },
+      ]);
+      loopUpdateFinDocs(docsLater, newPrice, "add");
+    }
+
+    // When needed to reverse addition done before. It has to stick with the previous money received date to ensure its consistency and reliability
+    if (req.body.reverseFinNeeded === true) {
+      const docsLater = await CurrentBalanceModel.aggregate([
+        {
+          $match: {
+            _id: { $in: user.balance_array },
+            date: {
+              $gte: new Date(prevReceivedDate),
+            },
+          },
+        },
+        {
+          $sort: { date: 1 },
+        },
+      ]);
+        loopUpdateFinDocs(docsLater, prevPrice, "reverse");
+    }
+
+    // When need to modify current_balance number. This happens only when a user change money received date or total sales number while keeping its status "completed"
+    if (req.body.modifFinWithDiffNeeded === true) {
+      const difference = Number(newPrice) - Number(prevPrice);
+      const docsLater = await CurrentBalanceModel.aggregate([
+        {
+          $match: {
+            _id: { $in: user.balance_array },
+            date: {
+              $gte: new Date(prevReceivedDate),
+            },
+          },
+        },
+        {
+          $sort: { date: 1 },
+        },
+      ]);
+      console.log(docsLater);
+
+      if (Number(prevPrice) !== Number(newPrice)) {
+        loopUpdateFinDocs(docsLater, difference, "modify");
+      }
+
+      if (prevReceivedDate.split('T')[0] !== newReceivedDate) {
+        if (new Date(newReceivedDate) < new Date(prevReceivedDate)) {
+          const finDocsBetweenTwoDates = await CurrentBalanceModel.aggregate([
+            {
+              $match: {
+                _id: { $in: user.balance_array },
+                date: { 
+                  $gte: new Date(newReceivedDate),
+                  $lt: new Date(prevReceivedDate),
+                },
+              },
+            },
+            {
+              $sort: { date: 1 },
+            },
+          ])
+          if (finDocsBetweenTwoDates.length !== 0) {
+            loopUpdateFinDocs(finDocsBetweenTwoDates, newPrice, "add");
+          }
+        } else {
+          const finDocsBetweenTwoDates = await CurrentBalanceModel.aggregate([
+            {
+              $match: {
+                _id: { $in: user.balance_array },
+                date: { 
+                  $gte: new Date(prevReceivedDate),
+                  $lt: new Date(newReceivedDate),
+                },
+              },
+            },
+            {
+              $sort: { date: 1 },
+            },
+          ])
+          if (finDocsBetweenTwoDates.length !== 0) {
+            loopUpdateFinDocs(finDocsBetweenTwoDates, newPrice, "reverse");
+          } 
+        }
+      }
+    }
+
+    res.status(200).json({
+      status: "success"
+    })
+
+  }
+  catch (err) {
+    res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
+  }
+}

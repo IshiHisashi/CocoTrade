@@ -532,7 +532,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
           {
             $match: {
               _id: { $in: user.inventory_amount_array },
-              time_stamp: { $gte: new Date(req.body.prevShipDate) },
+              time_stamp: { $gte: new Date(prevShipDate) },
               // Should I setDate(data.getDate - 1) ???
             },
           },
@@ -540,7 +540,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
             $sort: { time_stamp: 1 },
           },
         ]);
-        console.log(new Date(req.body.prevShipDate));
+        console.log(new Date(prevShipDate));
         console.log(invsOnAndAfterOriginalShipmentDate[0]);
         // Subtract the difference from current_amount_with_pending of all the documents that have time_stamp after prevShipDate.
         loopUpdateInvWithPending(invsOnAndAfterOriginalShipmentDate, difference, "modify");
@@ -549,14 +549,14 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
     }
 
     if((prevShipDate.split('T')[0] !== newShipDate) && (req.body.changeBasedOnShipDateNeeded === true)) {
-      if (newShipDate < prevShipDate) {
+      if (new Date(newShipDate) < new Date(prevShipDate)) {
         const invsBetweenTwoDates = await Inventory.aggregate([
           {
             $match: {
               _id: { $in: user.inventory_amount_array },
               time_stamp: { 
-                $gte: new Date(req.body.newShipDate),
-                $lt: new Date(req.body.prevShipDate),
+                $gte: new Date(newShipDate),
+                $lt: new Date(prevShipDate),
               },
             },
           },
@@ -575,8 +575,8 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
             $match: {
               _id: { $in: user.inventory_amount_array },
               time_stamp: { 
-                $gte: new Date(req.body.prevShipDate),
-                $lt: new Date(req.body.newShipDate),
+                $gte: new Date(prevShipDate),
+                $lt: new Date(newShipDate),
               },
             },
           },
@@ -599,7 +599,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
         {
           $match: {
             _id: { $in: user.inventory_amount_array },
-            time_stamp: { $gte: new Date(req.body.newShipDate) },
+            time_stamp: { $gte: new Date(newShipDate) },
           },
         },
         {
@@ -619,7 +619,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
           {
             $match: { 
               _id: { $in: user.inventory_amount_array},
-              time_stamp: { $lte: new Date(req.body.newShipDate) },
+              time_stamp: { $lte: new Date(newShipDate) },
             },
           },
           {
@@ -632,11 +632,11 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
         const invWithPending = await closestInv[0].current_amount_with_pending - newAmount;
         const newInvDocData = {
           user_id: closestInv[0].user_id,
-          purchase_array: closestInv[0].purchase_array,
-          sales_array: closestInv[0].sales_array,
+          purchase_array: [],
+          sales_array: [],
           current_amount_left: closestInv[0].current_amount_left,
           current_amount_with_pending: invWithPending.toString(),
-          time_stamp: new Date(req.body.newShipDate),
+          time_stamp: new Date(newShipDate),
         };
         console.log(newInvDocData);
         const newInvDoc = new Inventory(newInvDocData);
@@ -656,7 +656,7 @@ export const updateInventoryAndCascadeChangeIfNeeded = async (req, res) => {
         {
           $match: {
             _id: { $in: user.inventory_amount_array },
-            time_stamp: { $gte: new Date(req.body.prevShipDate) },
+            time_stamp: { $gte: new Date(prevShipDate) },
           },
         },
         {

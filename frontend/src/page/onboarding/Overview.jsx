@@ -24,7 +24,6 @@ const Overview = (props) => {
   const navigate = useNavigate();
 
   const onClickSave = async () => {
-    console.log(userId);
     const inventoryInfo = {
       user_id: userId,
       current_amount_left: currentAmountLeft,
@@ -114,6 +113,16 @@ const Overview = (props) => {
       };
 
       await axios.patch(`${URL}/user/${userId}`, userInfo);
+
+      sessionStorage.removeItem("fullName");
+      sessionStorage.removeItem("margin");
+      sessionStorage.removeItem("currentAmountLeft");
+      sessionStorage.removeItem("amountPerShip");
+      sessionStorage.removeItem("companyName");
+      sessionStorage.removeItem("currentBalance");
+      sessionStorage.removeItem("email");
+      sessionStorage.removeItem("country");
+      sessionStorage.removeItem("maxInventoryAmount");
 
       fnToShowModal(true);
     } catch (error) {

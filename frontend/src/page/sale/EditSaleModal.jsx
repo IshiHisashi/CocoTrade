@@ -4,6 +4,7 @@ import axios from "axios";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
+import Exit from "../../assets/icons/Exit.svg";
 
 const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL }) => {
   const userId = useContext(UserIdContext);
@@ -303,6 +304,13 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       {console.log(manufacturers)}
       <h2>Edit Sale</h2>
       <form onSubmit={handleSubmit}>
+      <button
+        type="button"
+        className="absolute top-8 right-8"
+        onClick={() => setshowEditForm(false)}
+      >
+        <img src={Exit} alt="close" />
+      </button>
       <div className="relative" ref={wrapperRef}>
         <Field
           label="Manufacturer Name"

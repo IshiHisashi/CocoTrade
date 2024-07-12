@@ -42,7 +42,6 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
       axios
         .get(`${URL}/user/${userId}/inv`)
         .then((res) => {
-          console.log(res.data.data);
           setInventory(res.data.data);
         })
         .catch((err) => {
@@ -79,31 +78,31 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
           y: inv.current_amount_with_pending.$numberDecimal,
         }));
 
+        // If today's date is not the latest datapoint's date, copy the number from the latest datapoint and create a new datapoint for today.
+        if (dataPoints[0].x !== today.toISOString().split("T")[0]) {
+          const todaysData = {
+            x: today.toISOString().split("T")[0],
+            y: dataPoints[0].y,
+          };
+          dataPoints.unshift(todaysData);
+        }
+
+        // If the oldest data is not of the startDate, create a datapoint for the startDate
+        if (dataPoints[dataPoints.length - 1].x !== startDate.toISOString().split("T")[0]) {
+          const startDatesData = {
+            x: startDate.toISOString().split("T")[0],
+            y: dataPoints[dataPoints.length - 1].y
+          };
+          dataPoints.push(startDatesData);
+        }
+
         // Create a labels and modify timeOption
         const durationLabels = [];
         if (durationType === "yearly") {
-          const months = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-          ];
-
-          const currentMonth = today.getMonth();
-          const currentYear = today.getFullYear();
-
-          for (let i = 0; i < 12; ) {
-            const monthIndex = (currentMonth + 1 + i) % 12;
-            const year = currentYear - 1 - Math.floor((currentMonth - i) / 12);
-            durationLabels.push(`${months[monthIndex]}/${year}`);
+          for (let i = 0; i < 365; ) {
+            const date = new Date();
+            date.setDate(today.getDate() - i);
+            durationLabels.unshift(date.toISOString().split("T")[0]);
             i += 1;
           }
 
@@ -128,7 +127,6 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
             });
           }
         }
-        console.log(durationLabels);
 
         // Actual configuration for the chart
         setData({
@@ -140,7 +138,7 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               fill: true,
               backgroundColor: "rgba(75, 192, 192, 0.6)",
               borderColor: "rgba(75, 192, 192, 1)",
-              tension: 0.4,
+              stepped: 'after'
             },
           ],
         });

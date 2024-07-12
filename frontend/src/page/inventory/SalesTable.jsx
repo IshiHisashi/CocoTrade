@@ -14,8 +14,6 @@ const SalesTable = ({ userId, URL }) => {
     []
   );
 
-  console.log(sales);
-
   return (
     <div>
       <h2>Latest Sales</h2>

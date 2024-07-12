@@ -28,7 +28,6 @@ const BarChart = ({ userId, URL }) => {
         .get(`${URL}/user/${userId}/maxcap`)
         .then((res) => {
           setMaximumInv(res.data.data);
-          console.log(res.data.data);
         })
         .catch((err) => {
           console.error(err);
@@ -39,7 +38,6 @@ const BarChart = ({ userId, URL }) => {
         .then((res) => {
           // setMaximumInv(res.data.data.max_amount);
           setInventory(res.data.data[0].current_amount_left.$numberDecimal);
-          console.log(res.data.data[0].current_amount_left.$numberDecimal);
         })
         .catch((err) => {
           console.error(err);

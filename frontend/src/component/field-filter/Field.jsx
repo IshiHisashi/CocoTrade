@@ -165,6 +165,7 @@ const Field = ({
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm basis-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           disabled={isDisabled}
           required={required}
+          max={name === "purchase_date" ? new Date().toISOString().split("T")[0] : undefined}
         />
       );
       break;

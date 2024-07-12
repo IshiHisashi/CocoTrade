@@ -321,7 +321,7 @@ const ViewPurchaseTable = ({
             // eslint-disable-next-line no-underscore-dangle
             <tr key={purchase._id}>
               <td>{purchase.invoice_number}</td>
-              <td>{new Date(purchase.purchase_date).toLocaleDateString()}</td>
+              <td>{new Date(purchase.purchase_date).toISOString().split("T")[0]}</td>
               <td>
                 {purchase.farmer_id ? purchase.farmer_id.full_name : "N/A"}
               </td>

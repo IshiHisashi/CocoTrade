@@ -15,8 +15,9 @@ import { Bar } from "react-chartjs-2";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarChart = ({ userId, URL }) => {
-  const [inventory, setInventory] = useState([]);
+const BarChart = ({ userId, URL, setInvInfo }) => {
+  const [inventoryLeft, setInventoryLeft] = useState(0);
+  const [inventoryWithPending, setInventoryWithPending] = useState(0);
   const [maximumInv, setMaximumInv] = useState(0);
   // const [data, setData] = useState({});
 
@@ -35,48 +36,130 @@ const BarChart = ({ userId, URL }) => {
         });
       // Current inventory
       axios
-        .get(`${URL}/user/${userId}/inv`)
+        .get(`${URL}/user/${userId}/latestInv`)
         .then((res) => {
-          // setMaximumInv(res.data.data.max_amount);
-          setInventory(res.data.data[0].current_amount_left.$numberDecimal);
-          console.log(res.data.data[0].current_amount_left.$numberDecimal);
+          setInventoryLeft(res.data.latestInv[0].current_amount_left.$numberDecimal);
+          console.log("Inv left: ",res.data.latestInv[0].current_amount_left.$numberDecimal);
+          setInventoryWithPending(res.data.latestInv[0].current_amount_with_pending.$numberDecimal);
+          console.log("Inv with pending: ", res.data.latestInv[0].current_amount_with_pending.$numberDecimal)
         })
         .catch((err) => {
           console.error(err);
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [inventory]
+    [inventoryLeft]
   );
+
+  useEffect(() => {
+    setInvInfo([inventoryWithPending, maximumInv]);
+  }, [inventoryWithPending, maximumInv, setInvInfo])
 
   const data = {
     labels: [""],
-    datasets: [
+    datasets: Number(inventoryWithPending - inventoryLeft) !== 0 ? [
       {
-        label: "Current Inventory",
-        data: [inventory],
-        backgroundColor: "#0C7F8E",
-        barThickness: 60,
+        label: "Stored",
+        data: [(inventoryLeft / maximumInv) * 100],
+        backgroundColor: "#FF8340",
+        barThickness: 40,
+        borderWidth: 0,
+        borderSkipped: false,
+        borderRadius: {
+          topLeft: 30,
+          bottomLeft: 30
+        },
       },
-    ],
+      {
+        label: "To ship",
+        data: [((inventoryWithPending - inventoryLeft) / maximumInv) * 100],
+        backgroundColor: "#245E66",
+        barThickness: 40,
+        borderWidth: 0,
+      },
+      {
+        label: "Available",
+        data: [((maximumInv - inventoryLeft - inventoryWithPending) / maximumInv) * 100],
+        backgroundColor: "#D3D3D3",
+        barThickness: 40,
+        borderWidth: 0,
+        borderRadius: {
+          topRight: 30,
+          bottomRight: 30
+        }
+      },
+    ] :
+    [
+      {
+        label: "Stored",
+        data: [(inventoryLeft / maximumInv) * 100],
+        backgroundColor: "#FF8340",
+        barThickness: 40,
+        borderWidth: 0,
+        borderSkipped: false,
+        borderRadius: {
+          topLeft: 30,
+          bottomLeft: 30
+        },
+      },
+      {
+        label: "Available",
+        data: [((maximumInv - inventoryLeft - inventoryWithPending) / maximumInv) * 100],
+        backgroundColor: "#D3D3D3",
+        barThickness: 40,
+        borderWidth: 0,
+        borderRadius: {
+          topRight: 30,
+          bottomRight: 30
+        }
+      },
+    ]
+    ,
   };
 
   const options = {
     indexAxis: "y",
     layout: {
       padding: {
-        top: 20,
-        bottom: 20,
+        left: -10,
+        bottom: -10,
+        top: 0
       },
     },
     maintainAspectRatio: false,
+    responsive: true,
     scales: {
       x: {
-        max: maximumInv,
+        stacked: true,
+        // offset: false,
+        ticks: {
+          display: false,
+        },
         beginAtZero: true,
         grid: {
           display: false,
         },
+        title: {
+          display: false,
+        },
+        border: {
+          display: false
+        }
+      },
+      y: {
+        stacked: true,
+        ticks: {
+          display: false,
+        },
+        grid: {
+          display: false,
+        },
+        title: {
+          display: false,
+        },
+        border: {
+          display: false
+        }
       },
     },
     plugins: {
@@ -84,21 +167,27 @@ const BarChart = ({ userId, URL }) => {
         display: false,
       },
       title: {
-        display: true,
-        text: "Your Inventory Capacity",
-        font: {
-          size: 20,
-        },
+        display: false
       },
-      customCanvasHeight: {
-        height: "150px",
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            const dataset = data.datasets[tooltipItem.datasetIndex];
+            const value = dataset.data[tooltipItem.dataIndex];
+            return `${dataset.label}: ${value.toFixed(2)} %`;
+          }
+        }
       },
+    },
+    chartArea: {
+      backgroundColor: 'transparent',
     },
   };
 
   return (
-    <div>
-      <Bar data={data} options={options} />
+    <div className="h-[80px]">
+    {/* <div className="h-[40px] rounded-3xl overflow-hidden border-2"> */}
+      <Bar data={data} options={options}/>
     </div>
   );
 };

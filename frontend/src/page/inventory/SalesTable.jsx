@@ -29,7 +29,7 @@ const SalesTable = ({ userId, URL }) => {
           {sales.map((sale) => (
             // eslint-disable-next-line no-underscore-dangle
             <tr key={sale._id}>
-              <td>{sale.copra_ship_date}</td>
+              <td>{sale.copra_ship_date.split("T")[0]}</td>
               <td>{sale.manufacturer_id.full_name}</td>
               <td>{sale.status}</td>
             </tr>

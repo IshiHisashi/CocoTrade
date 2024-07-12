@@ -302,7 +302,8 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   return (
     <div className="modal">
       {console.log(manufacturers)}
-      <h2>Edit Sale</h2>
+      <h1>Edit Sale</h1>
+      <small>Update sales entry information</small>
       <form onSubmit={handleSubmit}>
       <button
         type="button"
@@ -311,9 +312,34 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       >
         <img src={Exit} alt="close" />
       </button>
+      <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
+
+      <Field
+          label="Status"
+          name="status"
+          type="dropdown"
+          value={formData.status}
+          onChange={handleChange}
+          options={[
+            { value: "pending", label: "Pending" },
+            { value: "ongoing", label: "Ongoing" },
+            { value: "completed", label: "Completed" },
+            // { value: "cancelled", label: "Cancelled" },
+          ]}
+          required
+        />
+        <Field
+          label="Shipment date"
+          name="copra_ship_date"
+          type="date"
+          value={formData.copra_ship_date}
+          onChange={handleChange}
+          required
+        />
+        </div>
       <div className="relative" ref={wrapperRef}>
         <Field
-          label="Manufacturer Name"
+          label="Manufacturer"
           name="manufacturer_name"
           type="text"
           value={formData.manufacturer_name}
@@ -337,79 +363,64 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           </ul>
         )}
         </div>
+        <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
         <Field
-          label="Amount of Copra Sold"
-          name="amount_of_copra_sold"
-          type="number"
-          value={formData.amount_of_copra_sold}
-          onChange={handleChange}
-          required
-        />
-        <Field
-          label="Sales Unit Price"
+          label="Sales unit price"
           name="sales_unit_price"
           type="number"
           value={formData.sales_unit_price}
           onChange={handleChange}
+          unit="PHP"
+          adornment="start"
+          adornmentEnd="per kg"
           disabled
-        />
+        />      
         <Field
-          label="Status"
-          name="status"
-          type="dropdown"
-          value={formData.status}
+          label="Copra Sold"
+          name="amount_of_copra_sold"
+          type="number"
+          value={formData.amount_of_copra_sold}
           onChange={handleChange}
-          options={[
-            { value: "pending", label: "Pending" },
-            { value: "ongoing", label: "Ongoing" },
-            { value: "completed", label: "Completed" },
-            // { value: "cancelled", label: "Cancelled" },
-          ]}
+          unit="kg"
+          adornment="end"
           required
-        />
+        />               
         <Field
-          label="Copra Ship Date"
-          name="copra_ship_date"
-          type="date"
-          value={formData.copra_ship_date}
-          onChange={handleChange}
-          required
-        />
-        <Field
-          label="Cheque Receive Date"
+          label="Received on"
           name="cheque_receive_date"
           type="date"
           value={formData.cheque_receive_date}
           onChange={handleChange}
           disabled={formData.status !== "completed"}
           required={formData.status === "completed"}
-          info
-          infoText="You can choose the date only when you change status to completed."
-        />
+           />
         <Field
-          label="Total Sales Price"
+          label="Total Sale"
           name="total_sales_price"
           type="number"
           value={formData.total_sales_price}
           onChange={handleChange}
           disabled={formData.status !== "completed"}
           required={formData.status === "completed"}
-          info
-          infoText="You can type in total amount of sales only when you change status to completed."
+          unit="PHP"
+          adornment="start"
         />
+        </div>
+        <div className="grid sm:grid-cols-2 gap-x-6 pt-8">   
         <CtaBtn
-          size="S"
+          size="M"
           level="O"
           innerTxt="Clear"
           onClickFnc={fncCloseModal}
         />
         <CtaBtn 
-          size="S" 
+          size="M" 
           level={new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" || formData.status === "completed" && Number(formData.total_sales_price) <= 0 ? "D" : "P"}
           type="submit"
           innerTxt="Save" 
           disabled = {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" || formData.status === "completed" && Number(formData.total_sales_price) <= 0}
         />
+        </div> 
       </form>
     </div>
   );

@@ -27,6 +27,7 @@ const Field = ({
   infoText = "",
   error = false,
   errorText = "",
+  adornmentEnd = "",
 }) => {
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isShowChangeButton, setIsShowChangeButton] =
@@ -62,19 +63,21 @@ const Field = ({
             disabled={isDisabled}
             required={required}
             sx={{ py: 1 }}
-            InputProps={
-              adornment === "end"
-                ? {
-                    endAdornment: (
-                      <InputAdornment position="end">{unit}</InputAdornment>
-                    ),
-                  }
-                : {
-                    startAdornment: (
-                      <InputAdornment position="start">{unit}</InputAdornment>
-                    ),
-                  }
-            }
+            InputProps={{
+              startAdornment: adornment === "start" && (
+                <InputAdornment position="start">{unit}</InputAdornment>
+              ),
+              endAdornment: (
+                <>
+                  {adornmentEnd && (
+                    <InputAdornment position="end">{adornmentEnd}</InputAdornment>
+                  )}
+                  {adornment === "end" && (
+                    <InputAdornment position="end">{unit}</InputAdornment>
+                  )}
+                </>
+              ),
+            }}
             error={error}
             helperText={error && errorText}
           />

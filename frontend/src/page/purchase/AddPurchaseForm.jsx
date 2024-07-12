@@ -114,7 +114,7 @@ const AddPurchaseForm = ({
             purchase.total_purchase_price
         ),
         purchase_date: purchase.purchase_date
-          ? new Date(purchase.purchase_date).toISOString().split("T")[0]
+          ? new Date(purchase.purchase_date).toLocaleDateString('en-CA').split("T")[0]
           : "",
         user_id: userid,
       });
@@ -222,6 +222,7 @@ const AddPurchaseForm = ({
       const updatedFormData = {
         ...formData,
         farmer_id: farmerId,
+        purchase_date: new Date(formData.purchase_date).toISOString(),
       };
 
       if (purchase) {

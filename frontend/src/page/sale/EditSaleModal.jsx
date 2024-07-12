@@ -6,7 +6,7 @@ import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Exit from "../../assets/icons/Exit.svg";
 
-const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL }) => {
+const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL,onFormSubmit, }) => {
   const userId = useContext(UserIdContext);
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
@@ -190,6 +190,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
 
       setshowEditForm(false);
       setSelectedSale(null);
+      onFormSubmit("Sale log entry has been updated."); // Call form submit handler
     } catch (err) {
       console.error("Failed to update sales: ", err);
     }

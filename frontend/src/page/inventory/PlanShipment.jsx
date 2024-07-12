@@ -6,7 +6,7 @@ import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import Exit from "../../assets/icons/Exit.svg";
 
-const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
+const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSubmit }) => {
   const [manufacturers, setManufacturers] = useState([]);
   const userid = useContext(UserIdContext);
   const [user, setUser] = useState(null);
@@ -254,7 +254,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
       if (refreshNotifications) {
         refreshNotifications();
       }
-      setShowModal(false);
+      onFormSubmit(`Shipment was successfully scheduled on ${formattedDate}.`);
     } catch (error) {
       console.error("Error creating/updating sale or notification:", error);
     }
@@ -348,13 +348,13 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
         </div>
         <div>
           <CtaBtn
-            size="S"
+            size="M"
             level="O"
             innerTxt="Cancel"
             onClickFnc={fncCloseModal}
           />
           <CtaBtn 
-            size="S" 
+            size="M" 
             level={ isIrrationalCalculation ? "D" : "P" } 
             type="submit" 
             innerTxt="Save" 

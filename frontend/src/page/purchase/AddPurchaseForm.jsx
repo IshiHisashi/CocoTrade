@@ -19,6 +19,7 @@ const AddPurchaseForm = ({
   const [farmers, setFarmers] = useState([]);
   const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [user, setUser] = useState(null);
+  const  [isSubmitting, setIsSubmitting] =useState(false);
   const [formData, setFormData] = useState({
     farmer_name: "",
     invoice_number: "",
@@ -198,6 +199,7 @@ const AddPurchaseForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       // -----UPDATE PURCHASE LOG-----
       // Update purchase document
@@ -283,7 +285,8 @@ const AddPurchaseForm = ({
         onFormSubmit(`Invoice #${formData.invoice_number} has been logged successfully.`);
       }
       } catch (error) {
-      console.error("Error creating/updating purchase:", error);
+      console.error("Error creating/updating purchase:", error)
+      setIsSubmitting(false);
     }
   };
 
@@ -402,6 +405,7 @@ const AddPurchaseForm = ({
         level="P"
         innerTxt="Save"
         type="submit"
+        disabled={isSubmitting}
       />
       </div> 
       </form>

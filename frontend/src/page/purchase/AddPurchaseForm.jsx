@@ -353,6 +353,8 @@ const AddPurchaseForm = ({
           required
           unit="PHP"
           adornment="start"
+          min="0"
+          step="0.0001"
         />
         <Field
           label="Copra bought (kg)"
@@ -363,6 +365,8 @@ const AddPurchaseForm = ({
           required
           unit="kg"
           adornment="end"
+          min="0"
+          step="0.0001"
         />
         <Field
           label="Moisture Test Details"

@@ -30,6 +30,7 @@ const Field = ({
   adornmentEnd = "",
   min,
   max,
+  step,
 }) => {
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isShowChangeButton, setIsShowChangeButton] =
@@ -66,7 +67,7 @@ const Field = ({
             required={required}
             sx={{ py: 1 }}
             InputProps={{
-              inputProps: { min, max },
+              inputProps: { min, max, step },
               startAdornment: adornment === "start" && (
                 <InputAdornment position="start">{unit}</InputAdornment>
               ),

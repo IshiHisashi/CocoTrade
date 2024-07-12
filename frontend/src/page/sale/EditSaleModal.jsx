@@ -385,6 +385,8 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           unit="kg"
           adornment="end"
           required
+          min="0"
+          step="0.0001"
         />               
         <Field
           label="Received on"
@@ -405,6 +407,8 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           required={formData.status === "completed"}
           unit="PHP"
           adornment="start"
+          min="0"
+          step="0.0001"
         />
         </div>
         <div className="grid sm:grid-cols-2 gap-x-6 pt-8">   

@@ -373,6 +373,8 @@ const AddPurchaseForm = ({
           required
           unit="%"
           adornment="end"
+          min="0"
+          max="100"
         />
         <Field
           label="Total Sale (PHP)"

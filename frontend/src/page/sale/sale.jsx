@@ -15,11 +15,14 @@ const Sale = ({ URL }) => {
   const handleEdit = (sale) => {
     setSelectedSale(sale);
   };
+  const classNameForModal =
+  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] max-w-[30vw] overflow-scroll p-2";
 
   return (
     <div>
       <div>Sales Log</div>
       <Modal
+      className={classNameForModal}
         isOpen={showEditForm}
         onRequestClose={() => {
           setshowEditForm(false);

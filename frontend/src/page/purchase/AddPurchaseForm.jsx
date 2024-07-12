@@ -12,6 +12,7 @@ const AddPurchaseForm = ({
   handleUpdate,
   setPurchasesFromParent,
   URL,
+  onFormSubmit,
 }) => {
   const userid = useContext(UserIdContext);
   const navigate = useNavigate();
@@ -276,14 +277,12 @@ const AddPurchaseForm = ({
           };
         }
         await axios.patch(`${URL}/user/${userid}`, updateData);
-        setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);
+
+        setShowAddForm(false);
+        onFormSubmit(`Invoice #${formData.invoice_number} has been logged successfully.`);
       }
-      // set location.state.showAddForm to false
-      // (this is realted to reloading behaviour
-      // when users visiting purchase page from Add Purchase button on Dashboard)
-      navigate("/purchase", { state: { showAddForm: false } });
-    } catch (error) {
+      } catch (error) {
       console.error("Error creating/updating purchase:", error);
     }
   };

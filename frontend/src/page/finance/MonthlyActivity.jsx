@@ -210,9 +210,15 @@ const MonthlyActivity = ({ URL }) => {
           if (elements.length > 0) {
             const chartElement = elements[0];
             const clickedMonth = labels[chartElement.index];
-            setSelectedMonth(clickedMonth);
-            setSelectedTableMonth(clickedMonth);
-            console.log(`Selected Month: ${clickedMonth}`);
+            if (clickedMonth !== selectedMonth) {
+              setSelectedMonth(clickedMonth);
+              setSelectedTableMonth(clickedMonth);
+              console.log(`Selected Month: ${clickedMonth}`);
+            }
+          } else {
+            setSelectedMonth("all");
+            setSelectedTableMonth(moment().format("YYYY-MM"));
+            console.log("Reverted to default");
           }
         },
       },
@@ -221,19 +227,10 @@ const MonthlyActivity = ({ URL }) => {
   }, [monthlySale, monthlyPurchase, selectedMonth]);
 
   return (
-    <div className="grid grid-cols-[2fr_1fr] gap-[14px]">
-      <div className=" bg-white px-[27px] py-[25px] border border-bluegreen-200">
+    <div className="grid grid-cols-6 gap-[14px]">
+      <div className=" bg-white px-[27px] py-[25px] border border-bluegreen-200 col-start-1 col-end-5">
         <h3 className="h3-sans text-neutral-600">Your Monthly Activity</h3>
-        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,
-    jsx-a11y/no-static-element-interactions */}
-        <section
-          className="h-[250px] mt-[30px]"
-          onClick={() => {
-            setSelectedMonth("all");
-            setSelectedTableMonth(moment().format("YYYY-MM"));
-            console.log("Reverted to default");
-          }}
-        >
+        <section className="h-[250px] mt-[30px]">
           <canvas ref={chartRef} className="">
             {" "}
           </canvas>
@@ -245,7 +242,7 @@ const MonthlyActivity = ({ URL }) => {
           <p className="p12-medium">Purchase</p>
         </div>
       </div>
-      <div className="bg-white px-[27px] py-[25px] border border-bluegreen-200">
+      <div className="bg-white px-[27px] py-[25px] border border-bluegreen-200 col-start-5 col-end-7">
         <MonthlyTable selectedTableMonth={selectedTableMonth} URL={URL} />
       </div>
     </div>

@@ -4,8 +4,9 @@ import { format } from "date-fns";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import Exit from "../../assets/icons/Exit.svg";
 
-const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
+const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSubmit }) => {
   const [manufacturers, setManufacturers] = useState([]);
   const userid = useContext(UserIdContext);
   const [user, setUser] = useState(null);
@@ -253,7 +254,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
       if (refreshNotifications) {
         refreshNotifications();
       }
-      setShowModal(false);
+      onFormSubmit(`Shipment was successfully scheduled on ${formattedDate}.`);
     } catch (error) {
       console.error("Error creating/updating sale or notification:", error);
     }
@@ -282,6 +283,13 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
     <div>
       <h2>Plan Your Shipment</h2>
       <form onSubmit={handleSubmit}>
+      <button
+        type="button"
+        className="absolute top-8 right-8"
+        onClick={() => setShowModal(false)}
+      >
+        <img src={Exit} alt="close" />
+      </button>
       <div className="relative" ref={wrapperRef}>
         <Field
           label="Manufacturer Name"
@@ -340,13 +348,13 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL }) => {
         </div>
         <div>
           <CtaBtn
-            size="S"
+            size="M"
             level="O"
             innerTxt="Cancel"
             onClickFnc={fncCloseModal}
           />
           <CtaBtn 
-            size="S" 
+            size="M" 
             level={ isIrrationalCalculation ? "D" : "P" } 
             type="submit" 
             innerTxt="Save" 

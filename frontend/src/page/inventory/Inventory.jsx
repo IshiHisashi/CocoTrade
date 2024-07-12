@@ -7,6 +7,8 @@ import PlanShipment from "./PlanShipment";
 import CtaBtn from "../../component/btn/CtaBtn";
 import LineChartRevised from "./LineChartRevised";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import ConfirmationModal from "../sale/ConfirmationModal";
+
 
 Modal.setAppElement("#root");
 
@@ -15,6 +17,8 @@ const Inventory = ({ URL }) => {
   const [amountLeft, setAmountLeft] = useState(0);
   const [maxAmount, setMaxAmount] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [confirmationMessage, setConfirmationMessage] = useState("");
   const userId = useContext(UserIdContext);
   const fncShowMedal = () => {
     setShowModal(true);
@@ -24,6 +28,14 @@ const Inventory = ({ URL }) => {
     setAmountLeft(invInfo[0]);
     setMaxAmount(invInfo[1]);
   }, [invInfo])
+
+  const handleFormSubmit = (message) => {
+    setShowModal(false);
+    setConfirmationMessage(message);
+    setShowConfirmation(true);
+  };
+  const classNameForModal =
+  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] max-w-[30vw] overflow-scroll p-2";
 
   return (
     <div>
@@ -41,19 +53,30 @@ const Inventory = ({ URL }) => {
             onClickFnc={fncShowMedal}
           />
           <Modal
+            className={classNameForModal}
             isOpen={showModal}
             onRequestClose={() => {
               setShowModal(false);
             }}
             contentLabel="Plan Your Shipment"
           >
-            <PlanShipment userId={userId} setShowModal={setShowModal} URL={URL} />
+            <PlanShipment 
+              userId={userId} 
+              setShowModal={setShowModal} 
+              URL={URL} 
+              onFormSubmit={handleFormSubmit}
+            />
           </Modal>
         </div>
         <div id="actualBarChart" className="basis-11/12 grow">
           <BarChart userId={userId} URL={URL} setInvInfo={setInvInfo} />
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={showConfirmation}
+        onRequestClose={() => setShowConfirmation(false)}
+        message={confirmationMessage}
+      />
       <LineChartRevised userId={userId} URL={URL} />
       <SalesTable userId={userId} URL={URL} />
     </div>

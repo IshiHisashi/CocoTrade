@@ -27,6 +27,10 @@ const Field = ({
   infoText = "",
   error = false,
   errorText = "",
+  adornmentEnd = "",
+  min,
+  max,
+  step,
 }) => {
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isShowChangeButton, setIsShowChangeButton] =
@@ -62,19 +66,22 @@ const Field = ({
             disabled={isDisabled}
             required={required}
             sx={{ py: 1 }}
-            InputProps={
-              adornment === "end"
-                ? {
-                    endAdornment: (
-                      <InputAdornment position="end">{unit}</InputAdornment>
-                    ),
-                  }
-                : {
-                    startAdornment: (
-                      <InputAdornment position="start">{unit}</InputAdornment>
-                    ),
-                  }
-            }
+            InputProps={{
+              inputProps: { min, max, step },
+              startAdornment: adornment === "start" && (
+                <InputAdornment position="start">{unit}</InputAdornment>
+              ),
+              endAdornment: (
+                <>
+                  {adornmentEnd && (
+                    <InputAdornment position="end">{adornmentEnd}</InputAdornment>
+                  )}
+                  {adornment === "end" && (
+                    <InputAdornment position="end">{unit}</InputAdornment>
+                  )}
+                </>
+              ),
+            }}
             error={error}
             helperText={error && errorText}
           />
@@ -159,6 +166,7 @@ const Field = ({
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm basis-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           disabled={isDisabled}
           required={required}
+          max={name === "purchase_date" ? new Date().toISOString().split("T")[0] : undefined}
         />
       );
       break;

@@ -12,12 +12,14 @@ const AddPurchaseForm = ({
   handleUpdate,
   setPurchasesFromParent,
   URL,
+  onFormSubmit,
 }) => {
   const userid = useContext(UserIdContext);
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
   const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [user, setUser] = useState(null);
+  const  [isSubmitting, setIsSubmitting] =useState(false);
   const [formData, setFormData] = useState({
     farmer_name: "",
     invoice_number: "",
@@ -197,6 +199,7 @@ const AddPurchaseForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       // -----UPDATE PURCHASE LOG-----
       // Update purchase document
@@ -276,15 +279,14 @@ const AddPurchaseForm = ({
           };
         }
         await axios.patch(`${URL}/user/${userid}`, updateData);
-        setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);
+
+        setShowAddForm(false);
+        onFormSubmit(`Invoice #${formData.invoice_number} has been logged successfully.`);
       }
-      // set location.state.showAddForm to false
-      // (this is realted to reloading behaviour
-      // when users visiting purchase page from Add Purchase button on Dashboard)
-      navigate("/purchase", { state: { showAddForm: false } });
-    } catch (error) {
-      console.error("Error creating/updating purchase:", error);
+      } catch (error) {
+      console.error("Error creating/updating purchase:", error)
+      setIsSubmitting(false);
     }
   };
 
@@ -354,6 +356,8 @@ const AddPurchaseForm = ({
           required
           unit="PHP"
           adornment="start"
+          min="0"
+          step="0.0001"
         />
         <Field
           label="Copra bought (kg)"
@@ -364,6 +368,8 @@ const AddPurchaseForm = ({
           required
           unit="kg"
           adornment="end"
+          min="0"
+          step="0.0001"
         />
         <Field
           label="Moisture Test Details"
@@ -374,6 +380,8 @@ const AddPurchaseForm = ({
           required
           unit="%"
           adornment="end"
+          min="0"
+          max="100"
         />
         <Field
           label="Total Sale (PHP)"
@@ -401,6 +409,7 @@ const AddPurchaseForm = ({
         level="P"
         innerTxt="Save"
         type="submit"
+        disabled={isSubmitting}
       />
       </div> 
       </form>

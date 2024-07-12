@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ViewPurchaseTable from "./ViewPurchaseTable";
 import AddPurchaseForm from "./AddPurchaseForm.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
+import ConfirmationModal from "./ConfirmationModal"; 
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -19,9 +20,13 @@ const Purchase = ({ URL }) => {
     location.state ? location.state.showAddForm : false
   );
   const [selectedPurchase, setSelectedPurchase] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false); // State for confirmation modal
+  const [confirmationMessage, setConfirmationMessage] = useState(""); 
 
   const handleEdit = (purchase) => {
     setSelectedPurchase(purchase);
+    setShowAddForm(true);
+
   };
 
   const handleUpdate = async (updatedPurchase, currentPurchase, userid) => {
@@ -81,9 +86,17 @@ const Purchase = ({ URL }) => {
       setShowAddForm(false);
       setSelectedPurchase(null);
       setPurchases(updatedPurchase);
+      setConfirmationMessage("Purchase has been updated successfully.");
+      setShowConfirmation(true);
     } catch (error) {
       console.error("Error updating purchase:", error);
     }
+  };
+
+  const handleFormSubmit = (message) => {
+    setShowAddForm(false);
+    setConfirmationMessage(message);
+    setShowConfirmation(true);
   };
 
   const classNameForModal =
@@ -124,6 +137,7 @@ const Purchase = ({ URL }) => {
           handleUpdate={handleUpdate}
           setPurchasesFromParent={setPurchases}
           URL={URL}
+          onFormSubmit={handleFormSubmit}
         />
       </Modal>
       <ViewPurchaseTable
@@ -131,6 +145,14 @@ const Purchase = ({ URL }) => {
         handleEdit={handleEdit}
         purchasesFromParent={purchases}
         URL={URL}
+      />
+       <ConfirmationModal
+        isOpen={showConfirmation}
+        onRequestClose={() => {
+          setShowConfirmation(false);
+          navigate("/purchase");
+        }}
+        message={confirmationMessage}
       />
     </div>
   );

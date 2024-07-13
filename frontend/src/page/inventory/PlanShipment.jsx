@@ -290,7 +290,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
       >
         <img src={Exit} alt="close" />
       </button>
-      <div className="relative" ref={wrapperRef}>
+      <div ref={wrapperRef}>
         <Field
           label="Manufacturer Name"
           name="manufacturer_name"

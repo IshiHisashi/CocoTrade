@@ -359,6 +359,7 @@ const AddPurchaseForm = ({
           adornment="start"
           min="0"
           step="0.0001"
+          disabled
         />
         <Field
           label="Copra bought (kg)"

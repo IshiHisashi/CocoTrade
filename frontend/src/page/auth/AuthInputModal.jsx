@@ -70,7 +70,7 @@ const AuthInputModal = (props) => {
           ) {
             console.log(userId);
             navigate("/dashboard");
-            window.location.reload();
+            // window.location.reload();
           } else {
             navigate("/onboarding/business");
           }

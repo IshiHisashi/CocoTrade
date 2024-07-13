@@ -1,10 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
+  BrowserRouter as Router,
   Routes,
   Route,
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
+  useNavigate,
 } from "react-router-dom";
 import Inventory from "./page/inventory/Inventory.jsx";
 import Landing from "./page/landing/Landing.jsx";
@@ -18,82 +17,86 @@ import Auth from "./page/auth/Auth.jsx";
 import Onboarding from "./page/onboarding/Onboarding.jsx";
 import { UserIdContext } from "./contexts/UserIdContext.jsx";
 
+const AppRoutes = ({ userid, setUser, URL }) => {
+  const navigate = useNavigate();
+
+  console.log(userid);
+
+  // useEffect(() => {
+  //   if (!userid) {
+  //     navigate("/");
+  //   }
+  //   // if (userid) {
+  //   //   navigate("/dashboard");
+  //   // } else {
+  //   //   navigate("/");
+  //   // }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
+  return (
+    <Routes>
+      <Route path="/*" element={<Landing fnToSetUser={setUser} URL={URL} />} />
+      <Route path="/onboarding/*" element={<Onboarding URL={URL} />} />
+      {userid && (
+        <>
+          <Route
+            path="/dashboard"
+            element={
+              <Layout URL={URL}>
+                <Dashboard URL={URL} />
+              </Layout>
+            }
+          />
+          <Route
+            path="/inventory"
+            element={
+              <Layout URL={URL}>
+                <Inventory URL={URL} />
+              </Layout>
+            }
+          />
+          <Route
+            path="/purchase"
+            element={
+              <Layout URL={URL}>
+                <Purchase URL={URL} />
+              </Layout>
+            }
+          />
+          <Route
+            path="/sales"
+            element={
+              <Layout URL={URL}>
+                <Sale URL={URL} />
+              </Layout>
+            }
+          />
+          <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
+          <Route
+            path="/finances"
+            element={
+              <Layout URL={URL}>
+                <Finance URL={URL} />
+              </Layout>
+            }
+          />
+        </>
+      )}
+    </Routes>
+  );
+};
+
 const App = () => {
   const userid = useContext(UserIdContext);
   const [user, setUser] = useState(null);
   const [URL, setURL] = useState("http://localhost:5555");
-  console.log(userid);
 
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        {!userid ? (
-          // Before log-in, user is always navigated to landing page
-          <>
-            <Route
-              path="/*"
-              element={<Landing fnToSetUser={setUser} URL={URL} />}
-            />
-            <Route path="/onboarding/*" element={<Onboarding URL={URL} />} />
-          </>
-        ) : (
-          // After log-in, user can go inside the application
-          <>
-            <Route
-              path="/"
-              element={<Landing fnToSetUser={setUser} URL={URL} />}
-            />
-            <Route path="/onboarding/*" element={<Onboarding URL={URL} />} />
-            <Route
-              path="/dashboard"
-              element={
-                <Layout URL={URL}>
-                  <Dashboard URL={URL} />
-                </Layout>
-              }
-            />
-            <Route
-              path="/inventory"
-              element={
-                <Layout URL={URL}>
-                  <Inventory URL={URL} />
-                </Layout>
-              }
-            />
-            <Route
-              path="/purchase"
-              element={
-                <Layout URL={URL}>
-                  <Purchase URL={URL} />
-                </Layout>
-              }
-            />
-            <Route
-              path="/sales"
-              element={
-                <Layout URL={URL}>
-                  <Sale URL={URL} />
-                </Layout>
-              }
-            />
-            <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
-            <Route
-              path="/finances"
-              element={
-                <Layout URL={URL}>
-                  <Finance URL={URL} />
-                </Layout>
-              }
-            />
-          </>
-        )}
-        {/* <Route path="/" element={<Landing fnToSetUser={setUser} URL={URL} />} />
-        <Route path="/onboarding/*" element={<Onboarding URL={URL} />} /> */}
-      </>
-    )
+  return (
+    <Router>
+      <AppRoutes userid={userid} setUser={setUser} URL={URL} />
+    </Router>
   );
-
-  return <RouterProvider router={router} />;
 };
 
 export default App;

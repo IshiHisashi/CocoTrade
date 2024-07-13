@@ -14,42 +14,42 @@ const Team = () => {
         <LandingTeamCard
           name="XXX"
           position="project manager"
-          imgurl="./photos/cocotrade-12.jpg"
+          imgurl="./photos/kat.png"
         />
         <LandingTeamCard
           name="XXX"
           position="project manager"
-          imgurl="./photos/cocotrade-12.jpg"
+          imgurl="./photos/jen.png"
         />
         <LandingTeamCard
           name="XXX"
           position="project manager"
-          imgurl="./photos/cocotrade-12.jpg"
+          imgurl="./photos/hazel.png"
         />
         <LandingTeamCard
           name="XXX"
           position="project manager"
-          imgurl="./photos/cocotrade-12.jpg"
+          imgurl="./photos/eliza.png"
         />
         <LandingTeamCard
           name="XXX"
           position="project manager"
-          imgurl="./photos/cocotrade-12.jpg"
+          imgurl="./photos/ishi.png"
         />
         <LandingTeamCard
           name="XXX"
           position="project manager"
-          imgurl="./photos/cocotrade-12.jpg"
+          imgurl="./photos/sacha.png"
         />
         <LandingTeamCard
           name="XXX"
           position="project manager"
-          imgurl="./photos/cocotrade-12.jpg"
+          imgurl="./photos/aki.png"
         />
         <LandingTeamCard
           name="XXX"
           position="project manager"
-          imgurl="./photos/cocotrade-12.jpg"
+          imgurl="./photos/prathibha.png"
         />
       </div>
     </div>

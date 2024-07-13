@@ -30,7 +30,7 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
         />
       </div>
       <div className="image-section px-[15%]">
-        <img src="./images/hero-image_integrated.png" alt="dashboard" />
+        <img src="./images/hero-image-rev.png" alt="dashboard" />
       </div>{" "}
     </div>
   );

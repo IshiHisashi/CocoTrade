@@ -18,16 +18,11 @@ const Features = () => {
               description="Take a quick glance at your monthly activity to track purchases and sales."
             />
           </div>
-          <div className="relative">
+          <div className="self-center max-w-[750px]">
             <img
-              src="./images/simplify-finances.png"
+              src="./photos/f1d.png"
               alt="monthly transaction"
-              className="absolute z-50 bottom-[-30px] right-[60%]"
-            />
-            <img
-              src="./photos/cocotrade-16_d.png"
-              alt="copra pic"
-              className="absolute right-0"
+              className=""
             />
           </div>
         </div>
@@ -39,22 +34,8 @@ const Features = () => {
               description="Set your own copra price relative to the world market price."
             />
           </div>
-          <div className="row-start-1	row-end-2 relative">
-            <img
-              src="./photos/cocotrade-11_d.png"
-              alt="copra pic"
-              className="absolute"
-            />
-            <img
-              src="./images/palm-oil-price.png"
-              alt="price_1"
-              className="absolute top-[40%] right-0"
-            />
-            <img
-              src="./images/copra-purchase-price.png"
-              alt="price_2"
-              className="absolute bottom-0 right-[20%]"
-            />
+          <div className="row-start-1	row-end-2 self-center">
+            <img src="./photos/f2d.png" alt="copra pic" className="" />
           </div>
         </div>
         <div className="grid grid-cols-2">
@@ -64,17 +45,8 @@ const Features = () => {
               description="Keep track of your purchases and observe the trend from daily to yearly."
             />
           </div>
-          <div className="relative">
-            <img
-              src="./photos/cocotrade-14_d.png"
-              alt="copra pic"
-              className="absolute"
-            />
-            <img
-              src="./images/inventory-management.png"
-              alt="inventory"
-              className="absolute z-50 bottom-0 right-[40%]"
-            />
+          <div className="self-center">
+            <img src="./photos/f3d.png" alt="copra pic" className="" />
           </div>
         </div>
       </div>

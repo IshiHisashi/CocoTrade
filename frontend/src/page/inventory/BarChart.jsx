@@ -120,7 +120,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
     indexAxis: "y",
     layout: {
       padding: {
-        left: 0,
+        left: -8,
         bottom: 0,
         top: 0
       },

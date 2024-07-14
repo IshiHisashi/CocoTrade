@@ -30,7 +30,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
 
   return (
     <div
-      className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white ${isHamburgerOpen ? "fixed top-0 left-0  w-full h-full" : ""}`}
+      className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
     >
       <img src="./images/logo-b.png" alt="logo" className="pl-[26px] py-6" />
       <div
@@ -53,10 +53,10 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
         </button>
       </div>
       <div
-        className={`col-span-2 lg:col-start-2 lg:col-end-3 lg:flex justify-between gap-10 ${isHamburgerOpen ? "bg-neutral-600" : "hidden"}`}
+        className={`col-span-2 lg:col-start-2 lg:col-end-3 lg:flex justify-between ${isHamburgerOpen ? "bg-neutral-600 gap-10" : "hidden"}`}
       >
         <ul
-          className={`h3-sans lg:p16 lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[260px]" : ""}`}
+          className={`h3-sans lg:p16 lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[300px]" : ""}`}
         >
           <li
             className={` cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}

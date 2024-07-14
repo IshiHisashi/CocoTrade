@@ -318,7 +318,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
         </div>
         <div>
           <label htmlFor="copra_ship_date">
-            Date Purchased:
+            Shipping date:
             <input
               type="date"
               id="copra_ship_date"
@@ -334,11 +334,12 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
             Copra sold / weight in kg:
             <div style={{ display: "flex", alignItems: "center" }}>
               <input
-                type="text"
+                type="number"
                 id="amount_of_copra_sold"
                 name="amount_of_copra_sold"
                 value={formData.amount_of_copra_sold}
                 onChange={handleChange}
+                min="0"
                 required
                 style={{ marginRight: "5px" }}
               />
@@ -346,6 +347,10 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
             </div>
           </label>
         </div>
+        <p className="text-red-600">
+          {isIrrationalCalculation ? "The amount of copra shipping exceedsthe amount in your warehouse. If you want to modify the amount manually, please go to a settings page." : ""}
+          {formData.amount_of_copra_sold <= 0 ? "The amount of copra shipping has to be a positive number" : ""}
+        </p>
         <div>
           <CtaBtn
             size="M"
@@ -355,10 +360,10 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
           />
           <CtaBtn 
             size="M" 
-            level={ isIrrationalCalculation ? "D" : "P" } 
+            level={ isIrrationalCalculation || formData.amount_of_copra_sold <= 0 ? "D" : "P" } 
             type="submit" 
             innerTxt="Save" 
-            disabled={isIrrationalCalculation}
+            disabled={isIrrationalCalculation || formData.amount_of_copra_sold <= 0}
           />
         </div>
       </form>

@@ -1,12 +1,12 @@
 import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
-import CocotradeLogo from "../../../assets/CocoTradeLogoForDarkBg.svg";
+// import CocotradeLogo from "../../../assets/CocoTradeLogoForDarkBg.svg";
 
 const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
   return (
-    <div className="flex justify-between py-6 px-[120px]">
-      <ul className="p16 flex items-center gap-[57px]">
-        <img src={CocotradeLogo} alt="logo" />
+    <div className="flex justify-between py-6 lg:px-[3%] xl-[5%] 2xl-[10%]">
+      <ul className="p16 flex items-center gap-[40px] xl:gap-[60px]">
+        <img src="./images/logo-b.png" alt="logo" />
         <li>Benefits</li>
         <li>Features</li>
         <li>Team</li>
@@ -19,6 +19,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
             setAuthType("login");
             setIsAuthModalOpen(true);
           }}
+          className="border-[1.5px] border-neutral-800 h-14 w-24 rounded"
         >
           Log In
         </button>

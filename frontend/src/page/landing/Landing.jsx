@@ -67,10 +67,6 @@ const Landing = (props) => {
         </Modal>
       </div>
       <Hero setAuthType={setAuthType} setIsAuthModalOpen={setIsAuthModalOpen} />
-      {/* onClickFnc={() => {
-              setAuthType("signup");
-              setIsAuthModalOpen(true);
-            }} */}
       <Benefit />
       <Features />
       <TryCoco

@@ -78,7 +78,7 @@ const Inventory = ({ URL }) => {
         message={confirmationMessage}
       />
       <LineChartRevised userId={userId} URL={URL} />
-      <SalesTable userId={userId} URL={URL} />
+      <SalesTable userId={userId} URL={URL} showConfirmation={showConfirmation}/>
     </div>
   );
 };

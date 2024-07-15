@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const SalesTable = ({ userId, URL }) => {
+const SalesTable = ({ userId, URL, showConfirmation }) => {
   const [sales, setSales] = useState([]);
 
   useEffect(
@@ -11,7 +11,7 @@ const SalesTable = ({ userId, URL }) => {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [showConfirmation]
   );
 
   return (

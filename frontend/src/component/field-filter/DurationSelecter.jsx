@@ -7,7 +7,7 @@ const DurationSelecter = ({
   thisYear,
   thisMonth,
 }) => {
-  const [activeBtn, setActiveBtn] = useState(null);
+  const [activeBtn, setActiveBtn] = useState(2);
   const handleDurationSelecter = (durationType, durationValue, id) => {
     setDurationType(durationType);
     setDurationValue(durationValue);

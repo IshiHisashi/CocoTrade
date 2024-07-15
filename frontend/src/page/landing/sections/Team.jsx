@@ -57,6 +57,7 @@ const Team = () => {
           name="Prathibha Wijetunga"
           position="Full-stack Developer"
           imgurl="./photos/prathibha.png"
+          linkedin="https://lk.linkedin.com/in/shehani-wijetunga-20002b184"
         />
       </div>
     </div>

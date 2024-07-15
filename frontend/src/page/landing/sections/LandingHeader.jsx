@@ -1,4 +1,11 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable react/prop-types */
+/* eslint-disable-next-line no-underscore-dangle */
+/* eslint-disable no-plusplus */
+
 import React, { useState, useEffect } from "react";
+import AnchorLink from "react-anchor-link-smooth-scroll";
 import CtaBtn from "../../../component/btn/CtaBtn";
 import Hamburger from "../../../assets/icons/Hamburger.svg";
 
@@ -23,6 +30,10 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
   }, []);
+
+  const hundleClickNav = () => {
+    if (isHamburgerOpen) setIsHumbergerOpen(!isHamburgerOpen);
+  };
 
   const hundleToggle = () => {
     setIsHumbergerOpen(!isHamburgerOpen);
@@ -58,26 +69,38 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
         <ul
           className={`h3-sans lg:p16 lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[300px]" : ""}`}
         >
-          <li
-            className={` cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
-          >
-            Benefits
-          </li>
-          <li
-            className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
-          >
-            Features
-          </li>
-          <li
-            className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
-          >
-            Team
-          </li>
-          <li
-            className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
-          >
-            Contact
-          </li>
+          <AnchorLink href="#benefit" offset="-50">
+            <li
+              className={` cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              onClick={() => hundleClickNav()}
+            >
+              Benefits
+            </li>
+          </AnchorLink>
+          <AnchorLink href="#features" offset="-50">
+            <li
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              onClick={() => hundleClickNav()}
+            >
+              Features
+            </li>
+          </AnchorLink>
+          <AnchorLink href="#team" offset="-50">
+            <li
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              onClick={() => hundleClickNav()}
+            >
+              Team
+            </li>
+          </AnchorLink>
+          <AnchorLink href="#contact" offset="-50">
+            <li
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              onClick={() => hundleClickNav()}
+            >
+              Contact
+            </li>
+          </AnchorLink>
         </ul>
         <ul
           className={`flex items-center gap-[15px] p16 ${isHamburgerOpen ? "flex-col-reverse pb-[45px]" : ""}`}

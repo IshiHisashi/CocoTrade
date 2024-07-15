@@ -67,17 +67,25 @@ const Landing = (props) => {
         </Modal>
       </div>
       <Hero setAuthType={setAuthType} setIsAuthModalOpen={setIsAuthModalOpen} />
-      <Benefit />
-      <Features />
+      <div id="benefit">
+        <Benefit />
+      </div>
+      <div id="features">
+        <Features />
+      </div>
       <TryCoco
         setAuthType={setAuthType}
         setIsAuthModalOpen={setIsAuthModalOpen}
       />
-      <Team />
-      <FormTalkToUs
-        setAuthType={setAuthType}
-        setIsAuthModalOpen={setIsAuthModalOpen}
-      />
+      <div id="team">
+        <Team />
+      </div>
+      <div id="contact">
+        <FormTalkToUs
+          setAuthType={setAuthType}
+          setIsAuthModalOpen={setIsAuthModalOpen}
+        />
+      </div>
       <LandingFooter />
     </div>
   );

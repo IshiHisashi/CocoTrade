@@ -61,30 +61,30 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
         label: "Stored",
         data: [(inventoryLeft / maximumInv) * 100],
         backgroundColor: "#FF8340",
-        barThickness: 40,
+        barThickness: 20,
         borderWidth: 0,
         borderSkipped: false,
         borderRadius: {
-          topLeft: 30,
-          bottomLeft: 30
+          topLeft: 10,
+          bottomLeft: 10
         },
       },
       {
         label: "To ship",
         data: [((inventoryWithPending - inventoryLeft) / maximumInv) * 100],
         backgroundColor: "#245E66",
-        barThickness: 40,
+        barThickness: 20,
         borderWidth: 0,
       },
       {
         label: "Available",
         data: [((maximumInv - inventoryLeft - inventoryWithPending) / maximumInv) * 100],
         backgroundColor: "#D3D3D3",
-        barThickness: 40,
+        barThickness: 20,
         borderWidth: 0,
         borderRadius: {
-          topRight: 30,
-          bottomRight: 30
+          topRight: 10,
+          bottomRight: 10
         }
       },
     ] :
@@ -93,23 +93,23 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
         label: "Stored",
         data: [(inventoryLeft / maximumInv) * 100],
         backgroundColor: "#FF8340",
-        barThickness: 40,
+        barThickness: 20,
         borderWidth: 0,
         borderSkipped: false,
         borderRadius: {
-          topLeft: 30,
-          bottomLeft: 30
+          topLeft: 10,
+          bottomLeft: 10
         },
       },
       {
         label: "Available",
         data: [((maximumInv - inventoryLeft - inventoryWithPending) / maximumInv) * 100],
         backgroundColor: "#D3D3D3",
-        barThickness: 40,
+        barThickness: 20,
         borderWidth: 0,
         borderRadius: {
-          topRight: 30,
-          bottomRight: 30
+          topRight: 10,
+          bottomRight: 10
         }
       },
     ]
@@ -120,8 +120,8 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
     indexAxis: "y",
     layout: {
       padding: {
-        left: -10,
-        bottom: -10,
+        left: -8,
+        bottom: 0,
         top: 0
       },
     },
@@ -130,7 +130,6 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
     scales: {
       x: {
         stacked: true,
-        // offset: false,
         ticks: {
           display: false,
         },
@@ -163,7 +162,16 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
     },
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: "bottom",
+        align: "start",
+        onClick: () => {},
+        labels: {
+          usePointStyle: true,
+          pointStyle: "circle",
+          boxWidth: 8,
+          boxHeight: 8,
+        }
       },
       title: {
         display: false
@@ -184,8 +192,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
   };
 
   return (
-    <div className="h-[80px]">
-    {/* <div className="h-[40px] rounded-3xl overflow-hidden border-2"> */}
+    <div className="w-full h-[80px]">
       <Bar data={data} options={options}/>
     </div>
   );

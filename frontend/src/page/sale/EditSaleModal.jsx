@@ -314,8 +314,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         <img src={Exit} alt="close" />
       </button>
       <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
-
-      <Field
+        <Field
           label="Status"
           name="status"
           type="dropdown"
@@ -337,7 +336,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           onChange={handleChange}
           required
         />
-        </div>
+      </div>
       <div className="relative" ref={wrapperRef}>
         <Field
           label="Manufacturer"

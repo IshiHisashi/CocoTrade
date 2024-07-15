@@ -29,7 +29,7 @@ const CtaBtn = ({
 
   // Conditioning based on size
   if (size === "M") {
-    width = "w-52";
+    width = "w-[162px]";
     height = "h-14";
   } else if (size === "S") {
     width = "w-24";

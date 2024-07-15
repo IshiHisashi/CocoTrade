@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SalesTable = ({ userId, URL, showConfirmation }) => {
   const [sales, setSales] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(
     () => {
@@ -36,6 +38,12 @@ const SalesTable = ({ userId, URL, showConfirmation }) => {
           ))}
         </tbody>
       </table>
+      <button 
+        onClick={() => navigate("/sales")} 
+        type="button"
+      >
+        View sales log
+      </button>
     </div>
   );
 };

@@ -145,6 +145,7 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
 
         setOptions({
           responsive: true,
+          maintainAspectRatio: false,
           interaction: {
             mode: "nearest",
             axis: "x",
@@ -182,8 +183,7 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               display: false,
             },
             title: {
-              display: !dashboard,
-              text: "Inventory history",
+              display: false,
             },
           },
           elements: {
@@ -203,19 +203,24 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
 
   return (
     <div>
-      {dashboard || (
-        <DurationSelecter
-          setDurationType={setDurationType}
-          setDurationValue={setDurationValue}
-          thisYear={thisYear}
-          thisMonth={thisMonth}
-        />
-      )}
-      {data.datasets.length ? (
-        <Line data={data} options={options} />
-      ) : (
-        "Loading"
-      )}
+      <div id="topLayer" className="flex justify-between mb-[34px]">
+        <h3 className="h3-serif font-semibold">Inventory Trend</h3>
+        {dashboard || (
+          <DurationSelecter
+            setDurationType={setDurationType}
+            setDurationValue={setDurationValue}
+            thisYear={thisYear}
+            thisMonth={thisMonth}
+          />
+        )}
+      </div>
+      <div id="chartLayer" className="h-[330px]">
+        {data.datasets.length ? (
+          <Line data={data} options={options} />
+        ) : (
+          "Loading"
+        )}
+      </div>
     </div>
   );
 };

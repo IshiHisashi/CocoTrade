@@ -171,6 +171,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
           pointStyle: "circle",
           boxWidth: 8,
           boxHeight: 8,
+          padding: 15,
         }
       },
       title: {

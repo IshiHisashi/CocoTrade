@@ -169,6 +169,12 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               grid: {
                 display: false,
               },
+              ticks: {
+                callback(value) {
+                  const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                  return valueToShow;
+                },
+              },
             },
           },
           plugins: {

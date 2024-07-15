@@ -181,7 +181,8 @@ const MonthlyActivity = ({ URL }) => {
             beginAtZero: true,
             ticks: {
               callback(value) {
-                return `${value / 1000}k`; // Use template literals
+                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                return valueToShow;
               },
               font: {
                 size: 14, // Change this to the desired font size

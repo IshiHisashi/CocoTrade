@@ -264,7 +264,8 @@ const LineChart = (t) => {
             },
             ticks: {
               callback(value) {
-                return `${value / 1000}k`; // Use template literals
+                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                return valueToShow;
               },
             },
           },

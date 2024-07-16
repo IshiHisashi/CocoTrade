@@ -95,7 +95,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
   }
 
   return (
-    <header className=" bg-white sm:bg-[#F1F7F8] sm:border-b border-[#DAE5E7] sm:ml-64 sm:h-24 sticky top-0 flex justify-between items-center sm:px-8 flex-wrap sm:flex-nowrap">
+    <header className=" bg-white sm:bg-[#F1F7F8] sm:border-b border-[#DAE5E7] sm:ml-64 sm:h-24 sticky top-0 flex justify-between items-center sm:px-8 flex-wrap sm:flex-nowrap z-10">
       <button
         type="button"
         className="block my-4 ml-4 sm:hidden"

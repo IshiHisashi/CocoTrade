@@ -17,17 +17,24 @@ const Nav = (props) => {
 
   return (
     <nav
-      className={`bg-[#243037] ${translateX} sm:translate-x-0 transition-all sm:transition-none ease-in-out absolute sm:fixed sm:h-screen top-0 bottom-0 left-0 w-full sm:w-64`}
+      className={`bg-[#243037] ${translateX} sm:translate-x-0 transition-all sm:transition-none ease-in-out absolute sm:fixed h-screen top-0 bottom-0 left-0 w-full sm:w-64`}
     >
-      <div className="w-full sm:w-64 h-24 flex justify-between sm:justify-center items-center">
-        <NavLink to="/dashboard">
+      <div className="w-full sm:w-64 h-24 flex justify-between sm:justify-center items-center px-8">
+        <NavLink
+          to="/dashboard"
+          onClick={() => fnToToggleNav("-translate-x-full")}
+        >
           <img
             src={LogoForDarkBg}
             alt="CocoTrade"
             // className="relative top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
           />
         </NavLink>
-        <button type="button" className="block sm:hidden">
+        <button
+          type="button"
+          className="block sm:hidden"
+          onClick={() => fnToToggleNav("-translate-x-full")}
+        >
           <img src={Exit} alt="close nav" />
         </button>
       </div>
@@ -40,7 +47,7 @@ const Nav = (props) => {
         <NavList page="finances" fnToToggleNav={fnToToggleNav} />
       </ul>
 
-      <div className="bg-[#224F55] rounded-2xl text-white m-4 px-4 py-6 absolute bottom-0 left-0 right-0">
+      <div className="bg-[#224F55] rounded-2xl text-white m-4 mx-8 sm:mx-4 px-4 py-6 absolute bottom-0 left-0 right-0">
         <img src={Support} alt="" aria-hidden />
         <h6 className="mt-4">Need help?</h6>
         <p className="text-sm mb-4">

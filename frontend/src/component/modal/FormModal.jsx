@@ -24,7 +24,7 @@ const FormModal = (props) => {
             <p className="p18">Any questions for us?</p>
           </div>
           <form
-            className="mt-6"
+            className="mt-6 max-w-96 w-full"
             onSubmit={(e) => {
               e.preventDefault();
               fnToOpenConfirmationModal(true);
@@ -78,7 +78,7 @@ const FormModal = (props) => {
             <p className="p18">We are here for you. How can we help?</p>
           </div>
           <form
-            className="mt-6"
+            className="mt-6 max-w-96 w-full"
             onSubmit={(e) => {
               e.preventDefault();
               fnToOpenConfirmationModal(true);

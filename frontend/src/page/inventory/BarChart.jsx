@@ -186,6 +186,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
           }
         }
       },
+      verticalLinePlugin: false,
     },
     chartArea: {
       backgroundColor: 'transparent',

@@ -51,7 +51,7 @@ const NavList = (props) => {
         to={`/${page}`}
         end
         className={({ isActive }) =>
-          `flex items-center px-8 py-4 w-full text-white min-h-[68px] ${isActive ? "border-r-8 border-r-[#FF5B04]" : ""}`
+          `flex items-center px-8 py-4 w-full h5-dashboard text-white min-h-[68px] ${isActive ? "border-r-8 border-r-[#FF5B04]" : ""}`
         }
         onClick={() => fnToToggleNav("-translate-x-full")}
       >
@@ -61,6 +61,7 @@ const NavList = (props) => {
               src={isActive ? srcActive : src}
               alt=""
               className="inline-block mr-5"
+              aria-hidden
             />
             {pageName}
           </>

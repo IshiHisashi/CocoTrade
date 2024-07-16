@@ -13,7 +13,7 @@ const CtaBtn = ({
 }) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
-  let width = "w-96";
+  let width = "max-w-96 w-full";
   let height = "h-16";
   let bgc = "bg-[#FF5b04]";
   let hoverBgc = "hover:bg-[#FF8340]";

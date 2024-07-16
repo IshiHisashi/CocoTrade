@@ -23,22 +23,10 @@ const ViewPurchaseTable = ({
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [dateLabel, setDateLabel] = useState("");
+  const [inputLabel, setInputLabel] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const userId = useContext(UserIdContext);
-
-  // const fetchPurchases = () => {
-  //   const url = `http://localhost:5555/tmpFinRoute/${userId}/purchase`;
-  //   axios
-  //     .get(url)
-  //     .then((response) => {
-  //       setPurchases(response.data);
-  //       setFilteredPurchases(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching purchases:", error);
-  //     });
-  // };
 
   useEffect(() => {
     const url = `${URL}/tmpFinRoute/${userId}/purchase`;
@@ -139,10 +127,12 @@ const ViewPurchaseTable = ({
     setIsDatePickerVisible(false); // Reset to initial state when closing the modal
     setDateRange({ startDate: null, endDate: null }); // Reset date range when opening the modal
     setDateLabel(""); // Clear the date label
+    setInputLabel("");
   };
   const handleDateChange = (update) => {
     setDateRange({ startDate: update[0], endDate: update[1] });
     setDateLabel("");
+    setInputLabel("");
   };
 
   const handlePredefinedRange = (range) => {
@@ -152,7 +142,8 @@ const ViewPurchaseTable = ({
     let label = "";
     switch (range) {
       case "today":
-        label = "Today";
+        label = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        setInputLabel("Today");
         start = new Date(today.setHours(0, 0, 0, 0));
         end = new Date(today.setHours(23, 59, 59, 999));
         break;
@@ -165,15 +156,19 @@ const ViewPurchaseTable = ({
           end = new Date(start);
           end.setDate(end.getDate() + 6);
           end.setHours(23, 59, 59, 999);
+          label = `${start.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })} - ${end.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}`;
+          setInputLabel("This Week");
         }
         break;
       case "thisMonth":
-        label = "This Month";
+        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        setInputLabel("This Month");
         start = new Date(today.getFullYear(), today.getMonth(), 1);
         end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         break;
       case "lastMonth":
-        label = "Last Month";
+        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        setInputLabel("Last Month");
         start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
         end = new Date(today.getFullYear(), today.getMonth(), 0);
         break;
@@ -195,6 +190,12 @@ const ViewPurchaseTable = ({
   };
 
   const submitDateRange = () => {
+    if (dateRange.startDate && dateRange.endDate) {
+      const start = new Date(dateRange.startDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      setDateLabel(`${start} - ${end}`);
+      setInputLabel(`${start} - ${end}`);
+    }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
   };
@@ -227,19 +228,19 @@ const ViewPurchaseTable = ({
 
   return (
     <div>
-<div className="flex justify-end mb-4 py-5">
-          <label>
-          Date Filter:
-          <input
-            type="text"
-            readOnly
-            value={
-              dateLabel ||
-              `${dateRange.startDate ? new Date(dateRange.startDate).toLocaleDateString() : ""} - ${dateRange.endDate ? new Date(dateRange.endDate).toLocaleDateString() : ""}`
-            }
-            onClick={() => setIsDateModalOpen(true)}
-          />
+<div className="flex justify-between mb-4 py-5">
+<label className="mr-4">
+          <span className="ml-2 font-semibold">{dateLabel}</span>
         </label>
+        <label>
+            Date Filter:
+            <input
+              type="text"
+              readOnly
+              value={inputLabel}
+              onClick={() => setIsDateModalOpen(true)}
+            />
+          </label>
       </div>
       <Modal isOpen={isDateModalOpen} onRequestClose={toggleDateModal}>
         <h2>Select Date Range</h2>

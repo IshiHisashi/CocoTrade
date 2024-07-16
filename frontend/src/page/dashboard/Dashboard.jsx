@@ -224,6 +224,22 @@ const Dashboard = ({ URL }) => {
                 labels: [data.secondLatestMonthName, data.latestMonthName],
                 datasets: [
                   {
+                    label: "Sales",
+                    data: [
+                      data.sales.secondLatest
+                        ? data.sales.secondLatest.monthlySales.$numberDecimal
+                        : 0,
+                      data.sales.latest
+                        ? data.sales.latest.monthlySales.$numberDecimal
+                        : 0,
+                    ],
+                    backgroundColor: "#0C7F8E",
+                    hoverBackgroundColor: "#0C7F8E",
+                    barPercentage: 1,
+                    categoryPercentage: 0.6,
+                    maxBarThickness: 32,
+                  },
+                  {
                     label: "Purchase",
                     data: [
                       data.purchase.secondLatest
@@ -234,21 +250,11 @@ const Dashboard = ({ URL }) => {
                         ? data.purchase.latest.monthlyPurchase.$numberDecimal
                         : 0,
                     ],
-                    hoverBackgroundColor: "blue",
+                    backgroundColor: "#FF8340",
+                    hoverBackgroundColor: "#FF8340",
                     barPercentage: 1,
-                  },
-                  {
-                    label: "Sales",
-                    data: [
-                      data.sales.secondLatest
-                        ? data.sales.secondLatest.monthlySales.$numberDecimal
-                        : 0,
-                      data.sales.latest
-                        ? data.sales.latest.monthlySales.$numberDecimal
-                        : 0,
-                    ],
-                    hoverBackgroundColor: "red",
-                    barPercentage: 1,
+                    categoryPercentage: 0.6,
+                    maxBarThickness: 32,
                   },
                 ],
               }}
@@ -258,6 +264,31 @@ const Dashboard = ({ URL }) => {
                 plugins: {
                   legend: {
                     position: "bottom",
+                  },
+                },
+                scales: {
+                  x: {
+                    beginAtZero: true,
+                    ticks: {
+                      callback(value) {
+                        const valueToShow =
+                          value < 1000 ? value : `${value / 1000}k`;
+                        return valueToShow;
+                      },
+                    },
+                    grid: {
+                      display: false,
+                    },
+                    title: {
+                      display: true,
+                      text: "Price (Php)",
+                      align: "end",
+                    },
+                  },
+                  y: {
+                    grid: {
+                      display: false,
+                    },
                   },
                 },
               }}

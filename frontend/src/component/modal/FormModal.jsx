@@ -144,7 +144,7 @@ const FormModal = (props) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center m-7 gap-5">
+    <div className="flex flex-col items-center justify-center py-8 sm:py-0 mx-4 sm:m-7 gap-5">
       <button
         type="button"
         className="absolute top-8 right-8"

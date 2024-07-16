@@ -10,19 +10,20 @@ const CtaBtn = ({
   type = "button",
   innerTxt = "Button",
   disabled = false,
+  imgSource = ""
 }) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
-  let width = "w-96";
-  let height = "h-16";
+  let width = "w-[185px]";
+  let height = "h-[50px]";
   let bgc = "bg-[#FF5b04]";
   let hoverBgc = "hover:bg-[#FF8340]";
   let activeBgc = "active:bg-[#FE2E00]";
   let txtColor = "text-white";
   let activeTxtColor = "active:text-white";
   const fontWeight = "font-semibold";
-  const fontSize = "text-lg";
-  const fontFamily = "font-sans";
+  const fontSize = "text-[16px]";
+  const fontFamily = "dm-sans";
   const radius = "rounded";
   let border = "border-0";
   const borderColor = "border-teal-900";
@@ -70,6 +71,10 @@ const CtaBtn = ({
     radius,
     border,
     borderColor,
+    "flex",
+    "justify-center",
+    "items-center",
+    "gap-2"
   ].join(" ");
 
   return (
@@ -85,6 +90,7 @@ const CtaBtn = ({
       }
       disabled={disabled}
     >
+      {imgSource === "" ? "" : <img src={imgSource} alt="" className="h-[24px] w-[24px]"/>}
       {innerTxt}
     </button>
   );

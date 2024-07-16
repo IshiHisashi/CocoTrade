@@ -47,10 +47,11 @@ const Inventory = ({ URL }) => {
         </div>
         <div id="planShipmentBtn" className="basis-2/5 grow shrink flex justify-end">
           <CtaBtn
-            size="M"
+            size="L"
             level="P"
             innerTxt="Plan shipment"
             onClickFnc={fncShowMedal}
+            imgSource="./btn-imgs/calender.png"
           />
           <Modal
             className={classNameForModal}

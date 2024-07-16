@@ -204,7 +204,9 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
   return (
     <div>
       <div id="topLayer" className="flex justify-between mb-[34px]">
-        <h3 className="h3-serif font-semibold">Inventory Trend</h3>
+        {dashboard ||
+          (<h3 className="h3-serif font-semibold">Inventory Trend</h3>
+        )}
         {dashboard || (
           <DurationSelecter
             setDurationType={setDurationType}

@@ -195,18 +195,27 @@ const Dashboard = ({ URL }) => {
         <PriceIndicatorCard type="suggestion" URL={URL} />
       </section>
 
-      <section className="p-4 bg-white rounded-lg">
+      <section className="p-8 my-4 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
         {!todaysInventory ? (
-          <h2>getting your today&apos;s inventory amount...</h2>
+          <h2 className="h3-sans text-neutral-600">
+            getting your today&apos;s inventory amount...
+          </h2>
         ) : (
-          <h2>{todaysInventory}</h2>
+          <h2 className="h3-sans text-neutral-600">{todaysInventory}</h2>
         )}
         <LineChartRevised userId={userId} dashboard URL={URL} />
       </section>
 
-      <div className="grid sm:grid-cols-3">
-        <section className="col-span-2 p-4 bg-white rounded-lg">
-          <h2>Activity this month vs last month</h2>
+      <div className="@2xl:grid @2xl:grid-cols-3 gap-4">
+        <section className="order-2 flex flex-col gap-4 mb-4 @2xl:mb-0">
+          <RecentActivityCard type="purchase" URL={URL} />
+          <RecentActivityCard type="sales" URL={URL} />
+        </section>
+
+        <section className="col-span-2 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200 order-1">
+          <h2 className="h3-sans text-neutral-600">
+            Activity this month vs last month
+          </h2>
           {!data ? (
             <p>loading...</p>
           ) : (
@@ -254,11 +263,6 @@ const Dashboard = ({ URL }) => {
               }}
             />
           )}
-        </section>
-
-        <section>
-          <RecentActivityCard type="purchase" URL={URL} />
-          <RecentActivityCard type="sales" URL={URL} />
         </section>
       </div>
     </UserIdContext.Provider>

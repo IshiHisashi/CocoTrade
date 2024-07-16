@@ -39,7 +39,7 @@ const Layout = (props) => {
         translateX={translateX}
         fnToToggleNav={setTranslateX}
       />
-      <main className="sm:ml-64 pt-0 sm:p-8 bg-[#F1F7F8] min-h-screen @container">
+      <main className="sm:ml-64 pt-0 pb-4 sm:p-8 bg-[#F1F7F8] min-h-screen @container">
         {children}
       </main>
 

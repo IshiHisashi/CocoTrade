@@ -130,6 +130,7 @@ const Purchase = ({ URL }) => {
           // window.location.reload();
         }}
         contentLabel="Add Purchase Form"
+        shouldCloseOnOverlayClick={false} // Disable closing on outside click
       >
         <AddPurchaseForm
           setShowAddForm={setShowAddForm}

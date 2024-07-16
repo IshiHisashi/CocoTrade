@@ -293,7 +293,7 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
         <div ref={wrapperRef}>
           <Field
             label="Company"
-            name="company"
+            name="manufacturer_name"
             type="text"
             value={formData.manufacturer_name}
             onChange={handleChange}

@@ -10,10 +10,11 @@ const CtaBtn = ({
   type = "button",
   innerTxt = "Button",
   disabled = false,
+  iconSrc = "",
 }) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
-  let width = "w-96";
+  let width = "max-w-96 w-full";
   let height = "h-16";
   let bgc = "bg-[#FF5b04]";
   let hoverBgc = "hover:bg-[#FF8340]";
@@ -29,7 +30,7 @@ const CtaBtn = ({
 
   // Conditioning based on size
   if (size === "M") {
-    width = "w-52";
+    width = iconSrc ? "w-14 md:w-52" : "w-52";
     height = "h-14";
   } else if (size === "S") {
     width = "w-24";
@@ -75,7 +76,7 @@ const CtaBtn = ({
   return (
     <button
       type={type}
-      className={tailwindClass}
+      className={`${tailwindClass} ${"flex items-center justify-center gap-2"}`}
       onClick={
         onClickFnc === ""
           ? () => {}
@@ -85,7 +86,8 @@ const CtaBtn = ({
       }
       disabled={disabled}
     >
-      {innerTxt}
+      {iconSrc && <img src={iconSrc} alt="" />}
+      <span className={iconSrc && "hidden md:inline-block"}>{innerTxt}</span>
     </button>
   );
 };

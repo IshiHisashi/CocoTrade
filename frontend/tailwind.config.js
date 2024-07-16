@@ -125,6 +125,8 @@ export default {
     },
   },
   plugins: [
+    // eslint-disable-next-line global-require
+    require("@tailwindcss/container-queries"),
     function ({ addUtilities, theme, e }) {
       const newUtilities = {
         ".display-serif": {

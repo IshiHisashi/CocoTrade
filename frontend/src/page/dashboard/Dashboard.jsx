@@ -10,6 +10,7 @@ import CtaBtn from "../../component/btn/CtaBtn.jsx";
 import LineChartRevised from "../inventory/LineChartRevised.jsx";
 import Info from "../../assets/icons/Information.svg";
 import InfoTooltip from "../../component/tooltip/InfoTooltip.jsx";
+import Add from "../../assets/icons/Add.svg";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -159,12 +160,14 @@ const Dashboard = ({ URL }) => {
 
   return (
     <UserIdContext.Provider value={userId}>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mx-8 sm:mx-0 mb-4">
         <div className="flex items-center">
           {!upcomingShipDate ? (
-            <p>getting your upcoming shipment information...</p>
+            <p className="p18-bold text-neutral-600">
+              getting your upcoming shipment information...
+            </p>
           ) : (
-            <p>{upcomingShipDate}</p>
+            <p className="p18-bold text-neutral-600">{upcomingShipDate}</p>
           )}
           <InfoTooltip title="View shipment on Sales." placement="right" arrow>
             <button
@@ -183,10 +186,11 @@ const Dashboard = ({ URL }) => {
           onClickFnc={() =>
             navigate("/purchase", { state: { showAddForm: true } })
           }
+          iconSrc={Add}
         />
       </div>
 
-      <section className="grid sm:grid-cols-2">
+      <section className="grid @2xl:grid-cols-2 gap-4">
         <PriceIndicatorCard type="market" URL={URL} />
         <PriceIndicatorCard type="suggestion" URL={URL} />
       </section>

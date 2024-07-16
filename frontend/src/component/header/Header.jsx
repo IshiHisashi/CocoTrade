@@ -115,7 +115,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
         className="block py-4 sm:hidden"
       />
 
-      <h2 className="h1-sans text-neutral-600 bg-[#F1F7F8] basis-full sm:basis-auto p-4 sm:p-0 order-last sm:order-none">
+      <h2 className="h1-sans text-neutral-600 bg-[#F1F7F8] basis-full sm:basis-auto px-8 py-4 sm:p-0 order-last sm:order-none">
         {pageTitle}
         {pageInfo && (
           <InfoTooltip title={pageInfo} placement="right" arrow>

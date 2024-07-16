@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import UserMenuDropdown from "./UserMenuDropdown.jsx";
 import NotificationDropdown from "./NotificationDropdown.jsx";
@@ -109,11 +109,14 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
       >
         <img src={Hamburger} alt="toggle navigation menu" />
       </button>
-      <img
-        src={LogoForLightBg}
-        alt="CocoTrade"
-        className="block py-4 sm:hidden"
-      />
+
+      <NavLink className="sm:hidden" to="/dashboard">
+        <img
+          src={LogoForLightBg}
+          alt="CocoTrade"
+          className="block py-4 sm:hidden"
+        />
+      </NavLink>
 
       <h2 className="h1-sans text-neutral-600 bg-[#F1F7F8] basis-full sm:basis-auto p-4 sm:p-0 order-last sm:order-none">
         {pageTitle}

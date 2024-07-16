@@ -104,7 +104,6 @@ const Purchase = ({ URL }) => {
 
   return (
     <div>
-    <h1>Purchase Log</h1>
 <div className="flex justify-end mb-4">
     <CtaBtn 
 

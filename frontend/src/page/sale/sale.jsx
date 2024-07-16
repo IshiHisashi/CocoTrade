@@ -30,7 +30,6 @@ const Sale = ({ URL }) => {
 
   return (
     <div>
-      <div>Sales Log</div>
       <Modal
       className={classNameForModal}
         isOpen={showEditForm}

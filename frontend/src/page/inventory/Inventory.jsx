@@ -84,7 +84,7 @@ const Inventory = ({ URL }) => {
             URL={URL}
           />
         </div>
-        <div id="salesTable" className="lg:col-start-5 lg:col-end-7 sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] mt-[14px]">
+        <div id="salesTable" className="lg:col-start-5 lg:col-end-7 sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] mt-[14px] sm:mt-0">
           <SalesTable
             userId={userId}
             URL={URL}

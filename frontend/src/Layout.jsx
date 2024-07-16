@@ -11,6 +11,7 @@ const classNameForModal =
 const styleForModal = {
   overlay: {
     backgroundColor: "#24303790",
+    zIndex: 50,
   },
 };
 
@@ -45,7 +46,7 @@ const Layout = (props) => {
 
       <Modal
         isOpen={isFormModalOpen}
-        onRequestClose={() => setIsFormModalOpen(false)}
+        // onRequestClose={() => setIsFormModalOpen(false)}
         className={classNameForModal}
         style={styleForModal}
       >

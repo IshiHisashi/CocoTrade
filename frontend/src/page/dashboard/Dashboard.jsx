@@ -115,7 +115,9 @@ const Dashboard = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const [data, setData] = useState(null);
   const [upcomingShipDate, setUpcomingShipDate] = useState("");
-  const [todaysInventory, setTodaysInventory] = useState("");
+  const [todaysInventory, setTodaysInventory] = useState(
+    "getting your today's inventory amount..."
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -196,14 +198,12 @@ const Dashboard = ({ URL }) => {
       </section>
 
       <section className="p-8 my-4 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
-        {!todaysInventory ? (
-          <h2 className="h3-sans text-neutral-600">
-            getting your today&apos;s inventory amount...
-          </h2>
-        ) : (
-          <h2 className="h3-sans text-neutral-600">{todaysInventory}</h2>
-        )}
-        <LineChartRevised userId={userId} dashboard URL={URL} />
+        <LineChartRevised
+          userId={userId}
+          dashboard
+          URL={URL}
+          chartTitle={todaysInventory}
+        />
       </section>
 
       <div className="@2xl:grid @2xl:grid-cols-3 gap-4">

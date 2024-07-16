@@ -46,7 +46,6 @@ const Layout = (props) => {
 
       <Modal
         isOpen={isFormModalOpen}
-        // onRequestClose={() => setIsFormModalOpen(false)}
         className={classNameForModal}
         style={styleForModal}
       >

@@ -36,6 +36,7 @@ const Sale = ({ URL }) => {
         isOpen={showEditForm}
          onRequestClose={() => setshowEditForm(false)}
         contentLabel="Edit Sales Form"
+        shouldCloseOnOverlayClick={false} // Disable closing on outside click
       >
         <EditSaleModal
           showEditForm={showEditForm}

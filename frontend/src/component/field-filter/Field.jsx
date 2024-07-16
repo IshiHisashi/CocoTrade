@@ -31,6 +31,7 @@ const Field = ({
   min,
   max,
   step,
+  title = "",
 }) => {
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isShowChangeButton, setIsShowChangeButton] =
@@ -65,6 +66,7 @@ const Field = ({
             onChange={onChange}
             disabled={isDisabled}
             required={required}
+            title={title}
             sx={{ py: 1 }}
             InputProps={{
               inputProps: { min, max, step },
@@ -167,6 +169,7 @@ const Field = ({
           disabled={isDisabled}
           required={required}
           max={name === "purchase_date" ? new Date().toISOString().split("T")[0] : undefined}
+          title={title}
         />
       );
       break;
@@ -228,7 +231,7 @@ const Field = ({
           Change
         </button>
       )}
-      {inputElement}
+      {inputElement}     
     </div>
   );
 };

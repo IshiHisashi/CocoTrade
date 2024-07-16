@@ -185,7 +185,7 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               backgroundColor: gradient,
               borderColor: "rgba(75, 192, 192, 1)",
               borderWidth: 1,
-              stepped: 'after'
+              // stepped: 'after'
             },
           ],
         });

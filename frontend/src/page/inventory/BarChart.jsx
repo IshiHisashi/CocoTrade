@@ -38,9 +38,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
         .get(`${URL}/user/${userId}/latestInv`)
         .then((res) => {
           setInventoryLeft(res.data.latestInv[0].current_amount_left.$numberDecimal);
-          console.log("Inv left: ",res.data.latestInv[0].current_amount_left.$numberDecimal);
           setInventoryWithPending(res.data.latestInv[0].current_amount_with_pending.$numberDecimal);
-          console.log("Inv with pending: ", res.data.latestInv[0].current_amount_with_pending.$numberDecimal)
         })
         .catch((err) => {
           console.error(err);
@@ -196,7 +194,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
   };
 
   return (
-    <div className="w-full h-[80px]">
+    <div className="h-[80px]">
       <Bar data={data} options={options}/>
     </div>
   );

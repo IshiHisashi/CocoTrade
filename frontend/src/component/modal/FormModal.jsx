@@ -11,6 +11,7 @@ const FormModal = (props) => {
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [subject, setSubject] = useState("");
 
   let elementToReturn;
 
@@ -64,7 +65,13 @@ const FormModal = (props) => {
               required
             />
 
-            <CtaBtn type="submit" size="L" level="P" innerTxt="Submit" />
+            <CtaBtn
+              type="submit"
+              size="L"
+              level={fullName && companyName && email && message ? "P" : "D"}
+              innerTxt="Submit"
+              disabled={!(fullName && companyName && email && message)}
+            />
           </form>
         </>
       );
@@ -105,8 +112,8 @@ const FormModal = (props) => {
               label="Subject"
               type="dropdown"
               name="subject"
-              // value={}
-              // onChange={}
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
               required
               options={[
                 { value: "features", label: "Features" },
@@ -123,7 +130,13 @@ const FormModal = (props) => {
               required
             />
 
-            <CtaBtn type="submit" size="L" level="P" innerTxt="Send" />
+            <CtaBtn
+              type="submit"
+              size="L"
+              level={fullName && companyName && subject && message ? "P" : "D"}
+              innerTxt="Send"
+              disabled={!(fullName && companyName && subject && message)}
+            />
           </form>
         </>
       );

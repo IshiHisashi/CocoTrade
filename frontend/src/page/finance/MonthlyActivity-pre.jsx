@@ -21,7 +21,6 @@ const MonthlyActivity = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
-  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
 
   // Function to determine if the screen is 'lg' or larger
   const isLgScreen = () => window.innerWidth >= 1024;
@@ -125,38 +124,20 @@ const MonthlyActivity = ({ URL }) => {
       },
     };
 
-    const getDisplayedData = () => {
-      const displayCount = isLgScreen() ? 12 : 4;
-      return {
-        labels: displayLabels.slice(-displayCount),
-        chartDataSale: chartDataSale.slice(-displayCount),
-        chartDataPurchase: chartDataPurchase.slice(-displayCount),
-      };
-    };
-
-    const {
-      labels: displayedLabels,
-      chartDataSale: displayedSaleData,
-      chartDataPurchase: displayedPurchaseData,
-    } = getDisplayedData();
-
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
     chartInstance.current = new Chart(chartRef.current, {
       type: "bar",
       data: {
-        labels: displayedLabels,
+        labels: displayLabels,
         datasets: [
           {
             label: "Monthly Sale",
-            data: displayedSaleData,
+            data: chartDataSale,
             backgroundColor: (context) => {
               const index = context.dataIndex;
-              const displayCount = isLgScreen() ? 12 : 4;
-              const monthIndexOffset = 12 - displayCount;
-              const adjustedIndex = index + monthIndexOffset;
-              const month = labels[adjustedIndex];
+              const month = labels[index];
               return month === selectedMonth || selectedMonth === "all"
                 ? "#0C7F8E"
                 : "#F1F7F8";
@@ -166,13 +147,10 @@ const MonthlyActivity = ({ URL }) => {
           },
           {
             label: "Monthly Purchase",
-            data: displayedPurchaseData,
+            data: chartDataPurchase,
             backgroundColor: (context) => {
               const index = context.dataIndex;
-              const displayCount = isLgScreen() ? 12 : 4;
-              const monthIndexOffset = 12 - displayCount;
-              const adjustedIndex = index + monthIndexOffset;
-              const month = labels[adjustedIndex];
+              const month = labels[index];
               return month === selectedMonth || selectedMonth === "all"
                 ? "#FF8340"
                 : "#F1F7F8";
@@ -203,12 +181,11 @@ const MonthlyActivity = ({ URL }) => {
             },
           },
           y: {
-            display: true,
+            display: isLgScreen(),
             beginAtZero: true,
             ticks: {
               callback(value) {
-                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
-                return valueToShow;
+                return `${value / 1000}k`; // Use template literals
               },
               font: {
                 size: 14, // Change this to the desired font size
@@ -236,10 +213,7 @@ const MonthlyActivity = ({ URL }) => {
         onClick: (event, elements) => {
           if (elements.length > 0) {
             const chartElement = elements[0];
-            const displayCount = isLgScreen() ? 12 : 4;
-            const monthIndexOffset = 12 - displayCount;
-            const adjustedIndex = chartElement.index + monthIndexOffset;
-            const clickedMonth = labels[adjustedIndex];
+            const clickedMonth = labels[chartElement.index];
             if (clickedMonth !== selectedMonth) {
               setSelectedMonth(clickedMonth);
               setSelectedTableMonth(clickedMonth);
@@ -254,18 +228,9 @@ const MonthlyActivity = ({ URL }) => {
       },
       plugins: [drawValues],
     });
-
     // Update the chart options when the screen size changes
     const handleResize = () => {
-      setIsLargeScreen(isLgScreen());
-      const {
-        labels: updatedLabels,
-        chartDataSale: updatedSaleData,
-        chartDataPurchase: updatedPurchaseData,
-      } = getDisplayedData();
-      chartInstance.current.data.labels = updatedLabels;
-      chartInstance.current.data.datasets[0].data = updatedSaleData;
-      chartInstance.current.data.datasets[1].data = updatedPurchaseData;
+      chartInstance.current.options.scales.y.display = isLgScreen();
       chartInstance.current.update();
     };
 
@@ -274,14 +239,16 @@ const MonthlyActivity = ({ URL }) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [monthlySale, monthlyPurchase, selectedMonth, isLargeScreen]);
+  }, [monthlySale, monthlyPurchase, selectedMonth]);
 
   return (
     <div className="lg:grid lg:grid-cols-6 gap-[14px]">
       <div className=" bg-white px-[27px] py-[25px] border border-b-0 lg:border-b-1 border-bluegreen-200 lg:col-start-1 lg:col-end-5">
         <h3 className="h3-sans text-neutral-600">Your Monthly Activity</h3>
         <section className="h-[250px] mt-[30px]">
-          <canvas ref={chartRef}> </canvas>
+          <canvas ref={chartRef} className="">
+            {" "}
+          </canvas>
         </section>
         <div className="legend flex gap-1 items-center justify-center mt-[21px]">
           <div className="w-[20px] h-[10px] bg-bluegreen-500"> </div>

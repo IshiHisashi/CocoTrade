@@ -162,139 +162,145 @@ const Dashboard = ({ URL }) => {
 
   return (
     <UserIdContext.Provider value={userId}>
-      <div className="flex justify-between items-center mx-8 sm:mx-0 mb-4">
-        <div className="flex items-center">
-          {!upcomingShipDate ? (
-            <p className="p18-bold text-neutral-600">
-              getting your upcoming shipment information...
-            </p>
-          ) : (
-            <p className="p18-bold text-neutral-600">{upcomingShipDate}</p>
-          )}
-          <InfoTooltip title="View shipment on Sales." placement="right" arrow>
-            <button
-              type="button"
-              className="mx-2"
-              onClick={() => navigate("/sales")}
+      <div className="sm:m-8">
+        <div className="flex justify-between items-center px-8 pb-4 sm:px-0">
+          <div className="flex items-center">
+            {!upcomingShipDate ? (
+              <p className="p18-bold text-neutral-600">
+                getting your upcoming shipment information...
+              </p>
+            ) : (
+              <p className="p18-bold text-neutral-600">{upcomingShipDate}</p>
+            )}
+            <InfoTooltip
+              title="View shipment on Sales."
+              placement="right"
+              arrow
             >
-              <img src={Info} alt="toggle tooltip" className="inline-block" />
-            </button>
-          </InfoTooltip>
+              <button
+                type="button"
+                className="mx-2"
+                onClick={() => navigate("/sales")}
+              >
+                <img src={Info} alt="toggle tooltip" className="inline-block" />
+              </button>
+            </InfoTooltip>
+          </div>
+          <CtaBtn
+            size="M"
+            level="P"
+            innerTxt="Add Purchase"
+            onClickFnc={() =>
+              navigate("/purchase", { state: { showAddForm: true } })
+            }
+            iconSrc={Add}
+          />
         </div>
-        <CtaBtn
-          size="M"
-          level="P"
-          innerTxt="Add Purchase"
-          onClickFnc={() =>
-            navigate("/purchase", { state: { showAddForm: true } })
-          }
-          iconSrc={Add}
-        />
-      </div>
 
-      <section className="grid @2xl:grid-cols-2 gap-4">
-        <PriceIndicatorCard type="market" URL={URL} />
-        <PriceIndicatorCard type="suggestion" URL={URL} />
-      </section>
-
-      <section className="p-8 my-4 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
-        <LineChartRevised
-          userId={userId}
-          dashboard
-          URL={URL}
-          chartTitle={todaysInventory}
-        />
-      </section>
-
-      <div className="@2xl:grid @2xl:grid-cols-3 gap-4">
-        <section className="order-2 flex flex-col gap-4 mb-4 @2xl:mb-0">
-          <RecentActivityCard type="purchase" URL={URL} />
-          <RecentActivityCard type="sales" URL={URL} />
+        <section className="grid @2xl:grid-cols-2 gap-4">
+          <PriceIndicatorCard type="market" URL={URL} />
+          <PriceIndicatorCard type="suggestion" URL={URL} />
         </section>
 
-        <section className="col-span-2 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200 order-1">
-          <h2 className="h3-sans text-neutral-600">
-            Activity this month vs last month
-          </h2>
-          {!data ? (
-            <p>loading...</p>
-          ) : (
-            <Bar
-              data={{
-                labels: [data.secondLatestMonthName, data.latestMonthName],
-                datasets: [
-                  {
-                    label: "Sales",
-                    data: [
-                      data.sales.secondLatest
-                        ? data.sales.secondLatest.monthlySales.$numberDecimal
-                        : 0,
-                      data.sales.latest
-                        ? data.sales.latest.monthlySales.$numberDecimal
-                        : 0,
-                    ],
-                    backgroundColor: "#0C7F8E",
-                    hoverBackgroundColor: "#0C7F8E",
-                    barPercentage: 1,
-                    categoryPercentage: 0.6,
-                    maxBarThickness: 32,
+        <section className="p-8 my-4 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
+          <LineChartRevised
+            userId={userId}
+            dashboard
+            URL={URL}
+            chartTitle={todaysInventory}
+          />
+        </section>
+
+        <div className="@3xl:grid @3xl:grid-cols-3 gap-4">
+          <section className="order-2 flex flex-col gap-4 mb-4 @3xl:mb-0">
+            <RecentActivityCard type="purchase" URL={URL} />
+            <RecentActivityCard type="sales" URL={URL} />
+          </section>
+
+          <section className="col-span-2 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200 order-1">
+            <h2 className="h3-sans text-neutral-600">
+              Activity this month vs last month
+            </h2>
+            {!data ? (
+              <p>loading...</p>
+            ) : (
+              <Bar
+                data={{
+                  labels: [data.secondLatestMonthName, data.latestMonthName],
+                  datasets: [
+                    {
+                      label: "Sales",
+                      data: [
+                        data.sales.secondLatest
+                          ? data.sales.secondLatest.monthlySales.$numberDecimal
+                          : 0,
+                        data.sales.latest
+                          ? data.sales.latest.monthlySales.$numberDecimal
+                          : 0,
+                      ],
+                      backgroundColor: "#0C7F8E",
+                      hoverBackgroundColor: "#0C7F8E",
+                      barPercentage: 1,
+                      categoryPercentage: 0.6,
+                      maxBarThickness: 32,
+                    },
+                    {
+                      label: "Purchase",
+                      data: [
+                        data.purchase.secondLatest
+                          ? data.purchase.secondLatest.monthlyPurchase
+                              .$numberDecimal
+                          : 0,
+                        data.purchase.latest
+                          ? data.purchase.latest.monthlyPurchase.$numberDecimal
+                          : 0,
+                      ],
+                      backgroundColor: "#FF8340",
+                      hoverBackgroundColor: "#FF8340",
+                      barPercentage: 1,
+                      categoryPercentage: 0.6,
+                      maxBarThickness: 32,
+                    },
+                  ],
+                }}
+                options={{
+                  indexAxis: "y",
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "bottom",
+                    },
                   },
-                  {
-                    label: "Purchase",
-                    data: [
-                      data.purchase.secondLatest
-                        ? data.purchase.secondLatest.monthlyPurchase
-                            .$numberDecimal
-                        : 0,
-                      data.purchase.latest
-                        ? data.purchase.latest.monthlyPurchase.$numberDecimal
-                        : 0,
-                    ],
-                    backgroundColor: "#FF8340",
-                    hoverBackgroundColor: "#FF8340",
-                    barPercentage: 1,
-                    categoryPercentage: 0.6,
-                    maxBarThickness: 32,
-                  },
-                ],
-              }}
-              options={{
-                indexAxis: "y",
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: "bottom",
-                  },
-                },
-                scales: {
-                  x: {
-                    beginAtZero: true,
-                    ticks: {
-                      callback(value) {
-                        const valueToShow =
-                          value < 1000 ? value : `${value / 1000}k`;
-                        return valueToShow;
+                  scales: {
+                    x: {
+                      beginAtZero: true,
+                      ticks: {
+                        callback(value) {
+                          const valueToShow =
+                            value < 1000 ? value : `${value / 1000}k`;
+                          return valueToShow;
+                        },
+                      },
+                      grid: {
+                        display: false,
+                      },
+                      title: {
+                        display: true,
+                        text: "Price (Php)",
+                        align: "end",
                       },
                     },
-                    grid: {
-                      display: false,
-                    },
-                    title: {
-                      display: true,
-                      text: "Price (Php)",
-                      align: "end",
+                    y: {
+                      grid: {
+                        display: false,
+                      },
                     },
                   },
-                  y: {
-                    grid: {
-                      display: false,
-                    },
-                  },
-                },
-              }}
-            />
-          )}
-        </section>
+                }}
+              />
+            )}
+          </section>
+        </div>
       </div>
     </UserIdContext.Provider>
   );

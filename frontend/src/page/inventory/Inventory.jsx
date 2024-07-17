@@ -47,7 +47,7 @@ const Inventory = ({ URL }) => {
         </div>
         <div id="planShipmentBtn" className="basis-2/5 grow shrink flex justify-end">
           <CtaBtn
-            size="L"
+            size="M"
             level="P"
             innerTxt="Plan shipment"
             onClickFnc={fncShowMedal}

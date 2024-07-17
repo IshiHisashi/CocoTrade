@@ -14,7 +14,7 @@ const CtaBtn = ({
 }) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
-  let width = "w-[185px]";
+  let width = "max-w-[382px]";
   let height = "h-[50px]";
   let bgc = "bg-[#FF5b04]";
   let hoverBgc = "hover:bg-[#FF8340]";
@@ -30,10 +30,10 @@ const CtaBtn = ({
 
   // Conditioning based on size
   if (size === "M") {
-    width = "w-[162px]";
+    width = "max-w-[185px]";
     height = "h-14";
   } else if (size === "S") {
-    width = "w-24";
+    width = "max-w-24";
     height = "h-12";
   }
 
@@ -75,7 +75,8 @@ const CtaBtn = ({
     "flex",
     "justify-center",
     "items-center",
-    "gap-2"
+    "gap-2",
+    "w-full",
   ].join(" ");
 
   return (

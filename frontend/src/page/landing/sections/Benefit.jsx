@@ -3,7 +3,7 @@ import LandingBenefitsCard from "../../../component/card/LandingBenefitsCard";
 
 const Benefit = () => {
   return (
-    <div className="py-[130px] px-[123px]">
+    <div className="py-[60px] sm:py-[130px] px-[24px] sm:px-[123px]">
       <div className="texts text-center pb-[80px]">
         <h2 className="h2-serif text-bluegreen-700">Benefits</h2>
         <p className="p18">
@@ -11,7 +11,7 @@ const Benefit = () => {
           transactions, and inventory.
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-[19px]">
+      <div className="grid md:grid-cols-3 gap-[19px]">
         <LandingBenefitsCard
           title="Increase Productivity"
           description="Get real-time data, from copra market price to finances."

@@ -165,13 +165,12 @@ const Dashboard = ({ URL }) => {
       <div className="sm:m-8">
         <div className="flex justify-between items-center px-8 pb-4 sm:px-0">
           <div className="flex items-center">
-            {!upcomingShipDate ? (
-              <p className="p18-bold text-neutral-600">
-                getting your upcoming shipment information...
-              </p>
-            ) : (
-              <p className="p18-bold text-neutral-600">{upcomingShipDate}</p>
-            )}
+            <p className="p18-bold text-neutral-600 sm:text-base md:p18-bold">
+              {!upcomingShipDate
+                ? "getting your upcoming shipment information..."
+                : upcomingShipDate}
+            </p>
+
             <InfoTooltip
               title="View shipment on Sales."
               placement="right"

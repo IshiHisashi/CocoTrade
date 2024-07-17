@@ -30,7 +30,7 @@ const CtaBtn = ({
 
   // Conditioning based on size
   if (size === "M") {
-    width = iconSrc ? "w-14 md:w-52" : "w-52";
+    width = iconSrc ? "w-14 lg:w-52" : "w-52";
     height = "h-14";
   } else if (size === "S") {
     width = "w-24";
@@ -87,7 +87,7 @@ const CtaBtn = ({
       disabled={disabled}
     >
       {iconSrc && <img src={iconSrc} alt="" />}
-      <span className={iconSrc && "hidden md:inline-block"}>{innerTxt}</span>
+      <span className={iconSrc && "hidden lg:inline-block"}>{innerTxt}</span>
     </button>
   );
 };

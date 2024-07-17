@@ -42,7 +42,7 @@ const calculateDiff = (obj) => {
     arrow = "+";
     trend = "U";
   } else if (priceDiff < 0) {
-    arrow = "-";
+    arrow = "";
     trend = "D";
   } else {
     arrow = "±";
@@ -69,13 +69,13 @@ const PriceIndicatorCard = (props) => {
   if (dataObj) {
     diffObj = calculateDiff(dataObj);
     if (type === "market") {
-      if (diffObj.trend === "U") {
+      if (diffObj.trend === "U" || diffObj.trend === "N") {
         iconSrc = MUp;
       } else if (diffObj.trend === "D") {
         iconSrc = MDown;
       }
     } else if (type === "suggestion") {
-      if (diffObj.trend === "U") {
+      if (diffObj.trend === "U" || diffObj.trend === "N") {
         iconSrc = SPPUp;
       } else if (diffObj.trend === "D") {
         iconSrc = SPPDown;
@@ -85,14 +85,16 @@ const PriceIndicatorCard = (props) => {
 
   return (
     <div className="flex flex-col gap-4 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
-      <h3 className="h3-sans text-neutral-600">
-        {type === "market" ? "Coconut Oil Price" : "Copra Purchase Price"}
-      </h3>
-      <p className="p14 text-neutral-1000">
-        {type === "market"
-          ? "Based on world market price"
-          : "Suggested buying for farmers"}
-      </p>
+      <div>
+        <h3 className="h3-sans text-neutral-600">
+          {type === "market" ? "Coconut Oil Price" : "Copra Purchase Price"}
+        </h3>
+        <p className="p14 text-neutral-400">
+          {type === "market"
+            ? "Based on world market price"
+            : "Suggested buying for farmers"}
+        </p>
+      </div>
       {dataObj ? (
         <>
           <div className="flex justify-between items-center gap-2">
@@ -104,7 +106,7 @@ const PriceIndicatorCard = (props) => {
           <div className="flex content-center items-center gap-4">
             <TrendBadge trend={diffObj.trend} num={diffObj.priceDiff} />
             <p
-              className={`p14-medium ${diffObj.trend === "U" ? "text-bluegreen-500" : "text-red-100"}`}
+              className={`p14-medium ${diffObj.trend === "U" || diffObj.trend === "N" ? "text-bluegreen-500" : "text-red-100"}`}
             >
               {diffObj.arrow}
               {diffObj.percentageDiff}% today

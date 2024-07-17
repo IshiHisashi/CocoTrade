@@ -42,7 +42,7 @@ const RecentActivityCard = (props) => {
       <h3 className="h3-sans text-neutral-600">
         Recent {type.charAt(0).toUpperCase() + type.slice(1)}
       </h3>
-      <p className="p16 text-neutral-1000">
+      <p className="p16 text-neutral-400">
         {type === "purchase" ? "from today" : "over the last week"}
       </p>
       <p className="display-sans text-neutral-600">

@@ -192,7 +192,7 @@ const Dashboard = ({ URL }) => {
             onClickFnc={() =>
               navigate("/purchase", { state: { showAddForm: true } })
             }
-            iconSrc={Add}
+            imgSource={Add}
           />
         </div>
 

@@ -10,26 +10,27 @@ const CtaBtn = ({
   type = "button",
   innerTxt = "Button",
   disabled = false,
+  imgSource = "",
 }) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
   let width = "max-w-96 w-full";
-  let height = "h-16";
+  let height = "h-[50px]";
   let bgc = "bg-[#FF5b04]";
   let hoverBgc = "hover:bg-[#FF8340]";
   let activeBgc = "active:bg-[#FE2E00]";
   let txtColor = "text-white";
   let activeTxtColor = "active:text-white";
-  const fontWeight = "p16-bold";
-  const fontSize = "p16-bold";
-  const fontFamily = "font-sans";
+  const fontWeight = "font-semibold";
+  const fontSize = "text-[16px]";
+  const fontFamily = "dm-sans";
   const radius = "rounded";
   let border = "border-0";
   const borderColor = "border-bluegreen-700";
 
   // Conditioning based on size
   if (size === "M") {
-    width = "w-52";
+    width = imgSource ? "w-14 lg:w-[162px]" : "w-[162px]";
     height = "h-14";
   } else if (size === "S") {
     width = "w-24";
@@ -71,6 +72,10 @@ const CtaBtn = ({
     radius,
     border,
     borderColor,
+    "flex",
+    "justify-center",
+    "items-center",
+    "gap-2",
   ].join(" ");
 
   return (
@@ -86,7 +91,10 @@ const CtaBtn = ({
       }
       disabled={disabled}
     >
-      {innerTxt}
+      {imgSource && (
+        <img src={imgSource} alt="" className="h-[24px] w-[24px]" />
+      )}
+      <span className={imgSource && "hidden lg:inline-block"}>{innerTxt}</span>
     </button>
   );
 };

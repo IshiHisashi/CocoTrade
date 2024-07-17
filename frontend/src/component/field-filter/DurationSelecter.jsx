@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import TabBtn from "../btn/TabBtn";
 
 const DurationSelecter = ({
@@ -6,8 +6,9 @@ const DurationSelecter = ({
   setDurationValue,
   thisYear,
   thisMonth,
+  dashboard = false,
 }) => {
-  const [activeBtn, setActiveBtn] = useState(2);
+  const [activeBtn, setActiveBtn] = useState(dashboard ? 1 : 2);
   const handleDurationSelecter = (durationType, durationValue, id) => {
     setDurationType(durationType);
     setDurationValue(durationValue);
@@ -15,9 +16,9 @@ const DurationSelecter = ({
   };
 
   const buttons = [
-    { id: 1, text: "1M", length: "monthly", pass: thisMonth},
-    { id: 2, text: "1Y", length: "yearly", pass: thisYear},
-  ]
+    { id: 1, text: "1M", length: "monthly", pass: thisMonth },
+    { id: 2, text: "1Y", length: "yearly", pass: thisYear },
+  ];
 
   return (
     <div className="flex gap-4">
@@ -26,7 +27,9 @@ const DurationSelecter = ({
           key={button.id}
           innerTxt={button.text}
           isActive={activeBtn === button.id}
-          onClickFnc={() => handleDurationSelecter(button.length, button.pass, button.id)}
+          onClickFnc={() =>
+            handleDurationSelecter(button.length, button.pass, button.id)
+          }
         />
       ))}
 

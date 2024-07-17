@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Field from "../../component/field-filter/Field";
 import CtaBtn from "../../component/btn/CtaBtn";
+import image1 from "./assets/image1.png";
+import progress1 from "./assets/progress1.svg";
 
 const BusinessProfile = (props) => {
   const {
@@ -31,8 +33,11 @@ const BusinessProfile = (props) => {
 
   return (
     <>
+      <img src={image1} alt="" aria-hidden />
+
       <div>
-        <h1>BUSINESS PROFILE</h1>
+        <img src={progress1} alt="" aria-hidden />
+        <h1 className="h4-sans-uppercase text-neutral-600">BUSINESS PROFILE</h1>
       </div>
 
       <h2 className="text-4xl">Let&apos;s set up your profile</h2>

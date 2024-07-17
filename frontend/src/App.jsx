@@ -17,6 +17,7 @@ import Layout from "./Layout.jsx";
 import Auth from "./page/auth/Auth.jsx";
 import Onboarding from "./page/onboarding/Onboarding.jsx";
 import { UserIdContext } from "./contexts/UserIdContext.jsx";
+import Setting from "./page/setting/Setting.jsx";
 
 const App = () => {
   const userid = useContext(UserIdContext);
@@ -82,6 +83,14 @@ const App = () => {
               element={
                 <Layout URL={URL}>
                   <Finance URL={URL} />
+                </Layout>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <Layout URL={URL}>
+                  <Setting URL={URL} />
                 </Layout>
               }
             />

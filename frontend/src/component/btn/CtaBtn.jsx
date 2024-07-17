@@ -30,7 +30,7 @@ const CtaBtn = ({
 
   // Conditioning based on size
   if (size === "M") {
-    width = "max-w-[185px]";
+    width = imgSource ? "w-14 lg:max-w-[185px]" : "max-w-[185px]";
     height = "h-14";
   } else if (size === "S") {
     width = "max-w-24";
@@ -82,7 +82,7 @@ const CtaBtn = ({
   return (
     <button
       type={type}
-      className={tailwindClass}
+      className={`${tailwindClass} ${size === "L" && "justify-self-center"}`}
       onClick={
         onClickFnc === ""
           ? () => {}
@@ -92,8 +92,10 @@ const CtaBtn = ({
       }
       disabled={disabled}
     >
-      {imgSource === "" ? "" : <img src={imgSource} alt="" className="h-[24px] w-[24px]"/>}
-      {innerTxt}
+      {imgSource && (
+        <img src={imgSource} alt="" className="h-[24px] w-[24px]" />
+      )}
+      <span className={imgSource && "hidden lg:inline-block"}>{innerTxt}</span>
     </button>
   );
 };

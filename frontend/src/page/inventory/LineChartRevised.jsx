@@ -57,7 +57,7 @@ Chart.register(
   verticalLinePlugin
 );
 
-const LineChartRevised = ({ userId, URL, dashboard = false }) => {
+const LineChartRevised = ({ userId, URL, dashboard = false, chartTitle = "", }) => {
   const chartRef = useRef(null);
   const [gradient, setGradient] = useState(null);
   const today = useMemo(() => new Date(), []);
@@ -134,10 +134,13 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
         }
 
         // If the oldest data is not of the startDate, create a datapoint for the startDate
-        if (dataPoints[dataPoints.length - 1].x !== startDate.toISOString().split("T")[0]) {
+        if (
+          dataPoints[dataPoints.length - 1].x !==
+          startDate.toISOString().split("T")[0]
+        ) {
           const startDatesData = {
             x: startDate.toISOString().split("T")[0],
-            y: dataPoints[dataPoints.length - 1].y
+            y: dataPoints[dataPoints.length - 1].y,
           };
           dataPoints.push(startDatesData);
         }
@@ -219,7 +222,7 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               },
               ticks: {
                 callback(value) {
-                  const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                  const valueToShow = value === 0 ? "0" : `${value / 1000}k`;
                   return valueToShow;
                 },
               },

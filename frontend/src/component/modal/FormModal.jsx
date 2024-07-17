@@ -144,8 +144,8 @@ const FormModal = (props) => {
     default:
       elementToReturn = (
         <>
-          <h1>Something went wrong...</h1>
-          <p>Please try again.</p>
+          <h1 className="h2-serif-normal">Something went wrong...</h1>
+          <p className="p18">Please try again.</p>
           <CtaBtn
             size="M"
             level="P"

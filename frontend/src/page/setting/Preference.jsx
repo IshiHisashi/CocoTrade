@@ -3,10 +3,9 @@ import React from 'react'
 const Preference = () => {
   return (
     <div>
-      Preference
+      <p>Preference</p>
     </div>
   )
 }
 
 export default Preference
-Preference

@@ -3,10 +3,9 @@ import React from 'react'
 const Billing = () => {
   return (
     <div>
-      Billing
+      <p>Billing</p>
     </div>
   )
 }
 
 export default Billing
-Billing

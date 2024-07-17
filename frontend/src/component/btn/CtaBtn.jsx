@@ -26,7 +26,7 @@ const CtaBtn = ({
   const fontFamily = "dm-sans";
   const radius = "rounded";
   let border = "border-0";
-  const borderColor = "border-teal-900";
+  const borderColor = "border-bluegreen-700";
 
   // Conditioning based on size
   if (size === "M") {
@@ -39,21 +39,22 @@ const CtaBtn = ({
 
   // Conditioning based on level(primary/secondary/disabled/outline)
   if (level === "S") {
-    bgc = "bg-teal-900";
-    hoverBgc = "hover:bg-teal-800";
-    activeBgc = "active:bg-teal-700";
+    bgc = "bg-bluegreen-700";
+    hoverBgc = "hover:bg-bluegreen-600";
+    activeBgc = "active:bg-bluegreen-500";
   } else if (level === "O") {
     bgc = "bg-transparent";
-    hoverBgc = "hover:bg-slate-100";
-    activeBgc = "active:bg-teal-700";
-    txtColor = "text-teal-900";
+    hoverBgc = "hover:bg-bluegreen-100";
+    activeBgc = "active:bg-bluegreen-500";
+    txtColor = "text-bluegreen-700";
+    activeTxtColor = "active:text-neutral-0";
     border = "border";
   } else if (level === "D") {
-    bgc = "bg-neutral-400";
-    hoverBgc = "hover:bg-neutral-400";
-    activeBgc = "active:bg-neutral-400";
-    txtColor = "text-neutral-100";
-    activeTxtColor = "active:text-neutral-100";
+    bgc = "bg-neutral-300";
+    hoverBgc = "hover:bg-neutral-300";
+    activeBgc = "active:bg-neutral-300";
+    txtColor = "text-neutral-0";
+    activeTxtColor = "active:text-neutral-0";
   }
 
   // Conctenate all the class names

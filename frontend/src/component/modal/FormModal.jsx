@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CtaBtn from "../btn/CtaBtn";
 import Field from "../field-filter/Field.jsx";
 import Exit from "../../assets/icons/Exit.svg";
+import CocoTradeIcon from "../../assets/icons/CocoTradeIcon-Orange.svg";
 
 const FormModal = (props) => {
   const { formType, fnToOpenConfirmationModal, fnToCloseThisModal } = props;
@@ -10,6 +11,7 @@ const FormModal = (props) => {
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [subject, setSubject] = useState("");
 
   let elementToReturn;
 
@@ -17,9 +19,13 @@ const FormModal = (props) => {
     case "contact":
       elementToReturn = (
         <>
-          <h1>How can we help you?</h1>
-          <p>Any questions for us?</p>
+          <img src={CocoTradeIcon} alt="" aria-hidden />
+          <div className="text-center">
+            <h1 className="h2-serif-normal">How can we help you?</h1>
+            <p className="p18">Any questions for us?</p>
+          </div>
           <form
+            className="mt-6 max-w-96 w-full"
             onSubmit={(e) => {
               e.preventDefault();
               fnToOpenConfirmationModal(true);
@@ -59,7 +65,13 @@ const FormModal = (props) => {
               required
             />
 
-            <CtaBtn type="submit" size="L" level="P" innerTxt="Submit" />
+            <CtaBtn
+              type="submit"
+              size="L"
+              level={fullName && companyName && email && message ? "P" : "D"}
+              innerTxt="Submit"
+              disabled={!(fullName && companyName && email && message)}
+            />
           </form>
         </>
       );
@@ -67,9 +79,13 @@ const FormModal = (props) => {
     case "support":
       elementToReturn = (
         <>
-          <h1>Get in touch</h1>
-          <p>We are here for you. How can we help?</p>
+          <img src={CocoTradeIcon} alt="" aria-hidden />
+          <div className="text-center">
+            <h1 className="h2-serif-normal">Get in touch</h1>
+            <p className="p18">We are here for you. How can we help?</p>
+          </div>
           <form
+            className="mt-6 max-w-96 w-full"
             onSubmit={(e) => {
               e.preventDefault();
               fnToOpenConfirmationModal(true);
@@ -96,10 +112,14 @@ const FormModal = (props) => {
               label="Subject"
               type="dropdown"
               name="subject"
-              // value={}
-              // onChange={}
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
               required
-              options={["Features", "Billing", "Membership"]}
+              options={[
+                { value: "features", label: "Features" },
+                { value: "billing", label: "Billing" },
+                { value: "membership", label: "Membership" },
+              ]}
             />
             <Field
               label="Message"
@@ -110,7 +130,13 @@ const FormModal = (props) => {
               required
             />
 
-            <CtaBtn type="submit" size="L" level="P" innerTxt="Submit" />
+            <CtaBtn
+              type="submit"
+              size="L"
+              level={fullName && companyName && subject && message ? "P" : "D"}
+              innerTxt="Send"
+              disabled={!(fullName && companyName && subject && message)}
+            />
           </form>
         </>
       );
@@ -131,7 +157,7 @@ const FormModal = (props) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center m-7 gap-5">
+    <div className="flex flex-col items-center justify-center py-8 sm:py-0 mx-4 sm:m-7 gap-5">
       <button
         type="button"
         className="absolute top-8 right-8"

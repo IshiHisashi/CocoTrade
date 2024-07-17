@@ -76,7 +76,7 @@ const CtaBtn = ({
   return (
     <button
       type={type}
-      className={tailwindClass}
+      className={`${tailwindClass} ${size === "L" && "justify-self-center"}`}
       onClick={
         onClickFnc === ""
           ? () => {}

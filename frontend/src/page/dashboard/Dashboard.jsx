@@ -10,6 +10,7 @@ import CtaBtn from "../../component/btn/CtaBtn.jsx";
 import LineChartRevised from "../inventory/LineChartRevised.jsx";
 import Info from "../../assets/icons/Information.svg";
 import InfoTooltip from "../../component/tooltip/InfoTooltip.jsx";
+import Add from "../../assets/icons/Add.svg";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -114,7 +115,9 @@ const Dashboard = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const [data, setData] = useState(null);
   const [upcomingShipDate, setUpcomingShipDate] = useState("");
-  const [todaysInventory, setTodaysInventory] = useState("");
+  const [todaysInventory, setTodaysInventory] = useState(
+    "getting your today's inventory amount..."
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -159,103 +162,144 @@ const Dashboard = ({ URL }) => {
 
   return (
     <UserIdContext.Provider value={userId}>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center">
-          {!upcomingShipDate ? (
-            <p>getting your upcoming shipment information...</p>
-          ) : (
-            <p>{upcomingShipDate}</p>
-          )}
-          <InfoTooltip title="View shipment on Sales." placement="right" arrow>
-            <button
-              type="button"
-              className="mx-2"
-              onClick={() => navigate("/sales")}
+      <div className="sm:m-8">
+        <div className="flex justify-between items-center px-8 pb-4 sm:px-0">
+          <div className="flex items-center">
+            <p className="p18-bold text-neutral-600 sm:text-base md:p18-bold">
+              {!upcomingShipDate
+                ? "getting your upcoming shipment information..."
+                : upcomingShipDate}
+            </p>
+
+            <InfoTooltip
+              title="View shipment on Sales."
+              placement="right"
+              arrow
             >
-              <img src={Info} alt="toggle tooltip" className="inline-block" />
-            </button>
-          </InfoTooltip>
+              <button
+                type="button"
+                className="mx-2"
+                onClick={() => navigate("/sales")}
+              >
+                <img src={Info} alt="toggle tooltip" className="inline-block" />
+              </button>
+            </InfoTooltip>
+          </div>
+          <CtaBtn
+            size="M"
+            level="P"
+            innerTxt="Add Purchase"
+            onClickFnc={() =>
+              navigate("/purchase", { state: { showAddForm: true } })
+            }
+            imgSource={Add}
+          />
         </div>
-        <CtaBtn
-          size="M"
-          level="P"
-          innerTxt="Add Purchase"
-          onClickFnc={() =>
-            navigate("/purchase", { state: { showAddForm: true } })
-          }
-        />
-      </div>
 
-      <section className="grid sm:grid-cols-2">
-        <PriceIndicatorCard type="market" URL={URL} />
-        <PriceIndicatorCard type="suggestion" URL={URL} />
-      </section>
-
-      <section className="p-4 bg-white rounded-lg">
-        {!todaysInventory ? (
-          <h2>getting your today&apos;s inventory amount...</h2>
-        ) : (
-          <h2>{todaysInventory}</h2>
-        )}
-        <LineChartRevised userId={userId} dashboard URL={URL} />
-      </section>
-
-      <div className="grid sm:grid-cols-3">
-        <section className="col-span-2 p-4 bg-white rounded-lg">
-          <h2>Activity this month vs last month</h2>
-          {!data ? (
-            <p>loading...</p>
-          ) : (
-            <Bar
-              data={{
-                labels: [data.secondLatestMonthName, data.latestMonthName],
-                datasets: [
-                  {
-                    label: "Purchase",
-                    data: [
-                      data.purchase.secondLatest
-                        ? data.purchase.secondLatest.monthlyPurchase
-                            .$numberDecimal
-                        : 0,
-                      data.purchase.latest
-                        ? data.purchase.latest.monthlyPurchase.$numberDecimal
-                        : 0,
-                    ],
-                    hoverBackgroundColor: "blue",
-                    barPercentage: 1,
-                  },
-                  {
-                    label: "Sales",
-                    data: [
-                      data.sales.secondLatest
-                        ? data.sales.secondLatest.monthlySales.$numberDecimal
-                        : 0,
-                      data.sales.latest
-                        ? data.sales.latest.monthlySales.$numberDecimal
-                        : 0,
-                    ],
-                    hoverBackgroundColor: "red",
-                    barPercentage: 1,
-                  },
-                ],
-              }}
-              options={{
-                indexAxis: "y",
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: "bottom",
-                  },
-                },
-              }}
-            />
-          )}
+        <section className="grid @2xl:grid-cols-2 gap-4">
+          <PriceIndicatorCard type="market" URL={URL} />
+          <PriceIndicatorCard type="suggestion" URL={URL} />
         </section>
 
-        <section>
-          <RecentActivityCard type="purchase" URL={URL} />
-          <RecentActivityCard type="sales" URL={URL} />
+        <section className="p-8 my-4 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
+          <LineChartRevised
+            userId={userId}
+            dashboard
+            URL={URL}
+            chartTitle={todaysInventory}
+          />
         </section>
+
+        <div className="@3xl:grid @3xl:grid-cols-3 gap-4">
+          <section className="order-2 flex flex-col gap-4 mb-4 @3xl:mb-0">
+            <RecentActivityCard type="purchase" URL={URL} />
+            <RecentActivityCard type="sales" URL={URL} />
+          </section>
+
+          <section className="col-span-2 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200 order-1">
+            <h2 className="h3-sans text-neutral-600">
+              Activity this month vs last month
+            </h2>
+            {!data ? (
+              <p>loading...</p>
+            ) : (
+              <Bar
+                data={{
+                  labels: [data.secondLatestMonthName, data.latestMonthName],
+                  datasets: [
+                    {
+                      label: "Sales",
+                      data: [
+                        data.sales.secondLatest
+                          ? data.sales.secondLatest.monthlySales.$numberDecimal
+                          : 0,
+                        data.sales.latest
+                          ? data.sales.latest.monthlySales.$numberDecimal
+                          : 0,
+                      ],
+                      backgroundColor: "#0C7F8E",
+                      hoverBackgroundColor: "#0C7F8E",
+                      barPercentage: 1,
+                      categoryPercentage: 0.6,
+                      maxBarThickness: 32,
+                    },
+                    {
+                      label: "Purchase",
+                      data: [
+                        data.purchase.secondLatest
+                          ? data.purchase.secondLatest.monthlyPurchase
+                              .$numberDecimal
+                          : 0,
+                        data.purchase.latest
+                          ? data.purchase.latest.monthlyPurchase.$numberDecimal
+                          : 0,
+                      ],
+                      backgroundColor: "#FF8340",
+                      hoverBackgroundColor: "#FF8340",
+                      barPercentage: 1,
+                      categoryPercentage: 0.6,
+                      maxBarThickness: 32,
+                    },
+                  ],
+                }}
+                options={{
+                  indexAxis: "y",
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "bottom",
+                    },
+                  },
+                  scales: {
+                    x: {
+                      beginAtZero: true,
+                      ticks: {
+                        callback(value) {
+                          const valueToShow =
+                            value < 1000 ? value : `${value / 1000}k`;
+                          return valueToShow;
+                        },
+                      },
+                      grid: {
+                        display: false,
+                      },
+                      title: {
+                        display: true,
+                        text: "Price (Php)",
+                        align: "end",
+                      },
+                    },
+                    y: {
+                      grid: {
+                        display: false,
+                      },
+                    },
+                  },
+                }}
+              />
+            )}
+          </section>
+        </div>
       </div>
     </UserIdContext.Provider>
   );

@@ -1,7 +1,4 @@
 import React from 'react'
-import rightArrow from "../../assets/icons/rightArrow.svg";
-import leftArrow from "../../assets/icons/leftArrow.svg";
-
 
 /* eslint-disable react/button-has-type */
 /* eslint-disable no-unused-expressions */
@@ -30,9 +27,9 @@ const Pagination = ({ size = "L", onClickFnc = "", pageNum = "L" }) => {
 
   // Change content on pagination btn itself like "arrow icon" or number
   if (pageNum === "L") {
-    innerContent = <img src={leftArrow} alt="Go to previous page" className=''/>
+    innerContent = <img src="https://raw.githubusercontent.com/IshiHisashi/CocoTrade/main/frontend/src/component/btn/btn-imgs/left.svg?token=GHSAT0AAAAAACSGRLDSC4YR5ZDWZMXH2VE6ZUTCEMQ" alt="Go to previous page" className=''/>
   } else if (pageNum === "R") {
-    innerContent = <img src={rightArrow} alt="Go to next page" className=''/>
+    innerContent = <img src="https://raw.githubusercontent.com/IshiHisashi/CocoTrade/main/frontend/src/component/btn/btn-imgs/right.svg?token=GHSAT0AAAAAACSGRLDTS7DMS5YPOMIO2YB4ZUTCFFA" alt="Go to next page" className=''/>
   } else {
     innerContent = pageNum;
   }

@@ -7,8 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import EllipseIcon from '../../assets/icons/Ellipse.svg';
-import DeleteIcon from '../../assets/icons/DeleteIcon.svg';
-import EditIcon from '../../assets/icons/EditIcon.svg';
 import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
 import Pagination from "../../component/btn/Pagination";
 
@@ -446,7 +444,7 @@ const formatDate = (dateString) => {
                           className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                           onClick={(e) => handleEditClick(purchase, e)}
 
-                        >          <img src={EditIcon} alt="Edit" className="mr-2" />
+                        >          <img src={CalendarIcon} alt="Edit" className="mr-2" />
 
                           Edit
                         </button>
@@ -456,7 +454,7 @@ const formatDate = (dateString) => {
 
                           onClick={(e) => handleDeleteClick(purchase, e)}
                           >
-                                    <img src={DeleteIcon} alt="Delete" className="mr-2" />
+                                    <img src={CalendarIcon} alt="Delete" className="mr-2" />
 
                           Delete
                         </button>

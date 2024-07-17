@@ -10,7 +10,7 @@ const CtaBtn = ({
   type = "button",
   innerTxt = "Button",
   disabled = false,
-  imgSource = ""
+  imgSource = "",
 }) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
@@ -76,13 +76,13 @@ const CtaBtn = ({
     "justify-center",
     "items-center",
     "gap-2",
-    "w-full",
+    // "w-full",
   ].join(" ");
 
   return (
     <button
       type={type}
-      className={`${tailwindClass} ${size === "L" && "justify-self-center"}`}
+      className={`${tailwindClass} ${imgSource ? "lg:w-full" : "w-full"} ${size === "L" && "justify-self-center"}`}
       onClick={
         onClickFnc === ""
           ? () => {}
@@ -93,7 +93,7 @@ const CtaBtn = ({
       disabled={disabled}
     >
       {imgSource && (
-        <img src={imgSource} alt="" className="h-[24px] w-[24px]" />
+        <img src={imgSource} alt={innerTxt} className="h-[24px] w-[24px]" />
       )}
       <span className={imgSource && "hidden lg:inline-block"}>{innerTxt}</span>
     </button>

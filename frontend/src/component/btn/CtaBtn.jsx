@@ -14,7 +14,7 @@ const CtaBtn = ({
 }) => {
   // Declare all the variables to use for tailwind styling
   // These values are for primary btns with Large size
-  let width = "max-w-96 w-full";
+  let width = "max-w-[382px]";
   let height = "h-[50px]";
   let bgc = "bg-[#FF5b04]";
   let hoverBgc = "hover:bg-[#FF8340]";
@@ -30,10 +30,10 @@ const CtaBtn = ({
 
   // Conditioning based on size
   if (size === "M") {
-    width = imgSource ? "w-14 lg:w-[162px]" : "w-[162px]";
+    width = imgSource ? "w-14 lg:max-w-[185px]" : "max-w-[185px]";
     height = "h-14";
   } else if (size === "S") {
-    width = "w-24";
+    width = "max-w-24";
     height = "h-12";
   }
 
@@ -76,12 +76,13 @@ const CtaBtn = ({
     "justify-center",
     "items-center",
     "gap-2",
+    // "w-full",
   ].join(" ");
 
   return (
     <button
       type={type}
-      className={`${tailwindClass} ${size === "L" && "justify-self-center"}`}
+      className={`${tailwindClass} ${imgSource ? "lg:w-full" : "w-full"} ${size === "L" && "justify-self-center"}`}
       onClick={
         onClickFnc === ""
           ? () => {}
@@ -92,7 +93,7 @@ const CtaBtn = ({
       disabled={disabled}
     >
       {imgSource && (
-        <img src={imgSource} alt="" className="h-[24px] w-[24px]" />
+        <img src={imgSource} alt={innerTxt} className="h-[24px] w-[24px]" />
       )}
       <span className={imgSource && "hidden lg:inline-block"}>{innerTxt}</span>
     </button>

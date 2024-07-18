@@ -38,9 +38,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
         .get(`${URL}/user/${userId}/latestInv`)
         .then((res) => {
           setInventoryLeft(res.data.latestInv[0].current_amount_left.$numberDecimal);
-          console.log("Inv left: ",res.data.latestInv[0].current_amount_left.$numberDecimal);
           setInventoryWithPending(res.data.latestInv[0].current_amount_with_pending.$numberDecimal);
-          console.log("Inv with pending: ", res.data.latestInv[0].current_amount_with_pending.$numberDecimal)
         })
         .catch((err) => {
           console.error(err);
@@ -60,7 +58,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
       {
         label: "Stored",
         data: [(inventoryLeft / maximumInv) * 100],
-        backgroundColor: "#FF8340",
+        backgroundColor: "#FF5B04",
         barThickness: 20,
         borderWidth: 0,
         borderSkipped: false,
@@ -72,16 +70,17 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
       {
         label: "To ship",
         data: [((inventoryWithPending - inventoryLeft) / maximumInv) * 100],
-        backgroundColor: "#245E66",
+        backgroundColor: "#0C7F8E",
         barThickness: 20,
         borderWidth: 0,
       },
       {
         label: "Available",
         data: [((maximumInv - inventoryLeft - inventoryWithPending) / maximumInv) * 100],
-        backgroundColor: "#D3D3D3",
+        backgroundColor: "#F1F1F1",
         barThickness: 20,
-        borderWidth: 0,
+        borderWidth: 1,
+        borderColor: "#D3D3D3",
         borderRadius: {
           topRight: 10,
           bottomRight: 10
@@ -92,7 +91,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
       {
         label: "Stored",
         data: [(inventoryLeft / maximumInv) * 100],
-        backgroundColor: "#FF8340",
+        backgroundColor: "#FF5B04",
         barThickness: 20,
         borderWidth: 0,
         borderSkipped: false,
@@ -104,9 +103,10 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
       {
         label: "Available",
         data: [((maximumInv - inventoryLeft - inventoryWithPending) / maximumInv) * 100],
-        backgroundColor: "#D3D3D3",
+        backgroundColor: "#F1F1F1",
         barThickness: 20,
-        borderWidth: 0,
+        borderWidth: 1,
+        borderColor: "#D3D3D3",
         borderRadius: {
           topRight: 10,
           bottomRight: 10
@@ -171,6 +171,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
           pointStyle: "circle",
           boxWidth: 8,
           boxHeight: 8,
+          padding: 15,
         }
       },
       title: {
@@ -185,6 +186,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
           }
         }
       },
+      verticalLinePlugin: false,
     },
     chartArea: {
       backgroundColor: 'transparent',
@@ -192,7 +194,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
   };
 
   return (
-    <div className="w-full h-[80px]">
+    <div className="h-[80px]">
       <Bar data={data} options={options}/>
     </div>
   );

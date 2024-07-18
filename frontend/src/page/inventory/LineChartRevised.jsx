@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
 import {
@@ -13,6 +13,39 @@ import {
 } from "chart.js";
 import DurationSelecter from "../../component/field-filter/DurationSelecter.jsx";
 
+// Custom plungin to show the line on the chart.
+const verticalLinePlugin = {
+  id: "verticalLinePlugin",
+  beforeDraw: (chart) => {
+    // eslint-disable-next-line no-underscore-dangle
+    if (chart.tooltip._active && chart.tooltip._active.length) {
+      const {
+        ctx,
+        scales: {
+          y: { top: topY, bottom: bottomY },
+        },
+        tooltip: {
+          _active: [
+            {
+              element: { x },
+            },
+          ],
+        },
+      } = chart;
+
+      ctx.save();
+
+      ctx.beginPath();
+      ctx.moveTo(x, topY);
+      ctx.lineTo(x, bottomY);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+};
+
 Chart.register(
   CategoryScale,
   LinearScale,
@@ -20,7 +53,8 @@ Chart.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  verticalLinePlugin
 );
 
 const LineChartRevised = ({
@@ -29,6 +63,8 @@ const LineChartRevised = ({
   dashboard = false,
   chartTitle = "",
 }) => {
+  const chartRef = useRef(null);
+  const [gradient, setGradient] = useState(null);
   const today = useMemo(() => new Date(), []);
   const thisYear = today.toLocaleDateString().split("/")[2];
   const thisMonth = today.toLocaleDateString().split("/")[0].padStart(2, "0");
@@ -60,6 +96,16 @@ const LineChartRevised = ({
   // Recalculate based on duration selector and rerender the chart
   useEffect(
     () => {
+      if (chartRef.current) {
+        // Color settings
+        const chart = chartRef.current.canvas.getContext("2d");
+        const gradientColor = chart.createLinearGradient(0, 0, 0, 300);
+        gradientColor.addColorStop(0, "rgba(75, 192, 192, 0.5)");
+        gradientColor.addColorStop(1, "rgba(75, 192, 192, 0)");
+        if (gradient === null) {
+          setGradient(gradientColor);
+        }
+      }
       // Create a new data array based on duration
       if (inventory.length > 0) {
         let startDate = new Date();
@@ -144,15 +190,17 @@ const LineChartRevised = ({
               lebel: `Inventory`,
               data: dataPoints,
               fill: true,
-              backgroundColor: "rgba(75, 192, 192, 0.6)",
+              backgroundColor: gradient,
               borderColor: "rgba(75, 192, 192, 1)",
-              stepped: "after",
+              borderWidth: 1,
+              // stepped: 'after'
             },
           ],
         });
 
         setOptions({
           responsive: true,
+          maintainAspectRatio: false,
           interaction: {
             mode: "nearest",
             axis: "x",
@@ -190,9 +238,9 @@ const LineChartRevised = ({
               display: false,
             },
             title: {
-              display: !dashboard,
-              text: "Inventory history",
+              display: false,
             },
+            verticalLinePlugin: true,
           },
           elements: {
             line: {
@@ -206,13 +254,16 @@ const LineChartRevised = ({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [inventory, durationType, timeOption]
+    [inventory, durationType, timeOption, chartRef, gradient]
   );
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-        <h2 className="h3-sans text-neutral-600">{chartTitle}</h2>
+      <div
+        id="topLayer"
+        className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4"
+      >
+        <h3 className="h3-sans font-semibold text-neutral-600">{chartTitle}</h3>
         <DurationSelecter
           setDurationType={setDurationType}
           setDurationValue={setDurationValue}
@@ -221,11 +272,13 @@ const LineChartRevised = ({
           dashboard={dashboard}
         />
       </div>
-      {data.datasets.length ? (
-        <Line data={data} options={options} />
-      ) : (
-        "Loading"
-      )}
+      <div id="chartLayer" className="h-[330px]">
+        {data.datasets.length ? (
+          <Line ref={chartRef} data={data} options={options} />
+        ) : (
+          "Loading"
+        )}
+      </div>
     </div>
   );
 };

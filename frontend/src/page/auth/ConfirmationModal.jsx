@@ -134,7 +134,7 @@ const ConfirmationModal = (props) => {
   }
 
   return (
-    <div className="grid grid-rows-[1fr_auto] py-8 sm:py-0 sm:flex sm:flex-col items-center justify-center mx-4 sm:m-7 gap-5 h-full">
+    <div className="grid grid-rows-[1fr_auto] py-8 sm:py-0 sm:flex sm:flex-col items-center mx-4 sm:m-7 gap-5 h-full">
       {confirmationType !== "accountAllSet" && (
         <button
           type="button"

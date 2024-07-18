@@ -57,7 +57,12 @@ Chart.register(
   verticalLinePlugin
 );
 
-const LineChartRevised = ({ userId, URL, dashboard = false }) => {
+const LineChartRevised = ({
+  userId,
+  URL,
+  dashboard = false,
+  chartTitle = "",
+}) => {
   const chartRef = useRef(null);
   const [gradient, setGradient] = useState(null);
   const today = useMemo(() => new Date(), []);
@@ -95,9 +100,9 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
         // Color settings
         const chart = chartRef.current.canvas.getContext("2d");
         const gradientColor = chart.createLinearGradient(0, 0, 0, 300);
-        gradientColor.addColorStop(0, 'rgba(75, 192, 192, 0.5)');
-        gradientColor.addColorStop(1, 'rgba(75, 192, 192, 0)');
-        if(gradient === null) {
+        gradientColor.addColorStop(0, "rgba(75, 192, 192, 0.5)");
+        gradientColor.addColorStop(1, "rgba(75, 192, 192, 0)");
+        if (gradient === null) {
           setGradient(gradientColor);
         }
       }
@@ -134,10 +139,13 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
         }
 
         // If the oldest data is not of the startDate, create a datapoint for the startDate
-        if (dataPoints[dataPoints.length - 1].x !== startDate.toISOString().split("T")[0]) {
+        if (
+          dataPoints[dataPoints.length - 1].x !==
+          startDate.toISOString().split("T")[0]
+        ) {
           const startDatesData = {
             x: startDate.toISOString().split("T")[0],
-            y: dataPoints[dataPoints.length - 1].y
+            y: dataPoints[dataPoints.length - 1].y,
           };
           dataPoints.push(startDatesData);
         }
@@ -219,7 +227,7 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               },
               ticks: {
                 callback(value) {
-                  const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                  const valueToShow = value === 0 ? "0" : `${value / 1000}k`;
                   return valueToShow;
                 },
               },
@@ -251,18 +259,18 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
 
   return (
     <div>
-      <div id="topLayer" className="flex justify-between mb-[34px]">
-        {dashboard ||
-          (<h3 className="h3-serif font-semibold">Inventory Trend</h3>
-        )}
-        {dashboard || (
-          <DurationSelecter
-            setDurationType={setDurationType}
-            setDurationValue={setDurationValue}
-            thisYear={thisYear}
-            thisMonth={thisMonth}
-          />
-        )}
+      <div
+        id="topLayer"
+        className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4"
+      >
+        <h3 className="h3-sans font-semibold text-neutral-600">{chartTitle}</h3>
+        <DurationSelecter
+          setDurationType={setDurationType}
+          setDurationValue={setDurationValue}
+          thisYear={thisYear}
+          thisMonth={thisMonth}
+          dashboard={dashboard}
+        />
       </div>
       <div id="chartLayer" className="h-[330px]">
         {data.datasets.length ? (

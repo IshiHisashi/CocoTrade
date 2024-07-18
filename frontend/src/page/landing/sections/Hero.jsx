@@ -14,15 +14,20 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
         </p>
       </div>
       <div className="btn flex flex-col sm:flex-row gap-[10px] pb-[47px]">
-        <button
+        {/* <button
           type="submit"
-          className=" text-white p16 rounded border w-52 h-14"
+          className=" text-white p16 rounded border w-52 lg:max-w-[185px] h-14"
         >
           Download proposal
-        </button>
+        </button> */}
+        <CtaBtn
+          innerTxt="Download Proposal"
+          size="M-landing"
+          level="O-landing"
+        />
         <CtaBtn
           innerTxt="Free 14-day trial"
-          size="M"
+          size="M-landing"
           onClickFnc={() => {
             setAuthType("signup");
             setIsAuthModalOpen(true);

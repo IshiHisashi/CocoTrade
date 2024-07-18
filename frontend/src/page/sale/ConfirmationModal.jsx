@@ -3,6 +3,7 @@ import React from "react";
 import Modal from "react-modal";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Exit from "../../assets/icons/Exit.svg";
+import Confirm from "../../assets/icons/Confirm.svg";
 
 const ConfirmationModal = ({ isOpen, onRequestClose, message }) => {
   const classNameForModal =
@@ -25,6 +26,7 @@ const ConfirmationModal = ({ isOpen, onRequestClose, message }) => {
           <img src={Exit} alt="Close" className="w-6 h-6" />
         </button>
         </div>
+        <img src={Confirm} alt="confirm"/>
         <h2 className="text-xl font-bold mb-2 text-center">Successful!</h2>
         <p className="text-gray-700 mb-6">{message}</p>
         <CtaBtn size="M" level="P" innerTxt="Done" onClickFnc={onRequestClose} />

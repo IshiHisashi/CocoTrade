@@ -295,9 +295,9 @@ const formatDate = (dateString) => {
 
   return (
     <div>
-<div className="flex justify-between mb-4 py-5 text-p14 font-dm-sans font-medium">
+<div className="flex lg:justify-end mb-4 py-5 text-p14 font-dm-sans font-medium">
   <label className="mr-4">
-    <span className="ml-2 h3-sans">{dateLabel}</span>
+    <span className="h3-sans">{dateLabel}</span>
   </label>
   <div className="relative flex items-center">
     <label className="mr-2 font-bold">

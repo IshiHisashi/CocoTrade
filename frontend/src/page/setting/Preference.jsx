@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Preference = () => {
+const Preference = ({ userId, URL }) => {
   return (
     <div>
       <p>Preference</p>

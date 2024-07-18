@@ -1,9 +1,11 @@
 import React from 'react'
 
-const Profile = () => {
+const Profile = ({ userId, URL }) => {
   return (
     <div>
       <p>Profile</p>
+      {/* {userId}
+      {URL} */}
     </div>
   )
 }

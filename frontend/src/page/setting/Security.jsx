@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Security = () => {
+const Security = ({ userId, URL }) => {
   return (
     <div>
       <p>Security</p>

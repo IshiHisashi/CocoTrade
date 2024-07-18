@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Billing = () => {
+const Billing = ({ userId, URL }) => {
   return (
     <div>
       <p>Billing</p>

@@ -20,6 +20,9 @@ const LineChart = (t) => {
   const [durationValue, setDurationValue] = useState(thisYear);
   const chartRef = useRef(null);
 
+  // Function to determine if the screen is 'lg' or larger
+  const isLgScreen = () => window.innerWidth >= 1024;
+
   // Get data from the collection
   useEffect(() => {
     if (type === "market") {
@@ -251,6 +254,7 @@ const LineChart = (t) => {
             },
           },
           y: {
+            display: isLgScreen(),
             beginAtZero: type === "market" ? false : true, // eslint-disable-line no-unneeded-ternary
             title: {
               display: true,
@@ -264,7 +268,8 @@ const LineChart = (t) => {
             },
             ticks: {
               callback(value) {
-                return `${value / 1000}k`; // Use template literals
+                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                return valueToShow;
               },
             },
           },
@@ -283,8 +288,17 @@ const LineChart = (t) => {
 
     const myChart = new Chart(ctxx, config);
 
+    // Update the chart options when the screen size changes
+    const handleResize = () => {
+      myChart.options.scales.y.display = isLgScreen();
+      myChart.update();
+    };
+
+    window.addEventListener("resize", handleResize);
+
     // Cleanup on unmount
     return () => {
+      window.removeEventListener("resize", handleResize);
       myChart.destroy();
     };
   }, [

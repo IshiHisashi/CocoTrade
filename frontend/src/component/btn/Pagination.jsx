@@ -27,9 +27,9 @@ const Pagination = ({ size = "L", onClickFnc = "", pageNum = "L" }) => {
 
   // Change content on pagination btn itself like "arrow icon" or number
   if (pageNum === "L") {
-    innerContent = <img src="./src/component/btn/btn-imgs/left.svg" alt="Go to previous page" className=''/>
+    innerContent = <img src="./btn-imgs/left.svg" alt="Go to previous page" className=''/>
   } else if (pageNum === "R") {
-    innerContent = <img src="./src/component/btn/btn-imgs/right.svg" alt="Go to next page" className=''/>
+    innerContent = <img src="./btn-imgs/right.svg" alt="Go to next page" className=''/>
   } else {
     innerContent = pageNum;
   }

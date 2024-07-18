@@ -8,6 +8,8 @@ import login from "../../services/login.jsx";
 import resetPassword from "../../services/resetPassword.jsx";
 import Exit from "../../assets/icons/Exit.svg";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import CocoTradeLogo from "../../assets/CocoTradeLogoForLightBg.svg";
+import CocoTradeIcon from "../../assets/icons/CocoTradeIcon-Orange.svg";
 
 const AuthInputModal = (props) => {
   const {
@@ -108,8 +110,10 @@ const AuthInputModal = (props) => {
     case "signup":
       elementToReturn = (
         <>
-          <h1>Create an account</h1>
+          <img src={CocoTradeLogo} alt="" aria-hidden />
+          <h1 className="h2-serif-normal text-center">Create an account</h1>
           <form
+            className="mt-6 max-w-96 w-full"
             onSubmit={async (e) => {
               await handleSignup(e);
             }}
@@ -149,10 +153,21 @@ const AuthInputModal = (props) => {
             <CtaBtn
               type="submit"
               size="L"
-              level="P"
+              level={fullName && companyName && email && password ? "P" : "D"}
               innerTxt="Sign up"
+              disabled={!(fullName && companyName && email && password)}
               // onClickFnc={}
             />
+            <p className="text-center mt-8 link16 text-neutral-600">
+              Already have an account?{" "}
+              <button
+                type="button"
+                className="underline"
+                onClick={() => fnToChangeAuthType("login")}
+              >
+                Log in
+              </button>
+            </p>
           </form>
         </>
       );
@@ -160,8 +175,10 @@ const AuthInputModal = (props) => {
     case "login":
       elementToReturn = (
         <>
-          <h1>Welcome back</h1>
+          <img src={CocoTradeIcon} alt="" aria-hidden />
+          <h1 className="h2-serif-normal text-center">Welcome back</h1>
           <form
+            className="mt-6 max-w-96 w-full"
             onSubmit={async (e) => {
               await handleLogin(e);
             }}
@@ -184,7 +201,7 @@ const AuthInputModal = (props) => {
             />
             <button
               type="button"
-              className="block underline mb-8"
+              className="block underline mb-8 link16 text-neutral-600"
               onClick={() => fnToChangeAuthType("passwordReset")}
             >
               Forgot password?
@@ -192,11 +209,12 @@ const AuthInputModal = (props) => {
             <CtaBtn
               type="submit"
               size="L"
-              level="P"
+              level={email && password ? "P" : "D"}
               innerTxt="Log in"
+              disabled={!(email && password)}
               // onClickFnc={}
             />
-            <p className="text-center mt-8">
+            <p className="text-center mt-8 link16 text-neutral-600">
               Don&apos;t have an account?{" "}
               <button
                 type="button"
@@ -213,8 +231,10 @@ const AuthInputModal = (props) => {
     case "passwordReset":
       elementToReturn = (
         <>
-          <h1>Forgot your password?</h1>
+          <img src={CocoTradeIcon} alt="" aria-hidden />
+          <h1 className="h2-serif-normal text-center">Forgot your password?</h1>
           <form
+            className="mt-6 max-w-96 w-full"
             onSubmit={async (e) => {
               await handleResetPassword(e);
             }}
@@ -230,8 +250,9 @@ const AuthInputModal = (props) => {
             <CtaBtn
               type="submit"
               size="L"
-              level="P"
+              level={email ? "P" : "D"}
               innerTxt="Request to reset password"
+              disabled={!email}
               // onClickFnc={}
             />
           </form>
@@ -241,8 +262,10 @@ const AuthInputModal = (props) => {
     default:
       elementToReturn = (
         <>
-          <h1>Something went wrong...</h1>
-          <p>Please try again.</p>
+          <h1 className="h2-serif-normal text-center">
+            Something went wrong...
+          </h1>
+          <p className="p18 text-center">Please try again.</p>
           <CtaBtn
             size="M"
             level="P"
@@ -254,7 +277,7 @@ const AuthInputModal = (props) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center m-7 gap-5">
+    <div className="flex flex-col items-center justify-center py-16 sm:py-8 mx-4 sm:m-7 gap-5">
       <button
         type="button"
         className="absolute top-8 right-8"

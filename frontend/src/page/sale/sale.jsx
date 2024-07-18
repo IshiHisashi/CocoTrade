@@ -30,12 +30,12 @@ const Sale = ({ URL }) => {
 
   return (
     <div>
-      <div>Sales Log</div>
       <Modal
       className={classNameForModal}
         isOpen={showEditForm}
          onRequestClose={() => setshowEditForm(false)}
         contentLabel="Edit Sales Form"
+        shouldCloseOnOverlayClick={false} // Disable closing on outside click
       >
         <EditSaleModal
           showEditForm={showEditForm}

@@ -19,6 +19,7 @@ const AddPurchaseForm = ({
   const [farmers, setFarmers] = useState([]);
   const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [user, setUser] = useState(null);
+  const  [isSubmitting, setIsSubmitting] =useState(false);
   const [formData, setFormData] = useState({
     farmer_name: "",
     invoice_number: "",
@@ -114,7 +115,7 @@ const AddPurchaseForm = ({
             purchase.total_purchase_price
         ),
         purchase_date: purchase.purchase_date
-          ? new Date(purchase.purchase_date).toISOString().split("T")[0]
+          ? new Date(purchase.purchase_date).toISOString('en-CA').split("T")[0]
           : "",
         user_id: userid,
       });
@@ -198,6 +199,7 @@ const AddPurchaseForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       // -----UPDATE PURCHASE LOG-----
       // Update purchase document
@@ -222,6 +224,7 @@ const AddPurchaseForm = ({
       const updatedFormData = {
         ...formData,
         farmer_id: farmerId,
+        purchase_date: new Date(formData.purchase_date).toISOString(),
       };
 
       if (purchase) {
@@ -283,7 +286,8 @@ const AddPurchaseForm = ({
         onFormSubmit(`Invoice #${formData.invoice_number} has been logged successfully.`);
       }
       } catch (error) {
-      console.error("Error creating/updating purchase:", error);
+      console.error("Error creating/updating purchase:", error)
+      setIsSubmitting(false);
     }
   };
 
@@ -353,6 +357,9 @@ const AddPurchaseForm = ({
           required
           unit="PHP"
           adornment="start"
+          min="0"
+          step="0.0001"
+          disabled
         />
         <Field
           label="Copra bought (kg)"
@@ -363,6 +370,8 @@ const AddPurchaseForm = ({
           required
           unit="kg"
           adornment="end"
+          min="0"
+          step="0.0001"
         />
         <Field
           label="Moisture Test Details"
@@ -402,6 +411,7 @@ const AddPurchaseForm = ({
         level="P"
         innerTxt="Save"
         type="submit"
+        disabled={isSubmitting}
       />
       </div> 
       </form>

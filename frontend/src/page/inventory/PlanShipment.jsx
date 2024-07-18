@@ -280,73 +280,71 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
   }, [formData, latestInv])
 
   return (
-    <div>
-      <h2>Plan Your Shipment</h2>
+    <div className="p-[32px]">
+      <h3 className="h3-sans mb-[25px]">Plan your shipment</h3>
       <form onSubmit={handleSubmit}>
-      <button
-        type="button"
-        className="absolute top-8 right-8"
-        onClick={() => setShowModal(false)}
-      >
-        <img src={Exit} alt="close" />
-      </button>
-      <div className="relative" ref={wrapperRef}>
-        <Field
-          label="Manufacturer Name"
-          name="manufacturer_name"
-          type="text"
-          value={formData.manufacturer_name}
-          onChange={handleChange}
-          onFocus={handleFocus}
-            onBlur={handleBlur}
-          required
-        />
-        {showSuggestions && filteredManufacturers.length > 0 && (
-          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
-            {filteredManufacturers.map((manufacturer) => (
-              <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                <button
-                  type="button"
-                  onClick={() => handleSelectManufacturer(manufacturer.full_name)}
-                >
-                  {manufacturer.full_name}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+        <button
+          type="button"
+          className="absolute top-[40px] right-[32px]"
+          onClick={() => setShowModal(false)}
+        >
+          <img src={Exit} alt="close" />
+        </button>
+        <div ref={wrapperRef}>
+          <Field
+            label="Company"
+            name="manufacturer_name"
+            type="text"
+            value={formData.manufacturer_name}
+            onChange={handleChange}
+            onFocus={handleFocus}
+              onBlur={handleBlur}
+            required
+          />
+          {showSuggestions && filteredManufacturers.length > 0 && (
+            <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+              {filteredManufacturers.map((manufacturer) => (
+                <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectManufacturer(manufacturer.full_name)}
+                  >
+                    {manufacturer.full_name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <div>
-          <label htmlFor="copra_ship_date">
-            Date Purchased:
-            <input
-              type="date"
-              id="copra_ship_date"
-              name="copra_ship_date"
-              value={formData.copra_ship_date}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          <Field
+            label="Shipment date"
+            name="copra_ship_date"
+            type="date"
+            value={formData.copra_ship_date}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div>
-          <label htmlFor="amount_of_copra_sold">
-            Copra sold / weight in kg:
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <input
-                type="text"
-                id="amount_of_copra_sold"
-                name="amount_of_copra_sold"
-                value={formData.amount_of_copra_sold}
-                onChange={handleChange}
-                required
-                style={{ marginRight: "5px" }}
-              />
-              <span>kg</span>
-            </div>
-          </label>
+          <Field
+            label="Copra Sold"
+            name="amount_of_copra_sold"
+            type="number"
+            value={formData.amount_of_copra_sold}
+            onChange={handleChange}
+            unit="kg"
+            adornment="end"
+            required
+            min="0"
+            step="0.0001"
+          />  
         </div>
-        <div>
+        <p className={isIrrationalCalculation || formData.amount_of_copra_sold <= 0 ? "text-red-600 mb-[14px]" : "text-red-600" }>
+          {isIrrationalCalculation ? "The amount of copra shipping exceedsthe amount in your warehouse. If you want to modify the amount manually, please go to a settings page." : ""}
+          {formData.amount_of_copra_sold <= 0 ? "The amount of copra shipping has to be a positive number" : ""}
+        </p>
+        <div className="flex flex-nowrap gap-[12px]">
           <CtaBtn
             size="M"
             level="O"
@@ -355,10 +353,10 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
           />
           <CtaBtn 
             size="M" 
-            level={ isIrrationalCalculation ? "D" : "P" } 
+            level={ isIrrationalCalculation || formData.amount_of_copra_sold <= 0 ? "D" : "P" } 
             type="submit" 
             innerTxt="Save" 
-            disabled={isIrrationalCalculation}
+            disabled={isIrrationalCalculation || formData.amount_of_copra_sold <= 0}
           />
         </div>
       </form>

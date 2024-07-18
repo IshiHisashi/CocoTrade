@@ -2,14 +2,16 @@ import React from "react";
 
 const LandingFooter = () => {
   return (
-    <div className="flex justify-between bg-slate-800 px-[120px] py-[24px] text-bluegreen-100">
+    <div className="flex flex-col-reverse md:flex-row gap-[22px] items-center md:justify-between bg-slate-800 px-[120px] py-[30px] text-bluegreen-100">
       <div>
-        <p className="h4-sans-uppercase">
+        <p className="p14 lg:h4-sans-uppercase">
           &copy; 2024 CocoTrade. All rights reserved.
         </p>
       </div>
       <div>
-        <p className="p16">Download proposal</p>
+        <button type="submit" className=" text-white  rounded border w-52 h-14">
+          Download proposal
+        </button>
       </div>
     </div>
   );

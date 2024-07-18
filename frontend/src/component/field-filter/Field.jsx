@@ -30,6 +30,7 @@ const Field = ({
   adornmentEnd = "",
   min,
   max,
+  step,
 }) => {
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isShowChangeButton, setIsShowChangeButton] =
@@ -66,14 +67,16 @@ const Field = ({
             required={required}
             sx={{ py: 1 }}
             InputProps={{
-              inputProps: { min, max },
+              inputProps: { min, max, step },
               startAdornment: adornment === "start" && (
                 <InputAdornment position="start">{unit}</InputAdornment>
               ),
               endAdornment: (
                 <>
                   {adornmentEnd && (
-                    <InputAdornment position="end">{adornmentEnd}</InputAdornment>
+                    <InputAdornment position="end">
+                      {adornmentEnd}
+                    </InputAdornment>
                   )}
                   {adornment === "end" && (
                     <InputAdornment position="end">{unit}</InputAdornment>
@@ -150,6 +153,7 @@ const Field = ({
             onChange={onChange}
             required={required}
             minRows={5}
+            className="border border-solid border-gray-300 rounded p-4 my-2"
           />
         </FormControl>
       );
@@ -165,6 +169,11 @@ const Field = ({
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm basis-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           disabled={isDisabled}
           required={required}
+          max={
+            name === "purchase_date"
+              ? new Date().toISOString().split("T")[0]
+              : undefined
+          }
         />
       );
       break;
@@ -196,7 +205,7 @@ const Field = ({
       {label && (
         <label
           htmlFor={name}
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-neutral-600 label16"
         >
           {label} {required && <span className="text-[#FE2E00]">*</span>}
           {info && (

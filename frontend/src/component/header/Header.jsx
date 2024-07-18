@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import UserMenuDropdown from "./UserMenuDropdown.jsx";
 import NotificationDropdown from "./NotificationDropdown.jsx";
@@ -95,7 +95,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
   }
 
   return (
-    <header className=" bg-white sm:bg-[#F1F7F8] sm:border-b border-[#DAE5E7] sm:ml-64 sm:h-24 sticky top-0 flex justify-between items-center sm:px-8 flex-wrap sm:flex-nowrap">
+    <header className=" bg-white sm:bg-[#F1F7F8] sm:border-b border-[#DAE5E7] sm:ml-64 sm:h-24 sticky top-0 flex justify-between items-center sm:px-8 flex-wrap sm:flex-nowrap z-10">
       <button
         type="button"
         className="block my-4 ml-4 sm:hidden"
@@ -109,13 +109,16 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
       >
         <img src={Hamburger} alt="toggle navigation menu" />
       </button>
-      <img
-        src={LogoForLightBg}
-        alt="CocoTrade"
-        className="block py-4 sm:hidden"
-      />
 
-      <h2 className="h1-sans text-neutral-600 bg-[#F1F7F8] basis-full sm:basis-auto p-4 sm:p-0 order-last sm:order-none">
+      <NavLink className="sm:hidden" to="/dashboard">
+        <img
+          src={LogoForLightBg}
+          alt="CocoTrade"
+          className="block py-4 sm:hidden"
+        />
+      </NavLink>
+
+      <h2 className="h1-sans text-neutral-600 bg-[#F1F7F8] basis-full sm:basis-auto px-8 py-4 sm:p-0 order-last sm:order-none">
         {pageTitle}
         {pageInfo && (
           <InfoTooltip title={pageInfo} placement="right" arrow>

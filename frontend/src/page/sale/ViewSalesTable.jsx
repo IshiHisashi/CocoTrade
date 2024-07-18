@@ -11,6 +11,7 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const userId = useContext(UserIdContext);
   const [sales, setSales] = useState([]);
   const [filteredSales, setFilteredSales] = useState([]);
+  const [inputLabel, setInputLabel] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const [dateRange, setDateRange] = useState({
     startDate: null,
@@ -76,10 +77,12 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     setIsDatePickerVisible(false); // Reset to initial state when closing the modal
     setDateRange({ startDate: null, endDate: null }); // Reset date range when opening the modal
     setDateLabel(""); // Clear the date label
+    setInputLabel("");
   };
   const handleDateChange = (update) => {
     setDateRange({ startDate: update[0], endDate: update[1] });
     setDateLabel("");
+    setInputLabel("");
   };
 
   const handlePredefinedRange = (range) => {
@@ -89,12 +92,12 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     let label = "";
     switch (range) {
       case "today":
-        label = "Today";
+        label = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        setInputLabel("Today");
         start = new Date(today.setHours(0, 0, 0, 0));
         end = new Date(today.setHours(23, 59, 59, 999));
         break;
       case "thisWeek":
-        label = "This Week";
         {
           const dayOfWeek = today.getDay();
           start = new Date(today.setDate(today.getDate() - dayOfWeek));
@@ -102,15 +105,19 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
           end = new Date(start);
           end.setDate(end.getDate() + 6);
           end.setHours(23, 59, 59, 999);
+          label = `${start.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })} - ${end.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}`;
+          setInputLabel("This Week");
         }
         break;
       case "thisMonth":
-        label = "This Month";
+        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        setInputLabel("This Month");
         start = new Date(today.getFullYear(), today.getMonth(), 1);
         end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         break;
       case "lastMonth":
-        label = "Last Month";
+        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        setInputLabel("Last Month");
         start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
         end = new Date(today.getFullYear(), today.getMonth(), 0);
         break;
@@ -132,6 +139,12 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   };
 
   const submitDateRange = () => {
+    if (dateRange.startDate && dateRange.endDate) {
+      const start = new Date(dateRange.startDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      setDateLabel(`${start} - ${end}`);
+      setInputLabel(`${start} - ${end}`);
+    }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
   };
@@ -172,32 +185,19 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
 
   return (
     <div>
-      <div className="flex justify-end mb-4 gap-3 py-4">
-                <label>
-          Status Filter:
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
+      <div className="flex justify-between mb-4 py-5">
+        <label className="mr-4">
+          <span className="ml-2 font-semibold">{dateLabel}</span>
         </label>
         <label>
-          Date Filter:
-          <input
-            type="text"
-            readOnly
-            value={
-              dateLabel ||
-              `${dateRange.startDate ? new Date(dateRange.startDate).toLocaleDateString() : ""} - ${dateRange.endDate ? new Date(dateRange.endDate).toLocaleDateString() : ""}`
-            }
-            onClick={() => setIsDateModalOpen(true)}
-          />
-        </label>
+            Date Filter:
+            <input
+              type="text"
+              readOnly
+              value={inputLabel}
+              onClick={() => setIsDateModalOpen(true)}
+            />
+          </label>
       </div>
       <Modal isOpen={isDateModalOpen} onRequestClose={toggleDateModal}>
         <h2>Select Date Range</h2>

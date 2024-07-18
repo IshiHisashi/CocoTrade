@@ -314,8 +314,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         <img src={Exit} alt="close" />
       </button>
       <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
-
-      <Field
+        <Field
           label="Status"
           name="status"
           type="dropdown"
@@ -337,7 +336,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           onChange={handleChange}
           required
         />
-        </div>
+      </div>
       <div className="relative" ref={wrapperRef}>
         <Field
           label="Manufacturer"
@@ -385,6 +384,8 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           unit="kg"
           adornment="end"
           required
+          min="0"
+          step="0.0001"
         />               
         <Field
           label="Received on"
@@ -405,7 +406,13 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           required={formData.status === "completed"}
           unit="PHP"
           adornment="start"
+          min="0"
+          step="0.0001"
         />
+        <p className="col-span-2 text-red-600">
+          {new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date) ? "The date for money receive has to be after the date for shipment" : ""}
+          {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" ? "Shipment date has to be the date on or before today's date. If you want to choose a future date, status has to be pending." : ""}
+        </p>
         </div>
         <div className="grid sm:grid-cols-2 gap-x-6 pt-8">   
         <CtaBtn
@@ -416,10 +423,19 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         />
         <CtaBtn 
           size="M" 
-          level={new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" || formData.status === "completed" && Number(formData.total_sales_price) <= 0 ? "D" : "P"}
+          level={
+            (new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending") || 
+            (formData.status === "completed" && Number(formData.total_sales_price) <= 0) ||
+            (new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date))
+             ? "D" : "P"
+          }
           type="submit"
           innerTxt="Save" 
-          disabled = {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" || formData.status === "completed" && Number(formData.total_sales_price) <= 0}
+          disabled = {
+            (new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending") || 
+            (formData.status === "completed" && Number(formData.total_sales_price) <= 0) ||
+            (new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date))
+          }
         />
         </div> 
       </form>

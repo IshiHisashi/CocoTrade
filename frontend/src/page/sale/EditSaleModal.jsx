@@ -395,6 +395,11 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           onChange={handleChange}
           disabled={formData.status !== "completed"}
           required={formData.status === "completed"}
+          title={
+            formData.status !== "completed"
+              ? "The sale must be completed to edit the date."
+              : ""
+          }
            />
         <Field
           label="Total Sale"
@@ -408,6 +413,11 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           adornment="start"
           min="0"
           step="0.0001"
+          title={
+            formData.status !== "completed"
+              ? "The sale must be completed to edit the date."
+              : ""
+          }
         />
         <p className="col-span-2 text-red-600">
           {new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date) ? "The date for money receive has to be after the date for shipment" : ""}

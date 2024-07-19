@@ -70,7 +70,6 @@ const AuthInputModal = (props) => {
           ) {
             navigate("/dashboard");
           } else {
-            fnToCloseThisModal(false);
             navigate("/onboarding/business");
           }
         } catch (error) {

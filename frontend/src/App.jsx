@@ -90,7 +90,7 @@ const AppRoutes = ({ userid, setUser, URL }) => {
 const App = () => {
   const userid = useContext(UserIdContext);
   const [user, setUser] = useState(null);
-  const [URL, setURL] = useState("http://localhost:5555");
+  const [URL, setURL] = useState("https://coco-trade-backend.vercel.app");
 
   return (
     <Router>

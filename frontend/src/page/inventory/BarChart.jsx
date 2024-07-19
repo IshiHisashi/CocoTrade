@@ -76,7 +76,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
       },
       {
         label: "Available",
-        data: [((maximumInv - inventoryLeft - inventoryWithPending) / maximumInv) * 100],
+        data: [((maximumInv - inventoryWithPending) / maximumInv) * 100],
         backgroundColor: "#F1F1F1",
         barThickness: 20,
         borderWidth: 1,
@@ -102,7 +102,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
       },
       {
         label: "Available",
-        data: [((maximumInv - inventoryLeft - inventoryWithPending) / maximumInv) * 100],
+        data: [((maximumInv - inventoryWithPending) / maximumInv) * 100],
         backgroundColor: "#F1F1F1",
         barThickness: 20,
         borderWidth: 1,

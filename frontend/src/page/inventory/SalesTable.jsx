@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const SalesTable = ({ userId, URL }) => {
+const SalesTable = ({ userId, URL, showConfirmation }) => {
   const [sales, setSales] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(
     () => {
@@ -11,33 +13,51 @@ const SalesTable = ({ userId, URL }) => {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [showConfirmation]
   );
-
-  console.log(sales);
 
   return (
     <div>
-      <h2>Latest Sales</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Company</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sales.map((sale) => (
-            // eslint-disable-next-line no-underscore-dangle
-            <tr key={sale._id}>
-              <td>{sale.copra_ship_date}</td>
-              <td>{sale.manufacturer_id.full_name}</td>
-              <td>{sale.status}</td>
+      <h3 className="h3-serif font-semibold mb-[14px]">Latest Sales</h3>
+      <div id="tableArea" className="overflow-auto rounded-lg border border-bluegreen-200">
+        <table className="w-full overflow-auto">
+          <thead className="text-white bg-neutral-600">
+            <tr className="legend14">
+              <th className="text-start p-[10px]">Date</th>
+              <th className="text-start p-[10px]">Company</th>
+              <th className="text-start p-[10px]">Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {sales.map((sale) => (
+              // eslint-disable-next-line no-underscore-dangle
+              <tr 
+                key={sale._id}
+                className="p14-medium even:bg-bluegreen-100"
+              >
+                <td  className="pl-[10px] py-[12.5px]">
+                  {sale.copra_ship_date.split("T")[0].slice(5, 7)}/
+                  {sale.copra_ship_date.split("T")[0].slice(8, 10)}/
+                  {sale.copra_ship_date.split("T")[0].slice(2, 4)}
+                </td>
+                <td className="pl-[10px] py-[12.5px]">
+                  {sale.manufacturer_id.full_name}
+                </td>
+                <td className="pl-[10px] py-[12.5px]">
+                  {sale.status}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <button 
+        onClick={() => navigate("/sales")} 
+        type="button"
+        className="mt-[37px] p14 font-semibold w-full text-right"
+      >
+        View sales log →
+      </button>
     </div>
   );
 };

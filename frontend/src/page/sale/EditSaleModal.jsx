@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
+import Exit from "../../assets/icons/Exit.svg";
 
-const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL }) => {
+const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL,onFormSubmit, }) => {
   const userId = useContext(UserIdContext);
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
+  const [filteredManufacturers, setFilteredManufacturers] = useState([]);
   const [user, setUser] = useState(null);
 
   // Just for PR
@@ -22,6 +24,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   // To store data filled in an edit form
   const [formData, setFormData] = useState({
     manufacturer_id: "",
+    manufacturer_name: "",
     amount_of_copra_sold: "",
     sales_unit_price: "",
     status: "",
@@ -30,6 +33,9 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     total_sales_price: "",
     user_id: userId,
   });
+
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     // Fetch user data
@@ -42,16 +48,16 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         console.error("Error fetching user:", error);
       });
 
-    // Fetch manufacturers
+    // Fetch manufacturers for the current user
     axios
-      .get(`${URL}/user/${userId}/manu`)
-      .then((response) => {
-        setManufacturers(response.data.data.manufacturers);
-        console.log(response.data.data.manufacturers);
-      })
-      .catch((error) => {
-        console.error("Error fetching manufacturers:", error);
-      });
+    .get(`${URL}/manufacturer`, { params: { user_id: userId } })
+    .then((response) => {
+      setManufacturers(response.data);
+      setFilteredManufacturers(response.data); // Set initial filtered manufacturer
+    })
+    .catch((error) => {
+      console.error("Error fetching manufacturers:", error);
+    });
   }, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [selectedSale]);
@@ -108,27 +114,87 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [showEditForm]) 
 
+  const handleClickOutside = (event) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  }; 
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+    if (name === "manufacturer_name") {
+      const filtered = manufacturers.filter((manufacturer) =>
+        manufacturer.full_name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredManufacturers(filtered);
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleSelectManufacturer = (name) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      manufacturer_name: name,
+    }));
+    setFilteredManufacturers(manufacturers);
+    setShowSuggestions(false);
+  };
+  const handleFocus = () => {
+    setShowSuggestions(true);
+  };
+
+  const handleBlur = () => {
+    // Delay hiding the suggestions to allow selection
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 200);
   };
 
   // Common throughout all the sales edit patterns => Good to go
   const updateSales = async () => {
     try {
-      await axios.patch(`${URL}/sale/${selectedSale._id}`, formData);
-      // console.log(patchedSales.data.data);
-      // 👆 This never shows proper response for some reasons.
-      console.log("Sales updated");
-    }
-    catch(err) {
+      const existingManufacturer = manufacturers.find(manufacturer => manufacturer.full_name === formData.manufacturer_name);
+      let manufacturerId = existingManufacturer ? existingManufacturer._id : null;
+
+      if (!manufacturerId) {
+        const manufacturerResponse = await axios.post(`${URL}/manufacturer`, {
+          user_id: userId,
+          full_name: formData.manufacturer_name,
+        });
+        manufacturerId = manufacturerResponse.data.data._id;
+      }
+
+      const updatedFormData = {
+        ...formData,
+        manufacturer_id: manufacturerId,
+      };
+
+      const updatedSale = await axios.patch(`${URL}/sale/${selectedSale._id}`, updatedFormData);
+
+      setSales((prevSales) =>
+        prevSales.map((sale) =>
+          sale._id === selectedSale._id ? updatedSale.data.data : sale
+        )
+      );
+
+      setshowEditForm(false);
+      setSelectedSale(null);
+      onFormSubmit("Sale log entry has been updated."); // Call form submit handler
+    } catch (err) {
       console.error("Failed to update sales: ", err);
     }
   }
-
   // Object to pass to inventory update api
   // argument represents below
   // add: when it's true, api subtract number from inv
@@ -153,7 +219,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   const createObjectToPassForFin = (add, rev, mod) => {
     const object = {
       userId,
-      prevRecievedDate: previousReceivedDate,
+      prevReceivedDate: previousReceivedDate,
       newReceivedDate: formData.cheque_receive_date,
       prevPrice: previousPrice,
       newPrice: formData.total_sales_price,
@@ -179,6 +245,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       await updateSales();
 
       let objectToPassI;
+      let objectToPassF = null;
 
       if (prevWasPending) {
         if (updateToPending) {
@@ -186,8 +253,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         } else if (updateToOngoing || updateToCompleted) {
           objectToPassI = createObjectToPassForInv(true, false, false, false);
           if (updateToCompleted) {
-            const objectToPassF = createObjectToPassForFin(true, false, false);
-            console.log(objectToPassF);
+            objectToPassF = createObjectToPassForFin(true, false, false);
           }
         }
       } else if (prevWasOngoing) {
@@ -196,28 +262,27 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         } else if (updateToOngoing || updateToCompleted) {
           objectToPassI = createObjectToPassForInv(false, false, true, true);
           if (updateToCompleted) {
-            const objectToPassF = createObjectToPassForFin(true, false, false);
-            console.log(objectToPassF);
+            objectToPassF = createObjectToPassForFin(true, false, false);
           }
         }
       } else if (prevWasCompleted) {
         if (updateToPending) {
           objectToPassI = createObjectToPassForInv(false, true, false, false);
-          const objectToPassF = createObjectToPassForFin(false, true, false);
-          console.log(objectToPassF);
+          objectToPassF = createObjectToPassForFin(false, true, false);
         } else if (updateToOngoing) {
           objectToPassI = createObjectToPassForInv(false, false, true, true);
-          const objectToPassF = createObjectToPassForFin(false, true, false);
-          console.log(objectToPassF);
+          objectToPassF = createObjectToPassForFin(false, true, false);
         } else if (updateToCompleted) {
           objectToPassI = createObjectToPassForInv(false, false, true, true);
-          const objectToPassF = createObjectToPassForFin(false, false, true);
-          console.log(objectToPassF);
+          objectToPassF = createObjectToPassForFin(false, false, true);
         }
       }
 
-      console.log(objectToPassI);
+      console.log(objectToPassF);
       axios.patch(`${URL}/inventory/updateForSales`, objectToPassI);
+      if (objectToPassF !== null) {
+        axios.patch(`${URL}/currentbalance/updateForSales`, objectToPassF);
+      }
 
       setshowEditForm(false);
       setSelectedSale(null);
@@ -238,36 +303,17 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   return (
     <div className="modal">
       {console.log(manufacturers)}
-      <h2>Edit Sale</h2>
+      <h1 className="text-neutral-600 font-dm-sans font-bold text-[24px]">Edit Sale</h1>
+      <small className="text-[#8E9299] font-dm-sans">Update sales entry information</small>
       <form onSubmit={handleSubmit}>
-        <Field
-          label="Manufacturer Name"
-          name="manufacturer_id"
-          value={formData.manufacturer_id}
-          onChange={handleChange}
-          type="dropdown"
-          options={manufacturers.map((manufacturer) => ({
-            // eslint-disable-next-line no-underscore-dangle
-            value: manufacturer._id,
-            label: manufacturer.full_name,
-          }))}
-          required
-        />
-        <Field
-          label="Amount of Copra Sold"
-          name="amount_of_copra_sold"
-          type="number"
-          value={formData.amount_of_copra_sold}
-          onChange={handleChange}
-        />
-        <Field
-          label="Sales Unit Price"
-          name="sales_unit_price"
-          type="number"
-          value={formData.sales_unit_price}
-          onChange={handleChange}
-          disabled
-        />
+      <button
+        type="button"
+       className="absolute top-2 right-2"
+        onClick={() => setshowEditForm(false)}
+      >
+        <img src={Exit} alt="close" />
+      </button>
+      <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
           label="Status"
           name="status"
@@ -280,41 +326,134 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
             { value: "completed", label: "Completed" },
             // { value: "cancelled", label: "Cancelled" },
           ]}
+          required
         />
         <Field
-          label="Copra Ship Date"
+          className="w-[183px]"
+          label="Shipment date"
           name="copra_ship_date"
           type="date"
           value={formData.copra_ship_date}
           onChange={handleChange}
+          required
         />
+      </div>
+      <div className="relative" ref={wrapperRef}>
         <Field
-          label="Cheque Receive Date"
+          label="Manufacturer"
+          name="manufacturer_name"
+          type="text"
+          value={formData.manufacturer_name}
+          onChange={handleChange}
+          onFocus={handleFocus}
+            onBlur={handleBlur}
+          required
+        />
+        {showSuggestions && filteredManufacturers.length > 0 && (
+          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+            {filteredManufacturers.map((manufacturer) => (
+              <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => handleSelectManufacturer(manufacturer.full_name)}
+                >
+                  {manufacturer.full_name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        </div>
+        <div className="grid grid-cols-2 gap-x-6 pt-3">
+        <Field
+          label="Sales unit price"
+          name="sales_unit_price"
+          type="number"
+          value={formData.sales_unit_price}
+          onChange={handleChange}
+          unit="PHP"
+          adornment="start"
+          adornmentEnd="per kg"
+          disabled
+        />      
+        <Field
+          label="Copra Sold"
+          name="amount_of_copra_sold"
+          type="number"
+          className="w-[183px]"
+          value={formData.amount_of_copra_sold}
+          onChange={handleChange}
+          unit="kg"
+          adornment="end"
+          required
+          min="0"
+          step="0.0001"
+        />               
+        <Field
+          label="Received on"
           name="cheque_receive_date"
           type="date"
+          className="w-[183px]"
           value={formData.cheque_receive_date}
           onChange={handleChange}
-        />
+          disabled={formData.status !== "completed"}
+          required={formData.status === "completed"}
+          title={
+            formData.status !== "completed"
+              ? "The sale must be completed to edit the date."
+              : ""
+          }
+           />
         <Field
-          label="Total Sales Price"
+          label="Total Sale"
           name="total_sales_price"
           type="number"
+          className="w-[183px]"
           value={formData.total_sales_price}
           onChange={handleChange}
+          disabled={formData.status !== "completed"}
+          required={formData.status === "completed"}
+          unit="PHP"
+          adornment="start"
+          min="0"
+          step="0.0001"
+          title={
+            formData.status !== "completed"
+              ? "The sale must be completed to edit the date."
+              : ""
+          }
         />
+        <p className="col-span-2 text-red-600">
+          {new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date) ? "The date for money receive has to be after the date for shipment" : ""}
+          {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" ? "Shipment date has to be the date on or before today's date. If you want to choose a future date, status has to be pending." : ""}
+        </p>
+        </div>
+        <div className="grid grid-cols-2 gap-x-6 pt-3">   
         <CtaBtn
-          size="S"
+          className="w-[183px]"
+          size="M"
           level="O"
           innerTxt="Clear"
           onClickFnc={fncCloseModal}
         />
         <CtaBtn 
-          size="S" 
-          level={new Date(formData.copra_ship_date) > new Date() ? "D" : "P"} 
-          type="submit" 
+          className="w-[183px]"
+          size="M" 
+          level={
+            (new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending") || 
+            (formData.status === "completed" && Number(formData.total_sales_price) <= 0) ||
+            (new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date))
+             ? "D" : "P"
+          }
+          type="submit"
           innerTxt="Save" 
-          disabled = {new Date(formData.copra_ship_date) > new Date()}
+          disabled = {
+            (new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending") || 
+            (formData.status === "completed" && Number(formData.total_sales_price) <= 0) ||
+            (new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date))
+          }
         />
+        </div> 
       </form>
     </div>
   );

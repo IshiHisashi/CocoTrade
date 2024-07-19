@@ -1,12 +1,11 @@
 import React, { Children } from "react";
 
-const LandingFeatureCard = ({ title, description, children }) => {
+const LandingFeatureCard = ({ title, description }) => {
   return (
-    <div>
+    <div className="self-center">
       <div className="texts">
-        <h3 className="text-[24px] font-semibold">{title}</h3>
-        <p>{description}</p>
-        {children}
+        <h2 className="h3-serif lg:h2-serif text-bluegreen-700">{title}</h2>
+        <p className="p18">{description}</p>
       </div>
     </div>
   );

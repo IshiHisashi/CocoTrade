@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Field from "../../component/field-filter/Field";
@@ -12,13 +12,16 @@ const AddPurchaseForm = ({
   handleUpdate,
   setPurchasesFromParent,
   URL,
+  onFormSubmit,
 }) => {
   const userid = useContext(UserIdContext);
   const navigate = useNavigate();
   const [farmers, setFarmers] = useState([]);
+  const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [user, setUser] = useState(null);
+  const  [isSubmitting, setIsSubmitting] =useState(false);
   const [formData, setFormData] = useState({
-    farmer_id: "",
+    farmer_name: "",
     invoice_number: "",
     purchase_date: "",
     sales_unit_price: "",
@@ -27,6 +30,9 @@ const AddPurchaseForm = ({
     total_purchase_price: "",
     user_id: userid,
   });
+
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     // Fetch user data
@@ -39,16 +45,17 @@ const AddPurchaseForm = ({
         console.error("Error fetching user:", error);
       });
 
-    // Fetch farmers
+      // Fetch farmers for the current user
     axios
-      .get(`${URL}/farmer`)
-      .then((response) => {
-        setFarmers(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching farmers:", error);
-      });
-
+    .get(`${URL}/farmer`, { params: { user_id: userid } })
+    .then((response) => {
+      setFarmers(response.data);
+      setFilteredFarmers(response.data); // Set initial filtered farmers
+    })
+    .catch((error) => {
+      console.error("Error fetching farmers:", error);
+    });
+    
     // Fetch price suggestion
     axios
       .get(`${URL}/user/${userid}/pricesuggestion/getone`)
@@ -91,7 +98,7 @@ const AddPurchaseForm = ({
       setFormData({
         ...purchase,
         // eslint-disable-next-line no-underscore-dangle
-        farmer_id: purchase.farmer_id?._id ?? "",
+        farmer_name: purchase.farmer_id ? purchase.farmer_id.full_name : "",
         sales_unit_price: parseFloat(
           purchase.sales_unit_price?.$numberDecimal ?? purchase.sales_unit_price
         ),
@@ -108,7 +115,7 @@ const AddPurchaseForm = ({
             purchase.total_purchase_price
         ),
         purchase_date: purchase.purchase_date
-          ? new Date(purchase.purchase_date).toISOString().split("T")[0]
+          ? new Date(purchase.purchase_date).toISOString('en-CA').split("T")[0]
           : "",
         user_id: userid,
       });
@@ -141,25 +148,91 @@ const AddPurchaseForm = ({
     formData.moisture_test_details,
   ]);
 
+  const handleClickOutside = (event) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  }; 
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+    if (name === "farmer_name") {
+      const filtered = farmers.filter((farmer) =>
+        farmer.full_name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredFarmers(filtered);
+      setShowSuggestions(true);
+    }
   };
+
+  const handleSelectFarmer = (name) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      farmer_name: name,
+    }));
+    setFilteredFarmers(farmers);
+    setShowSuggestions(false);
+  };
+
+  const handleFocus = () => {
+    setShowSuggestions(true);
+  };
+
+  const handleBlur = () => {
+    // Delay hiding the suggestions to allow selection
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 200);
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       // -----UPDATE PURCHASE LOG-----
       // Update purchase document
+      let farmerId = "";
+
+      if (formData.farmer_name) {
+        const existingFarmer = farmers.find(
+          (farmer) => farmer.full_name === formData.farmer_name
+        );
+
+        if (existingFarmer) {
+          farmerId = existingFarmer._id;
+        } else {
+          const farmerResponse = await axios.post(`${URL}/farmer`, {
+            user_id: userid,
+            full_name: formData.farmer_name,
+          });
+          farmerId = farmerResponse.data.data._id;
+        }
+      }
+
+      const updatedFormData = {
+        ...formData,
+        farmer_id: farmerId,
+        purchase_date: new Date(formData.purchase_date).toISOString(),
+      };
+
       if (purchase) {
-        await handleUpdate(formData, purchase, userid);
+        await handleUpdate(updatedFormData, purchase, userid);
       } else {
         // -----NEW PURCHASE LOG-----
         // 1). Create purchase document
-        const newPurchaseDoc = await axios.post(`${URL}/purchase`, formData);
+        const newPurchaseDoc = await axios.post(`${URL}/purchase`, updatedFormData);
         // eslint-disable-next-line no-underscore-dangle
         const purchaseId = newPurchaseDoc.data._id;
 
@@ -207,33 +280,35 @@ const AddPurchaseForm = ({
           };
         }
         await axios.patch(`${URL}/user/${userid}`, updateData);
-        setShowAddForm(false);
         setPurchasesFromParent(newPurchaseDoc.data);
+
+        setShowAddForm(false);
+        onFormSubmit(`Invoice #${formData.invoice_number} has been logged successfully.`);
       }
-      // set location.state.showAddForm to false
-      // (this is realted to reloading behaviour
-      // when users visiting purchase page from Add Purchase button on Dashboard)
-      navigate("/purchase", { state: { showAddForm: false } });
-    } catch (error) {
-      console.error("Error creating/updating purchase:", error);
+      } catch (error) {
+      console.error("Error creating/updating purchase:", error)
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="modal">
-<h1>{purchase ? "Edit Purchase" : "New Purchase"}</h1>
-<small>Add a new puchase for today</small>
+
       <form onSubmit={handleSubmit}>
+        
       <button
         type="button"
-        className="absolute top-8 right-8"
+        className="absolute top-2 right-2"
         onClick={() => setShowAddForm(false)}
       >
         <img src={Exit} alt="close" />
       </button>
-      <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
+      <h1 className="text-neutral-600 font-dm-sans font-bold text-[24px]">{purchase ? "Edit Purchase" : "New Purchase"}</h1>
+<small className="text-[#8E9299] font-dm-sans">Add a new puchase for today</small>
+      <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
-          label="Invoice No"
+        className="w-[183px] text-neutral-400"
+          label="Invoice no."
           name="invoice_number"
           value={formData.invoice_number}
           onChange={handleChange}
@@ -241,41 +316,60 @@ const AddPurchaseForm = ({
           disabled
         />
         <Field
-          label="Date Purchased"
+          className="w-[183px]"
+          label="Date purchased"
           name="purchase_date"
           type="date"
           value={formData.purchase_date}
           onChange={handleChange}
           required
-        />
+          />
         </div>
+        <div className="relative" ref={wrapperRef}>
         <Field
-          label="Farmer Name"
-          name="farmer_id"
-          type="dropdown"
-          value={formData.farmer_id}
-          // eslint-disable-next-line no-underscore-dangle
-          options={farmers.map((farmer) => ({
-            // eslint-disable-next-line no-underscore-dangle
-            value: farmer._id,
-            label: farmer.full_name,
-          }))}
+          className="w-[380px]"
+          label="Farmer's Name"
+          name="farmer_name"
+          type="text"
+          value={formData.farmer_name}
           onChange={handleChange}
+          onFocus={handleFocus}
+            onBlur={handleBlur}
           required
         />
-        <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
+        {showSuggestions && filteredFarmers.length > 0 && (
+          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+            {filteredFarmers.map((farmer) => (
+              <li key={farmer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => handleSelectFarmer(farmer.full_name)}
+                >
+                  {farmer.full_name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        </div>
+        <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
-          label="Price per kilo (PHP)"
+          className="w-[183px]"
+          label="Price per kg"
           name="sales_unit_price"
           type="number"
           value={formData.sales_unit_price}
           onChange={handleChange}
           required
-          unit="PHP"
+          unit="Php"
           adornment="start"
+          min="0"
+          step="0.0001"
+          disabled
         />
         <Field
-          label="Copra bought (kg)"
+          className="w-[183px]"
+          label="Copra bought"
           name="amount_of_copra_purchased"
           type="number"
           value={formData.amount_of_copra_purchased}
@@ -283,9 +377,12 @@ const AddPurchaseForm = ({
           required
           unit="kg"
           adornment="end"
+          min="0"
+          step="0.0001"
         />
         <Field
-          label="Moisture Test Details"
+          className="w-[183px]"
+          label="Moisture level"
           name="moisture_test_details"
           type="number"
           value={formData.moisture_test_details}
@@ -293,20 +390,24 @@ const AddPurchaseForm = ({
           required
           unit="%"
           adornment="end"
+          min="0"
+          max="100"
         />
         <Field
-          label="Total Sale (PHP)"
+          className="w-[183px]"
+          label="Total Sale"
           name="total_purchase_price"
           type="number"
           value={formData.total_purchase_price}
           onChange={handleChange}
           disabled
-          unit="PHP"
+          unit="Php"
           adornment="start"
         />
         </div>
-        <div className="grid sm:grid-cols-2 gap-x-6 pt-8">   
+        <div className="grid grid-cols-2 gap-x-6 pt-3">   
  <CtaBtn
+        className="w-[183px]"
         size="M"
         level="O"
         innerTxt="Clear"
@@ -316,10 +417,12 @@ const AddPurchaseForm = ({
         }}
       />
         <CtaBtn
+        className="w-[183px]"
         size="M"
         level="P"
         innerTxt="Save"
         type="submit"
+        disabled={isSubmitting}
       />
       </div> 
       </form>

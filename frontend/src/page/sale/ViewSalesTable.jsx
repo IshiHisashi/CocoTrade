@@ -1,35 +1,130 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
 import Pagination from "../../component/btn/Pagination";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+ import Exit from '../../assets/icons/Exit.svg';
+ import BlackEllipse from '../../assets/icons/BlackEllipse.svg';
+ import BlueEllipse from '../../assets/icons/BlueEllipse.svg';
+ import RedEclipse from '../../assets/icons/RedEclipse.svg';
+ import YellowEclipse from '../../assets/icons/YellowEclipse.svg';
+ import Dropdown from '../../assets/icons/Dropdown.svg';
+ import CtaBtn from "../../component/btn/CtaBtn";
+ import DeleteIcon from '../../assets/icons/DeleteIcon.svg';
+import EditIcon from '../../assets/icons/EditIcon.svg';
+import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
+import EllipseIcon from '../../assets/icons/Ellipse.svg';
+
+// import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
+
+
+const statusOptions = [
+  { value: 'all', label: 'All', icon: BlackEllipse },
+  { value: 'pending', label: 'Pending', icon: YellowEclipse },
+  { value: 'ongoing', label: 'Ongoing', icon: RedEclipse },
+  { value: 'completed', label: 'Complete', icon: BlueEllipse },
+];
+
+const CustomDropdown = ({ options, value, onChange }) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const handleOptionClick = (optionValue) => {
+    onChange(optionValue);
+    setDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const selectedOption = options.find(option => option.value === value);
+
+  return (
+    
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        className="w-[185px] h-[28px] p-[15px] bg-white border border-gray-300 rounded flex items-center justify-between px-2"
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+      >
+        {selectedOption && (
+          <div className="flex items-center text-neutral-300">
+            <img src={selectedOption.icon} alt={selectedOption.label} className="w-4 h-4 mr-2" />
+            {selectedOption.label}
+          </div>
+        )}
+        <span className="ml-2"><img src={Dropdown} alt={selectedOption.label} className="w-[6px] h-[4px] mr-2" />
+        </span>
+      </button>
+      {dropdownOpen && (
+        <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded shadow-lg z-10 ">
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className="flex items-center hover:bg-gray-100 w-full text-left p-[15px]"
+              onClick={() => handleOptionClick(option.value)}
+            >
+              <img src={option.icon} alt={option.label} className="w-4 h-4 mr-2" />
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const userId = useContext(UserIdContext);
   const [sales, setSales] = useState([]);
   const [filteredSales, setFilteredSales] = useState([]);
+  const [inputLabel, setInputLabel] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(null);
+  const dropdownRef = useRef(null);
   const [dateRange, setDateRange] = useState({
     startDate: null,
     endDate: null,
   });
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [newlyAdded, setNewlyAdded] = useState(false);
+  const [highlightNewlyAdded, setHighlightNewlyAdded] = useState(true);
   const [dateLabel, setDateLabel] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
+
+  const setNewlyAddedInLocalStorage = (value) => {
+    localStorage.setItem('newlyAdded', JSON.stringify(value));
+  };
+
+  const getNewlyAddedFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem('newlyAdded'));
+  }; 
 
   const fetchSales = () => {
     const url = `${URL}/user/${userId}/sales`;
     axios
       .get(url)
       .then((response) => {
-        setSales(response.data);
-        setFilteredSales(response.data);
+        const sortedData = response.data.sort((a, b) => new Date(b.copra_ship_date) - new Date(a.copra_ship_date));
+        setSales(sortedData);
+        setFilteredSales(sortedData);
+        const newlyAddedFromStorage = getNewlyAddedFromLocalStorage();
+        setHighlightNewlyAdded(newlyAddedFromStorage);
       })
       .catch((error) => {
         console.error("Error fetching sales:", error);
@@ -42,11 +137,16 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [userId, URL, showEditForm]);
 
-  const formatDecimal = (decimal128) => {
+  const formatWithCommas = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const formatDecimal = (decimal128, decimalPlaces = 2) => {
     if (!decimal128 || !decimal128.$numberDecimal) {
-      return "0.00";
+      return "0";
     }
-    return parseFloat(decimal128.$numberDecimal).toFixed(2);
+    const number = parseFloat(decimal128.$numberDecimal);
+  return number % 1 === 0 ? number.toString() : number.toFixed(decimalPlaces);
   };
 
   useEffect(() => {
@@ -76,10 +176,12 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     setIsDatePickerVisible(false); // Reset to initial state when closing the modal
     setDateRange({ startDate: null, endDate: null }); // Reset date range when opening the modal
     setDateLabel(""); // Clear the date label
+    setInputLabel("");
   };
   const handleDateChange = (update) => {
     setDateRange({ startDate: update[0], endDate: update[1] });
     setDateLabel("");
+    setInputLabel("");
   };
 
   const handlePredefinedRange = (range) => {
@@ -89,12 +191,12 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     let label = "";
     switch (range) {
       case "today":
-        label = "Today";
+        label = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        setInputLabel("Today");
         start = new Date(today.setHours(0, 0, 0, 0));
         end = new Date(today.setHours(23, 59, 59, 999));
         break;
       case "thisWeek":
-        label = "This Week";
         {
           const dayOfWeek = today.getDay();
           start = new Date(today.setDate(today.getDate() - dayOfWeek));
@@ -102,15 +204,19 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
           end = new Date(start);
           end.setDate(end.getDate() + 6);
           end.setHours(23, 59, 59, 999);
+          label = `${start.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })} - ${end.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}`;
+          setInputLabel("This Week");
         }
         break;
       case "thisMonth":
-        label = "This Month";
+        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        setInputLabel("This Month");
         start = new Date(today.getFullYear(), today.getMonth(), 1);
         end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         break;
       case "lastMonth":
-        label = "Last Month";
+        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        setInputLabel("Last Month");
         start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
         end = new Date(today.getFullYear(), today.getMonth(), 0);
         break;
@@ -132,6 +238,12 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   };
 
   const submitDateRange = () => {
+    if (dateRange.startDate && dateRange.endDate) {
+      const start = new Date(dateRange.startDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      setDateLabel(`${start} - ${end}`);
+      setInputLabel(`${start} - ${end}`);
+    }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
   };
@@ -144,7 +256,9 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     }
   };
 
-  const handleEditClick = (sale) => {
+  const handleEditClick = (sale, e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setshowEditForm(true);
     handleEdit(sale);
   };
@@ -170,162 +284,276 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     }
   };
 
+  const getRowClassName = (index) => {
+    if (newlyAdded && currentPage === 1 && index === 0 && highlightNewlyAdded) {
+      return 'bg-neutral-100 cursor-pointer';
+    }
+    return index % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
+  };
+
+  const handleRowClick = (index) => {
+    if (index === 0 && newlyAdded && highlightNewlyAdded) {
+      setHighlightNewlyAdded(false);
+      setNewlyAdded(false);
+      setNewlyAddedInLocalStorage(false);
+    }
+  };
+
+  // Add this useEffect to handle clicks outside the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !event.target.closest('.dropdown-content')
+      ) {
+        setDropdownVisible(null);
+        if (newlyAdded && highlightNewlyAdded) {
+          setHighlightNewlyAdded(false);
+          setNewlyAddedInLocalStorage(false);
+        }
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [newlyAdded, highlightNewlyAdded]);
+  
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
+  return date.toLocaleDateString('en-US', options);
+};
+const getStatusClass = (status) => {
+  switch (status) {
+    case 'ongoing':
+      return 'bg-orange-200 text-orange-500';
+    case 'pending':
+      return 'bg-yellow-100 text-yellow-200';
+    case 'completed':
+      return 'bg-bluegreen-100 text-bluegreen-500';
+    default:
+      return 'bg-gray-400';
+  }
+};
+
+
   return (
     <div>
-      <div className="flex justify-end mb-4 gap-3 py-4">
-                <label>
-          Status Filter:
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </label>
+   <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
+  <label className="mr-4">
+    <span className="h3-sans">{dateLabel}</span>
+  </label>
+  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0">      
+    <label className="mr-2 font-bold mb-2 sm:mb-0">
+      <CustomDropdown
+        options={statusOptions}
+        value={statusFilter}
+        onChange={(value) => setStatusFilter(value)}
+      />
+    </label>
+   
+    <div className="relative flex items-center mb-2 sm:mb-0">
+      <label className="mr-2 font-bold">
+        Filter by date
+      </label>
+      <input
+        type="text"
+        readOnly
+        value={inputLabel}
+        onClick={() => setIsDateModalOpen(true)}
+        className="w-60 p-[15px] h-[28px] border rounded cursor-pointer text-neutral-400 border-bluegreen-200"
+      />
+      <button
+        type="button"
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+        onClick={() => setIsDateModalOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            setIsDateModalOpen(true);
+          }
+        }}
+      >
+        <img src={CalendarIcon} alt="Calendar" />
+      </button>
+      <Modal
+  isOpen={isDateModalOpen}
+  onRequestClose={toggleDateModal}
+  shouldCloseOnOverlayClick
+  className="absolute z-10 inset-0 flex items-start justify-end p-4"
+  overlayClassName="absolute inset-0 bg-black bg-opacity-0"
+  style={{ content: { top: '120px', left: 'auto', right: '16px', bottom: 'auto', marginRight: '0', marginTop: '0', transform: 'none' } }}
+>
+  <div className="bg-white p-6 rounded-lg shadow-lg w-[380px]" style={{ marginTop: 'calc(100% - 330px)' }}>
+    <h2 className="text-sm font-semibold text-neutral-600 mb-4">Select date range</h2>
+    {isDatePickerVisible ? (
+  <>
+  <DatePicker
+    selectsRange
+    startDate={dateRange.startDate}
+    endDate={dateRange.endDate}
+    onChange={handleDateChange}
+    inline
+  />
+<div className="grid grid-cols-2 pt-3"> 
+    <CtaBtn
+      className="w-[183px]"
+      size="S"
+      level="O"
+      innerTxt="Back"
+      onClickFnc={hideDatePicker}
+    />
+    <CtaBtn
+      className="w-[183px]"
+      size="S"
+      level="P"
+      innerTxt="Submit"
+      onClickFnc={submitDateRange}
+    />
+  </div>
+</>
+
+    ) : (
+      <>
         <label>
-          Date Filter:
           <input
             type="text"
+            placeholder="MM/DD/YY - MM/DD/YY"
             readOnly
-            value={
-              dateLabel ||
-              `${dateRange.startDate ? new Date(dateRange.startDate).toLocaleDateString() : ""} - ${dateRange.endDate ? new Date(dateRange.endDate).toLocaleDateString() : ""}`
-            }
-            onClick={() => setIsDateModalOpen(true)}
+            onClick={showDatePicker}
+            className="w-full py-2 px-4 mb-4 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
           />
+           <button
+        type="button"
+        className="absolute right-20 top-36 transform -translate-y-1/2 cursor-pointer"
+        onClick={showDatePicker}
+      >
+        <img src={CalendarIcon} alt="Calendar" />
+      </button>
         </label>
-      </div>
-      <Modal isOpen={isDateModalOpen} onRequestClose={toggleDateModal}>
-        <h2>Select Date Range</h2>
-        {isDatePickerVisible ? (
-          <>
-            <DatePicker
-              selectsRange
-              startDate={dateRange.startDate}
-              endDate={dateRange.endDate}
-              onChange={handleDateChange}
-              inline
-            />
-            <button type="button" onClick={hideDatePicker}>
-              Back
-            </button>
-            <button type="button" onClick={submitDateRange}>
-              Submit
-            </button>
-          </>
-        ) : (
-          <>
-            <label>
-              <input
-                type="text"
-                placeholder="MM/DD/YY - MM/DD/YY"
-                readOnly
-                onClick={showDatePicker}
-              />
-            </label>
-            <div>
-              <button
-                type="button"
-                onClick={() => handlePredefinedRange("today")}
-              >
-                Today
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={() => handlePredefinedRange("thisWeek")}
-              >
-                This Week
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={() => handlePredefinedRange("thisMonth")}
-              >
-                This Month
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={() => handlePredefinedRange("lastMonth")}
-              >
-                Last Month
-              </button>
-            </div>
-          </>
-        )}
-      </Modal>
-      <table className="min-w-full bg-white border-collapse"> 
-               <thead>
-          <tr className="bg-black text-white text-left">
-            <th>Ship Date</th>
-            <th>Manufacturer</th>
-            <th>Sales Unit Price</th>
-            <th>Copra Sold</th>
-            <th>Received On</th>
-            <th>Total Sale</th>
-            <th>Status</th>
-            <th>Action</th>
+        <div className="space-y-2 font-sans text-[12px] text-bluegreen-700">
+          <button
+            type="button"
+            onClick={() => handlePredefinedRange("today")}
+            className="w-full py-2 px-4  rounded-lg hover:bg-blue-100 border w-[310px]"
+          >
+            Today
+          </button>
+          <button
+            type="button"
+            onClick={() => handlePredefinedRange("thisWeek")}
+            className="w-full py-2 px-4 rounded-lg hover:bg-blue-100 border w-[310px]"
+          >
+            This Week
+          </button>
+          <button
+            type="button"
+            onClick={() => handlePredefinedRange("thisMonth")}
+            className="w-full py-2 px-4  rounded-lg hover:bg-blue-100 border w-[310px]"
+          >
+            This Month
+          </button>
+          <button
+            type="button"
+            onClick={() => handlePredefinedRange("lastMonth")}
+            className="w-full py-2 px-4  rounded-lg hover:bg-blue-100 border w-[310px]"
+          >
+            Last Month
+          </button>
+        </div>
+      </>
+    )}
+  </div>
+</Modal>
+    </div>
+
+  </div>
+</div>
+
+      <div className="overflow-x-auto rounded-lg">
+      <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
+                       <thead>
+                       <tr className="bg-black text-white text-left">
+                       <th className="p-2.5 rounded-tl-[8px] min-w-[150px]">Ship date</th>
+                       <th className="p-2.5 min-w-[100px]">Manufacturer</th>
+                       <th className="p-2.5 min-w-[100px]">Unit sales price</th>
+                       <th className="p-2.5 min-w-[100px]">Copra Sold</th>
+                       <th className="p-2.5 min-w-[100px]">Received On</th>
+                       <th className="p-2.5 min-w-[100px]">Total sale</th>
+                       <th className="p-2.5 min-w-[100px]">Status</th>
+            <th className="p-2.5 rounded-tr-[8px] w-[72px]">Action</th>
           </tr>
         </thead>
         <tbody>
-          {currentRecords.map((sale) => (
+          {currentRecords.map((sale, index) => (
             // eslint-disable-next-line no-underscore-dangle
-            <tr key={sale._id}>
-              <td>{new Date(sale.copra_ship_date).toLocaleDateString()}</td>
-              <td>
-                {sale.manufacturer_id ? sale.manufacturer_id.full_name : "N/A"}
+            <tr key={sale._id} className={getRowClassName(index)}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent the event from bubbling up to the document click handler
+              handleRowClick(index);
+            }}>
+              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{formatDate(sale.copra_ship_date)}</td>
+              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
+                {sale.manufacturer_id ? sale.manufacturer_id.full_name : "-"}
               </td>
-              <td>{formatDecimal(sale.sales_unit_price)}</td>
-              <td>{`${formatDecimal(sale.amount_of_copra_sold)} kg`}</td>
-              <td>
+              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{formatDecimal(sale.sales_unit_price)}</td>
+              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`${formatDecimal(sale.amount_of_copra_sold)} kg`}</td>
+              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
                 {sale.cheque_receive_date
                   ? new Date(sale.cheque_receive_date).toLocaleDateString()
-                  : "N/A"}
+                  : "-"}
               </td>
-              <td>{`PHP ${formatDecimal(sale.total_sales_price)}`}</td>
-              <td>{sale.status}</td>
-              <td>
-                <div className="dropdown">
+              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
+  {sale.total_sales_price && parseFloat(sale.total_sales_price.$numberDecimal) === 0 
+    ? '-' 
+    : `Php ${formatDecimal(sale.total_sales_price)}`}
+</td> 
+<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
+  <span className={`px-2 py-1 rounded-full text-sm font-semibold ${getStatusClass(sale.status)}`}>
+    {sale.status}
+  </span>
+</td>              <td className="px-2 py-0 relative" style={{ width: '72px', height: '43px' }}>               
+                 <div className="dropdown" ref={dropdownRef}>
                   <button
                     type="button"
                     className="dropbtn"
                     // eslint-disable-next-line no-underscore-dangle
-                    onClick={() =>
+                    onClick={(e) =>{
+                      e.stopPropagation();
                       setDropdownVisible(
                         // eslint-disable-next-line no-underscore-dangle
                         dropdownVisible === sale._id ? null : sale._id
                       )
-                    }
+                    }}
                   >
-                    ...
-                  </button>
+  <img src={EllipseIcon} alt="Options" />
+                    </button>
                   {
                     // eslint-disable-next-line no-underscore-dangle
                     dropdownVisible === sale._id && (
-                      <div className="dropdown-content">
+                      <div className="dropdown-content absolute top-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                         <button
                           type="button"
-                          onClick={() => {
-                            handleEditClick(sale);
+                          className="flex items-center px-2 py-2 text-neutral-600 hover:bg-bluegreen-100"
+                          onClick={(e) => {
+                            handleEditClick(sale,e);
                           }}
                         >
+                            <img src={EditIcon} alt="Edit" />
                           Edit
                         </button>
                         <button
                           type="button"
-                          onClick={() =>
+                          className="flex items-center px-2 py-2 text-neutral-600 hover:bg-bluegreen-100"
+                          onClick={(e) =>
                             // eslint-disable-next-line no-underscore-dangle
-                            handleDeleteClick(sale._id)
+                            handleDeleteClick(sale._id,e)
                           }
                         >
+                          <img src={DeleteIcon} alt="Delete" />
                           Delete
                         </button>
                       </div>
@@ -335,10 +563,21 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
               </td>
             </tr>
           ))}
+          {Array.from({ length: recordsPerPage - currentRecords.length }).map((_, index) => (
+    <tr
+      // eslint-disable-next-line react/no-array-index-key
+      key={`empty-${index}`}
+      className={index % 2 === 0 ? 'bg-white' : 'bg-bluegreen-100'}
+      style={{ width: '123px', height: '43px' }}
+    >
+      <td colSpan="8" className="px-2 py-0" aria-label="Empty Row">&nbsp;</td>
+      </tr>
+  ))}
         </tbody>
       </table>
-      <div className="pagination">
-        <Pagination
+      </div>
+      <div className="pagination flex items-center justify-center mt-4">
+                <Pagination
           size = "M"
           onClickFnc={handlePrevPage} 
           pageNum = "L"

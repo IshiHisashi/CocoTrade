@@ -1,6 +1,11 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { UserIdContext } from "../../contexts/UserIdContext";
+import MUp from "../../assets/icons/MarketPrice-Up.svg";
+import MDown from "../../assets/icons/MarketPrice-Down.svg";
+import SPPUp from "../../assets/icons/SPP-Up.svg";
+import SPPDown from "../../assets/icons/SPP-Down.svg";
+import TrendBadge from "../btn/TrendBadge";
 
 const getDataObjRes = async (type, userId, URL) => {
   let dataObj;
@@ -32,14 +37,19 @@ const calculateDiff = (obj) => {
   const priceDiff = (obj.current - obj.comparison).toFixed(2);
   const percentageDiff = ((obj.current / obj.comparison - 1) * 100).toFixed(2);
   let arrow;
+  let trend;
   if (priceDiff > 0) {
-    arrow = "↑";
+    arrow = "+";
+    trend = "U";
   } else if (priceDiff < 0) {
-    arrow = "↓";
+    arrow = "";
+    trend = "D";
   } else {
     arrow = "±";
+    trend = "N";
   }
-  return { priceDiff, percentageDiff, arrow };
+
+  return { priceDiff, percentageDiff, arrow, trend };
 };
 
 const PriceIndicatorCard = (props) => {
@@ -55,24 +65,54 @@ const PriceIndicatorCard = (props) => {
   }, [type, userId, URL]);
 
   let diffObj;
+  let iconSrc;
   if (dataObj) {
     diffObj = calculateDiff(dataObj);
+    if (type === "market") {
+      if (diffObj.trend === "U" || diffObj.trend === "N") {
+        iconSrc = MUp;
+      } else if (diffObj.trend === "D") {
+        iconSrc = MDown;
+      }
+    } else if (type === "suggestion") {
+      if (diffObj.trend === "U" || diffObj.trend === "N") {
+        iconSrc = SPPUp;
+      } else if (diffObj.trend === "D") {
+        iconSrc = SPPDown;
+      }
+    }
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-white rounded-lg">
-      <h3 className="text-base">
-        {type === "market" ? "PALM OIL PRICE" : "SUGGESTED PURCHASE PRICE"}
-      </h3>
+    <div className="flex flex-col gap-4 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
+      <div>
+        <h3 className="h3-sans text-neutral-600">
+          {type === "market" ? "Coconut Oil Price" : "Copra Purchase Price"}
+        </h3>
+        <p className="p14 text-neutral-400">
+          {type === "market"
+            ? "Based on world market price"
+            : "Suggested buying for farmers"}
+        </p>
+      </div>
       {dataObj ? (
         <>
-          <p className="text-3xl">Php {dataObj.current}/kg</p>
-          <div className="flex content-center items-center gap-4">
-            <p className="bg-red-300 text-gray-500 p-2 rounded-xl">
-              {diffObj.arrow} Php {diffObj.priceDiff}
+          <div className="flex justify-between items-center gap-2">
+            <p className="display-sans text-neutral-600">
+              Php {dataObj.current}/kg
             </p>
-            <p className="text-gray-500">
-              {diffObj.arrow} {diffObj.percentageDiff}% today
+            <img src={iconSrc} alt="" aria-hidden className="h-16 w-16" />
+          </div>
+          <div className="flex content-center items-center gap-4">
+            <TrendBadge
+              trend={diffObj.trend}
+              num={`${diffObj.arrow}${diffObj.priceDiff}`}
+            />
+            <p
+              className={`p14-medium ${diffObj.trend === "U" || diffObj.trend === "N" ? "text-bluegreen-500" : "text-red-100"}`}
+            >
+              {diffObj.arrow}
+              {diffObj.percentageDiff}% today
             </p>
           </div>
         </>

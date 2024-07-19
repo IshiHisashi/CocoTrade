@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VisibilityOn from "../../assets/icons/Eye-On.svg";
 import VisibilityOff from "../../assets/icons/Eye-Off.svg";
 import Info from "../../assets/icons/Information.svg";
@@ -25,6 +25,13 @@ const Field = ({
   adornment = "end",
   info = false,
   infoText = "",
+  error = false,
+  errorText = "",
+  adornmentEnd = "",
+  min,
+  max,
+  step,
+  title = "",
 }) => {
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isShowChangeButton, setIsShowChangeButton] =
@@ -38,13 +45,24 @@ const Field = ({
     event.preventDefault();
   };
 
+  
+
   let inputElement = null;
+
+  // (From Aki to Prathibha: I added this for EditSaleModal.jsx. I believe this is not gonna cause any issues in other areas. It's difficult to tell what I'm trying to do here. So pls let me explain tmr)
+  useEffect(() => {
+    if (disabled !== isDisabled) {
+      setIsDisabled(!isDisabled);
+    }
+  }, [disabled, isDisabled]);
 
   switch (type) {
     case "number":
       inputElement = (
         <FormControl fullWidth>
           <TextField
+            labelColor = {name}
+            className="border border-solid border-gray-300 rounded p-4 my-2"
             type={type}
             name={name}
             id={name}
@@ -52,20 +70,29 @@ const Field = ({
             onChange={onChange}
             disabled={isDisabled}
             required={required}
+            title={title}
             sx={{ py: 1 }}
-            InputProps={
-              adornment === "end"
-                ? {
-                    endAdornment: (
-                      <InputAdornment position="end">{unit}</InputAdornment>
-                    ),
-                  }
-                : {
-                    startAdornment: (
-                      <InputAdornment position="start">{unit}</InputAdornment>
-                    ),
-                  }
-            }
+            InputProps={{
+              inputProps: { min, max, step },
+              startAdornment: adornment === "start" && (
+                <InputAdornment position="start">{unit}</InputAdornment>
+              ),
+              endAdornment: (
+                <>
+                  {adornmentEnd && (
+                    <InputAdornment position="end">
+                      {adornmentEnd}
+                    </InputAdornment>
+                  )}
+                  {adornment === "end" && (
+                    <InputAdornment position="end">{unit}</InputAdornment>
+                  )}
+                </>
+              ),
+            }}
+            error={error}
+            
+            helperText={error && errorText}
           />
           {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
         </FormControl>
@@ -76,6 +103,7 @@ const Field = ({
       inputElement = (
         <FormControl fullWidth>
           <TextField
+          className="disabled:bg-gray-100 disabled:text-gray-500"
             type={type}
             name={name}
             id={name}
@@ -83,8 +111,16 @@ const Field = ({
             onChange={onChange}
             disabled={isDisabled}
             required={required}
-            // wanna customize disabled style
-            sx={isDisabled ? { py: 1 } : { py: 1 }}
+            sx={{
+              py: 1,
+              '& .MuiInputBase-input.Mui-disabled': {
+                backgroundColor: 'rgb(243 244 246)', // equivalent to bg-gray-100 in Tailwind CSS
+                color: 'rgb(107 114 128)', // equivalent to text-gray-500 in Tailwind CSS
+              },
+              '& .Mui-disabled .MuiInputAdornment-root': {
+                color: 'rgb(107 114 128)', // equivalent to text-gray-500 for adornment
+              },
+            }}
           />
           {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
         </FormControl>
@@ -133,6 +169,7 @@ const Field = ({
             onChange={onChange}
             required={required}
             minRows={5}
+            className="border border-solid border-gray-300 rounded p-4 my-2"
           />
         </FormControl>
       );
@@ -145,31 +182,41 @@ const Field = ({
           id={name}
           value={value}
           onChange={onChange}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm basis-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm basis-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-[56px] mt-2"
           disabled={isDisabled}
           required={required}
+
+          max={
+            name === "purchase_date"
+              ? new Date().toISOString().split("T")[0]
+              : undefined
+          }
+
         />
       );
       break;
-    case "dropdown":
-      inputElement = (
-        <select
-          name={name}
-          id={name}
-          value={value}
-          onChange={onChange}
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          required={required}
-        >
-          <option value="">Select...</option>
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      );
-      break;
+      case "dropdown":
+        inputElement = (
+          <FormControl fullWidth>
+            <select
+              name={name}
+              id={name}
+              value={value}
+              onChange={onChange}
+              required={required}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm h-[56px] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-2"
+            >
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
+          </FormControl>
+        );
+        break;
+      
     default:
       inputElement = null;
   }
@@ -179,9 +226,9 @@ const Field = ({
       {label && (
         <label
           htmlFor={name}
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-neutral-600 label16"
         >
-          {label} {required && <span className="text-[#FE2E00]">*</span>}
+        {label} {required && <span className="text-[#FE2E00]">*</span>}
           {info && (
             <button
               type="button"
@@ -209,7 +256,7 @@ const Field = ({
           Change
         </button>
       )}
-      {inputElement}
+      {inputElement}     
     </div>
   );
 };

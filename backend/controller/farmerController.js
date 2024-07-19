@@ -18,10 +18,15 @@ export const createFarmer = async (req, res) => {
         });
     }
 };
+
 export const getAllFarmers = async (req, res) => {
     try {
-      const farmers = await Farmer.find({}, 'full_name');
-      console.log("Farmers retrieved");
+      // eslint-disable-next-line camelcase
+      const { user_id } = req.query;
+      // eslint-disable-next-line camelcase
+      const filter = user_id ? { user_id } : {};
+      const farmers = await Farmer.find(filter, 'full_name');
+      console.log("Farmers retrieved:");
       res.status(200).json(farmers);
     } catch (err) {
       res.status(500).json({
@@ -32,7 +37,7 @@ export const getAllFarmers = async (req, res) => {
 
 export const getFarmerById = async (req, res) => {
     try {
-        const farmer = await Farmer.findById(req.params.id);
+        const farmer = await Farmer.findById(req.params.id).populate('farmer_id');
         if(!farmer) {
             return res.status(404).json({
                 status: "failed", 

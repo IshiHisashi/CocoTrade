@@ -21,6 +21,10 @@ const MonthlyActivity = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+
+  // Function to determine if the screen is 'lg' or larger
+  const isLgScreen = () => window.innerWidth >= 1024;
 
   // Read sales
   useEffect(() => {
@@ -121,22 +125,40 @@ const MonthlyActivity = ({ URL }) => {
       },
     };
 
+    const getDisplayedData = () => {
+      const displayCount = isLgScreen() ? 12 : 4;
+      return {
+        labels: displayLabels.slice(-displayCount),
+        chartDataSale: chartDataSale.slice(-displayCount),
+        chartDataPurchase: chartDataPurchase.slice(-displayCount),
+      };
+    };
+
+    const {
+      labels: displayedLabels,
+      chartDataSale: displayedSaleData,
+      chartDataPurchase: displayedPurchaseData,
+    } = getDisplayedData();
+
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
     chartInstance.current = new Chart(chartRef.current, {
       type: "bar",
       data: {
-        labels: displayLabels,
+        labels: displayedLabels,
         datasets: [
           {
             label: "Monthly Sale",
-            data: chartDataSale,
+            data: displayedSaleData,
             backgroundColor: (context) => {
               const index = context.dataIndex;
-              const month = labels[index];
+              const displayCount = isLgScreen() ? 12 : 4;
+              const monthIndexOffset = 12 - displayCount;
+              const adjustedIndex = index + monthIndexOffset;
+              const month = labels[adjustedIndex];
               return month === selectedMonth || selectedMonth === "all"
-                ? "#245E66"
+                ? "#0C7F8E"
                 : "#F1F7F8";
             },
             barThickness: 15,
@@ -144,12 +166,15 @@ const MonthlyActivity = ({ URL }) => {
           },
           {
             label: "Monthly Purchase",
-            data: chartDataPurchase,
+            data: displayedPurchaseData,
             backgroundColor: (context) => {
               const index = context.dataIndex;
-              const month = labels[index];
+              const displayCount = isLgScreen() ? 12 : 4;
+              const monthIndexOffset = 12 - displayCount;
+              const adjustedIndex = index + monthIndexOffset;
+              const month = labels[adjustedIndex];
               return month === selectedMonth || selectedMonth === "all"
-                ? "#0C7F8E"
+                ? "#FF8340"
                 : "#F1F7F8";
             },
             barThickness: 15,
@@ -170,17 +195,30 @@ const MonthlyActivity = ({ URL }) => {
             grid: {
               display: false, // Disable grid lines on x-axis
             },
+            ticks: {
+              font: {
+                size: 14,
+                weight: "bold",
+              },
+            },
           },
           y: {
+            display: true,
             beginAtZero: true,
             ticks: {
               callback(value) {
-                return `${value / 1000}k`; // Use template literals
+                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                return valueToShow;
               },
+              font: {
+                size: 14, // Change this to the desired font size
+              },
+              color: "#9C9C9C",
             },
             grid: {
               display: false, // Disable grid lines on x-axis
             },
+            border: { display: false },
           },
         },
         plugins: {
@@ -189,7 +227,7 @@ const MonthlyActivity = ({ URL }) => {
           },
           title: {
             display: true,
-            text: "Your monthly activity",
+            // text: "Your monthly activity",
             font: {
               size: 18,
             },
@@ -198,26 +236,61 @@ const MonthlyActivity = ({ URL }) => {
         onClick: (event, elements) => {
           if (elements.length > 0) {
             const chartElement = elements[0];
-            const clickedMonth = labels[chartElement.index];
-            setSelectedMonth(clickedMonth);
-            setSelectedTableMonth(clickedMonth);
-            console.log(`Selected Month: ${clickedMonth}`);
+            const displayCount = isLgScreen() ? 12 : 4;
+            const monthIndexOffset = 12 - displayCount;
+            const adjustedIndex = chartElement.index + monthIndexOffset;
+            const clickedMonth = labels[adjustedIndex];
+            if (clickedMonth !== selectedMonth) {
+              setSelectedMonth(clickedMonth);
+              setSelectedTableMonth(clickedMonth);
+              console.log(`Selected Month: ${clickedMonth}`);
+            }
+          } else {
+            setSelectedMonth("all");
+            setSelectedTableMonth(moment().format("YYYY-MM"));
+            console.log("Reverted to default");
           }
         },
       },
       plugins: [drawValues],
     });
-  }, [monthlySale, monthlyPurchase, selectedMonth]);
+
+    // Update the chart options when the screen size changes
+    const handleResize = () => {
+      setIsLargeScreen(isLgScreen());
+      const {
+        labels: updatedLabels,
+        chartDataSale: updatedSaleData,
+        chartDataPurchase: updatedPurchaseData,
+      } = getDisplayedData();
+      chartInstance.current.data.labels = updatedLabels;
+      chartInstance.current.data.datasets[0].data = updatedSaleData;
+      chartInstance.current.data.datasets[1].data = updatedPurchaseData;
+      chartInstance.current.update();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [monthlySale, monthlyPurchase, selectedMonth, isLargeScreen]);
 
   return (
-    <div>
-      <h1>Monthly Activity</h1>
-      <div className="grid grid-cols-[80%_20%]">
-        <section>
-          <canvas ref={chartRef} className="">
-            {" "}
-          </canvas>
+    <div className="lg:grid lg:grid-cols-6 gap-[14px]">
+      <div className=" bg-white px-[27px] py-[25px] border border-b-0 lg:border-b-1 border-bluegreen-200 lg:col-start-1 lg:col-end-5">
+        <h3 className="h3-sans text-neutral-600">Your Monthly Activity</h3>
+        <section className="h-[250px] mt-[30px]">
+          <canvas ref={chartRef}> </canvas>
         </section>
+        <div className="legend flex gap-1 items-center justify-center mt-[21px]">
+          <div className="w-[20px] h-[10px] bg-bluegreen-500"> </div>
+          <p className="mr-[14px] p12-medium">Sales</p>
+          <div className="w-[20px] h-[10px] bg-orange-400"> </div>
+          <p className="p12-medium">Purchase</p>
+        </div>
+      </div>
+      <div className="bg-white px-[27px] py-[25px] border border-t-0 lg:border-t-1 border-bluegreen-200 lg:col-start-5 lg:col-end-7">
         <MonthlyTable selectedTableMonth={selectedTableMonth} URL={URL} />
       </div>
     </div>

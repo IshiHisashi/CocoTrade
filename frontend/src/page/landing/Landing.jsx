@@ -5,7 +5,7 @@ import AuthInputModal from "../auth/AuthInputModal";
 // import sections
 import Benefit from "./sections/Benefit";
 import Features from "./sections/Features";
-import FormEmail from "./sections/FormEmail";
+import TryCoco from "./sections/TryCoco";
 import FormTalkToUs from "./sections/FormTalkToUs";
 import Hero from "./sections/Hero";
 import Team from "./sections/Team";
@@ -15,11 +15,12 @@ import LandingFooter from "./sections/LandingFooter";
 Modal.setAppElement("#root");
 
 const classNameForModal =
-  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[95vh] overflow-scroll";
+  "absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-scroll sm:h-auto";
 
 const styleForModal = {
   overlay: {
     backgroundColor: "#24303790",
+    zIndex: 50,
   },
 };
 
@@ -31,32 +32,26 @@ const Landing = (props) => {
   const [authType, setAuthType] = useState("");
   const [confirmationType, setConfirmationType] = useState("");
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
+
+  document.body.classList =
+    isAuthModalOpen || isConfirmationModalOpen
+      ? "overflow-clip"
+      : "overflow-scroll";
+
   return (
-    <div className=" bg-slate-200">
-      <LandingHeader />
+    <div className=" bg-bluegreen-100">
+      <LandingHeader
+        setAuthType={setAuthType}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+      />
+
       <div>
-        <button
-          type="button"
-          onClick={() => {
-            setAuthType("signup");
-            setIsAuthModalOpen(true);
-          }}
-        >
-          Sign up
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setAuthType("login");
-            setIsAuthModalOpen(true);
-          }}
-        >
-          Log in
-        </button>
         <Modal
           isOpen={isAuthModalOpen}
           onRequestClose={() => setIsAuthModalOpen(false)}
-          className={classNameForModal}
+          className={`${classNameForModal} sm:w-[508px]`}
           style={styleForModal}
         >
           <AuthInputModal
@@ -70,22 +65,40 @@ const Landing = (props) => {
         </Modal>
         <Modal
           isOpen={isConfirmationModalOpen}
-          onRequestClose={() => setIsConfirmationModalOpen(false)}
+          onRequestClose={() =>
+            confirmationType === "accountCreated" ||
+            setIsConfirmationModalOpen(false)
+          }
           className={classNameForModal}
           style={styleForModal}
         >
           <ConfirmationModal
             confirmationType={confirmationType}
             fnToCloseThisModal={setIsConfirmationModalOpen}
+            windowWidth={windowWidth}
           />
         </Modal>
       </div>
-      <Hero />
-      <Benefit />
-      <Features />
-      <FormEmail />
-      <Team />
-      <FormTalkToUs />
+      <Hero setAuthType={setAuthType} setIsAuthModalOpen={setIsAuthModalOpen} />
+      <div id="benefit">
+        <Benefit />
+      </div>
+      <div id="features">
+        <Features />
+      </div>
+      <TryCoco
+        setAuthType={setAuthType}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+      />
+      <div id="team">
+        <Team />
+      </div>
+      <div id="contact">
+        <FormTalkToUs
+          setAuthType={setAuthType}
+          setIsAuthModalOpen={setIsAuthModalOpen}
+        />
+      </div>
       <LandingFooter />
     </div>
   );

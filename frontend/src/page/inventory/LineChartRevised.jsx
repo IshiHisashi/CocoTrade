@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
 import {
@@ -13,6 +13,39 @@ import {
 } from "chart.js";
 import DurationSelecter from "../../component/field-filter/DurationSelecter.jsx";
 
+// Custom plungin to show the line on the chart.
+const verticalLinePlugin = {
+  id: "verticalLinePlugin",
+  beforeDraw: (chart) => {
+    // eslint-disable-next-line no-underscore-dangle
+    if (chart.tooltip._active && chart.tooltip._active.length) {
+      const {
+        ctx,
+        scales: {
+          y: { top: topY, bottom: bottomY },
+        },
+        tooltip: {
+          _active: [
+            {
+              element: { x },
+            },
+          ],
+        },
+      } = chart;
+
+      ctx.save();
+
+      ctx.beginPath();
+      ctx.moveTo(x, topY);
+      ctx.lineTo(x, bottomY);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#000000";
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+};
+
 Chart.register(
   CategoryScale,
   LinearScale,
@@ -20,10 +53,18 @@ Chart.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  verticalLinePlugin
 );
 
-const LineChartRevised = ({ userId, URL, dashboard = false }) => {
+const LineChartRevised = ({
+  userId,
+  URL,
+  dashboard = false,
+  chartTitle = "",
+}) => {
+  const chartRef = useRef(null);
+  const [gradient, setGradient] = useState(null);
   const today = useMemo(() => new Date(), []);
   const thisYear = today.toLocaleDateString().split("/")[2];
   const thisMonth = today.toLocaleDateString().split("/")[0].padStart(2, "0");
@@ -42,7 +83,6 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
       axios
         .get(`${URL}/user/${userId}/inv`)
         .then((res) => {
-          console.log(res.data.data);
           setInventory(res.data.data);
         })
         .catch((err) => {
@@ -56,6 +96,16 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
   // Recalculate based on duration selector and rerender the chart
   useEffect(
     () => {
+      if (chartRef.current) {
+        // Color settings
+        const chart = chartRef.current.canvas.getContext("2d");
+        const gradientColor = chart.createLinearGradient(0, 0, 0, 300);
+        gradientColor.addColorStop(0, "rgba(75, 192, 192, 0.5)");
+        gradientColor.addColorStop(1, "rgba(75, 192, 192, 0)");
+        if (gradient === null) {
+          setGradient(gradientColor);
+        }
+      }
       // Create a new data array based on duration
       if (inventory.length > 0) {
         let startDate = new Date();
@@ -79,31 +129,34 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
           y: inv.current_amount_with_pending.$numberDecimal,
         }));
 
+        // If today's date is not the latest datapoint's date, copy the number from the latest datapoint and create a new datapoint for today.
+        if (dataPoints[0].x !== today.toISOString().split("T")[0]) {
+          const todaysData = {
+            x: today.toISOString().split("T")[0],
+            y: dataPoints[0].y,
+          };
+          dataPoints.unshift(todaysData);
+        }
+
+        // If the oldest data is not of the startDate, create a datapoint for the startDate
+        if (
+          dataPoints[dataPoints.length - 1].x !==
+          startDate.toISOString().split("T")[0]
+        ) {
+          const startDatesData = {
+            x: startDate.toISOString().split("T")[0],
+            y: dataPoints[dataPoints.length - 1].y,
+          };
+          dataPoints.push(startDatesData);
+        }
+
         // Create a labels and modify timeOption
         const durationLabels = [];
         if (durationType === "yearly") {
-          const months = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-          ];
-
-          const currentMonth = today.getMonth();
-          const currentYear = today.getFullYear();
-
-          for (let i = 0; i < 12; ) {
-            const monthIndex = (currentMonth + 1 + i) % 12;
-            const year = currentYear - 1 - Math.floor((currentMonth - i) / 12);
-            durationLabels.push(`${months[monthIndex]}/${year}`);
+          for (let i = 0; i < 365; ) {
+            const date = new Date();
+            date.setDate(today.getDate() - i);
+            durationLabels.unshift(date.toISOString().split("T")[0]);
             i += 1;
           }
 
@@ -128,7 +181,6 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
             });
           }
         }
-        console.log(durationLabels);
 
         // Actual configuration for the chart
         setData({
@@ -138,15 +190,17 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               lebel: `Inventory`,
               data: dataPoints,
               fill: true,
-              backgroundColor: "rgba(75, 192, 192, 0.6)",
+              backgroundColor: gradient,
               borderColor: "rgba(75, 192, 192, 1)",
-              tension: 0.4,
+              borderWidth: 1,
+              // stepped: 'after'
             },
           ],
         });
 
         setOptions({
           responsive: true,
+          maintainAspectRatio: false,
           interaction: {
             mode: "nearest",
             axis: "x",
@@ -171,6 +225,12 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               grid: {
                 display: false,
               },
+              ticks: {
+                callback(value) {
+                  const valueToShow = value === 0 ? "0" : `${value / 1000}k`;
+                  return valueToShow;
+                },
+              },
             },
           },
           plugins: {
@@ -178,9 +238,9 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
               display: false,
             },
             title: {
-              display: !dashboard,
-              text: "Inventory history",
+              display: false,
             },
+            verticalLinePlugin: true,
           },
           elements: {
             line: {
@@ -194,24 +254,31 @@ const LineChartRevised = ({ userId, URL, dashboard = false }) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [inventory, durationType, timeOption]
+    [inventory, durationType, timeOption, chartRef, gradient]
   );
 
   return (
     <div>
-      {dashboard || (
+      <div
+        id="topLayer"
+        className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4"
+      >
+        <h3 className="h3-sans font-semibold text-neutral-600">{chartTitle}</h3>
         <DurationSelecter
           setDurationType={setDurationType}
           setDurationValue={setDurationValue}
           thisYear={thisYear}
           thisMonth={thisMonth}
+          dashboard={dashboard}
         />
-      )}
-      {data.datasets.length ? (
-        <Line data={data} options={options} />
-      ) : (
-        "Loading"
-      )}
+      </div>
+      <div id="chartLayer" className="h-[330px]">
+        {data.datasets.length ? (
+          <Line ref={chartRef} data={data} options={options} />
+        ) : (
+          "Loading"
+        )}
+      </div>
     </div>
   );
 };

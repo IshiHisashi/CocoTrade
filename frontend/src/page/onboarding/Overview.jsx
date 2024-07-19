@@ -4,6 +4,8 @@ import axios from "axios";
 import SummaryElement from "./SummaryElement";
 import CtaBtn from "../../component/btn/CtaBtn";
 import { UserIdContext } from "../../contexts/UserIdContext";
+import image3 from "./assets/image3.png";
+import progress3 from "./assets/progress3.svg";
 
 const Overview = (props) => {
   const {
@@ -24,7 +26,6 @@ const Overview = (props) => {
   const navigate = useNavigate();
 
   const onClickSave = async () => {
-    console.log(userId);
     const inventoryInfo = {
       user_id: userId,
       current_amount_left: currentAmountLeft,
@@ -115,6 +116,16 @@ const Overview = (props) => {
 
       await axios.patch(`${URL}/user/${userId}`, userInfo);
 
+      sessionStorage.removeItem("fullName");
+      sessionStorage.removeItem("margin");
+      sessionStorage.removeItem("currentAmountLeft");
+      sessionStorage.removeItem("amountPerShip");
+      sessionStorage.removeItem("companyName");
+      sessionStorage.removeItem("currentBalance");
+      sessionStorage.removeItem("email");
+      sessionStorage.removeItem("country");
+      sessionStorage.removeItem("maxInventoryAmount");
+
       fnToShowModal(true);
     } catch (error) {
       window.alert(`Something went wrong: ${error.message}`);
@@ -123,53 +134,83 @@ const Overview = (props) => {
 
   return (
     <>
-      <div>
-        <h1>OVERVIEW</h1>
-      </div>
-
-      <h2 className="text-4xl">Here&apos;s a summary of your profile</h2>
-      <p>Review the following details to finish setting up your profile</p>
-
-      <section className="my-8">
-        <h3>BUSINESS PROFILE</h3>
-        <div className="grid grid-cols-2 gap-4 my-4 sm:grid-cols-4">
-          <SummaryElement label="Full name" detail={fullName} />
-          <SummaryElement label="Email address" detail={email} />
-          <SummaryElement label="Company name" detail={companyName} />
-          <SummaryElement label="Country" detail={country} />
-        </div>
-      </section>
-
-      <section className="my-8">
-        <h3>OPERATIONS SETTING</h3>
-        <div className="grid grid-cols-2 gap-4 my-4 sm:grid-cols-4">
-          <SummaryElement label="Profit margin %" detail={margin} />
-          <SummaryElement
-            label="Max. warehouse capacity"
-            detail={maxInventoryAmount}
-          />
-          <SummaryElement label="Shipment threshold %" detail={amountPerShip} />
-          <SummaryElement
-            label="Current inventory"
-            detail={currentAmountLeft}
-          />
-          <SummaryElement label="Initial balance" detail={currentBalance} />
-        </div>
-      </section>
-
-      <CtaBtn
-        size="M"
-        level="O"
-        innerTxt="Back"
-        onClickFnc={() => navigate("/onboarding/operations")}
+      <img
+        src={image3}
+        alt=""
+        aria-hidden
+        className="fixed md:static -top-32 -left-8 scale-125 md:scale-100 -z-10 md:h-full order-2 object-cover object-center"
       />
 
-      <CtaBtn
-        size="M"
-        level="P"
-        innerTxt="Save"
-        onClickFnc={() => onClickSave()}
-      />
+      <section className="bg-white md:static bottom-0 left-0 right-0 p-8 sm:p-16 order-1">
+        <div>
+          <img src={progress3} alt="" aria-hidden className="mb-4" />
+          <h1 className="h4-sans-uppercase text-neutral-600">OVERVIEW</h1>
+        </div>
+
+        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600">
+          Here&apos;s a summary of your profile
+        </h2>
+        <p className="p18 text-neutral-600">
+          Review the following details to finish setting up your profile
+        </p>
+
+        <section className="my-8">
+          <h3 className="h4-sans-uppercase text-neutral-600">
+            BUSINESS PROFILE
+          </h3>
+          <div className="grid grid-cols-2 gap-4 my-4 sm:grid-cols-4">
+            <SummaryElement label="Full name" detail={fullName} />
+            <SummaryElement label="Email address" detail={email} />
+            <SummaryElement label="Company name" detail={companyName} />
+            <SummaryElement label="Country" detail={country} />
+          </div>
+        </section>
+
+        <section className="my-8">
+          <h3 className="h4-sans-uppercase text-neutral-600">
+            OPERATIONS SETTING
+          </h3>
+          <div className="grid grid-cols-2 gap-4 my-4 sm:grid-cols-4">
+            <SummaryElement label="Profit margin %" detail={margin} unit="%" />
+            <SummaryElement
+              label="Max. warehouse capacity"
+              detail={maxInventoryAmount}
+              unit=" kg"
+            />
+            <SummaryElement
+              label="Shipment threshold %"
+              detail={amountPerShip}
+              unit="%"
+            />
+            <SummaryElement
+              label="Current inventory"
+              detail={currentAmountLeft}
+              unit=" kg"
+            />
+            <SummaryElement
+              label="Initial balance"
+              detail={currentBalance}
+              preUnit="Php "
+            />
+          </div>
+        </section>
+
+        <div className="flex justify-between sm:mt-32">
+          <CtaBtn
+            size="M"
+            level="O"
+            innerTxt="Back"
+            onClickFnc={() => navigate("/onboarding/operations")}
+          />
+
+          <CtaBtn
+            size="M"
+            level="P"
+            innerTxt="Save"
+            onClickFnc={() => onClickSave()}
+          />
+        </div>
+      </section>
     </>
   );
 };

@@ -38,10 +38,16 @@ const RecentActivityCard = (props) => {
   }, [type, userId, URL]);
 
   return (
-    <div className="p-4 bg-white rounded-lg">
-      <h3>Recent {type.charAt(0).toUpperCase() + type.slice(1)}</h3>
-      <p>{type === "purchase" ? "from today" : "over the last week"}</p>
-      <p className="text-3xl">{totalSum ? `Php ${totalSum}` : "loading..."}</p>
+    <div className="p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
+      <h3 className="h3-sans text-neutral-600">
+        Recent {type.charAt(0).toUpperCase() + type.slice(1)}
+      </h3>
+      <p className="p16 text-neutral-400">
+        {type === "purchase" ? "from today" : "over the last week"}
+      </p>
+      <p className="display-sans text-neutral-600">
+        {totalSum ? `Php ${totalSum}` : "loading..."}
+      </p>
     </div>
   );
 };

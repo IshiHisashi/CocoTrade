@@ -36,10 +36,10 @@ const CtaBtn = ({
     width = "max-w-24";
     height = "h-12";
   } else if (size === "L-landing") {
-    width = "w-[384px]";
+    width = "w-[385px]";
     height = "h-14";
   } else if (size === "M-landing") {
-    width = "w-[185px]";
+    width = "w-[208px]";
     height = "h-14";
   }
 

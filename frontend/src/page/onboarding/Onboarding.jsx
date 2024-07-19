@@ -32,6 +32,10 @@ const Onboarding = ({ URL }) => {
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
+  document.body.classList = isConfirmationModalOpen
+    ? "overflow-clip"
+    : "overflow-scroll";
+
   const userId = useContext(UserIdContext);
 
   useEffect(() => {
@@ -63,7 +67,7 @@ const Onboarding = ({ URL }) => {
 
   return (
     <>
-      <div className="p-8">
+      <div className="md:grid grid-cols-[auto_1fr]">
         <Routes>
           <Route
             path="business"

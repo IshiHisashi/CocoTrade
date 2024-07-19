@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: "../config.env" });
 
-const URL = "https://coco-trade-backend.vercel.app";
+const URL = "http://localhost:5555";
 
 const postDataToPriceSuggestion = async () => {
   try {
@@ -17,17 +17,6 @@ const postDataToPriceSuggestion = async () => {
         );
 
         // update price-suggestion-array in the user's doc
-    const users = res.data.data;
-    for (let i = 0; i < users.length; i++) {
-      const userId = users[i];
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        const resPriceSuggestionPost = await axios.post(
-          `${URL}/user/${userId}/pricesuggestion`
-        );
-        console.log(resPriceSuggestionPost);
-        // update price-suggestion-array in the user's doc
-        // eslint-disable-next-line no-await-in-loop
         await axios.patch(`${URL}/user/${userId}`, {
           price_suggestion_array: {
             action: "push",
@@ -40,7 +29,6 @@ const postDataToPriceSuggestion = async () => {
         );
       }
     });
-    }
   } catch (error) {
     console.log("Error getting all users: ", error.message);
   }

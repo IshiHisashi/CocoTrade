@@ -227,7 +227,7 @@ const Field = ({
           htmlFor={name}
           className="block text-sm font-medium text-neutral-600 label16"
         >
-          {label} 
+        {label} {required && <span className="text-[#FE2E00]">*</span>}
           {info && (
             <button
               type="button"

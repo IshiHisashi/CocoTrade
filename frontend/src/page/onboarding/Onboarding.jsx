@@ -11,11 +11,12 @@ import ConfirmationModal from "../auth/ConfirmationModal";
 Modal.setAppElement("#root");
 
 const classNameForModal =
-  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[95vh] overflow-scroll";
+  "absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-scroll sm:h-auto";
 
 const styleForModal = {
   overlay: {
     backgroundColor: "#24303790",
+    zIndex: 50,
   },
 };
 
@@ -31,6 +32,9 @@ const Onboarding = ({ URL }) => {
   const [currentBalance, setCurrentBalance] = useState("");
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
 
   document.body.classList = isConfirmationModalOpen
     ? "overflow-clip"
@@ -127,7 +131,10 @@ const Onboarding = ({ URL }) => {
         className={classNameForModal}
         style={styleForModal}
       >
-        <ConfirmationModal confirmationType="accountAllSet" />
+        <ConfirmationModal
+          confirmationType="accountAllSet"
+          windowWidth={windowWidth}
+        />
       </Modal>
     </>
   );

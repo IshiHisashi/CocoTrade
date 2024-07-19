@@ -17,7 +17,7 @@ const Nav = (props) => {
 
   return (
     <nav
-      className={`bg-[#243037] ${translateX} sm:translate-x-0 transition-all sm:transition-none ease-in-out absolute sm:fixed h-screen top-0 bottom-0 left-0 w-full sm:w-64 z-10`}
+      className={`bg-[#243037] ${translateX} sm:translate-x-0 transition-all sm:transition-none ease-in-out fixed h-screen top-0 bottom-0 left-0 w-full sm:w-64 z-10`}
     >
       <div className="w-full sm:w-64 h-24 flex justify-between sm:justify-center items-center px-8">
         <NavLink

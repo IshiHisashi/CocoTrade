@@ -10,11 +10,18 @@ const LandingFooter = () => {
         </p>
       </div>
       <div>
-        <CtaBtn
-          innerTxt="Download Proposal"
-          size="M-landing"
-          level="O-landing"
-        />
+        <button
+          type="submit"
+          className="w-52 h-[50px] bg-transparent  hover:bg-bluegreen-100
+          active:bg-bluegreen-500 text-white
+          active:text-neutral-0 border border-white
+  font-semibold
+  text-[16px]
+  dm-sans
+  rounded"
+        >
+          Download Proposal
+        </button>
       </div>
     </div>
   );

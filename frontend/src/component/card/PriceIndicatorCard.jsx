@@ -98,18 +98,18 @@ const PriceIndicatorCard = (props) => {
       {dataObj ? (
         <>
           <div className="flex justify-between items-center gap-2">
-            <p className="display-sans text-neutral-600">
+            <p className="display-sans text-bluegreen-700">
               Php {dataObj.current}/kg
             </p>
             <img src={iconSrc} alt="" aria-hidden className="h-16 w-16" />
           </div>
-          <div className="flex content-center items-center gap-4">
+          <div className="grid grid-cols-2 @2xl:flex content-center items-center gap-4">
             <TrendBadge
               trend={diffObj.trend}
               num={`${diffObj.arrow}${diffObj.priceDiff}`}
             />
             <p
-              className={`p14-medium ${diffObj.trend === "U" || diffObj.trend === "N" ? "text-bluegreen-500" : "text-red-100"}`}
+              className={`p14-medium justify-self-center ${diffObj.trend === "U" || diffObj.trend === "N" ? "text-bluegreen-500" : "text-red-100"}`}
             >
               {diffObj.arrow}
               {diffObj.percentageDiff}% today

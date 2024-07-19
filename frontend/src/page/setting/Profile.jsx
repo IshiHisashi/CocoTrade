@@ -99,7 +99,6 @@ const Profile = ({ userId, URL, userInfo, setUserInfo }) => {
           disabled = { prevFormData.company_name === formData.company_name }
         />
       </form>
-      {userInfo === null ? "Loading" : formData.company_name}
     </div>
   )
 }

@@ -439,7 +439,7 @@ export const getTopFiveSales = async (req, res) => {
         model: "Manufacturer",
       })
       .sort({ copra_ship_date: -1 })
-      .limit(7);
+      .limit(5);
 
     if (!user) {
       return res.status(404).json({

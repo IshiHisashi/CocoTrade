@@ -12,7 +12,7 @@ const UserMenuDropdown = (props) => {
       await logout();
       navigate("/"); // Redirect to the login page after logout
     } catch (error) {
-      console.error("Logout Error:", error);
+      window.alert("Logout Error:", error.message);
     }
   };
 
@@ -20,8 +20,8 @@ const UserMenuDropdown = (props) => {
     <div
       className={`absolute right-0 cursor-default bg-white text-black shadow-lg transition-all ease-in-out ${
         isUserMenuOpen
-          ? "translate-y-6 opacity-1"
-          : "translate-y-4 opacity-0 invisible"
+          ? "translate-y-3 opacity-1"
+          : "translate-y-1 opacity-0 invisible"
       }`}
     >
       <nav>

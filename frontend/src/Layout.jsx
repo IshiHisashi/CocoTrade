@@ -6,11 +6,12 @@ import FormModal from "./component/modal/FormModal.jsx";
 import ConfirmationModal from "./page/auth/ConfirmationModal.jsx";
 
 const classNameForModal =
-  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[95vh] overflow-scroll";
+  "absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-scroll sm:h-auto";
 
 const styleForModal = {
   overlay: {
     backgroundColor: "#24303790",
+    zIndex: 50,
   },
 };
 
@@ -27,7 +28,9 @@ const Layout = (props) => {
   window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
 
   document.body.classList =
-    translateX === "translate-x-0" && windowWidth < 640
+    isFormModalOpen ||
+    isConfirmationModalOpen ||
+    (translateX === "translate-x-0" && windowWidth < 640)
       ? "overflow-clip"
       : "overflow-scroll";
 
@@ -39,20 +42,20 @@ const Layout = (props) => {
         translateX={translateX}
         fnToToggleNav={setTranslateX}
       />
-      <main className="sm:ml-64 p-4 pt-0 sm:p-8 bg-[#F1F7F8] min-h-screen">
+      <main className="sm:ml-64 bg-[#F1F7F8] min-h-screen @container">
         {children}
       </main>
 
       <Modal
         isOpen={isFormModalOpen}
-        onRequestClose={() => setIsFormModalOpen(false)}
-        className={classNameForModal}
+        className={`${classNameForModal} sm:w-[508px]`}
         style={styleForModal}
       >
         <FormModal
           formType="support"
           fnToOpenConfirmationModal={setIsConfirmationModalOpen}
           fnToCloseThisModal={setIsFormModalOpen}
+          windowWidth={windowWidth}
         />
       </Modal>
 
@@ -65,6 +68,7 @@ const Layout = (props) => {
         <ConfirmationModal
           confirmationType="support"
           fnToCloseThisModal={setIsConfirmationModalOpen}
+          windowWidth={windowWidth}
         />
       </Modal>
     </>

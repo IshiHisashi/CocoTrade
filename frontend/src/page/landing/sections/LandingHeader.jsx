@@ -118,14 +118,23 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
             </button>
           </li>
           <li>
-            <CtaBtn
-              innerTxt="Free 14-day trial"
-              size={`${isHamburgerOpen ? "L-landing" : "M-landing"}`}
-              onClickFnc={() => {
-                setAuthType("signup");
+            <button
+              type="submit"
+              onClick={() => {
+                setAuthType("login");
                 setIsAuthModalOpen(true);
               }}
-            />
+              className={`${isHamburgerOpen ? "w-96" : "w-52"} h-[50px] bg-[#FF5b04]  hover:bg-[#FF8340]
+  active:bg-[#FE2E00] text-white
+  active:text-white
+  font-semibold
+  text-[16px]
+  dm-sans
+  rounded
+  border-0 border-bluegreen-700`}
+            >
+              Free 14-day trial
+            </button>
           </li>
         </ul>
       </div>

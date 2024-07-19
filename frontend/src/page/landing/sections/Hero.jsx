@@ -24,7 +24,7 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   dm-sans
   rounded"
         >
-          Free 14-day trial
+          Download Proposal
         </button>
         <button
           onClick={() => {

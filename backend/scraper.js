@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: "../config.env" });
 
-const URL = "http://localhost:5555";
+const URL = "https://coco-trade-backend.vercel.app";
 
 const postDataToPriceSuggestion = async () => {
   try {

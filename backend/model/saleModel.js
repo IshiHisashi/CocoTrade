@@ -19,6 +19,5 @@ const saleSchema = new Schema({
   copra_ship_date: Date,
   cheque_receive_date: Date,
   total_sales_price: mongoose.Types.Decimal128,
-  createdAt: { type: Date, default: Date.now },
 });
 const Sale = mongoose.model("Sale", saleSchema);

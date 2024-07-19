@@ -58,7 +58,7 @@ const NotificationDropdown = ({
             <div
               key={notification._id}
               className={`p-2 border-b border-gray-300 text-left pl-9 relative ${
-                notification.read ? "bg-white" : "bg-red-100"
+                notification.read ? "bg-white" : "bg-bluegreen-100"
               }`}
             >
               <div className="flex items-center">

@@ -26,8 +26,9 @@ const Sale = ({ URL }) => {
   };
 
   const classNameForModal =
-  "absolute bg-white top-[60%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] max-w-[30vw] overflow-scroll p-2 text-sans";
-
+`
+  absolute bg-white top-0 left-0 w-full h-full sm:top-[55%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[80vh] sm:max-w-[30vw] overflow-scroll p-3`;
+ 
   return (
     <div>
       <Modal
@@ -47,12 +48,15 @@ const Sale = ({ URL }) => {
           onFormSubmit={handleFormSubmit}
         />
       </Modal>
+      <div className="flex flex-wrap sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[40px] grow shrink relative"> 
+
       <ViewSalesTable
         showEditForm={showEditForm}
         setshowEditForm={setshowEditForm}
         handleEdit={handleEdit}
         URL={URL}
       />
+      </div>
         <ConfirmationModal
         isOpen={showConfirmation}
         onRequestClose={() => setShowConfirmation(false)}

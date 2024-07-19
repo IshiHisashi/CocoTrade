@@ -16,6 +16,5 @@ const purchaseSchema = new Schema({
   moisture_test_result: Boolean,
   moisture_test_details: mongoose.Types.Decimal128,
   total_purchase_price: mongoose.Types.Decimal128,
-  createdAt: { type: Date, default: Date.now },
 });
 const Purchase = mongoose.model("Purchase", purchaseSchema);

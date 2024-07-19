@@ -194,24 +194,28 @@ const Field = ({
         />
       );
       break;
-    case "dropdown":
-      inputElement = (
-        <select
-          name={name}
-          id={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-        >
-          <option value="">Select...</option>
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      );
-      break;
+      case "dropdown":
+        inputElement = (
+          <FormControl fullWidth>
+            <select
+              name={name}
+              id={name}
+              value={value}
+              onChange={onChange}
+              required={required}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm h-[56px] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-2"
+            >
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
+          </FormControl>
+        );
+        break;
+      
     default:
       inputElement = null;
   }

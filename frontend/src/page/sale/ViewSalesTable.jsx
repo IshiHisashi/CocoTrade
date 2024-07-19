@@ -13,6 +13,10 @@ import { UserIdContext } from "../../contexts/UserIdContext.jsx";
  import YellowEclipse from '../../assets/icons/YellowEclipse.svg';
  import Dropdown from '../../assets/icons/Dropdown.svg';
  import CtaBtn from "../../component/btn/CtaBtn";
+ import DeleteIcon from '../../assets/icons/DeleteIcon.svg';
+import EditIcon from '../../assets/icons/EditIcon.svg';
+import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
+import EllipseIcon from '../../assets/icons/Ellipse.svg';
 
 // import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
 
@@ -48,6 +52,7 @@ const CustomDropdown = ({ options, value, onChange }) => {
   const selectedOption = options.find(option => option.value === value);
 
   return (
+    
     <div className="relative" ref={dropdownRef}>
       <button
         type="button"
@@ -96,6 +101,7 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [newlyAdded, setNewlyAdded] = useState(false);
+  const [highlightNewlyAdded, setHighlightNewlyAdded] = useState(true);
   const [dateLabel, setDateLabel] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,11 +120,11 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     axios
       .get(url)
       .then((response) => {
-        const sortedData = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedData = response.data.sort((a, b) => new Date(b.copra_ship_date) - new Date(a.copra_ship_date));
         setSales(sortedData);
         setFilteredSales(sortedData);
         const newlyAddedFromStorage = getNewlyAddedFromLocalStorage();
-        setNewlyAdded(newlyAddedFromStorage);
+        setHighlightNewlyAdded(newlyAddedFromStorage);
       })
       .catch((error) => {
         console.error("Error fetching sales:", error);
@@ -279,34 +285,42 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   };
 
   const getRowClassName = (index) => {
-    if (newlyAdded && currentPage === 1 && index === 0) return 'bg-neutral-100 cursor-pointer';
+    if (newlyAdded && currentPage === 1 && index === 0 && highlightNewlyAdded) {
+      return 'bg-neutral-100 cursor-pointer';
+    }
     return index % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
   };
 
   const handleRowClick = (index) => {
-    if (index === 0) {
+    if (index === 0 && newlyAdded && highlightNewlyAdded) {
+      setHighlightNewlyAdded(false);
       setNewlyAdded(false);
       setNewlyAddedInLocalStorage(false);
     }
   };
 
   // Add this useEffect to handle clicks outside the dropdown
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target) &&
-      !event.target.closest('.dropdown-content')
-    ) {
-      setDropdownVisible(null);
-    }
-  };
-
-  document.addEventListener('mousedown', handleClickOutside);
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !event.target.closest('.dropdown-content')
+      ) {
+        setDropdownVisible(null);
+        if (newlyAdded && highlightNewlyAdded) {
+          setHighlightNewlyAdded(false);
+          setNewlyAddedInLocalStorage(false);
+        }
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [newlyAdded, highlightNewlyAdded]);
+  
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -363,7 +377,7 @@ const getStatusClass = (status) => {
           }
         }}
       >
-        <img src={Exit} alt="Calendar" />
+        <img src={CalendarIcon} alt="Calendar" />
       </button>
       <Modal
   isOpen={isDateModalOpen}
@@ -384,26 +398,24 @@ const getStatusClass = (status) => {
     onChange={handleDateChange}
     inline
   />
-  <div className="flex justify-between mt-4">
-    <button
-      type="button"
-      onClick={hideDatePicker}
-      className="py-2 px-4 bg-gray-200 rounded-lg hover:bg-gray-300"
-    >
-      Back
-    </button>
-    <button
-      type="button"
-      onClick={submitDateRange}
-      className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-    >
-      Submit
-    </button>
+<div className="grid grid-cols-2 pt-3"> 
+    <CtaBtn
+      className="w-[183px]"
+      size="S"
+      level="O"
+      innerTxt="Back"
+      onClickFnc={hideDatePicker}
+    />
+    <CtaBtn
+      className="w-[183px]"
+      size="S"
+      level="P"
+      innerTxt="Submit"
+      onClickFnc={submitDateRange}
+    />
   </div>
 </>
 
-  
-   
     ) : (
       <>
         <label>
@@ -419,7 +431,7 @@ const getStatusClass = (status) => {
         className="absolute right-20 top-36 transform -translate-y-1/2 cursor-pointer"
         onClick={showDatePicker}
       >
-        <img src={Exit} alt="Calendar" />
+        <img src={CalendarIcon} alt="Calendar" />
       </button>
         </label>
         <div className="space-y-2 font-sans text-[12px] text-bluegreen-700">
@@ -457,11 +469,9 @@ const getStatusClass = (status) => {
   </div>
 </Modal>
     </div>
+
   </div>
 </div>
-
-
-
 
       <div className="overflow-x-auto rounded-lg">
       <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
@@ -519,7 +529,7 @@ const getStatusClass = (status) => {
                       )
                     }}
                   >
-  <img src={Exit} alt="Options" />
+  <img src={EllipseIcon} alt="Options" />
                     </button>
                   {
                     // eslint-disable-next-line no-underscore-dangle
@@ -532,7 +542,7 @@ const getStatusClass = (status) => {
                             handleEditClick(sale,e);
                           }}
                         >
-                            <img src={Exit} alt="Edit" />
+                            <img src={EditIcon} alt="Edit" />
                           Edit
                         </button>
                         <button
@@ -543,7 +553,7 @@ const getStatusClass = (status) => {
                             handleDeleteClick(sale._id,e)
                           }
                         >
-                          <img src={Exit} alt="Delete" />
+                          <img src={DeleteIcon} alt="Delete" />
                           Delete
                         </button>
                       </div>

@@ -305,7 +305,7 @@ const AddPurchaseForm = ({
       </button>
       <h1 className="text-neutral-600 font-dm-sans font-bold text-[24px]">{purchase ? "Edit Purchase" : "New Purchase"}</h1>
 <small className="text-[#8E9299] font-dm-sans">Add a new puchase for today</small>
-      <div className="grid grid-cols-2 gap-x-6 pt-8">
+      <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
         className="w-[183px] text-neutral-400"
           label="Invoice no."
@@ -352,7 +352,7 @@ const AddPurchaseForm = ({
           </ul>
         )}
         </div>
-        <div className="grid grid-cols-2 gap-x-6 pt-8">
+        <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
           className="w-[183px]"
           label="Price per kg"
@@ -405,7 +405,7 @@ const AddPurchaseForm = ({
           adornment="start"
         />
         </div>
-        <div className="grid grid-cols-2 gap-x-6 pt-8">   
+        <div className="grid grid-cols-2 gap-x-6 pt-3">   
  <CtaBtn
         className="w-[183px]"
         size="M"

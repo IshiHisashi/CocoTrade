@@ -142,9 +142,7 @@ const Purchase = ({ URL }) => {
       
     />
     </div>
-      <div
-        className="flex flex-wrap sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] mb-[14px] basis-11/12 grow shrink relative"
-      > 
+      <div className="flex flex-wrap sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] mb-[14px] basis-11/12 grow shrink relative"> 
     
       <ViewPurchaseTable
         setShowAddForm={setShowAddForm}

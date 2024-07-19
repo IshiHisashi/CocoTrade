@@ -9,6 +9,10 @@ import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import EllipseIcon from '../../assets/icons/Ellipse.svg';
 import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
 import Pagination from "../../component/btn/Pagination";
+import DeleteIcon from '../../assets/icons/DeleteIcon.svg';
+import EditIcon from '../../assets/icons/EditIcon.svg';
+import CtaBtn from "../../component/btn/CtaBtn";
+
 
 const ViewPurchaseTable = ({
   setShowAddForm,
@@ -32,8 +36,6 @@ const ViewPurchaseTable = ({
   const [newlyAdded, setNewlyAdded] = useState(false);
   const recordsPerPage = 10;
   const userId = useContext(UserIdContext);
-
-
   const setNewlyAddedInLocalStorage = (value) => {
     localStorage.setItem('newlyAdded', JSON.stringify(value));
   };
@@ -42,12 +44,20 @@ const ViewPurchaseTable = ({
     return JSON.parse(localStorage.getItem('newlyAdded'));
   };
 
+  const [highlightNewlyAdded, setHighlightNewlyAdded] = useState(getNewlyAddedFromLocalStorage());
+
+
+  const sortPurchaseData = (purchaseData) => {
+    return purchaseData.sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date));
+  };
+
+  
   useEffect(() => {
     const url = `${URL}/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
       .then((response) => {
-        const sortedData = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedData = sortPurchaseData(response.data);
         setPurchases(sortedData);
         setFilteredPurchases(sortedData);
         const newlyAddedFromStorage = getNewlyAddedFromLocalStorage();
@@ -65,11 +75,10 @@ const ViewPurchaseTable = ({
 
   const formatDecimal = (decimal128, decimalPlaces = 2) => {
     if (!decimal128 || !decimal128.$numberDecimal) {
-      return "0.00";
+      return "0";
     }
-    const number = parseFloat(decimal128.$numberDecimal).toFixed(decimalPlaces);
-    return formatWithCommas(number);
-
+    const number = parseFloat(decimal128.$numberDecimal);
+  return number % 1 === 0 ? number.toString() : number.toFixed(decimalPlaces);
   };
 
   const handleDeleteClick = async (purchase, e) => {
@@ -117,8 +126,8 @@ const ViewPurchaseTable = ({
         .then((response) => {
         const sortedData = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setPurchases(sortedData);
-        setFilteredPurchases(sortedData);
-        setNewlyAdded(false); // Do not set newly added on delete
+          setFilteredPurchases(sortedData);
+          setNewlyAdded(false); // Do not set newly added on delete
           setNewlyAddedInLocalStorage(false);
         })
         .catch((error) => {
@@ -255,35 +264,43 @@ const ViewPurchaseTable = ({
     }
   };
 
-   const getRowClassName = (index) => {
-    if (newlyAdded && currentPage === 1 && index === 0) return 'bg-neutral-100 cursor-pointer';
+  const getRowClassName = (index) => {
+    if (highlightNewlyAdded && currentPage === 1 && index === 0) {
+      return 'bg-neutral-100 cursor-pointer';
+    }
     return index % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
   };
-
   const handleRowClick = (index) => {
-    if (index === 0) {
+    if (index === 0 && newlyAdded) {
+      setHighlightNewlyAdded(false);
       setNewlyAdded(false);
       setNewlyAddedInLocalStorage(false);
     }
   };
 
-// Add this useEffect to handle clicks outside the dropdown
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target) &&
-      !event.target.closest('.dropdown-content')
-    ) {
-      setDropdownVisible(null);
-    }
-  };
-
-  document.addEventListener('mousedown', handleClickOutside);
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !event.target.closest('.dropdown-content')
+      ) {
+        setDropdownVisible(null);
+        if (newlyAdded && highlightNewlyAdded) {
+          setHighlightNewlyAdded(false);
+          setNewlyAddedInLocalStorage(false);
+        }
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [newlyAdded, highlightNewlyAdded]);
+  
+  
+  
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -295,8 +312,8 @@ const formatDate = (dateString) => {
 
   return (
     <div>
-<div className="flex lg:justify-end mb-4 py-5 text-p14 font-dm-sans font-medium">
-  <label className="mr-4">
+   <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
+   <label className="mr-4">
     <span className="h3-sans">{dateLabel}</span>
   </label>
   <div className="relative flex items-center">
@@ -324,73 +341,100 @@ const formatDate = (dateString) => {
         <img src={CalendarIcon} alt="Calendar" />
       </button>
     </div>
+    <Modal
+  isOpen={isDateModalOpen}
+  onRequestClose={toggleDateModal}
+  shouldCloseOnOverlayClick
+  className="absolute z-10 inset-0 flex items-start justify-end p-4"
+  overlayClassName="absolute inset-0 bg-black bg-opacity-0"
+  style={{ content: { top: '120px', left: 'auto', right: '16px', bottom: 'auto', marginRight: '0', marginTop: '0', transform: 'none' } }}
+>
+  <div className="bg-white p-6 rounded-lg shadow-lg w-[380px]" style={{ marginTop: 'calc(100% - 330px)' }}>
+    <h2 className="text-sm font-semibold text-neutral-600 mb-4">Select date range</h2>
+    {isDatePickerVisible ? (
+  <>
+  <DatePicker
+    selectsRange
+    startDate={dateRange.startDate}
+    endDate={dateRange.endDate}
+    onChange={handleDateChange}
+    inline
+  />
+<div className="grid grid-cols-2 pt-3"> 
+    <CtaBtn
+      className="w-[183px]"
+      size="S"
+      level="O"
+      innerTxt="Back"
+      onClickFnc={hideDatePicker}
+    />
+    <CtaBtn
+      className="w-[183px]"
+      size="S"
+      level="P"
+      innerTxt="Submit"
+      onClickFnc={submitDateRange}
+    />
   </div>
-</div>
-      <Modal isOpen={isDateModalOpen} onRequestClose={toggleDateModal}   shouldCloseOnOverlayClick
-    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-p14 font-dm-sans font-medium">
-<div className="bg-white p-6 rounded-lg w-[380px] h-[445px]">
-        <h2>Select Date Range</h2>
-        {isDatePickerVisible ? (
-          <>
-            <DatePicker
-              selectsRange
-              startDate={dateRange.startDate}
-              endDate={dateRange.endDate}
-              onChange={handleDateChange}
-              inline
-            />
-            <button type="button" onClick={hideDatePicker}>
-              Back
-            </button>
-            <button type="button" onClick={submitDateRange}>
-              Submit
-            </button>
-          </>
-        ) : (
-          <>
-            <input
-              type="text"
-              placeholder="MM/DD/YY - MM/DD/YY"
-              readOnly
-              onClick={showDatePicker}
-            />
+</>
 
-            <div>
-              <button
-                type="button"
-                onClick={() => handlePredefinedRange("today")}
-              >
-                Today
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={() => handlePredefinedRange("thisWeek")}
-              >
-                This Week
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={() => handlePredefinedRange("thisMonth")}
-              >
-                This Month
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={() => handlePredefinedRange("lastMonth")}
-              >
-                Last Month
-              </button>
-            </div>
-          </>
-        )}
-         </div>
-      </Modal>
+    ) : (
+      <>
+        <label>
+          <input
+            type="text"
+            placeholder="MM/DD/YY - MM/DD/YY"
+            readOnly
+            onClick={showDatePicker}
+            className="w-full py-2 px-4 mb-4 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
+          />
+           <button
+        type="button"
+        className="absolute right-20 top-36 transform -translate-y-1/2 cursor-pointer"
+        onClick={showDatePicker}
+      >
+        <img src={CalendarIcon} alt="Calendar" />
+      </button>
+        </label>
+        <div className="space-y-2 font-sans text-[12px] text-bluegreen-700">
+          <button
+            type="button"
+            onClick={() => handlePredefinedRange("today")}
+            className="w-full py-2 px-4  rounded-lg hover:bg-blue-100 border w-[310px]"
+          >
+            Today
+          </button>
+          <button
+            type="button"
+            onClick={() => handlePredefinedRange("thisWeek")}
+            className="w-full py-2 px-4 rounded-lg hover:bg-blue-100 border w-[310px]"
+          >
+            This Week
+          </button>
+          <button
+            type="button"
+            onClick={() => handlePredefinedRange("thisMonth")}
+            className="w-full py-2 px-4  rounded-lg hover:bg-blue-100 border w-[310px]"
+          >
+            This Month
+          </button>
+          <button
+            type="button"
+            onClick={() => handlePredefinedRange("lastMonth")}
+            className="w-full py-2 px-4  rounded-lg hover:bg-blue-100 border w-[310px]"
+          >
+            Last Month
+          </button>
+        </div>
+      </>
+    )}
+  </div>
+</Modal>
+ 
+  </div>
+ 
+</div>
+      
       <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
@@ -444,7 +488,7 @@ const formatDate = (dateString) => {
                           className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                           onClick={(e) => handleEditClick(purchase, e)}
 
-                        >          <img src={CalendarIcon} alt="Edit" className="mr-2" />
+                        >          <img src={EditIcon} alt="Edit" className="mr-2" />
 
                           Edit
                         </button>
@@ -454,7 +498,7 @@ const formatDate = (dateString) => {
 
                           onClick={(e) => handleDeleteClick(purchase, e)}
                           >
-                                    <img src={CalendarIcon} alt="Delete" className="mr-2" />
+                                    <img src={DeleteIcon} alt="Delete" className="mr-2" />
 
                           Delete
                         </button>

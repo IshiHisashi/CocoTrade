@@ -120,7 +120,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           <li>
             <CtaBtn
               innerTxt="Free 14-day trial"
-              size={`${isHamburgerOpen ? "L" : "M"}`}
+              size={`${isHamburgerOpen ? "L-landing" : "M-landing"}`}
               onClickFnc={() => {
                 setAuthType("signup");
                 setIsAuthModalOpen(true);

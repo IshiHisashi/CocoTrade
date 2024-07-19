@@ -13,7 +13,7 @@ const FormTalkToUs = ({ setAuthType, setIsAuthModalOpen }) => {
       </div>
       <CtaBtn
         innerTxt="Talk to us"
-        size="M"
+        size="M-landing"
         onClickFnc={() => {
           setAuthType("signup");
           setIsAuthModalOpen(true);

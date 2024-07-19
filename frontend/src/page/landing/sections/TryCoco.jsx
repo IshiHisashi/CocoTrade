@@ -1,6 +1,5 @@
 import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
-import Field from "../../../component/field-filter/Field";
 
 const TryCoco = ({ setAuthType, setIsAuthModalOpen }) => {
   return (
@@ -10,7 +9,7 @@ const TryCoco = ({ setAuthType, setIsAuthModalOpen }) => {
       </p>
       <div className="cta flex flex-col items-center gap-6">
         <CtaBtn
-          size="M"
+          size="M-landing"
           innerTxt="Get started"
           onClickFnc={() => {
             setAuthType("signup");

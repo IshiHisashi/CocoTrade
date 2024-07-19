@@ -16,7 +16,7 @@ const Setting = ({ URL }) => {
       .get(`${URL}/user/${userId}`)
       .then((response) => {
         setUserInfo(response.data.data);
-        console.log(response.data.data);
+        console.log("User info: ", response.data.data);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);

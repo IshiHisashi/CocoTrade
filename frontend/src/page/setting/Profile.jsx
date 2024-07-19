@@ -93,10 +93,23 @@ const Profile = ({ userId, URL, userInfo, setUserInfo }) => {
         />
         <CtaBtn 
           size="S" 
-          level={ prevFormData.company_name === formData.company_name ? "D" : "S" }
+          level={ 
+            prevFormData !== null && 
+            prevFormData.company_name === formData.company_name && 
+            prevFormData.email === formData.email && 
+            prevFormData.full_name === formData.full_name && 
+            prevFormData.country === formData.country ? 
+            "D" : "S" 
+          }
           type="submit"
           innerTxt="Save" 
-          disabled = { prevFormData.company_name === formData.company_name }
+          disabled = { 
+            prevFormData !== null && 
+            prevFormData.company_name === formData.company_name && 
+            prevFormData.email === formData.email && 
+            prevFormData.full_name === formData.full_name && 
+            prevFormData.country === formData.country
+          }
         />
       </form>
     </div>

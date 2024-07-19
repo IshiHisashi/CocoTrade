@@ -1,11 +1,15 @@
 import React from "react";
 
 const SummaryElement = (props) => {
-  const { label, detail } = props;
+  const { label, detail, preUnit = "", unit = "" } = props;
   return (
     <div>
-      <p className="mb-2">{label}</p>
-      <p>{detail}</p>
+      <p className="p14">{label}</p>
+      <p className="p16">
+        {preUnit}
+        {detail}
+        {unit}
+      </p>
     </div>
   );
 };

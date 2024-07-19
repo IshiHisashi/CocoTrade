@@ -2,7 +2,7 @@ import axios from "axios";
 import { PriceSuggestionModel } from "../model/priceSuggestionModel.js";
 import { UserModel } from "../model/userModel.js";
 
-const URL = "http://localhost:5555";
+const URL = "https://coco-trade-backend.vercel.app";
 
 // Create the very first price suggestion at the end of the onboarding
 export const createFirstPriceSuggestion = async (req, res) => {

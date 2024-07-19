@@ -112,20 +112,29 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
                 setAuthType("login");
                 setIsAuthModalOpen(true);
               }}
-              className={`border-[1.5px] rounded ${isHamburgerOpen ? "p18-bold border border-neutral-200 h-16 w-96 text-white" : " border-neutral-800 h-14 w-24 "}`}
+              className={`border-[1.5px] rounded h-[50px] ${isHamburgerOpen ? "p18-bold border border-neutral-200 w-96 text-white" : " border-neutral-800 w-24 "}`}
             >
               Log In
             </button>
           </li>
           <li>
-            <CtaBtn
-              innerTxt="Free 14-day trial"
-              size={`${isHamburgerOpen ? "L-landing" : "M-landing"}`}
-              onClickFnc={() => {
-                setAuthType("signup");
+            <button
+              type="submit"
+              onClick={() => {
+                setAuthType("login");
                 setIsAuthModalOpen(true);
               }}
-            />
+              className={`${isHamburgerOpen ? "w-96" : "w-52"} h-[50px] bg-[#FF5b04]  hover:bg-[#FF8340]
+  active:bg-[#FE2E00] text-white
+  active:text-white
+  font-semibold
+  text-[16px]
+  dm-sans
+  rounded
+  border-0 border-bluegreen-700`}
+            >
+              Free 14-day trial
+            </button>
           </li>
         </ul>
       </div>

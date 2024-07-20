@@ -121,7 +121,12 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
       <h2 className="h1-sans text-neutral-600 bg-[#F1F7F8] basis-full sm:basis-auto px-8 py-4 sm:p-0 order-last sm:order-none">
         {pageTitle}
         {pageInfo && (
-          <InfoTooltip title={pageInfo} placement="right" arrow>
+          <InfoTooltip
+            title={pageInfo}
+            placement="right"
+            arrow
+            enterTouchDelay={0}
+          >
             <button type="button" className="mx-2">
               <img src={Info} alt="show information about this page" />
             </button>

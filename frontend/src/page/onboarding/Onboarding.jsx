@@ -71,7 +71,8 @@ const Onboarding = ({ URL }) => {
 
   return (
     <>
-      <div className="md:grid grid-cols-[auto_1fr]">
+      <div className="">
+        {/* md:grid grid-cols-[auto_1fr] */}
         <Routes>
           <Route
             path="business"

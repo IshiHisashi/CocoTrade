@@ -32,17 +32,19 @@ const BusinessProfile = (props) => {
   };
 
   return (
-    <>
-      <img
-        src={image1}
-        alt=""
-        aria-hidden
-        className="fixed md:static -top-32 -left-8 scale-125 md:scale-100 -z-10 md:h-full order-2 object-cover object-center"
+    <section className="relative min-h-screen w-screen flex flex-col justify-end">
+      <div
+        className="absolute top-0 min-h-screen w-screen blur-sm -z-10"
+        style={{
+          backgroundImage: `url(${image1})`,
+          // backgroundSize: "cover",
+          backgroundPosition: "90% 40%",
+          backgroundAttachment: "fixed",
+        }}
       />
-
-      <section className="bg-white md:static bottom-0 left-0 right-0 p-8 sm:p-16 order-1">
+      <div className="w-full bg-white p-4 mt-32 filter-none">
         <div>
-          <img src={progress1} alt="" aria-hidden className="mb-4" />
+          <img src={progress1} alt="" aria-hidden className="mb-8" />
           <h1 className="h4-sans-uppercase text-neutral-600">
             BUSINESS PROFILE
           </h1>
@@ -106,8 +108,8 @@ const BusinessProfile = (props) => {
             disabled={!(fullName && email && companyName && country)}
           />
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

@@ -16,6 +16,7 @@ import Layout from "./Layout.jsx";
 import Auth from "./page/auth/Auth.jsx";
 import Onboarding from "./page/onboarding/Onboarding.jsx";
 import { UserIdContext } from "./contexts/UserIdContext.jsx";
+import Setting from "./page/setting/Setting.jsx";
 
 const AppRoutes = ({ userid, setUser, URL }) => {
   const navigate = useNavigate();
@@ -78,6 +79,14 @@ const AppRoutes = ({ userid, setUser, URL }) => {
             element={
               <Layout URL={URL}>
                 <Finance URL={URL} />
+              </Layout>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Layout URL={URL}>
+                <Setting URL={URL} />
               </Layout>
             }
           />

@@ -133,28 +133,26 @@ const Overview = (props) => {
   };
 
   return (
-    <>
-      <img
-        src={image3}
-        alt=""
-        aria-hidden
-        className="fixed md:static -top-32 -left-8 scale-125 md:scale-100 -z-10 md:h-full order-2 object-cover object-center"
+    <section className="relative min-h-screen w-screen grid content-end md:grid-cols-3">
+      <div
+        className="bg-[90%_-25rem] md:bg-center bg-fixed md:bg-local md:bg-cover absolute md:static top-0 min-h-screen w-screen md:w-auto blur-sm md:filter-none -z-10 md:order-2"
+        style={{ backgroundImage: `url(${image3})` }}
       />
 
-      <section className="bg-white md:static bottom-0 left-0 right-0 p-8 sm:p-16 order-1">
+      <div className="w-full bg-white p-8 mt-32 md:mt-8 filter-none md:order-1 md:col-span-2 max-w-[900px] mx-auto">
         <div>
           <img src={progress3} alt="" aria-hidden className="mb-4" />
           <h1 className="h4-sans-uppercase text-neutral-600">OVERVIEW</h1>
         </div>
 
-        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600">
+        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600 pt-8">
           Here&apos;s a summary of your profile
         </h2>
         <p className="p18 text-neutral-600">
           Review the following details to finish setting up your profile
         </p>
 
-        <section className="my-8">
+        <section className="my-9">
           <h3 className="h4-sans-uppercase text-neutral-600">
             BUSINESS PROFILE
           </h3>
@@ -166,7 +164,7 @@ const Overview = (props) => {
           </div>
         </section>
 
-        <section className="my-8">
+        <section className="my-9">
           <h3 className="h4-sans-uppercase text-neutral-600">
             OPERATIONS SETTING
           </h3>
@@ -195,7 +193,7 @@ const Overview = (props) => {
           </div>
         </section>
 
-        <div className="flex justify-between sm:mt-32">
+        <div className="flex justify-between sm:mt-16">
           <CtaBtn
             size="M"
             level="O"
@@ -210,8 +208,8 @@ const Overview = (props) => {
             onClickFnc={() => onClickSave()}
           />
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

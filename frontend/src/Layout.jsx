@@ -43,7 +43,7 @@ const Layout = (props) => {
         fnToToggleNav={setTranslateX}
       />
       <main className="sm:ml-64 bg-[#F1F7F8] min-h-screen @container">
-        {children}
+        <div className="max-w-[1300px] mx-auto">{children}</div>
       </main>
 
       <Modal

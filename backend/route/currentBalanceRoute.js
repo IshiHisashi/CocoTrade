@@ -10,6 +10,7 @@ router.get("/:id", currentBalanceController.getCurrentBalance);
 router.post("/", currentBalanceController.createCurrentBalance);
 router.patch("/", currentBalanceController.updateCurrentBalance);
 router.patch("/updateForSales", currentBalanceController.updateCurrentBalanceAndCascade)
+router.patch("/:id", currentBalanceController.updateCurrentBalanceById);
 router.delete("/:id", currentBalanceController.deleteCurrentBalance);
 
 router.post("/first", currentBalanceController.createFirstCurrentBalance);

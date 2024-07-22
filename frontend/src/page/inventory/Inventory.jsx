@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import Modal from "react-modal";
 import BarChart from "./BarChart";
-import LineChart from "./LineChart";
 import SalesTable from "./SalesTable";
 import PlanShipment from "./PlanShipment";
 import CtaBtn from "../../component/btn/CtaBtn";

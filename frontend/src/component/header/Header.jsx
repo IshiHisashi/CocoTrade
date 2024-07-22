@@ -89,6 +89,9 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
     pageTitle = "Finance Status Tracker";
     pageInfo =
       "This is where you can track your finances on a daily and monthly basis.";
+  } else if (pathname.includes("settings")) {
+    pageTitle = "Settings";
+    pageInfo = null;
   } else {
     pageTitle = `Hello ${companyName}`;
     pageInfo = null;
@@ -137,36 +140,71 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
       <div className=" py-4 pr-4 sm:p-0 flex gap-4">
         <button
           type="button"
-          className="relative"
-          onClick={handleNotificationClick}
+          className="block my-4 ml-4 sm:hidden"
+          onClick={(e) =>
+            fnToToggleNav(
+              translateX === "translate-x-0"
+                ? "-translate-x-full"
+                : "translate-x-0"
+            )
+          }
         >
-          <img src={NotificationIcon} alt="notification" />
-          {unreadCount > 0 && (
-            <span className="absolute top-0 right-0 inline-flex items-center justify-center p-1 bg-red-500 text-white text-xs rounded-full">
-              {unreadCount}
-            </span>
-          )}
-          <NotificationDropdown
-            isNotificationOpen={isNotificationOpen}
-            setIsNotificationOpen={setIsNotificationOpen}
-            userId={userId}
-            URL={URL}
-            onClick={(e) => e.stopPropagation()}
+          <img src={Hamburger} alt="toggle navigation menu" />
+        </button>
+
+        <NavLink className="sm:hidden" to="/dashboard">
+          <img
+            src={LogoForLightBg}
+            alt="CocoTrade"
+            className="block py-4 sm:hidden"
           />
-        </button>
-        <button
-          type="button"
-          className="w-6 h-6 font-dm-sans bg-[#0C7F8E] text-white text-center rounded-[50%] relative"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsUserMenuOpen(!isUserMenuOpen);
-            setIsNotificationOpen(false);
-            fnToToggleNav("-translate-x-full");
-          }}
-        >
-          {companyName.split("")[0]}
-          <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />
-        </button>
+        </NavLink>
+
+        <h2 className="h1-sans text-neutral-600 bg-[#F1F7F8] basis-full sm:basis-auto px-8 py-4 sm:p-0 order-last sm:order-none">
+          {pageTitle}
+          {pageInfo && (
+            <InfoTooltip title={pageInfo} placement="right" arrow>
+              <button type="button" className="mx-2">
+                <img src={Info} alt="show information about this page" />
+              </button>
+            </InfoTooltip>
+          )}
+        </h2>
+
+        <div className=" py-4 pr-4 sm:p-0 flex gap-4">
+          <button
+            type="button"
+            className="relative"
+            onClick={handleNotificationClick}
+          >
+            <img src={NotificationIcon} alt="notification" />
+            {unreadCount > 0 && (
+              <span className="absolute top-0 right-0 inline-flex items-center justify-center p-1 bg-red-500 text-white text-xs rounded-full">
+                {unreadCount}
+              </span>
+            )}
+            <NotificationDropdown
+              isNotificationOpen={isNotificationOpen}
+              setIsNotificationOpen={setIsNotificationOpen}
+              userId={userId}
+              URL={URL}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </button>
+          <button
+            type="button"
+            className="w-6 h-6 font-dm-sans bg-[#0C7F8E] text-white text-center rounded-[50%] relative"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsUserMenuOpen(!isUserMenuOpen);
+              setIsNotificationOpen(false);
+              fnToToggleNav("-translate-x-full");
+            }}
+          >
+            {companyName.split("")[0]}
+            <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />
+          </button>
+        </div>
       </div>
     </header>
   );

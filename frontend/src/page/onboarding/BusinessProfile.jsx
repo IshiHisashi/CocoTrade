@@ -32,23 +32,21 @@ const BusinessProfile = (props) => {
   };
 
   return (
-    <>
-      <img
-        src={image1}
-        alt=""
-        aria-hidden
-        className="fixed md:static -top-32 -left-8 scale-125 md:scale-100 -z-10 md:h-full order-2 object-cover object-center"
+    <section className="relative min-h-screen w-screen grid content-end md:grid-cols-3">
+      <div
+        className="bg-[90%_-25rem] md:bg-center bg-fixed md:bg-local md:bg-cover absolute md:static top-0 min-h-screen w-screen md:w-auto blur-sm md:filter-none -z-10 md:order-2"
+        style={{ backgroundImage: `url(${image1})` }}
       />
 
-      <section className="bg-white md:static bottom-0 left-0 right-0 p-8 sm:p-16 order-1">
+      <div className="w-full bg-white p-8 mt-32 md:mt-8 filter-none md:order-1 md:col-span-2 max-w-[900px] mx-auto">
         <div>
-          <img src={progress1} alt="" aria-hidden className="mb-4" />
+          <img src={progress1} alt="" aria-hidden className="mb-8" />
           <h1 className="h4-sans-uppercase text-neutral-600">
             BUSINESS PROFILE
           </h1>
         </div>
 
-        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600">
+        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600 pt-8">
           Let&apos;s set up your profile
         </h2>
         <p className="p18 text-neutral-600">
@@ -97,7 +95,7 @@ const BusinessProfile = (props) => {
           />
         </div>
 
-        <div className="grid justify-end sm:mt-32">
+        <div className="grid justify-end sm:mt-16 md:mt-32">
           <CtaBtn
             size="M"
             level={fullName && email && companyName && country ? "P" : "D"}
@@ -106,8 +104,8 @@ const BusinessProfile = (props) => {
             disabled={!(fullName && email && companyName && country)}
           />
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

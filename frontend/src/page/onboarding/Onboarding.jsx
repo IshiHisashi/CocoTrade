@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Modal from "react-modal";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import BusinessProfile from "./BusinessProfile";
 import OperationsSettings from "./OperationsSettings";
 import { UserIdContext } from "../../contexts/UserIdContext";
@@ -40,6 +40,11 @@ const Onboarding = ({ URL }) => {
     ? "overflow-clip"
     : "overflow-scroll";
 
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, [pathname]);
+
   const userId = useContext(UserIdContext);
 
   useEffect(() => {
@@ -71,60 +76,58 @@ const Onboarding = ({ URL }) => {
 
   return (
     <>
-      <div className="md:grid grid-cols-[auto_1fr]">
-        <Routes>
-          <Route
-            path="business"
-            element={
-              <BusinessProfile
-                fullName={fullName}
-                setFullName={setFullName}
-                companyName={companyName}
-                setCompanyName={setCompanyName}
-                email={email}
-                setEmail={setEmail}
-                country={country}
-                setCountry={setCountry}
-              />
-            }
-          />
-          <Route
-            path="operations"
-            element={
-              <OperationsSettings
-                margin={margin}
-                setMargin={setMargin}
-                maxInventoryAmount={maxInventoryAmount}
-                setMaxInventoryAmount={setMaxInventoryAmount}
-                amountPerShip={amountPerShip}
-                setAmountPerShip={setAmountPerShip}
-                currentAmountLeft={currentAmountLeft}
-                setCurrentAmountLeft={setCurrentAmountLeft}
-                currentBalance={currentBalance}
-                setCurrentBalance={setCurrentBalance}
-              />
-            }
-          />
-          <Route
-            path="overview"
-            element={
-              <Overview
-                fullName={fullName}
-                email={email}
-                companyName={companyName}
-                country={country}
-                margin={margin}
-                maxInventoryAmount={maxInventoryAmount}
-                amountPerShip={amountPerShip}
-                currentAmountLeft={currentAmountLeft}
-                currentBalance={currentBalance}
-                fnToShowModal={setIsConfirmationModalOpen}
-                URL={URL}
-              />
-            }
-          />
-        </Routes>
-      </div>
+      <Routes>
+        <Route
+          path="business"
+          element={
+            <BusinessProfile
+              fullName={fullName}
+              setFullName={setFullName}
+              companyName={companyName}
+              setCompanyName={setCompanyName}
+              email={email}
+              setEmail={setEmail}
+              country={country}
+              setCountry={setCountry}
+            />
+          }
+        />
+        <Route
+          path="operations"
+          element={
+            <OperationsSettings
+              margin={margin}
+              setMargin={setMargin}
+              maxInventoryAmount={maxInventoryAmount}
+              setMaxInventoryAmount={setMaxInventoryAmount}
+              amountPerShip={amountPerShip}
+              setAmountPerShip={setAmountPerShip}
+              currentAmountLeft={currentAmountLeft}
+              setCurrentAmountLeft={setCurrentAmountLeft}
+              currentBalance={currentBalance}
+              setCurrentBalance={setCurrentBalance}
+            />
+          }
+        />
+        <Route
+          path="overview"
+          element={
+            <Overview
+              fullName={fullName}
+              email={email}
+              companyName={companyName}
+              country={country}
+              margin={margin}
+              maxInventoryAmount={maxInventoryAmount}
+              amountPerShip={amountPerShip}
+              currentAmountLeft={currentAmountLeft}
+              currentBalance={currentBalance}
+              fnToShowModal={setIsConfirmationModalOpen}
+              URL={URL}
+            />
+          }
+        />
+      </Routes>
 
       <Modal
         isOpen={isConfirmationModalOpen}

@@ -12,7 +12,7 @@ const getTotalSum = async (type, userId, URL) => {
       totalSum = res.data.totalSum.$numberDecimal;
     } else if (type === "sales") {
       const res = await axios.get(
-        `${URL}/tmpFinRoute/${userId}/sale//weekly-sales-sum`
+        `${URL}/tmpFinRoute/${userId}/sale/weekly-sales-sum`
       );
       totalSum = res.data.data.totalSales.$numberDecimal;
     }
@@ -45,7 +45,7 @@ const RecentActivityCard = (props) => {
       <p className="p16 text-neutral-400">
         {type === "purchase" ? "from today" : "over the last week"}
       </p>
-      <p className="display-sans text-neutral-600">
+      <p className="display-sans text-bluegreen-700">
         {totalSum ? `Php ${totalSum}` : "loading..."}
       </p>
     </div>

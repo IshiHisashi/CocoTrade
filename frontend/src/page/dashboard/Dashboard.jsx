@@ -175,6 +175,7 @@ const Dashboard = ({ URL }) => {
               title="View shipment on Sales."
               placement="right"
               arrow
+              enterTouchDelay={0}
             >
               <button
                 type="button"

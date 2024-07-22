@@ -13,7 +13,6 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   const [filteredManufacturers, setFilteredManufacturers] = useState([]);
   const [user, setUser] = useState(null);
 
-  // Just for PR
   // To controll update behaivior in API
   const [previousStatus, setPreviousStatus] = useState(null); 
   const [previousAmount, setPreviousAmount] = useState(null);
@@ -324,7 +323,6 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
             { value: "pending", label: "Pending" },
             { value: "ongoing", label: "Ongoing" },
             { value: "completed", label: "Completed" },
-            // { value: "cancelled", label: "Cancelled" },
           ]}
           required
         />
@@ -431,14 +429,14 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         <div className="grid grid-cols-2 gap-x-6 pt-3">   
         <CtaBtn
           className="w-[183px]"
-          size="M"
+          size="L"
           level="O"
           innerTxt="Clear"
           onClickFnc={fncCloseModal}
         />
         <CtaBtn 
           className="w-[183px]"
-          size="M" 
+          size="L" 
           level={
             (new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending") || 
             (formData.status === "completed" && Number(formData.total_sales_price) <= 0) ||

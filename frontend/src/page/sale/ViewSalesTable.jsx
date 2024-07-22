@@ -106,6 +106,8 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
+  const inputRef = useRef(null);
+  const [inputPosition, setInputPosition] = useState({ top: 0, left: 0 });
 
   const setNewlyAddedInLocalStorage = (value) => {
     localStorage.setItem('newlyAdded', JSON.stringify(value));
@@ -299,6 +301,26 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     }
   };
 
+  const updateModalPosition = () => {
+    if (inputRef.current) {
+        const rect = inputRef.current.getBoundingClientRect();
+        setInputPosition({
+            top: rect.top + window.scrollY,
+            left: rect.left + window.scrollX
+        });
+    }
+};
+
+useEffect(() => {
+  updateModalPosition();
+  window.addEventListener('resize', updateModalPosition);
+  window.addEventListener('scroll', updateModalPosition);
+  return () => {
+      window.removeEventListener('resize', updateModalPosition);
+      window.removeEventListener('scroll', updateModalPosition);
+  };
+}, []);
+
   // Add this useEffect to handle clicks outside the dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -361,32 +383,42 @@ const getStatusClass = (status) => {
         Filter by date
       </label>
       <input
-        type="text"
-        readOnly
-        value={inputLabel}
-        onClick={() => setIsDateModalOpen(true)}
-        className="w-60 p-[15px] h-[28px] border rounded cursor-pointer text-neutral-400 border-bluegreen-200"
-      />
-      <button
-        type="button"
-        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-        onClick={() => setIsDateModalOpen(true)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            setIsDateModalOpen(true);
-          }
-        }}
-      >
-        <img src={CalendarIcon} alt="Calendar" />
-      </button>
-      <Modal
+          type="text"
+          readOnly
+          value={inputLabel}
+          onClick={() => setIsDateModalOpen(true)}
+          ref={inputRef}
+          className="w-60 p-[15px] h-[28px] border rounded cursor-pointer text-neutral-400 border-bluegreen-200"
+        />
+       <button
+          type="button"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+          onClick={() => setIsDateModalOpen(true)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              setIsDateModalOpen(true);
+            }
+          }}
+        >
+          <img src={CalendarIcon} alt="Calendar" />
+        </button>
+        <Modal
   isOpen={isDateModalOpen}
   onRequestClose={toggleDateModal}
   shouldCloseOnOverlayClick
-  className="absolute z-10 inset-0 flex items-start justify-end p-4"
+  className="absolute z-10"
   overlayClassName="absolute inset-0 bg-black bg-opacity-0"
-  style={{ content: { top: '120px', left: 'auto', right: '16px', bottom: 'auto', marginRight: '0', marginTop: '0', transform: 'none' } }}
->
+  style={{
+    content: {
+        top: `${inputPosition.top-18}px`, 
+        left: `${inputPosition.left-140}px`,
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '0',
+        marginTop: '0',
+        transform: 'none'
+    }
+}}>
   <div className="bg-white p-6 rounded-lg shadow-lg w-[380px]" style={{ marginTop: 'calc(100% - 330px)' }}>
     <h2 className="text-sm font-semibold text-neutral-600 mb-4">Select date range</h2>
     {isDatePickerVisible ? (
@@ -398,17 +430,17 @@ const getStatusClass = (status) => {
     onChange={handleDateChange}
     inline
   />
-<div className="grid grid-cols-2 pt-3"> 
+<div className="grid grid-cols-2 pt-3 gap-3"> 
     <CtaBtn
       className="w-[183px]"
-      size="S"
+      size="M"
       level="O"
       innerTxt="Back"
       onClickFnc={hideDatePicker}
     />
     <CtaBtn
       className="w-[183px]"
-      size="S"
+      size="M"
       level="P"
       innerTxt="Submit"
       onClickFnc={submitDateRange}
@@ -424,11 +456,11 @@ const getStatusClass = (status) => {
             placeholder="MM/DD/YY - MM/DD/YY"
             readOnly
             onClick={showDatePicker}
-            className="w-full py-2 px-4 mb-4 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
+            className="w-full py-2 px-4 mb-4 m-2 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
           />
            <button
         type="button"
-        className="absolute right-20 top-36 transform -translate-y-1/2 cursor-pointer"
+        className="absolute right-10 top-32 cursor-pointer"
         onClick={showDatePicker}
       >
         <img src={CalendarIcon} alt="Calendar" />

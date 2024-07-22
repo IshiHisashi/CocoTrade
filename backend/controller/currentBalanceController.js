@@ -226,6 +226,33 @@ export const getLatestBalance = async (req, res) => {
   }
 };
 
+export const updateCurrentBalanceById = async (req, res) => {
+  try {
+    const invId = req.params.id;
+    const updateData = req.body;
+
+    const updatedFin = await CurrentBalanceModel.findByIdAndUpdate(
+      invId,
+      updateData
+    );
+    if (!updatedFin) {
+      return res.status(404).json({
+        status: "failed",
+        error: "Fin doc not found",
+      });
+    }
+    res.status(200).json({
+      status: "Success",
+      data: updatedFin,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
+  }
+};
+
 // Update and Delete needs parameter (ID)
 // Update
 export const updateCurrentBalance = async (req, res) => {

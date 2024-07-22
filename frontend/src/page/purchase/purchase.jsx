@@ -103,7 +103,7 @@ const Purchase = ({ URL }) => {
   const classNameForModal = `
   absolute bg-white top-0 left-0 w-full h-full sm:top-[55%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[80vh] sm:max-w-[30vw] overflow-scroll p-3`;
   return (
-<div className="sm:pt-[25px] sm:pr-[32px] sm:pb-[30px] sm:pl-[50px] flex flex-wrap relative">
+    <div className="relative">
 
       <Modal
          className={classNameForModal}
@@ -129,7 +129,7 @@ const Purchase = ({ URL }) => {
           onFormSubmit={handleFormSubmit}
         />
       </Modal>
-      <div className="w-full flex justify-end items-center mb-4">
+      <div className="w-full flex justify-end items-center mb-4 pr-9 md:pr-6 md:pt-3">
       <CtaBtn 
       size="M"
       level="P"
@@ -142,7 +142,7 @@ const Purchase = ({ URL }) => {
       
     />
     </div>
-      <div className="flex flex-wrap sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] mb-[14px] basis-11/12 grow shrink relative"> 
+    <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[40px]">
     
       <ViewPurchaseTable
         setShowAddForm={setShowAddForm}

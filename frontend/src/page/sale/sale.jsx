@@ -48,7 +48,7 @@ const Sale = ({ URL }) => {
           onFormSubmit={handleFormSubmit}
         />
       </Modal>
-      <div className="flex flex-wrap sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[40px] grow shrink relative"> 
+      <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[40px]">
 
       <ViewSalesTable
         showEditForm={showEditForm}

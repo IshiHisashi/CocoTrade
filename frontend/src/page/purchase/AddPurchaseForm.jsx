@@ -407,8 +407,7 @@ const AddPurchaseForm = ({
         </div>
         <div className="grid grid-cols-2 gap-x-6 pt-3">   
  <CtaBtn
-        className="w-[183px]"
-        size="M"
+        size="L"
         level="O"
         innerTxt="Clear"
         onClickFnc={() => {
@@ -417,8 +416,7 @@ const AddPurchaseForm = ({
         }}
       />
         <CtaBtn
-        className="w-[183px]"
-        size="M"
+        size="L"
         level="P"
         innerTxt="Save"
         type="submit"

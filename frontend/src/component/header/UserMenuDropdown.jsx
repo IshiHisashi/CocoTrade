@@ -1,6 +1,8 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import logout from "../../services/logout";
+import Settings from "../../assets/icons/Settings.svg";
+import Out from "../../assets/icons/Logout.svg";
 
 const UserMenuDropdown = (props) => {
   const { isUserMenuOpen } = props;
@@ -24,22 +26,28 @@ const UserMenuDropdown = (props) => {
           : "translate-y-1 opacity-0 invisible"
       }`}
     >
-      <nav>
+      <nav className="w-[136px]">
         <ul className="p-2">
           <li>
             <NavLink
               to="/settings"
               className="block p-2 cursor-pointer hover:bg-bluegreen-100"
             >
+              <img
+                src={Settings}
+                alt=""
+                aria-hidden
+                className="inline-block pr-2"
+              />
               Settings
             </NavLink>
           </li>
           <li>
             <NavLink
-              // to="/"
               onClick={handleLogout}
               className="block p-2 cursor-pointer hover:bg-bluegreen-100"
             >
+              <img src={Out} alt="" aria-hidden className="inline-block pr-2" />
               Logout
             </NavLink>
           </li>

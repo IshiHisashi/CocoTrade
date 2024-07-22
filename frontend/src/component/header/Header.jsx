@@ -89,6 +89,9 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
     pageTitle = "Finance Status Tracker";
     pageInfo =
       "This is where you can track your finances on a daily and monthly basis.";
+  } else if (pathname.includes("settings")) {
+    pageTitle = "Settings";
+    pageInfo = null;
   } else {
     pageTitle = `Hello ${companyName}`;
     pageInfo = null;

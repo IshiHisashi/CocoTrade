@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
+import Exit from "../../assets/icons/Exit.svg";
 
 const NotificationDropdown = ({
   isNotificationOpen,
@@ -45,10 +46,10 @@ const NotificationDropdown = ({
         <p className="font-bold">Notifications</p>
         <button
           type="button"
-          className="hover:bg-slate-300 cursor-pointer p-1 rounded"
+          className="hover:bg-bluegreen-100 cursor-pointer p-1 rounded"
           onClick={() => setIsNotificationOpen(!isNotificationOpen)}
         >
-          x
+          <img src={Exit} alt="close notification" />
         </button>
       </div>
       <div className="mt-2">

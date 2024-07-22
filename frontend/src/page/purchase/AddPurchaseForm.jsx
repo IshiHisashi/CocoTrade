@@ -293,19 +293,22 @@ const AddPurchaseForm = ({
 
   return (
     <div className="modal">
-<h1>{purchase ? "Edit Purchase" : "New Purchase"}</h1>
-<small>Add a new puchase for today</small>
+
       <form onSubmit={handleSubmit}>
+        
       <button
         type="button"
-        className="absolute top-8 right-8"
+        className="absolute top-2 right-2"
         onClick={() => setShowAddForm(false)}
       >
         <img src={Exit} alt="close" />
       </button>
-      <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
+      <h1 className="text-neutral-600 font-dm-sans font-bold text-[24px]">{purchase ? "Edit Purchase" : "New Purchase"}</h1>
+<small className="text-[#8E9299] font-dm-sans">Add a new puchase for today</small>
+      <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
-          label="Invoice No"
+        className="w-[183px] text-neutral-400"
+          label="Invoice no."
           name="invoice_number"
           value={formData.invoice_number}
           onChange={handleChange}
@@ -313,17 +316,19 @@ const AddPurchaseForm = ({
           disabled
         />
         <Field
-          label="Date Purchased"
+          className="w-[183px]"
+          label="Date purchased"
           name="purchase_date"
           type="date"
           value={formData.purchase_date}
           onChange={handleChange}
           required
-        />
+          />
         </div>
         <div className="relative" ref={wrapperRef}>
         <Field
-          label="Farmer Name"
+          className="w-[380px]"
+          label="Farmer's Name"
           name="farmer_name"
           type="text"
           value={formData.farmer_name}
@@ -347,22 +352,24 @@ const AddPurchaseForm = ({
           </ul>
         )}
         </div>
-        <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
+        <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
-          label="Price per kilo (PHP)"
+          className="w-[183px]"
+          label="Price per kg"
           name="sales_unit_price"
           type="number"
           value={formData.sales_unit_price}
           onChange={handleChange}
           required
-          unit="PHP"
+          unit="Php"
           adornment="start"
           min="0"
           step="0.0001"
           disabled
         />
         <Field
-          label="Copra bought (kg)"
+          className="w-[183px]"
+          label="Copra bought"
           name="amount_of_copra_purchased"
           type="number"
           value={formData.amount_of_copra_purchased}
@@ -374,7 +381,8 @@ const AddPurchaseForm = ({
           step="0.0001"
         />
         <Field
-          label="Moisture Test Details"
+          className="w-[183px]"
+          label="Moisture level"
           name="moisture_test_details"
           type="number"
           value={formData.moisture_test_details}
@@ -386,18 +394,20 @@ const AddPurchaseForm = ({
           max="100"
         />
         <Field
-          label="Total Sale (PHP)"
+          className="w-[183px]"
+          label="Total Sale"
           name="total_purchase_price"
           type="number"
           value={formData.total_purchase_price}
           onChange={handleChange}
           disabled
-          unit="PHP"
+          unit="Php"
           adornment="start"
         />
         </div>
-        <div className="grid sm:grid-cols-2 gap-x-6 pt-8">   
+        <div className="grid grid-cols-2 gap-x-6 pt-3">   
  <CtaBtn
+        className="w-[183px]"
         size="M"
         level="O"
         innerTxt="Clear"
@@ -407,6 +417,7 @@ const AddPurchaseForm = ({
         }}
       />
         <CtaBtn
+        className="w-[183px]"
         size="M"
         level="P"
         innerTxt="Save"

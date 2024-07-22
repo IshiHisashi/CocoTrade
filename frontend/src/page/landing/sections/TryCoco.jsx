@@ -1,6 +1,5 @@
 import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
-import Field from "../../../component/field-filter/Field";
 
 const TryCoco = ({ setAuthType, setIsAuthModalOpen }) => {
   return (
@@ -9,14 +8,23 @@ const TryCoco = ({ setAuthType, setIsAuthModalOpen }) => {
         Try Cocotrade free for 14 days
       </p>
       <div className="cta flex flex-col items-center gap-6">
-        <CtaBtn
-          size="M"
-          innerTxt="Get started"
-          onClickFnc={() => {
+        <button
+          onClick={() => {
             setAuthType("signup");
             setIsAuthModalOpen(true);
           }}
-        />
+          type="submit"
+          className="w-52 h-[50px] bg-[#FF5b04]  hover:bg-[#FF8340]
+  active:bg-[#FE2E00] text-white
+  active:text-white
+  font-semibold
+  text-[16px]
+  dm-sans
+  rounded
+  border-0 border-bluegreen-700"
+        >
+          Free 14-day trial
+        </button>
       </div>
     </div>
   );

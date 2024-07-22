@@ -1,4 +1,5 @@
 import React from "react";
+import CtaBtn from "../../../component/btn/CtaBtn";
 
 const LandingFooter = () => {
   return (
@@ -9,8 +10,17 @@ const LandingFooter = () => {
         </p>
       </div>
       <div>
-        <button type="submit" className=" text-white  rounded border w-52 h-14">
-          Download proposal
+        <button
+          type="submit"
+          className="w-52 h-[50px] bg-transparent  hover:bg-bluegreen-100
+          active:bg-bluegreen-500 text-white
+          active:text-neutral-0 border border-white
+  font-semibold
+  text-[16px]
+  dm-sans
+  rounded"
+        >
+          Download Proposal
         </button>
       </div>
     </div>

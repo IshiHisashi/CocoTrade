@@ -104,7 +104,10 @@ const PriceIndicatorCard = (props) => {
             <img src={iconSrc} alt="" aria-hidden className="h-16 w-16" />
           </div>
           <div className="flex content-center items-center gap-4">
-            <TrendBadge trend={diffObj.trend} num={diffObj.priceDiff} />
+            <TrendBadge
+              trend={diffObj.trend}
+              num={`${diffObj.arrow}${diffObj.priceDiff}`}
+            />
             <p
               className={`p14-medium ${diffObj.trend === "U" || diffObj.trend === "N" ? "text-bluegreen-500" : "text-red-100"}`}
             >

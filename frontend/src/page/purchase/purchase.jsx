@@ -6,6 +6,7 @@ import ViewPurchaseTable from "./ViewPurchaseTable";
 import AddPurchaseForm from "./AddPurchaseForm.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
 import ConfirmationModal from "./ConfirmationModal"; 
+import Add from "../../assets/icons/Add.svg";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -99,23 +100,11 @@ const Purchase = ({ URL }) => {
     setShowConfirmation(true);
   };
 
-  const classNameForModal =
-  "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] max-w-[30vw] overflow-scroll p-2";
-
+  const classNameForModal = `
+  absolute bg-white top-0 left-0 w-full h-full sm:top-[55%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[80vh] sm:max-w-[30vw] overflow-scroll p-3`;
   return (
-    <div>
-<div className="flex justify-end mb-4">
-    <CtaBtn 
+<div className="sm:pt-[25px] sm:pr-[32px] sm:pb-[30px] sm:pl-[50px] flex flex-wrap relative">
 
-      size="M"
-      level="P"
-      innerTxt="Add New Purchase"
-      onClickFnc={() => {
-        setShowAddForm(true);
-        setSelectedPurchase(null);
-      }}
-    />
-    </div>
       <Modal
          className={classNameForModal}
         isOpen={showAddForm}
@@ -140,12 +129,28 @@ const Purchase = ({ URL }) => {
           onFormSubmit={handleFormSubmit}
         />
       </Modal>
+      <div className="w-full flex justify-end items-center mb-4">
+      <CtaBtn 
+      size="M"
+      level="P"
+      innerTxt="Add New Purchase"
+      imgSource={Add}
+      onClickFnc={() => {
+        setShowAddForm(true);
+        setSelectedPurchase(null);
+      }}
+      
+    />
+    </div>
+      <div className="flex flex-wrap sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] mb-[14px] basis-11/12 grow shrink relative"> 
+    
       <ViewPurchaseTable
         setShowAddForm={setShowAddForm}
         handleEdit={handleEdit}
         purchasesFromParent={purchases}
         URL={URL}
       />
+      </div>
        <ConfirmationModal
         isOpen={showConfirmation}
         onRequestClose={() => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CtaBtn from "../../component/btn/CtaBtn.jsx";
@@ -7,6 +7,7 @@ import signUp from "../../services/authService.jsx";
 import login from "../../services/login.jsx";
 import resetPassword from "../../services/resetPassword.jsx";
 import Exit from "../../assets/icons/Exit.svg";
+import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import CocoTradeLogo from "../../assets/CocoTradeLogoForLightBg.svg";
 import CocoTradeIcon from "../../assets/icons/CocoTradeIcon-Orange.svg";
 
@@ -24,6 +25,7 @@ const AuthInputModal = (props) => {
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const userId = useContext(UserIdContext);
 
   const navigate = useNavigate();
 
@@ -68,7 +70,9 @@ const AuthInputModal = (props) => {
             userDoc.max_inventory_amount &&
             userDoc.amount_per_ship
           ) {
+            console.log(userId);
             navigate("/dashboard");
+            // window.location.reload();
           } else {
             navigate("/onboarding/business");
           }

@@ -16,18 +16,48 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
       <div className="btn flex flex-col sm:flex-row gap-[10px] pb-[47px]">
         <button
           type="submit"
-          className=" text-white p16 rounded border w-52 h-14"
+          className="w-52 h-[50px] bg-transparent  hover:bg-bluegreen-100
+          active:bg-bluegreen-500 text-white
+          active:text-neutral-0 border border-white
+  font-semibold
+  text-[16px]
+  dm-sans
+  rounded"
         >
-          Download proposal
+          Download Proposal
         </button>
+        <button
+          onClick={() => {
+            setAuthType("signup");
+            setIsAuthModalOpen(true);
+          }}
+          type="submit"
+          className="w-52 h-[50px] bg-[#FF5b04]  hover:bg-[#FF8340]
+  active:bg-[#FE2E00] text-white
+  active:text-white
+  font-semibold
+  text-[16px]
+  dm-sans
+  rounded
+  border-0 border-bluegreen-700"
+        >
+          Free 14-day trial
+        </button>
+
+        {/* THIS DOESN'T WORK in DEPLOYMENT 
+        <CtaBtn
+          innerTxt="Download Proposal"
+          size="M-landing"
+          level="O-landing"
+        />
         <CtaBtn
           innerTxt="Free 14-day trial"
-          size="M"
+          size="M-landing"
           onClickFnc={() => {
             setAuthType("signup");
             setIsAuthModalOpen(true);
           }}
-        />
+        /> */}
       </div>
       <div className="image-section px-[15px] sm:px-[15%]">
         <img src="./images/hero-image-rev.png" alt="dashboard" />

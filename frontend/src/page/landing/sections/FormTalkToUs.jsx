@@ -11,14 +11,23 @@ const FormTalkToUs = ({ setAuthType, setIsAuthModalOpen }) => {
           potential new users may have about cocotrade.
         </p>
       </div>
-      <CtaBtn
-        innerTxt="Talk to us"
-        size="M"
-        onClickFnc={() => {
+      <button
+        onClick={() => {
           setAuthType("signup");
           setIsAuthModalOpen(true);
         }}
-      />
+        type="submit"
+        className="w-52 h-[50px] bg-[#FF5b04]  hover:bg-[#FF8340]
+  active:bg-[#FE2E00] text-white
+  active:text-white
+  font-semibold
+  text-[16px]
+  dm-sans
+  rounded
+  border-0 border-bluegreen-700"
+      >
+        Free 14-day trial
+      </button>
     </div>
   );
 };

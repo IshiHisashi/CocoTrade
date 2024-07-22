@@ -302,17 +302,17 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   return (
     <div className="modal">
       {console.log(manufacturers)}
-      <h1>Edit Sale</h1>
-      <small>Update sales entry information</small>
+      <h1 className="text-neutral-600 font-dm-sans font-bold text-[24px]">Edit Sale</h1>
+      <small className="text-[#8E9299] font-dm-sans">Update sales entry information</small>
       <form onSubmit={handleSubmit}>
       <button
         type="button"
-        className="absolute top-8 right-8"
+       className="absolute top-2 right-2"
         onClick={() => setshowEditForm(false)}
       >
         <img src={Exit} alt="close" />
       </button>
-      <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
+      <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
           label="Status"
           name="status"
@@ -328,6 +328,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           required
         />
         <Field
+          className="w-[183px]"
           label="Shipment date"
           name="copra_ship_date"
           type="date"
@@ -362,7 +363,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           </ul>
         )}
         </div>
-        <div className="grid sm:grid-cols-2 gap-x-6 pt-8">
+        <div className="grid grid-cols-2 gap-x-6 pt-3">
         <Field
           label="Sales unit price"
           name="sales_unit_price"
@@ -378,6 +379,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           label="Copra Sold"
           name="amount_of_copra_sold"
           type="number"
+          className="w-[183px]"
           value={formData.amount_of_copra_sold}
           onChange={handleChange}
           unit="kg"
@@ -390,15 +392,22 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           label="Received on"
           name="cheque_receive_date"
           type="date"
+          className="w-[183px]"
           value={formData.cheque_receive_date}
           onChange={handleChange}
           disabled={formData.status !== "completed"}
           required={formData.status === "completed"}
+          title={
+            formData.status !== "completed"
+              ? "The sale must be completed to edit the date."
+              : ""
+          }
            />
         <Field
           label="Total Sale"
           name="total_sales_price"
           type="number"
+          className="w-[183px]"
           value={formData.total_sales_price}
           onChange={handleChange}
           disabled={formData.status !== "completed"}
@@ -407,20 +416,27 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           adornment="start"
           min="0"
           step="0.0001"
+          title={
+            formData.status !== "completed"
+              ? "The sale must be completed to edit the date."
+              : ""
+          }
         />
         <p className="col-span-2 text-red-600">
           {new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date) ? "The date for money receive has to be after the date for shipment" : ""}
           {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" ? "Shipment date has to be the date on or before today's date. If you want to choose a future date, status has to be pending." : ""}
         </p>
         </div>
-        <div className="grid sm:grid-cols-2 gap-x-6 pt-8">   
+        <div className="grid grid-cols-2 gap-x-6 pt-3">   
         <CtaBtn
+          className="w-[183px]"
           size="M"
           level="O"
           innerTxt="Clear"
           onClickFnc={fncCloseModal}
         />
         <CtaBtn 
+          className="w-[183px]"
           size="M" 
           level={
             (new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending") || 

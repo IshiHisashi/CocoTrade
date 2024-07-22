@@ -82,6 +82,14 @@ const AppRoutes = ({ userid, setUser, URL }) => {
               </Layout>
             }
           />
+          <Route
+            path="/settings"
+            element={
+              <Layout URL={URL}>
+                <Setting URL={URL} />
+              </Layout>
+            }
+          />
         </>
       )}
     </Routes>

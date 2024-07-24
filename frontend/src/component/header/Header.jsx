@@ -99,7 +99,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
 
   return (
     <header className=" bg-white sm:bg-[#F6F8F8] sm:border-b border-[#DAE5E7] sm:ml-64 sm:h-24 sticky top-0 sm:px-8 z-10">
-      <div className="h-full flex justify-between items-center flex-wrap sm:flex-nowrap max-w-[1240px] mx-auto">
+      <div className="h-full flex justify-between items-center flex-wrap sm:flex-nowrap max-w-[1330px] mx-auto">
         <button
           type="button"
           className="block my-4 ml-4 sm:hidden"

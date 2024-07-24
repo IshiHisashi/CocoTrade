@@ -4,6 +4,7 @@ import Nav from "./component/nav/Nav.jsx";
 import Header from "./component/header/Header.jsx";
 import FormModal from "./component/modal/FormModal.jsx";
 import ConfirmationModal from "./page/auth/ConfirmationModal.jsx";
+import hideScrollbar from "./styles/HideScrollbar.module.css";
 
 const classNameForModal =
   "absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-scroll sm:h-auto";
@@ -43,12 +44,12 @@ const Layout = (props) => {
         fnToToggleNav={setTranslateX}
       />
       <main className="sm:ml-64 bg-[#F6F8F8] min-h-screen @container">
-        <div className="max-w-[1300px] mx-auto">{children}</div>
+        <div className="max-w-[1400px] mx-auto">{children}</div>
       </main>
 
       <Modal
         isOpen={isFormModalOpen}
-        className={`${classNameForModal} sm:w-[508px]`}
+        className={`${classNameForModal} sm:w-[508px] ${hideScrollbar.div}`}
         style={styleForModal}
       >
         <FormModal
@@ -62,7 +63,7 @@ const Layout = (props) => {
       <Modal
         isOpen={isConfirmationModalOpen}
         onRequestClose={() => setIsConfirmationModalOpen(false)}
-        className={classNameForModal}
+        className={`${classNameForModal} ${hideScrollbar.div}`}
         style={styleForModal}
       >
         <ConfirmationModal

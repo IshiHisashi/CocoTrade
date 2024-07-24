@@ -41,7 +41,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
 
   return (
     <div
-      className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
+      className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white sticky top-0 ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
     >
       <img src="./images/logo-b.png" alt="logo" className="pl-[26px] py-6" />
       <div
@@ -124,7 +124,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
                 setAuthType("signup");
                 setIsAuthModalOpen(true);
               }}
-              className={`${isHamburgerOpen ? "w-96" : "w-52"} h-16 bg-[#FF5b04]  hover:bg-[#FF8340]
+              className={`${isHamburgerOpen ? "h-16 w-96" : "h-14 w-52"} bg-[#FF5b04]  hover:bg-[#FF8340]
   active:bg-[#FE2E00] text-white
   active:text-white
   font-semibold

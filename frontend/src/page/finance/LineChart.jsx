@@ -155,6 +155,10 @@ const LineChart = (t) => {
       });
     }
 
+    daysInDuration = daysInDuration.filter((point) =>
+      moment(point.date).isBefore(today)
+    );
+
     const data = {
       labels: daysInDuration.map((dayOrMonth) => dayOrMonth.date),
       datasets: [
@@ -245,6 +249,8 @@ const LineChart = (t) => {
                 month: "MM/YY",
                 day: "MM/DD",
               },
+              min: daysInDuration[0].date, // Set the minimum date
+              max: daysInDuration[daysInDuration.length - 1].date, // Set the maximum date to remove the gap
             },
             title: {
               display: false,

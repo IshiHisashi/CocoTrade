@@ -7,7 +7,7 @@ import ConfirmationModal from "./page/auth/ConfirmationModal.jsx";
 import hideScrollbar from "./styles/HideScrollbar.module.css";
 
 const classNameForModal =
-  "absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-scroll sm:h-auto";
+  "absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-auto sm:h-auto";
 
 const styleForModal = {
   overlay: {
@@ -49,7 +49,7 @@ const Layout = (props) => {
 
       <Modal
         isOpen={isFormModalOpen}
-        className={`${classNameForModal} sm:w-[508px] ${hideScrollbar.div}`}
+        className={`${classNameForModal} sm:w-[508px]`}
         style={styleForModal}
       >
         <FormModal

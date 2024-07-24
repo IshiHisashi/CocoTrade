@@ -12,7 +12,7 @@ const LandingFooter = () => {
       <div>
         <button
           type="submit"
-          className="w-52 h-[50px] bg-transparent  hover:bg-bluegreen-100
+          className="w-52 h-[50px] bg-transparent  hover:bg-white hover:text-neutral-600
           active:bg-bluegreen-500 text-white
           active:text-neutral-0 border border-white
   font-semibold

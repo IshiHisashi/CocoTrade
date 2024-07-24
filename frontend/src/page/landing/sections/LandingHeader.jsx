@@ -112,7 +112,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
                 setAuthType("login");
                 setIsAuthModalOpen(true);
               }}
-              className={`border-[1.5px] rounded ${isHamburgerOpen ? "p18-bold border border-neutral-200 h-16 w-96 text-white" : " border-neutral-800 h-14 w-24 "}`}
+              className={`border-[1.5px] rounded ${isHamburgerOpen ? "p18-bold border border-neutral-200 h-16 w-96  hover:bg-white hover:text-neutral-600 active:bg-bluegreen-500 text-white active:text-neutral-0 " : " border-neutral-800 h-14 w-24 hover:bg-bluegreen-100 active:bg-bluegreen-500 active:text-neutral-0"}`}
             >
               Log In
             </button>

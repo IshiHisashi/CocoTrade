@@ -145,9 +145,9 @@ const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
   }
 
   return (
-    <div>
+    <div className='px-[35px] py-[24px] bg-neutral-0 sm:rounded-lg sm:max-w-[436px]'>
       <form onSubmit={handleSubmit}>
-        <h3>Preference</h3>
+        <h3 className='h3-sans mb-[15px]'>Preference</h3>
         <Field
           label="Profit margin"
           name="margin"
@@ -184,7 +184,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
           onChange={handleChange}
         />
         <CtaBtn 
-          size="S" 
+          size="L" 
           level={ 
             prevFormData !== null && 
             prevFormData.margin === formData.margin && 

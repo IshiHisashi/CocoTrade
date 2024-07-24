@@ -16,7 +16,7 @@ const Setting = ({ URL }) => {
       .get(`${URL}/user/${userId}`)
       .then((response) => {
         setUserInfo(response.data.data);
-        console.log("User info: ", response.data.data);
+        // console.log("User info: ", response.data.data);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -24,13 +24,13 @@ const Setting = ({ URL }) => {
   }, [userId, URL])
 
   return (
-    <>
-      <p>Settings Page</p>
+    <div className="sm:pl-[34px]">
+      <p>Here is gonna be a small nav</p>
       <Profile userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} />
       <Preference userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} />
-      <Security userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} />
+      {/* <Security userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} /> */}
       <Billing userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} />
-    </>
+    </div>
   )
 };
 

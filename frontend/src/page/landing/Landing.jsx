@@ -11,6 +11,7 @@ import Hero from "./sections/Hero";
 import Team from "./sections/Team";
 import LandingHeader from "./sections/LandingHeader";
 import LandingFooter from "./sections/LandingFooter";
+import hideScrollbar from "../../styles/HideScrollbar.module.css";
 
 Modal.setAppElement("#root");
 
@@ -51,7 +52,7 @@ const Landing = (props) => {
         <Modal
           isOpen={isAuthModalOpen}
           onRequestClose={() => setIsAuthModalOpen(false)}
-          className={`${classNameForModal} sm:w-[508px]`}
+          className={`${classNameForModal} sm:w-[508px] ${hideScrollbar.div}`}
           style={styleForModal}
         >
           <AuthInputModal
@@ -69,7 +70,7 @@ const Landing = (props) => {
             confirmationType === "accountCreated" ||
             setIsConfirmationModalOpen(false)
           }
-          className={classNameForModal}
+          className={`${classNameForModal} sm:min-w-[382px] ${hideScrollbar.div}`}
           style={styleForModal}
         >
           <ConfirmationModal

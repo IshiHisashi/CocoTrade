@@ -51,7 +51,7 @@ const NavList = (props) => {
         to={`/${page}`}
         end
         className={({ isActive }) =>
-          `flex items-center px-8 py-4 w-full h5-dashboard text-white min-h-[68px] ${isActive ? "border-r-8 border-r-[#FF5B04]" : ""}`
+          `flex items-center px-8 py-4 w-full h5-dashboard text-white min-h-[68px] hover:border-r-8 hover:border-r-[#FF5B04] ${isActive ? "border-r-8 border-r-[#FF5B04]" : ""}`
         }
         onClick={() => fnToToggleNav("-translate-x-full")}
       >

@@ -11,6 +11,38 @@ import MonthlyTable from "./MonthlyTable";
 
 Chart.register(...registerables);
 
+const verticalLinePlugin = {
+  id: "verticalLinePlugin",
+  beforeDraw: (chart) => {
+    // eslint-disable-next-line no-underscore-dangle
+    if (chart.tooltip._active && chart.tooltip._active.length) {
+      const {
+        ctx,
+        scales: {
+          y: { top: topY, bottom: bottomY },
+        },
+        tooltip: {
+          _active: [
+            {
+              element: { x },
+            },
+          ],
+        },
+      } = chart;
+
+      ctx.save();
+
+      ctx.beginPath();
+      ctx.moveTo(x, topY);
+      ctx.lineTo(x, bottomY);
+      ctx.lineWidth = 0;
+      ctx.strokeStyle = "#FFFFFF"; // Use the color prop here
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+};
+
 const MonthlyActivity = ({ URL }) => {
   const [monthlySale, setMonthlySale] = useState([]);
   const [monthlyPurchase, setMonthlyPurchase] = useState([]);
@@ -225,6 +257,9 @@ const MonthlyActivity = ({ URL }) => {
           legend: {
             display: false,
           },
+          // tooltip: {
+          //   enabled: false, // Disable tooltip
+          // },
           title: {
             display: true,
             // text: "Your monthly activity",
@@ -252,7 +287,7 @@ const MonthlyActivity = ({ URL }) => {
           }
         },
       },
-      plugins: [drawValues],
+      plugins: [drawValues, verticalLinePlugin],
     });
 
     // Update the chart options when the screen size changes

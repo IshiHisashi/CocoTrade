@@ -268,7 +268,7 @@ const LineChart = (t) => {
             },
             ticks: {
               callback(value) {
-                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                const valueToShow = value === 0 ? "0" : `${value / 1000}k`;
                 return valueToShow;
               },
             },
@@ -312,7 +312,7 @@ const LineChart = (t) => {
   ]);
 
   return (
-    <div className="flex flex-col gap-8 bg-white px-[27px] py-[25px] border border-bluegreen-200 ">
+    <div className="flex flex-col gap-8 bg-white px-[27px] py-[25px] border border-bluegreen-200 rounded-lg ">
       <div className="flex gap-4 justify-between">
         <h3 className="h3-sans text-neutral-600">
           {type === "cashflow" ? "Balance" : "Market Price Tracker"}

@@ -207,7 +207,7 @@ const MonthlyActivity = ({ URL }) => {
             beginAtZero: true,
             ticks: {
               callback(value) {
-                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                const valueToShow = value === 0 ? "0" : `${value / 1000}k`;
                 return valueToShow;
               },
               font: {
@@ -278,7 +278,7 @@ const MonthlyActivity = ({ URL }) => {
 
   return (
     <div className="lg:grid lg:grid-cols-6 gap-[14px]">
-      <div className=" bg-white px-[27px] py-[25px] border border-b-0 lg:border-b-1 border-bluegreen-200 lg:col-start-1 lg:col-end-5">
+      <div className=" bg-white px-[27px] py-[25px] border border-b-0 lg:border-b-1 border-bluegreen-200 lg:col-start-1 lg:col-end-5 rounded-lg">
         <h3 className="h3-sans text-neutral-600">Your Monthly Activity</h3>
         <section className="h-[250px] mt-[30px]">
           <canvas ref={chartRef}> </canvas>
@@ -290,7 +290,7 @@ const MonthlyActivity = ({ URL }) => {
           <p className="p12-medium">Purchase</p>
         </div>
       </div>
-      <div className="bg-white px-[27px] py-[25px] border border-t-0 lg:border-t-1 border-bluegreen-200 lg:col-start-5 lg:col-end-7">
+      <div className="bg-white px-[27px] py-[25px] border border-t-0 lg:border-t-1 border-bluegreen-200 lg:col-start-5 lg:col-end-7 rounded-lg">
         <MonthlyTable selectedTableMonth={selectedTableMonth} URL={URL} />
       </div>
     </div>

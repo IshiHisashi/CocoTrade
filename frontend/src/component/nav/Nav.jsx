@@ -5,6 +5,7 @@ import CtaBtn from "../btn/CtaBtn.jsx";
 import Support from "../../assets/icons/support.svg";
 import LogoForDarkBg from "../../assets/CocoTradeLogoForDarkBg.svg";
 import Exit from "../../assets/icons/Exit-White.svg";
+import hideScrollbar from "../../styles/HideScrollbar.module.css";
 
 const Nav = (props) => {
   const { fnToOpenFormModal, translateX, fnToToggleNav } = props;
@@ -17,7 +18,7 @@ const Nav = (props) => {
 
   return (
     <nav
-      className={`bg-[#243037] ${translateX} sm:translate-x-0 transition-all sm:transition-none ease-in-out fixed h-screen top-0 bottom-0 left-0 w-full sm:w-64 z-10 grid grid-rows-[auto_1fr_auto] overflow-scroll`}
+      className={`bg-[#243037] ${translateX} sm:translate-x-0 transition-all sm:transition-none ease-in-out fixed h-screen top-0 bottom-0 left-0 w-full sm:w-64 z-10 grid grid-rows-[auto_1fr_auto] overflow-scroll ${hideScrollbar.nav}`}
     >
       <div className="w-full sm:w-64 h-24 flex justify-between sm:justify-center items-center px-8 sticky top-0 bg-[#243037]">
         <NavLink

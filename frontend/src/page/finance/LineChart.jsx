@@ -205,10 +205,7 @@ const LineChart = (t) => {
           ctx.moveTo(x, topY);
           ctx.lineTo(x, bottomY);
           ctx.lineWidth = 1;
-          ctx.strokeStyle =
-            type === "market"
-              ? "rgba(75, 192, 192, 1)"
-              : "rgba(255, 131, 64, 1";
+          ctx.strokeStyle = type === "market" ? "#224F55" : "#FF5733";
           ctx.stroke();
           ctx.restore();
         }

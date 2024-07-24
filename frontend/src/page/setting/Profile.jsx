@@ -3,7 +3,7 @@ import axios from 'axios';
 import CtaBtn from '../../component/btn/CtaBtn';
 import Field from '../../component/field-filter/Field';
 
-const Profile = ({ userId, URL, userInfo, setUserInfo }) => {
+const Profile = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
   const [formData, setFormData] = useState({
     company_name: "",
     email: "",
@@ -93,7 +93,7 @@ const Profile = ({ userId, URL, userInfo, setUserInfo }) => {
           disabled
         />
         <CtaBtn 
-          size="L" 
+          size={ winWidth >= 640 ? "S" : "L" } 
           level={ 
             prevFormData !== null && 
             prevFormData.company_name === formData.company_name && 

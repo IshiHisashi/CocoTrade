@@ -3,7 +3,7 @@ import axios from "axios";
 import CtaBtn from '../../component/btn/CtaBtn';
 import Field from '../../component/field-filter/Field';
 
-const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
+const Preference = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
   const [latestInv, setLatestInv] = useState(null);
   const [latestFin, setLatestFin] = useState(null);
   const [formData, setFormData] = useState({
@@ -184,7 +184,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
           onChange={handleChange}
         />
         <CtaBtn 
-          size="L" 
+          size={ winWidth >= 640 ? "S" : "L" } 
           level={ 
             prevFormData !== null && 
             prevFormData.margin === formData.margin && 

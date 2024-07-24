@@ -2,7 +2,7 @@ import React from 'react'
 import CtaBtn from '../../component/btn/CtaBtn';
 import Field from '../../component/field-filter/Field';
 
-const Billing = ({ userId, URL }) => {
+const Billing = ({ userId, URL, winWidth }) => {
   return (
     <div className='px-[35px] py-[24px] bg-neutral-0 sm:rounded-lg sm:max-w-[436px]'>
       <form>
@@ -22,7 +22,7 @@ const Billing = ({ userId, URL }) => {
           disabled
         />
         <CtaBtn 
-          size="L" 
+          size={ winWidth >= 640 ? "S" : "L" } 
           level="D"
           type="submit"
           innerTxt="Save" 

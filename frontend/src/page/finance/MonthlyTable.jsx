@@ -181,13 +181,13 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
                   /{transaction.date.slice(2, 4)}
                 </td>
                 <td className="pl-[10px] py-[12.5px]">
-                  {transaction.sale === 0 ? "" : "php. "}
+                  {transaction.sale === 0 ? "" : "Php. "}
                   {transaction.sale === 0
                     ? "to be informed"
                     : transaction.sale.toFixed(2)}
                 </td>
                 <td className="pl-[10px] py-[12.5px]">
-                  php.{" "}
+                  Php.{" "}
                   {transaction.purchase === 0
                     ? "00.00"
                     : transaction.purchase.toFixed(2)}

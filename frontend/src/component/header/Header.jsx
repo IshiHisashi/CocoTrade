@@ -160,7 +160,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
           </button>
           <button
             type="button"
-            className="w-6 h-6 font-dm-sans bg-[#0C7F8E] text-white text-center rounded-[50%] relative"
+            className="w-[30px] h-[30px] font-dm-sans bg-[#0C7F8E] text-white text-center rounded-[50%] relative"
             onClick={(e) => {
               e.stopPropagation();
               setIsUserMenuOpen(!isUserMenuOpen);

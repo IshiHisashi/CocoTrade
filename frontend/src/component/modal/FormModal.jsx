@@ -116,6 +116,7 @@ const FormModal = (props) => {
               onChange={(e) => setSubject(e.target.value)}
               required
               options={[
+                { value: "", label: "Select subject..." },
                 { value: "features", label: "Features" },
                 { value: "billing", label: "Billing" },
                 { value: "membership", label: "Membership" },

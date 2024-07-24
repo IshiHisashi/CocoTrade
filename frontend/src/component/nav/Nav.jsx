@@ -52,7 +52,7 @@ const Nav = (props) => {
             Get in touch and let us know how we can help
           </p>
           <CtaBtn
-            size="S"
+            size="S-support"
             level="P"
             innerTxt="Contact us"
             onClickFnc={() => {

@@ -41,7 +41,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
 
   return (
     <div
-      className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
+      className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white sticky top-0 ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
     >
       <img src="./images/logo-b.png" alt="logo" className="pl-[26px] py-6" />
       <div
@@ -112,7 +112,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
                 setAuthType("login");
                 setIsAuthModalOpen(true);
               }}
-              className={`border-[1.5px] rounded h-[50px] ${isHamburgerOpen ? "p18-bold border border-neutral-200 w-96 text-white" : " border-neutral-800 w-24 "}`}
+              className={`border-[1.5px] rounded ${isHamburgerOpen ? "p18-bold border border-neutral-200 h-16 w-96  hover:bg-white hover:text-neutral-600 active:bg-bluegreen-500 text-white active:text-neutral-0 " : " border-neutral-800 h-14 w-24 hover:bg-bluegreen-100 active:bg-bluegreen-500 active:text-neutral-0"}`}
             >
               Log In
             </button>
@@ -121,10 +121,10 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
             <button
               type="submit"
               onClick={() => {
-                setAuthType("login");
+                setAuthType("signup");
                 setIsAuthModalOpen(true);
               }}
-              className={`${isHamburgerOpen ? "w-96" : "w-52"} h-[50px] bg-[#FF5b04]  hover:bg-[#FF8340]
+              className={`${isHamburgerOpen ? "h-16 w-96" : "h-14 w-52"} bg-[#FF5b04]  hover:bg-[#FF8340]
   active:bg-[#FE2E00] text-white
   active:text-white
   font-semibold

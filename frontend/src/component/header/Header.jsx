@@ -98,7 +98,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
   }
 
   return (
-    <header className=" bg-white sm:bg-[#F1F7F8] sm:border-b border-[#DAE5E7] sm:ml-64 sm:h-24 sticky top-0 sm:px-8 z-10">
+    <header className=" bg-white sm:bg-[#F6F8F8] sm:border-b border-[#DAE5E7] sm:ml-64 sm:h-24 sticky top-0 sm:px-8 z-10">
       <div className="h-full flex justify-between items-center flex-wrap sm:flex-nowrap max-w-[1240px] mx-auto">
         <button
           type="button"
@@ -122,7 +122,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
           />
         </NavLink>
 
-        <h2 className="h1-sans text-neutral-600 bg-[#F1F7F8] basis-full sm:basis-auto px-8 py-4 sm:p-0 order-last sm:order-none">
+        <h2 className="h1-sans text-neutral-600 bg-[#F6F8F8] basis-full sm:basis-auto px-8 py-4 sm:p-0 order-last sm:order-none">
           {pageTitle}
           {pageInfo && (
             <InfoTooltip

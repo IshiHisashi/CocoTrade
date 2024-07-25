@@ -66,11 +66,11 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
         className={`col-span-2 lg:col-start-2 lg:col-end-3 lg:flex justify-between ${isHamburgerOpen ? "bg-neutral-600 gap-10" : "hidden"}`}
       >
         <ul
-          className={`h3-sans lg:p16 lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[300px]" : ""}`}
+          className={`h3-sans lg:p16 lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[150px]" : ""}`}
         >
           <AnchorLink href="#benefit" offset="-50">
             <li
-              className={` cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              className={` cursor-pointer ${isHamburgerOpen ? "py-[36px] mx-6 border-b border-neutral-400" : ""}`}
               onClick={() => hundleClickNav()}
             >
               Benefits
@@ -78,7 +78,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           </AnchorLink>
           <AnchorLink href="#features" offset="-50">
             <li
-              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[36px] mx-6 border-b border-neutral-400" : ""}`}
               onClick={() => hundleClickNav()}
             >
               Features
@@ -86,7 +86,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           </AnchorLink>
           <AnchorLink href="#team" offset="-50">
             <li
-              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[36px] mx-6 border-b border-neutral-400" : ""}`}
               onClick={() => hundleClickNav()}
             >
               Team
@@ -94,7 +94,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           </AnchorLink>
           <AnchorLink href="#contact" offset="-50">
             <li
-              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[36px] mx-6 border-b border-neutral-400" : ""}`}
               onClick={() => hundleClickNav()}
             >
               Contact

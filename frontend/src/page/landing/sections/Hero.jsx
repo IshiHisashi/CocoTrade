@@ -24,7 +24,7 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   dm-sans
   rounded"
         >
-          Download Proposal
+          Download proposal
         </button>
         <button
           onClick={() => {

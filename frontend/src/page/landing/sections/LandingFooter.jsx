@@ -20,7 +20,7 @@ const LandingFooter = () => {
   dm-sans
   rounded"
         >
-          Download Proposal
+          Download proposal
         </button>
       </div>
     </div>

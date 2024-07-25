@@ -59,8 +59,8 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
           }}
         /> */}
       </div>
-      <div className="image-section">
-        <img src="./images/Group 299.png" alt="dashboard" />
+      <div className="image-section px-[22px] sm:px-[15%]">
+        <img src="./images/herobanner2.png" alt="dashboard" />
       </div>{" "}
     </div>
   );

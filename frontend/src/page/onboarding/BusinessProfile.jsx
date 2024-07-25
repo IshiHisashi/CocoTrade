@@ -91,7 +91,7 @@ const BusinessProfile = (props) => {
             required
             disabled
             info
-            infoText="Location will provide information on which currency will be used &#8212;currently our app is optimized only for Philippines"
+            infoText="The location will indicate the currency &#8212;currently, our app is available only in the Philippines."
           />
         </div>
 

@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import VisibilityOn from "../../assets/icons/Eye-On.svg";
 import VisibilityOff from "../../assets/icons/Eye-Off.svg";
 import Info from "../../assets/icons/Information.svg";
+import "./Field.css";
 
 const Field = ({
   label,
@@ -45,8 +46,6 @@ const Field = ({
     event.preventDefault();
   };
 
-  
-
   let inputElement = null;
 
   // (From Aki to Prathibha: I added this for EditSaleModal.jsx. I believe this is not gonna cause any issues in other areas. It's difficult to tell what I'm trying to do here. So pls let me explain tmr)
@@ -59,10 +58,10 @@ const Field = ({
   switch (type) {
     case "number":
       inputElement = (
-        <FormControl fullWidth>
+        <FormControl fullWidth className="customFormControl">
           <TextField
-            labelColor = {name}
-            className="border border-solid border-gray-300 rounded p-4 my-2"
+            labelColor={name}
+            className="border border-solid border-gray-300 rounded p-4 my-2 customTextFieldStyle"
             type={type}
             name={name}
             id={name}
@@ -71,7 +70,7 @@ const Field = ({
             disabled={isDisabled}
             required={required}
             title={title}
-            sx={{ py: 1 }}
+            sx={{ py: 1, "& fieldset": { border: "none" } }}
             InputProps={{
               inputProps: { min, max, step },
               startAdornment: adornment === "start" && (
@@ -91,7 +90,6 @@ const Field = ({
               ),
             }}
             error={error}
-            
             helperText={error && errorText}
           />
           {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
@@ -101,9 +99,9 @@ const Field = ({
     case "text":
     case "email":
       inputElement = (
-        <FormControl fullWidth>
+        <FormControl fullWidth className="customFormControl">
           <TextField
-          className="disabled:bg-gray-100 disabled:text-gray-500"
+            className="customTextFieldStyle"
             type={type}
             name={name}
             id={name}
@@ -113,13 +111,14 @@ const Field = ({
             required={required}
             sx={{
               py: 1,
-              '& .MuiInputBase-input.Mui-disabled': {
-                backgroundColor: 'rgb(243 244 246)', // equivalent to bg-gray-100 in Tailwind CSS
-                color: 'rgb(107 114 128)', // equivalent to text-gray-500 in Tailwind CSS
-              },
-              '& .Mui-disabled .MuiInputAdornment-root': {
-                color: 'rgb(107 114 128)', // equivalent to text-gray-500 for adornment
-              },
+              // "& .MuiInputBase-input.Mui-disabled": {
+              //   backgroundColor: "rgb(243 244 246)", // equivalent to bg-gray-100 in Tailwind CSS
+              //   color: "rgb(107 114 128)", // equivalent to text-gray-500 in Tailwind CSS
+              // },
+              // "& .Mui-disabled .MuiInputAdornment-root": {
+              //   color: "rgb(107 114 128)", // equivalent to text-gray-500 for adornment
+              // },
+              "& fieldset": { border: "none" },
             }}
           />
           {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
@@ -129,6 +128,7 @@ const Field = ({
     case "password":
       inputElement = (
         <TextField
+          className="customTextFieldStyle"
           type={showPassword ? "text" : "password"}
           name={name}
           id={name}
@@ -136,7 +136,7 @@ const Field = ({
           onChange={onChange}
           disabled={isDisabled}
           required={required}
-          sx={{ py: 1 }}
+          sx={{ py: 1, "& fieldset": { border: "none" } }}
           fullWidth
           InputProps={{
             endAdornment: (
@@ -161,7 +161,7 @@ const Field = ({
       break;
     case "textarea":
       inputElement = (
-        <FormControl fullWidth>
+        <FormControl fullWidth className="customFormControl">
           <TextareaAutosize
             name={name}
             id={name}
@@ -185,38 +185,36 @@ const Field = ({
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm basis-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-[56px] mt-2"
           disabled={isDisabled}
           required={required}
-
           max={
             name === "purchase_date"
               ? new Date().toISOString().split("T")[0]
               : undefined
           }
-
         />
       );
       break;
-      case "dropdown":
-        inputElement = (
-          <FormControl fullWidth>
-            <select
-              name={name}
-              id={name}
-              value={value}
-              onChange={onChange}
-              required={required}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm h-[56px] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-2"
-            >
-              {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
-          </FormControl>
-        );
-        break;
-      
+    case "dropdown":
+      inputElement = (
+        <FormControl fullWidth className="customFormControl">
+          <select
+            name={name}
+            id={name}
+            value={value}
+            onChange={onChange}
+            required={required}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm h-[56px] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-2"
+          >
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
+        </FormControl>
+      );
+      break;
+
     default:
       inputElement = null;
   }
@@ -228,7 +226,7 @@ const Field = ({
           htmlFor={name}
           className="block text-sm font-medium text-neutral-600 label16"
         >
-        {label} {required && <span className="text-[#FE2E00]">*</span>}
+          {label} {required && <span className="text-[#FE2E00]">*</span>}
           {info && (
             <button
               type="button"
@@ -256,7 +254,7 @@ const Field = ({
           Change
         </button>
       )}
-      {inputElement}     
+      {inputElement}
     </div>
   );
 };

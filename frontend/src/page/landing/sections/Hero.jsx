@@ -10,7 +10,7 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
         </h2>
         <p className="text-white p18 pb-[26px]">
           Improve paperless business transactions and operations with our
-          all-in-one web app.{" "}
+          all-in-one web app{" "}
         </p>
       </div>
       <div className="btn flex flex-col sm:flex-row gap-[10px] pb-[47px]">

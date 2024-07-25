@@ -7,8 +7,8 @@ const Benefit = () => {
       <div className="texts text-center pb-[80px]">
         <h2 className="h2-serif text-bluegreen-700">Benefits</h2>
         <p className="p18">
-          it is time to drop the pen and paper for manually monitoring finances,
-          transactions, and inventory.
+          It&apos;s time to drop the pen and paper for manually monitoring
+          finances, transactions, and inventory.
         </p>
       </div>
       <div className="grid md:grid-cols-3 gap-[19px]">
@@ -18,12 +18,12 @@ const Benefit = () => {
           imgurl="./images/increase-productiviry.png"
         />
         <LandingBenefitsCard
-          title="Calculate accurately"
+          title="Calculate Accurately"
           description="Reduce the room for error in finances and inventory logs."
           imgurl="./images/calculate-accurately.png"
         />
         <LandingBenefitsCard
-          title="Expedite shipment"
+          title="Expedite Shipment"
           description="Keep track of your inventory and plan target shipment."
           imgurl="./images/expedite-shipment.png"
         />

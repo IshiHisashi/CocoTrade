@@ -41,6 +41,9 @@ const CtaBtn = ({
   } else if (size === "M-landing") {
     width = "w-52";
     height = "h-14";
+  } else if (size === "S-support") {
+    width = "w-[110px]";
+    height = "h-12";
   }
 
   // Conditioning based on level(primary/secondary/disabled/outline)

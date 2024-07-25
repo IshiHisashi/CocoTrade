@@ -1,12 +1,19 @@
 /* default */
-.customTextFieldStyle .MuiOutlinedInput-root {
+.customTextFieldStyle .MuiOutlinedInput-root,
+.customFormControl .MuiOutlinedInput-root {
   border: 1px solid #243037;
   border-radius: 4px;
   font-family: "DM sans", sans-serif;
   color: #243037;
 }
+.customTextFieldStyle .MuiOutlinedInput-root input,
+.customFormControl .MuiOutlinedInput-root .MuiSelect-select {
+  padding-top: 15.5px;
+  padding-bottom: 15.5px;
+}
 /* focus */
-.customTextFieldStyle .MuiOutlinedInput-root.Mui-focused {
+.customTextFieldStyle .MuiOutlinedInput-root.Mui-focused,
+.customFormControl .MuiOutlinedInput-root.Mui-focused {
   border: 1px solid #0c7f8e;
   outline: 1px solid #0c7f8e;
 }
@@ -55,10 +62,22 @@
   -webkit-text-fill-color: unset;
 }
 
-/* unit typography */
-.customTextFieldStyle .MuiTypography-root {
+/* unit typography and divider */
+.customTextFieldStyle .start .MuiTypography-root {
   font-family: "DM sans", sans-serif;
   color: #243037;
+  padding-right: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-right: solid 1px #dae5e7;
+}
+.customTextFieldStyle .end .MuiTypography-root {
+  font-family: "DM sans", sans-serif;
+  color: #243037;
+  padding-left: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-left: solid 1px #dae5e7;
 }
 
 /* textarea default */

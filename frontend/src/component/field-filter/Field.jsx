@@ -76,17 +76,21 @@ const Field = ({
             InputProps={{
               inputProps: { min, max, step },
               startAdornment: adornment === "start" && (
-                <InputAdornment position="start">{unit}</InputAdornment>
+                <InputAdornment position="start" className="start">
+                  {unit}
+                </InputAdornment>
               ),
               endAdornment: (
                 <>
                   {adornmentEnd && (
-                    <InputAdornment position="end">
+                    <InputAdornment position="end" className="end">
                       {adornmentEnd}
                     </InputAdornment>
                   )}
                   {adornment === "end" && (
-                    <InputAdornment position="end">{unit}</InputAdornment>
+                    <InputAdornment position="end" className="end">
+                      {unit}
+                    </InputAdornment>
                   )}
                 </>
               ),
@@ -171,7 +175,7 @@ const Field = ({
             onChange={onChange}
             required={required}
             minRows={5}
-            className="border border-solid border-gray-300 rounded p-4 my-2"
+            className="border border-solid border-gray-300 rounded px-[14px] py-[15.5px] my-2"
           />
         </FormControl>
       );
@@ -204,7 +208,8 @@ const Field = ({
             value={value}
             onChange={onChange}
             required={required}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm h-[56px] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-2"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm h-[56px] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-2 customSelect"
+            sx={{ py: 1, "& fieldset": { border: "none" } }}
           >
             {options.map((option) => (
               <MenuItem key={option.value} value={option.value}>

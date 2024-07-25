@@ -5,7 +5,7 @@ const SummaryElement = (props) => {
   return (
     <div>
       <p className="p14">{label}</p>
-      <p className="p16">
+      <p className="p16 break-words">
         {preUnit}
         {detail}
         {unit}

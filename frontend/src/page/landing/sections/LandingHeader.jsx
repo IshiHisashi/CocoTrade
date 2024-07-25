@@ -6,7 +6,6 @@
 
 import React, { useState, useEffect } from "react";
 import AnchorLink from "react-anchor-link-smooth-scroll";
-import CtaBtn from "../../../component/btn/CtaBtn";
 import Hamburger from "../../../assets/icons/Hamburger.svg";
 
 const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
@@ -43,7 +42,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
     <div
       className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white sticky top-0 ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
     >
-      <img src="./images/logo-b.png" alt="logo" className="pl-[26px] py-6" />
+      <img src="./images/logo.svg" alt="logo" className="pl-[26px] py-6" />
       <div
         className={`flex justify-end pr-[35px] ${isHamburgerOpen ? "bg-neutral-600" : ""} lg:hidden`}
       >

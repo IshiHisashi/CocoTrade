@@ -11,6 +11,38 @@ import MonthlyTable from "./MonthlyTable";
 
 Chart.register(...registerables);
 
+const verticalLinePlugin = {
+  id: "verticalLinePlugin",
+  beforeDraw: (chart) => {
+    // eslint-disable-next-line no-underscore-dangle
+    if (chart.tooltip._active && chart.tooltip._active.length) {
+      const {
+        ctx,
+        scales: {
+          y: { top: topY, bottom: bottomY },
+        },
+        tooltip: {
+          _active: [
+            {
+              element: { x },
+            },
+          ],
+        },
+      } = chart;
+
+      ctx.save();
+
+      ctx.beginPath();
+      ctx.moveTo(x, topY);
+      ctx.lineTo(x, bottomY);
+      ctx.lineWidth = 0;
+      ctx.strokeStyle = "#FFFFFF"; // Use the color prop here
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+};
+
 const MonthlyActivity = ({ URL }) => {
   const [monthlySale, setMonthlySale] = useState([]);
   const [monthlyPurchase, setMonthlyPurchase] = useState([]);
@@ -207,7 +239,7 @@ const MonthlyActivity = ({ URL }) => {
             beginAtZero: true,
             ticks: {
               callback(value) {
-                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                const valueToShow = value === 0 ? "0" : `${value / 1000}k`;
                 return valueToShow;
               },
               font: {
@@ -225,6 +257,9 @@ const MonthlyActivity = ({ URL }) => {
           legend: {
             display: false,
           },
+          // tooltip: {
+          //   enabled: false, // Disable tooltip
+          // },
           title: {
             display: true,
             // text: "Your monthly activity",
@@ -252,7 +287,7 @@ const MonthlyActivity = ({ URL }) => {
           }
         },
       },
-      plugins: [drawValues],
+      plugins: [drawValues, verticalLinePlugin],
     });
 
     // Update the chart options when the screen size changes
@@ -278,7 +313,7 @@ const MonthlyActivity = ({ URL }) => {
 
   return (
     <div className="lg:grid lg:grid-cols-6 gap-[14px]">
-      <div className=" bg-white px-[27px] py-[25px] border border-b-0 lg:border-b-1 border-bluegreen-200 lg:col-start-1 lg:col-end-5">
+      <div className=" bg-white px-[27px] py-[25px] border border-b-0 lg:border-b-1 border-bluegreen-200 lg:col-start-1 lg:col-end-5 rounded-lg">
         <h3 className="h3-sans text-neutral-600">Your Monthly Activity</h3>
         <section className="h-[250px] mt-[30px]">
           <canvas ref={chartRef}> </canvas>
@@ -290,7 +325,7 @@ const MonthlyActivity = ({ URL }) => {
           <p className="p12-medium">Purchase</p>
         </div>
       </div>
-      <div className="bg-white px-[27px] py-[25px] border border-t-0 lg:border-t-1 border-bluegreen-200 lg:col-start-5 lg:col-end-7">
+      <div className="bg-white px-[27px] py-[25px] border border-t-0 lg:border-t-1 border-bluegreen-200 lg:col-start-5 lg:col-end-7 rounded-lg">
         <MonthlyTable selectedTableMonth={selectedTableMonth} URL={URL} />
       </div>
     </div>

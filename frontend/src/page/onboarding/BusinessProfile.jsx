@@ -38,7 +38,7 @@ const BusinessProfile = (props) => {
         style={{ backgroundImage: `url(${image1})` }}
       />
 
-      <div className="w-full bg-white p-8 mt-32 md:mt-8 filter-none md:order-1 md:col-span-2 max-w-[900px] mx-auto">
+      <div className="w-full bg-white p-8 mt-32 md:mt-8 filter-none md:order-1 md:col-span-2 max-w-[900px] mx-auto grid">
         <div>
           <img src={progress1} alt="" aria-hidden className="mb-8" />
           <h1 className="h4-sans-uppercase text-neutral-600">
@@ -95,7 +95,7 @@ const BusinessProfile = (props) => {
           />
         </div>
 
-        <div className="grid justify-end sm:mt-16 md:mt-32">
+        <div className="grid justify-self-end sm:mt-16 md:mt-32 w-[185px]">
           <CtaBtn
             size="M"
             level={fullName && email && companyName && country ? "P" : "D"}

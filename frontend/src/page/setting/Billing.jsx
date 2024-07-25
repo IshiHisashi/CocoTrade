@@ -28,7 +28,9 @@ const Billing = ({ userId, URL, winWidth }) => {
           innerTxt="Save" 
           disabled
         />
-        <p className='text-center mt-[20px] text-neutral-600'>Cancel Subscription</p>
+        <p 
+          className={ winWidth >= 640 ?  "text-left mt-[20px] text-neutral-600" : "text-center mt-[20px] text-neutral-600" }
+        >Cancel Subscription</p>
       </form>
     </div>
   )

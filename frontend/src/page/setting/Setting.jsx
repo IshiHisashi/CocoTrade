@@ -37,34 +37,114 @@ const Setting = ({ URL }) => {
 
   return (
     <div className="sm:pl-[34px]">
-      <div id="navigation">
-        <button
-          type="button"
-          onClick={() => {
-            setSettingsId(1);
-          }}
-        >
-          Profile
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setSettingsId(2);
-          }}
-        >
-          Preference
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setSettingsId(3);
-          }}
-        >
-          Billing
-        </button>
+      <div 
+        id="navigation"
+        className={ windowWidth >= 640 ? 
+          "flex gap-2" :
+          ""
+        }
+      >
+        {windowWidth < 640 && settingsId === 0 ?
+          <div id="settings-nav-2" className="bg-white">
+            <button
+              type="button"
+              onClick={() => {
+                setSettingsId(1);
+              }}
+              className=
+                "w-full p-6 flex justify-between items-center"
+            >
+              Profile
+              <img src="./btn-imgs/right.svg" alt="" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSettingsId(2);
+              }}
+              className=
+                "w-full p-6 flex justify-between items-center"
+            >
+              Preference
+              <img src="./btn-imgs/right.svg" alt="" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSettingsId(3);
+              }}
+              className=
+                "w-full p-6 flex justify-between items-center"
+            >
+              Billing
+              <img src="./btn-imgs/right.svg" alt="" />
+            </button>
+          </div>:
+          null
+        }
+        {windowWidth < 640 && settingsId !== 1 ? 
+          null :
+          <button
+            type="button"
+            onClick={() => {
+              if( windowWidth >= 640 ) {
+                setSettingsId(1)
+              } else {
+                setSettingsId(0)
+              };
+            }}
+            className={ windowWidth >= 640 ? 
+              "p-4" :
+              "p-6 flex items-center gap-2"
+            }
+          >
+            { windowWidth >= 640 ? null : <img src="./btn-imgs/left.svg" alt="" /> }
+            Profile
+          </button>
+        }
+        {windowWidth < 640 && settingsId !== 2 ? 
+          null :
+          <button
+            type="button"
+            onClick={() => {
+              if( windowWidth >= 640 ) {
+                setSettingsId(2)
+              } else {
+                setSettingsId(0)
+              };
+            }}
+            className={ windowWidth >= 640 ? 
+              "p-4" :
+              "p-6 flex items-center gap-2"
+            }
+          >
+            { windowWidth >= 640 ? null : <img src="./btn-imgs/left.svg" alt="" /> }          
+            Preference
+          </button>
+        }        
+        {windowWidth < 640 && settingsId !== 3 ? 
+          null :
+          <button
+            type="button"
+            onClick={() => {
+              if( windowWidth >= 640 ) {
+                setSettingsId(3)
+              } else {
+                setSettingsId(0)
+              };
+            }}
+            className={ windowWidth >= 640 ? 
+              "p-4" :
+              "p-6 flex items-center gap-2"
+            }
+          >
+            { windowWidth >= 640 ? null : <img src="./btn-imgs/left.svg" alt="" /> }
+            Billing
+          </button>
+        }
       </div>
       {
-        settingsId === 1 || settingsId === 0 ? 
+        settingsId === 1 || windowWidth >= 640 && settingsId === 0 ? 
         <Profile userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} winWidth={windowWidth}/> : null
       }
       {

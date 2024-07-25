@@ -91,23 +91,27 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const userId = useContext(UserIdContext);
   const [sales, setSales] = useState([]);
   const [filteredSales, setFilteredSales] = useState([]);
-  const [inputLabel, setInputLabel] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
+  const today = new Date();
+  const initialDateLabel = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
   const [dateRange, setDateRange] = useState({
-    startDate: null,
-    endDate: null,
+    startDate: today,
+    endDate: today,
   });
+  const [inputLabel, setInputLabel] = useState("Today");
+  const [dateLabel, setDateLabel] = useState(initialDateLabel);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [newlyAdded, setNewlyAdded] = useState(false);
   const [highlightNewlyAdded, setHighlightNewlyAdded] = useState(true);
-  const [dateLabel, setDateLabel] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const inputRef = useRef(null);
   const [inputPosition, setInputPosition] = useState({ top: 0, left: 0 });
+
+
 
   const setNewlyAddedInLocalStorage = (value) => {
     localStorage.setItem('newlyAdded', JSON.stringify(value));
@@ -187,7 +191,6 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   };
 
   const handlePredefinedRange = (range) => {
-    const today = new Date();
     let start;
     let end;
     let label = "";
@@ -245,6 +248,9 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
       const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
       setDateLabel(`${start} - ${end}`);
       setInputLabel(`${start} - ${end}`);
+    } else {
+      setDateLabel(initialDateLabel);
+      setInputLabel("Today");
     }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
@@ -456,7 +462,7 @@ const getStatusClass = (status) => {
             placeholder="MM/DD/YY - MM/DD/YY"
             readOnly
             onClick={showDatePicker}
-            className="w-full py-2 px-4 mb-4 m-2 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
+            className="w-full py-2 px-4 mb-4 mt-2 border rounded-lg cursor-pointer text-neutral-600 border-neutral-600 w-[310px]"
           />
            <button
         type="button"
@@ -508,14 +514,14 @@ const getStatusClass = (status) => {
       <div className="overflow-x-auto rounded-lg">
       <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
                        <thead>
-                       <tr className="bg-black text-white text-left">
-                       <th className="p-2.5 rounded-tl-[8px] min-w-[150px]">Ship date</th>
-                       <th className="p-2.5 min-w-[100px]">Manufacturer</th>
-                       <th className="p-2.5 min-w-[100px]">Unit sales price</th>
-                       <th className="p-2.5 min-w-[100px]">Copra Sold</th>
-                       <th className="p-2.5 min-w-[100px]">Received On</th>
-                       <th className="p-2.5 min-w-[100px]">Total sale</th>
-                       <th className="p-2.5 min-w-[100px]">Status</th>
+                       <tr className="bg-neutral-600 text-white text-left">
+                       <th className="p-2.5 rounded-tl-[8px] min-w-[109px]">Ship date</th>
+                       <th className="p-2.5 min-w-[169px]">Manufacturer</th>
+                       <th className="p-2.5 min-w-[143px]">Unit sales price</th>
+                       <th className="p-2.5 min-w-[139px]">Copra Sold</th>
+                       <th className="p-2.5 min-w-[123px]">Received On</th>
+                       <th className="p-2.5 min-w-[156px]">Total sale</th>
+                       <th className="p-2.5 min-w-[141px]">Status</th>
             <th className="p-2.5 rounded-tr-[8px] w-[72px]">Action</th>
           </tr>
         </thead>
@@ -527,23 +533,23 @@ const getStatusClass = (status) => {
               e.stopPropagation(); // Prevent the event from bubbling up to the document click handler
               handleRowClick(index);
             }}>
-              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{formatDate(sale.copra_ship_date)}</td>
-              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
+              <td className="px-2 py-0" style={{ width: '109px', height: '43px' }}>{formatDate(sale.copra_ship_date)}</td>
+              <td className="px-2 py-0" style={{ width: '169px', height: '43px' }}>
                 {sale.manufacturer_id ? sale.manufacturer_id.full_name : "-"}
               </td>
-              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{formatDecimal(sale.sales_unit_price)}</td>
-              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`${formatDecimal(sale.amount_of_copra_sold)} kg`}</td>
+              <td className="px-2 py-0" style={{ width: '143px', height: '43px' }}>{formatDecimal(sale.sales_unit_price)}</td>
+              <td className="px-2 py-0" style={{ width: '139px', height: '43px' }}>{`${formatDecimal(sale.amount_of_copra_sold)} kg`}</td>
               <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
                 {sale.cheque_receive_date
                   ? new Date(sale.cheque_receive_date).toLocaleDateString()
                   : "-"}
               </td>
-              <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
+              <td className="px-2 py-0" style={{ width: '156px', height: '43px' }}>
   {sale.total_sales_price && parseFloat(sale.total_sales_price.$numberDecimal) === 0 
     ? '-' 
     : `Php ${formatDecimal(sale.total_sales_price)}`}
 </td> 
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
+<td className="px-2 py-0" style={{ width: '141px', height: '43px' }}>
   <span className={`px-2 py-1 rounded-full text-sm font-semibold ${getStatusClass(sale.status)}`}>
     {sale.status}
   </span>
@@ -569,7 +575,7 @@ const getStatusClass = (status) => {
                       <div className="dropdown-content absolute top-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                         <button
                           type="button"
-                          className="flex items-center px-2 py-2 text-neutral-600 hover:bg-bluegreen-100"
+                          className="flex items-center px-2 py-2 text-neutral-600 hover:bg-bluegreen-100  pr-8"
                           onClick={(e) => {
                             handleEditClick(sale,e);
                           }}

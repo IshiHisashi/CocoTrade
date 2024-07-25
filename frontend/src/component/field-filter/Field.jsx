@@ -4,6 +4,8 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import React, { useEffect, useState } from "react";
@@ -196,7 +198,7 @@ const Field = ({
     case "dropdown":
       inputElement = (
         <FormControl fullWidth className="customFormControl">
-          <select
+          <Select
             name={name}
             id={name}
             value={value}
@@ -205,11 +207,11 @@ const Field = ({
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm h-[56px] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-2"
           >
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <MenuItem key={option.value} value={option.value}>
                 {option.label}
-              </option>
+              </MenuItem>
             ))}
-          </select>
+          </Select>
           {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
         </FormControl>
       );

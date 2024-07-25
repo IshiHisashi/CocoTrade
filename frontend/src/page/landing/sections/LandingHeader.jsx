@@ -40,7 +40,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
 
   return (
     <div
-      className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white sticky top-0 ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
+      className={`grid grid-cols-[3fr_2fr] lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white sticky top-0 ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
     >
       <img src="./images/logo.svg" alt="logo" className="pl-[26px] py-6" />
       <div

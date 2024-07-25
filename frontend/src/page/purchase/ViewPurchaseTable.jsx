@@ -334,7 +334,10 @@ return () => {
 
   return (
     <div>
-   <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
+ 
+      
+      <div className="overflow-x-auto rounded-lg">
+      <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
    <label className="mr-4">
     <span className="h3-sans">{dateLabel}</span>
   </label>
@@ -466,8 +469,6 @@ return () => {
   </div>
  
 </div>
-      
-      <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
             <tr className="bg-neutral-600 text-white text-left">
@@ -514,7 +515,7 @@ return () => {
   <img src={EllipseIcon} alt="Options" />
 </button>
                     {dropdownVisible === purchase._id && (
-      <div className="dropdown-content absolute top-0 right-0  bg-white border border-gray-200 rounded-md shadow-lg z-10">
+      <div className="dropdown-content absolute top-11 right-0  bg-white border border-gray-200 rounded-md shadow-lg z-10">
                         <button
                           type="button"
                           className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 pr-8"

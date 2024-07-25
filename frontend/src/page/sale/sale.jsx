@@ -27,7 +27,7 @@ const Sale = ({ URL }) => {
 
   const classNameForModal =
 `
-  absolute bg-white top-0 left-0 w-full h-full sm:top-[55%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[80vh] sm:max-w-[30vw] overflow-scroll p-3`;
+  absolute bg-white top-0 left-0 w-full h-full sm:top-[55%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] sm:h-auto sm:max-w-[30vw] overflow-scroll p-3`;
  
   return (
     <div>
@@ -38,7 +38,8 @@ const Sale = ({ URL }) => {
       position: 'relative',
     },
     overlay: {
-      zIndex: '9998'
+      zIndex: '9998',
+      backgroundColor: "#24303790",
     }
   }}
       className={classNameForModal}

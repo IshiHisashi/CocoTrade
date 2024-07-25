@@ -10,6 +10,8 @@ const Setting = ({ URL }) => {
   const userId = useContext(UserIdContext);
   const [userInfo, setUserInfo] = useState(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [settingsId, setSettingsId] = useState(0);
+  // Initial value 0 shows initial menu screen for a small screen. And for a larger screen it just shows profile.
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,11 +37,47 @@ const Setting = ({ URL }) => {
 
   return (
     <div className="sm:pl-[34px]">
-      <p>Here is gonna be a small nav</p>
-      <Profile userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} winWidth={windowWidth}/>
-      <Preference userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} winWidth={windowWidth}/>
+      <div id="navigation">
+        <button
+          type="button"
+          onClick={() => {
+            setSettingsId(1);
+          }}
+        >
+          Profile
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setSettingsId(2);
+          }}
+        >
+          Preference
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setSettingsId(3);
+          }}
+        >
+          Billing
+        </button>
+      </div>
+      {
+        settingsId === 1 || settingsId === 0 ? 
+        <Profile userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} winWidth={windowWidth}/> : null
+      }
+      {
+        settingsId === 2 ? 
+        <Preference userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} winWidth={windowWidth}/> : 
+        null
+      }
+      {
+        settingsId === 3 ? 
+        <Billing userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} winWidth={windowWidth}/> :
+        null
+      }
       {/* <Security userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} /> */}
-      <Billing userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} winWidth={windowWidth}/>
     </div>
   )
 };

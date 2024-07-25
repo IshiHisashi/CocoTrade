@@ -263,7 +263,7 @@ const OperationsSettings = (props) => {
           />
         </div>
 
-        <div className="flex justify-between sm:mt-16">
+        <div className="flex justify-between gap-4 sm:mt-16">
           <CtaBtn
             size="M"
             level="O"

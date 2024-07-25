@@ -145,8 +145,8 @@ const Overview = (props) => {
           <h1 className="h4-sans-uppercase text-neutral-600">OVERVIEW</h1>
         </div>
 
-        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600 pt-8">
-          Here&apos;s a summary of your profile
+        <h2 className="font-['Rasa'] text-[30px] font-[600] sm:text-[40px] text-neutral-600 pt-8">
+          Here&apos;s your profile summary
         </h2>
         <p className="p18 text-neutral-600">
           Review the following details to finish setting up your profile
@@ -193,7 +193,7 @@ const Overview = (props) => {
           </div>
         </section>
 
-        <div className="flex justify-between sm:mt-16">
+        <div className="flex justify-between gap-4 mt-4 sm:mt-16">
           <CtaBtn
             size="M"
             level="O"

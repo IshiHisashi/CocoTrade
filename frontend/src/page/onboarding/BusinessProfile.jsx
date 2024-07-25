@@ -46,7 +46,7 @@ const BusinessProfile = (props) => {
           </h1>
         </div>
 
-        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600 pt-8">
+        <h2 className="font-['Rasa'] text-[30px] font-[600] sm:text-[40px] text-neutral-600 pt-8">
           Let&apos;s set up your profile
         </h2>
         <p className="p18 text-neutral-600">
@@ -95,7 +95,7 @@ const BusinessProfile = (props) => {
           />
         </div>
 
-        <div className="grid justify-self-end sm:mt-16 md:mt-32 w-[185px]">
+        <div className="grid justify-self-end mt-4 sm:mt-16 md:mt-32 w-[185px]">
           <CtaBtn
             size="M"
             level={fullName && email && companyName && country ? "P" : "D"}

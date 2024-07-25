@@ -57,7 +57,8 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           onClick={() => hundleToggle()}
         >
           <img
-            src={isHamburgerOpen ? "./images/Hamburger-w.png" : Hamburger}
+            className={isHamburgerOpen ? "w-[14px] h-[14px] mx-[5px]" : ""}
+            src={isHamburgerOpen ? "./images/exit.svg" : Hamburger}
             alt="toggle navigation menu"
           />
         </button>

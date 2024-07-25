@@ -24,14 +24,16 @@ const ViewPurchaseTable = ({
   const [filteredPurchases, setFilteredPurchases] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
+  const today = new Date();
+  const initialDateLabel = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
   const [dateRange, setDateRange] = useState({
-    startDate: null,
-    endDate: null,
+  startDate: today,
+  endDate: today,
   });
+const [dateLabel, setDateLabel] = useState(initialDateLabel);
+const [inputLabel, setInputLabel] = useState("Today");
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [dateLabel, setDateLabel] = useState("");
-  const [inputLabel, setInputLabel] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [newlyAdded, setNewlyAdded] = useState(false);
   const recordsPerPage = 10;
@@ -175,7 +177,6 @@ const ViewPurchaseTable = ({
   };
 
   const handlePredefinedRange = (range) => {
-    const today = new Date();
     let start;
     let end;
     let label = "";
@@ -234,6 +235,9 @@ const ViewPurchaseTable = ({
       const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
       setDateLabel(`${start} - ${end}`);
       setInputLabel(`${start} - ${end}`);
+    }else {
+      setDateLabel(initialDateLabel);
+      setInputLabel("Today");
     }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
@@ -414,7 +418,7 @@ return () => {
             placeholder="MM/DD/YY - MM/DD/YY"
             readOnly
             onClick={showDatePicker}
-            className="w-full py-2 px-4 mb-4 m-2 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
+            className="w-full py-2 px-4 mb-4 mt-2 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
           />
            <button
         type="button"
@@ -466,7 +470,7 @@ return () => {
       <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
-            <tr className="bg-black text-white text-left">
+            <tr className="bg-neutral-600 text-white text-left">
             <th className="p-2.5 rounded-tl-[8px] min-w-[150px]">Invoice No.</th>
     <th className="p-2.5 min-w-[100px]">Date</th>
     <th className="p-2.5 min-w-[150px]">Farmers Name</th>
@@ -513,7 +517,7 @@ return () => {
       <div className="dropdown-content absolute top-0 right-0  bg-white border border-gray-200 rounded-md shadow-lg z-10">
                         <button
                           type="button"
-                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 pr-8"
                           onClick={(e) => handleEditClick(purchase, e)}
 
                         >          <img src={EditIcon} alt="Edit" className="mr-2" />

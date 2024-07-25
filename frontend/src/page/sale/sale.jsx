@@ -32,6 +32,15 @@ const Sale = ({ URL }) => {
   return (
     <div>
       <Modal
+  style={{
+    content: {
+      zIndex: '9999',
+      position: 'relative',
+    },
+    overlay: {
+      zIndex: '9998'
+    }
+  }}
       className={classNameForModal}
         isOpen={showEditForm}
          onRequestClose={() => setshowEditForm(false)}

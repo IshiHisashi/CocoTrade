@@ -33,6 +33,7 @@ const AddPurchaseForm = ({
 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
+  const [showDeductionMessage, setShowDeductionMessage] = useState(false);
 
   useEffect(() => {
     // Fetch user data
@@ -131,6 +132,9 @@ const AddPurchaseForm = ({
 
       if (moistureLevel > 7) {
         total *= 0.85;
+        setShowDeductionMessage(true);
+      } else {
+        setShowDeductionMessage(false);
       }
 
       if (!Number.isNaN(total)) {
@@ -352,7 +356,7 @@ const AddPurchaseForm = ({
           </ul>
         )}
         </div>
-        <div className="grid grid-cols-2 gap-x-6 pt-3">
+        <div className="grid grid-cols-2 gap-x-6">
         <Field
           className="w-[183px]"
           label="Price per kg"
@@ -380,6 +384,7 @@ const AddPurchaseForm = ({
           min="0"
           step="0.0001"
         />
+        <div>
         <Field
           className="w-[183px]"
           label="Moisture level"
@@ -393,6 +398,12 @@ const AddPurchaseForm = ({
           min="0"
           max="100"
         />
+         {showDeductionMessage && (
+    <div className="col-span-2 text-red-500 text-xs text-right mb-3">
+            15% sale deduction applied
+          </div>
+        )}
+        </div>
         <Field
           className="w-[183px]"
           label="Total Sale"
@@ -404,8 +415,10 @@ const AddPurchaseForm = ({
           unit="Php"
           adornment="start"
         />
+        
         </div>
-        <div className="grid grid-cols-2 gap-x-6 pt-3">   
+       
+        <div className="grid grid-cols-2 gap-x-6 mt-3">   
  <CtaBtn
         size="L"
         level="O"

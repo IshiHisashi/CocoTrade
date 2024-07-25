@@ -105,7 +105,16 @@ const Purchase = ({ URL }) => {
   return (
     <div className="relative">
 
-      <Modal
+<Modal
+  style={{
+    content: {
+      zIndex: '9999',
+      position: 'relative',
+    },
+    overlay: {
+      zIndex: '9998'
+    }
+  }}
          className={classNameForModal}
         isOpen={showAddForm}
         onRequestClose={() => {
@@ -129,11 +138,11 @@ const Purchase = ({ URL }) => {
           onFormSubmit={handleFormSubmit}
         />
       </Modal>
-      <div className="w-full flex justify-end items-center mb-4 pr-9 md:pr-6 md:pt-3">
+      <div className="w-full flex justify-end items-center mb-4 pr-9 md:pr-8 md:pt-3">
       <CtaBtn 
       size="M"
       level="P"
-      innerTxt="Add New Purchase"
+      innerTxt="Add Purchase"
       imgSource={Add}
       onClickFnc={() => {
         setShowAddForm(true);
@@ -142,7 +151,7 @@ const Purchase = ({ URL }) => {
       
     />
     </div>
-    <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[40px]">
+    <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[30px]">
     
       <ViewPurchaseTable
         setShowAddForm={setShowAddForm}

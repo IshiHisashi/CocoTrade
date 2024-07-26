@@ -82,7 +82,7 @@ const Inventory = ({ URL }) => {
           </Modal>
         </div>
         <div id="actualBarChart" className="mt-[20px] basis-11/12 grow shrink">
-          <BarChart userId={userId} URL={URL} setInvInfo={setInvInfo} />
+          <BarChart userId={userId} URL={URL} setInvInfo={setInvInfo} showModal={showModal}/>
         </div>
       </div>
       <ConfirmationModal

@@ -15,7 +15,7 @@ import { Bar } from "react-chartjs-2";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarChart = ({ userId, URL, setInvInfo }) => {
+const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
   const [inventoryLeft, setInventoryLeft] = useState(0);
   const [inventoryWithPending, setInventoryWithPending] = useState(0);
   const [maximumInv, setMaximumInv] = useState(0);
@@ -45,7 +45,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [inventoryLeft]
+    [userId, URL, showModal]
   );
 
   useEffect(() => {

@@ -212,7 +212,7 @@ const Dashboard = ({ URL }) => {
         </section>
 
         <div className="@3xl:grid @3xl:grid-cols-3 gap-4">
-          <section className="order-2 flex flex-col gap-4 mb-4 @3xl:mb-0">
+          <section className="order-2 grid gap-4 mb-4 @3xl:mb-0">
             <RecentActivityCard type="purchase" URL={URL} />
             <RecentActivityCard type="sales" URL={URL} />
           </section>

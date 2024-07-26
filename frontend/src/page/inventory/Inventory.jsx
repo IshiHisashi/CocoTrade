@@ -33,7 +33,7 @@ const Inventory = ({ URL }) => {
     setShowConfirmation(true);
   };
   const classNameForModal =
-    "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] max-w-[30vw] overflow-scroll p-2";
+    "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] lg:max-w-[30vw] max-w-[90vw] overflow-scroll p-2";
 
   return (
     <div className="sm:pt-[25px] sm:pr-[32px] sm:pb-[30px] sm:pl-[35px] flex flex-wrap">

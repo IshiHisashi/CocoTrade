@@ -17,6 +17,7 @@ import Auth from "./page/auth/Auth.jsx";
 import Onboarding from "./page/onboarding/Onboarding.jsx";
 import { UserIdContext } from "./contexts/UserIdContext.jsx";
 import Setting from "./page/setting/Setting.jsx";
+import NotFound from "./page/NotFound.jsx";
 
 const AppRoutes = ({ userid, setUser, URL }) => {
   const navigate = useNavigate();
@@ -27,17 +28,17 @@ const AppRoutes = ({ userid, setUser, URL }) => {
   //   if (!userid) {
   //     navigate("/");
   //   }
-  //   // if (userid) {
-  //   //   navigate("/dashboard");
-  //   // } else {
-  //   //   navigate("/");
-  //   // }
+  //   if (userid) {
+  //     navigate("/dashboard");
+  //   } else {
+  //     navigate("/");
+  //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
   return (
     <Routes>
-      <Route path="/*" element={<Landing fnToSetUser={setUser} URL={URL} />} />
+      <Route path="/" element={<Landing fnToSetUser={setUser} URL={URL} />} />
       <Route path="/onboarding/*" element={<Onboarding URL={URL} />} />
       {userid && (
         <>
@@ -90,6 +91,7 @@ const AppRoutes = ({ userid, setUser, URL }) => {
               </Layout>
             }
           />
+          <Route path="/*" element={<NotFound />} />
         </>
       )}
     </Routes>

@@ -122,7 +122,7 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
       padding: {
         left: -8,
         bottom: 0,
-        top: 0
+        top: 16
       },
     },
     maintainAspectRatio: false,
@@ -184,7 +184,8 @@ const BarChart = ({ userId, URL, setInvInfo }) => {
             const value = dataset.data[tooltipItem.dataIndex];
             return `${dataset.label}: ${value.toFixed(2)} %`;
           }
-        }
+        },
+        yAlign: 'bottom'
       },
       verticalLinePlugin: false,
     },

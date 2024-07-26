@@ -28,11 +28,6 @@ const AppRoutes = ({ userid, setUser, URL }) => {
   //   if (!userid) {
   //     navigate("/");
   //   }
-  //   if (userid) {
-  //     navigate("/dashboard");
-  //   } else {
-  //     navigate("/");
-  //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 

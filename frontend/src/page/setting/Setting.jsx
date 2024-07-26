@@ -21,17 +21,38 @@ const Setting = ({ URL }) => {
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [userId, URL])
+  }, [userId, URL]);
 
   return (
     <>
+      <title>Settings | CocoTrade</title>
       <p>Settings Page</p>
-      <Profile userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} />
-      <Preference userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} />
-      <Security userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} />
-      <Billing userId={userId} URL={URL} userInfo={userInfo} setUserInfo={setUserInfo} />
+      <Profile
+        userId={userId}
+        URL={URL}
+        userInfo={userInfo}
+        setUserInfo={setUserInfo}
+      />
+      <Preference
+        userId={userId}
+        URL={URL}
+        userInfo={userInfo}
+        setUserInfo={setUserInfo}
+      />
+      <Security
+        userId={userId}
+        URL={URL}
+        userInfo={userInfo}
+        setUserInfo={setUserInfo}
+      />
+      <Billing
+        userId={userId}
+        URL={URL}
+        userInfo={userInfo}
+        setUserInfo={setUserInfo}
+      />
     </>
-  )
+  );
 };
 
 export default Setting;

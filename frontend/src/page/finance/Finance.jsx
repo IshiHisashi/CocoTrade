@@ -7,6 +7,7 @@ import LineChart from "./LineChart.jsx";
 const Finance = ({ URL }) => {
   return (
     <div className="flex flex-col gap-8 sm:mx-[31px] sm:py-[25px]">
+      <title>Finances | CocoTrade</title>
       <LineChart type="cashflow" URL={URL} />
       <MonthlyActivity URL={URL} />
       <LineChart type="market" URL={URL} />

@@ -76,6 +76,7 @@ const Onboarding = ({ URL }) => {
 
   return (
     <>
+      <title>Onboarding | CocoTrade</title>
       <Routes>
         <Route
           path="business"

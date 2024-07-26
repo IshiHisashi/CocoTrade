@@ -162,6 +162,7 @@ const Dashboard = ({ URL }) => {
 
   return (
     <UserIdContext.Provider value={userId}>
+      <title>Dashboard | CocoTrade</title>
       <div className="sm:m-8">
         <div className="flex justify-between items-center px-8 pb-4 sm:px-0">
           <div className="flex items-center">

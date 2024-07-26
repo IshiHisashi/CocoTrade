@@ -48,6 +48,11 @@ const Field = ({
     event.preventDefault();
   };
 
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = () => setIsFocused(false);
+
   let inputElement = null;
 
   // (From Aki to Prathibha: I added this for EditSaleModal.jsx. I believe this is not gonna cause any issues in other areas. It's difficult to tell what I'm trying to do here. So pls let me explain tmr)
@@ -72,7 +77,31 @@ const Field = ({
             disabled={isDisabled}
             required={required}
             title={title}
-            sx={{ py: 1, "& fieldset": { border: "none" } }}
+            sx={{
+              py: 1,
+              "& fieldset": { border: "none" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: isFocused ? "#0C7F8E" : "inherit",
+                },
+                "&:hover fieldset": {
+                  borderColor: isFocused ? "#0C7F8E" : "inherit",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0C7F8E",
+                },
+              },
+              "& .MuiInputBase-input.Mui-disabled": {
+                backgroundColor: "#F1F1F1", // bg-gray-100
+                color: "rgb(107 114 128)", // text-gray-500
+              },
+              "& .Mui-disabled": {
+                backgroundColor: "#F1F1F1", // bg-gray-100
+                color: "rgb(107 114 128)", // text-gray-500 for adornment
+              },
+            }}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             InputProps={{
               inputProps: { min, max, step },
               startAdornment: adornment === "start" && (
@@ -107,7 +136,7 @@ const Field = ({
       inputElement = (
         <FormControl fullWidth className="customFormControl">
           <TextField
-            className="customTextFieldStyle"
+            className="disabled:bg-gray-100 disabled:text-gray-500 focus:outline-none focus:ring-bluegreen-500 focus:border-bluegreen-500 customTextFieldStyle"
             type={type}
             name={name}
             id={name}
@@ -115,7 +144,20 @@ const Field = ({
             onChange={onChange}
             disabled={isDisabled}
             required={required}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: isFocused ? "#0C7F8E" : "inherit",
+                },
+                "&:hover fieldset": {
+                  borderColor: isFocused ? "#0C7F8E" : "inherit",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0C7F8E",
+                },
+              },
               py: 1,
               // "& .MuiInputBase-input.Mui-disabled": {
               //   backgroundColor: "rgb(243 244 246)", // equivalent to bg-gray-100 in Tailwind CSS
@@ -182,21 +224,52 @@ const Field = ({
       break;
     case "date":
       inputElement = (
-        <input
-          type={type}
-          name={name}
-          id={name}
-          value={value}
-          onChange={onChange}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm basis-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-[56px] mt-2"
-          disabled={isDisabled}
-          required={required}
-          max={
-            name === "purchase_date"
-              ? new Date().toISOString().split("T")[0]
-              : undefined
-          }
-        />
+        <FormControl fullWidth>
+          <TextField
+            type={type}
+            name={name}
+            id={name}
+            value={value}
+            onChange={onChange}
+            disabled={isDisabled}
+            required={required}
+            title={title}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: isFocused ? "#0C7F8E" : "inherit",
+                },
+                "&:hover fieldset": {
+                  borderColor: isFocused ? "#0C7F8E" : "inherit",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0C7F8E",
+                },
+              },
+              py: 1,
+              "& .MuiInputBase-input.Mui-disabled": {
+                backgroundColor: "#F1F1F1", // bg-gray-100
+                color: "rgb(107 114 128)", // text-gray-500
+              },
+              "& .Mui-disabled": {
+                backgroundColor: "#F1F1F1", // bg-gray-100
+                color: "rgb(107 114 128)", // text-gray-500 for adornment
+              },
+            }}
+            InputProps={{
+              inputProps: {
+                max:
+                  name === "purchase_date"
+                    ? new Date().toISOString().split("T")[0]
+                    : undefined,
+              },
+            }}
+            error={error}
+            helperText={error && errorText}
+          />
+        </FormControl>
       );
       break;
     case "dropdown":

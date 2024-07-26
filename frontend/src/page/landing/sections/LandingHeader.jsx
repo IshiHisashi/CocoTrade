@@ -6,7 +6,6 @@
 
 import React, { useState, useEffect } from "react";
 import AnchorLink from "react-anchor-link-smooth-scroll";
-import CtaBtn from "../../../component/btn/CtaBtn";
 import Hamburger from "../../../assets/icons/Hamburger.svg";
 
 const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
@@ -41,9 +40,9 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
 
   return (
     <div
-      className={`grid grid-cols-2 lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
+      className={`grid grid-cols-[3fr_2fr] lg:grid-cols-[auto_1fr] lg:gap-[53px] lg:px-[3%] xl-[5%] 2xl-[10%] bg-white sticky top-0 ${isHamburgerOpen ? "fixed top-0 left-0 w-full h-full" : ""}`}
     >
-      <img src="./images/logo-b.png" alt="logo" className="pl-[26px] py-6" />
+      <img src="./images/logo.svg" alt="logo" className="pl-[26px] py-6" />
       <div
         className={`flex justify-end pr-[35px] ${isHamburgerOpen ? "bg-neutral-600" : ""} lg:hidden`}
       >
@@ -58,7 +57,8 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           onClick={() => hundleToggle()}
         >
           <img
-            src={isHamburgerOpen ? "./images/Hamburger-w.png" : Hamburger}
+            className={isHamburgerOpen ? "w-[14px] h-[14px] mx-[5px]" : ""}
+            src={isHamburgerOpen ? "./images/exit.svg" : Hamburger}
             alt="toggle navigation menu"
           />
         </button>
@@ -67,11 +67,11 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
         className={`col-span-2 lg:col-start-2 lg:col-end-3 lg:flex justify-between ${isHamburgerOpen ? "bg-neutral-600 gap-10" : "hidden"}`}
       >
         <ul
-          className={`h3-sans lg:p16 lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[300px]" : ""}`}
+          className={`h3-sans lg:p16 lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[150px]" : ""}`}
         >
           <AnchorLink href="#benefit" offset="-50">
             <li
-              className={` cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              className={` cursor-pointer ${isHamburgerOpen ? "py-[36px] mx-6 border-b border-neutral-400" : ""}`}
               onClick={() => hundleClickNav()}
             >
               Benefits
@@ -79,7 +79,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           </AnchorLink>
           <AnchorLink href="#features" offset="-50">
             <li
-              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[36px] mx-6 border-b border-neutral-400" : ""}`}
               onClick={() => hundleClickNav()}
             >
               Features
@@ -87,7 +87,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           </AnchorLink>
           <AnchorLink href="#team" offset="-50">
             <li
-              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[36px] mx-6 border-b border-neutral-400" : ""}`}
               onClick={() => hundleClickNav()}
             >
               Team
@@ -95,7 +95,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
           </AnchorLink>
           <AnchorLink href="#contact" offset="-50">
             <li
-              className={`cursor-pointer ${isHamburgerOpen ? "py-[45px] mx-6 border-b border-neutral-400" : ""}`}
+              className={`cursor-pointer ${isHamburgerOpen ? "py-[36px] mx-6 border-b border-neutral-400" : ""}`}
               onClick={() => hundleClickNav()}
             >
               Contact
@@ -112,19 +112,19 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
                 setAuthType("login");
                 setIsAuthModalOpen(true);
               }}
-              className={`border-[1.5px] rounded h-[50px] ${isHamburgerOpen ? "p18-bold border border-neutral-200 w-96 text-white" : " border-neutral-800 w-24 "}`}
+              className={`border-[1.5px] rounded ${isHamburgerOpen ? "p18-bold border border-neutral-200 h-16 w-96  hover:bg-white hover:text-neutral-600 active:bg-bluegreen-500 text-white active:text-neutral-0 " : " border-neutral-800 h-14 w-24 hover:bg-bluegreen-100 active:bg-bluegreen-500 active:text-neutral-0"}`}
             >
-              Log In
+              Log in
             </button>
           </li>
           <li>
             <button
               type="submit"
               onClick={() => {
-                setAuthType("login");
+                setAuthType("signup");
                 setIsAuthModalOpen(true);
               }}
-              className={`${isHamburgerOpen ? "w-96" : "w-52"} h-[50px] bg-[#FF5b04]  hover:bg-[#FF8340]
+              className={`${isHamburgerOpen ? "h-16 w-96" : "h-14 w-52"} bg-[#FF5b04]  hover:bg-[#FF8340]
   active:bg-[#FE2E00] text-white
   active:text-white
   font-semibold

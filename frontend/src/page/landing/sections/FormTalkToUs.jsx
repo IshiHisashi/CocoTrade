@@ -26,7 +26,7 @@ const FormTalkToUs = ({ setAuthType, setIsAuthModalOpen }) => {
   rounded
   border-0 border-bluegreen-700"
       >
-        Free 14-day trial
+        Talk to us{" "}
       </button>
     </div>
   );

@@ -3,11 +3,13 @@ import LandingFeatureCard from "../../../component/card/LandingFeatureCard";
 
 const Features = () => {
   return (
-    <div className="bg-white pt-[60px] sm:pt-[94px] pb-[88px] sm:pb-[136px] px-[120px]">
-      <div className="texts text-center pb-[120px]">
+    <div className="bg-white pt-[60px] sm:pt-[94px] pb-[88px] sm:pb-[136px] px-[24px] sm:px-[120px]">
+      <div className="texts text-center pb-[120px] max-w-[700px] mx-auto ">
         <h2 className="h2-serif text-bluegreen-700">Features</h2>
         <p className="p18 text-neutral-600">
-          Discover the key features of the web app
+          Our platform offers services tailored specifically for small to medium
+          copra businesses. Discover how our web application can enhance and
+          elevate your copra business with its essential features.
         </p>
       </div>
 

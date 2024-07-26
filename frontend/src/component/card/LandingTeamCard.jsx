@@ -9,7 +9,7 @@ const LandingTeamCard = ({ imgurl, linkedin, name, position }) => {
           <h4 className="h4-serif text-bluegreen-700">{name}</h4>
           <a href={linkedin} className="self-center" target="_blank">
             <img
-              src="./icon _LinkedIn_.png"
+              src="./images/linkedin.svg"
               alt="linkedin"
               className="w-4 h-4 "
             />

@@ -255,8 +255,77 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
   };
+
   const handleDeleteClick = async (saleId) => {
     try {
+      const targetSalesLog = await axios.get(`${URL}/sale/${saleId}`);
+      console.log(targetSalesLog.data);
+
+      // Object to pass to inventory update api
+      const createObjectToPassForInv = (sub, rev, mod, ship) => {
+        const object = {
+          userId,
+          prevShipDate: targetSalesLog.data.copra_ship_date,
+          newShipDate: targetSalesLog.data.copra_ship_date,
+          prevAmount: targetSalesLog.data.amount_of_copra_sold.$numberDecimal,
+          newAmount: targetSalesLog.data.amount_of_copra_sold.$numberDecimal,
+          subtractInvNeeded: sub,
+          reverseInvNeeded: rev,
+          modifInvWithDiffNeeded: mod,
+          changeBasedOnShipDateNeeded: ship,
+        }
+        return object;
+      }
+      // Object to pass to inventory (only for pending) update api
+      const createObjectToPassForInvForPending = (sub, rev, mod, ship) => {
+        const object = {
+          userId,
+          prevShipDate: targetSalesLog.data.copra_ship_date,
+          newShipDate: targetSalesLog.data.copra_ship_date,
+          prevAmount: targetSalesLog.data.amount_of_copra_sold.$numberDecimal,
+          newAmount: 0,
+          subtractInvNeeded: sub,
+          reverseInvNeeded: rev,
+          modifInvWithDiffNeeded: mod,
+          changeBasedOnShipDateNeeded: ship,
+        }
+        return object;
+      }
+      // Object to pass to finance upate api
+      const createObjectToPassForFin = (add, rev, mod) => {
+        const object = {
+          userId,
+          prevReceivedDate: targetSalesLog.data.cheque_receive_date,
+          newReceivedDate: targetSalesLog.data.cheque_receive_date,
+          prevPrice: targetSalesLog.data.total_sales_price.$numberDecimal,
+          newPrice: targetSalesLog.data.total_sales_price.$numberDecimal,
+          addFinNeeded: add,
+          reverseFinNeeded: rev,
+          modifFinWithDiffNeeded: mod
+        }
+        return object;
+      }
+
+      let objInv;
+      let objFin = null;
+
+      // conditioning      
+      if (targetSalesLog.data.status === "ongoing") {
+        objInv = createObjectToPassForInv(false, true, false, false);
+        axios.patch(`${URL}/inventory/updateForSales`, objInv);
+      } else if(targetSalesLog.data.status === "completed") {
+        objInv = createObjectToPassForInv(false, true, false, false);
+        axios.patch(`${URL}/inventory/updateForSales`, objInv);
+        objFin = createObjectToPassForFin(false, true, false);
+      }
+      console.log(objInv);
+      console.log(objFin);
+      const objInvForPending = createObjectToPassForInvForPending(false, false, false, false);
+      axios.patch(`${URL}/inventory/updateForSales`, objInvForPending);
+      if (objFin !== null) {
+        axios.patch(`${URL}/currentbalance/updateForSales`, objFin);
+      }
+
       await axios.delete(`${URL}/sale/${saleId}`);
       fetchSales();
     } catch (error) {

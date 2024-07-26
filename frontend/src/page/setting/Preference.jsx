@@ -153,6 +153,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
           name="margin"
           type="number"
           value={formData.margin}
+          unit="%"
           onChange={handleChange}
         />
         <Field
@@ -160,6 +161,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
           name="amount_per_ship"
           type="number"
           value={formData.amount_per_ship}
+          unit="%"
           onChange={handleChange}
         />
         <Field
@@ -167,6 +169,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
           name="max_inventory_amount"
           type="number"
           value={formData.max_inventory_amount}
+          unit="kg"
           onChange={handleChange}
         />
         <Field
@@ -174,6 +177,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
           name="current_amount_with_pending"
           type="number"
           value={formData.current_amount_with_pending}
+          unit="kg"
           onChange={handleChange}
         />
         <Field
@@ -181,6 +185,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
           name="current_balance"
           type="number"
           value={formData.current_balance}
+          unit="php"
           onChange={handleChange}
         />
         <CtaBtn 

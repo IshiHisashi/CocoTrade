@@ -16,7 +16,6 @@ const Setting = ({ URL }) => {
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
-      console.log(window.innerWidth);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -36,11 +35,11 @@ const Setting = ({ URL }) => {
   }, [userId, URL])
 
   return (
-    <div className="sm:pl-[34px]">
+    <div className="sm:pl-[34px] sm:pt-[25px] bg-white sm:bg-bluegreen-100">
       <div 
         id="navigation"
         className={ windowWidth >= 640 ? 
-          "flex gap-2" :
+          "flex gap-[18px] mb-[15px]" :
           ""
         }
       >
@@ -79,6 +78,9 @@ const Setting = ({ URL }) => {
               Billing
               <img src="./btn-imgs/right.svg" alt="" />
             </button>
+            <div id="space" className="h-svh bg-white">
+              <p> </p>
+            </div>
           </div>:
           null
         }
@@ -93,10 +95,13 @@ const Setting = ({ URL }) => {
                 setSettingsId(0)
               };
             }}
-            className={ windowWidth >= 640 ? 
-              "p-4" :
-              "p-6 flex items-center gap-2"
-            }
+            className={` ${windowWidth >= 640 ? 
+              "p16 py-[7px]" :
+              "p-6 flex items-center gap-2"}
+              ${windowWidth >= 640 && ( settingsId === 1 || settingsId === 0 )? 
+                "h3-sans pt-[7px] pb-[4px] border-b-[3px] border-black" : 
+                null }
+            `}
           >
             { windowWidth >= 640 ? null : <img src="./btn-imgs/left.svg" alt="" /> }
             Profile
@@ -113,10 +118,13 @@ const Setting = ({ URL }) => {
                 setSettingsId(0)
               };
             }}
-            className={ windowWidth >= 640 ? 
-              "p-4" :
-              "p-6 flex items-center gap-2"
-            }
+            className={` ${windowWidth >= 640 ? 
+              "p16 py-[7px]" :
+              "p-6 flex items-center gap-2"}
+              ${windowWidth >= 640 && settingsId === 2 ? 
+                "h3-sans pt-[7px] pb-[4px] border-b-[3px] border-black" : 
+                null }
+            `}
           >
             { windowWidth >= 640 ? null : <img src="./btn-imgs/left.svg" alt="" /> }          
             Preference
@@ -133,10 +141,13 @@ const Setting = ({ URL }) => {
                 setSettingsId(0)
               };
             }}
-            className={ windowWidth >= 640 ? 
-              "p-4" :
-              "p-6 flex items-center gap-2"
-            }
+            className={` ${windowWidth >= 640 ? 
+              "p16 py-[7px]" :
+              "p-6 flex items-center gap-2"}
+              ${windowWidth >= 640 && settingsId === 3 ? 
+                "h3-sans pt-[7px] pb-[4px] border-b-[3px] border-black" : 
+                null }
+            `}
           >
             { windowWidth >= 640 ? null : <img src="./btn-imgs/left.svg" alt="" /> }
             Billing

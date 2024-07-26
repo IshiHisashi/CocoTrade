@@ -66,69 +66,69 @@ const OperationsSettings = (props) => {
       if (maxNum) {
         setMaxInventoryAmountError(true);
         setMaxInventoryAmountErrorText(
-          "Input must be a positive number and must not be less than current inventory amount"
+          "Input must be a positive number and more than or equal to the current inventory amount."
         );
       }
       if (currentNum) {
         setCurrentAmountLeftError(true);
         setCurrentAmountLeftErrorText(
-          "Input must be a positive number and must not exceed maximum warehouse capacity"
+          "Input must be a positive number and less than or equal to the maximum warehouse capacity."
         );
       }
     } else if (m < 0 && m < c) {
       if (maxNum) {
         setMaxInventoryAmountError(true);
         setMaxInventoryAmountErrorText(
-          "Input must be a positive number and must not be less than current inventory amount"
+          "Input must be a positive number and more than or equal to the current inventory amount."
         );
       }
       if (currentNum) {
         setCurrentAmountLeftError(true);
         setCurrentAmountLeftErrorText(
-          "Input must not exceed maximum warehouse capacity"
+          "Input must be less than or equal to the maximum warehouse capacity."
         );
       }
     } else if (c < 0 && m < c) {
       if (maxNum) {
         setMaxInventoryAmountError(true);
         setMaxInventoryAmountErrorText(
-          "Input must not be less than current inventory amount"
+          "Input must be more than or equal to the current inventory amount."
         );
       }
       if (currentNum) {
         setCurrentAmountLeftError(true);
         setCurrentAmountLeftErrorText(
-          "Input must be a positive number and must not exceed maximum warehouse capacity"
+          "Input must be a positive number and less than or equal to the maximum warehouse capacity."
         );
       }
     } else if (m < 0 && c < 0) {
       if (maxNum) {
         setMaxInventoryAmountError(true);
-        setMaxInventoryAmountErrorText("Input must be a positive number");
+        setMaxInventoryAmountErrorText("Input must be a positive number.");
       }
       if (currentNum) {
         setCurrentAmountLeftError(true);
-        setCurrentAmountLeftErrorText("Input must be a positive number");
+        setCurrentAmountLeftErrorText("Input must be a positive number.");
       }
     } else if (m < 0) {
       setMaxInventoryAmountError(true);
       setCurrentAmountLeftError(false);
-      setMaxInventoryAmountErrorText("Input must be a positive number");
+      setMaxInventoryAmountErrorText("Input must be a positive number.");
     } else if (c < 0) {
       setMaxInventoryAmountError(false);
       setCurrentAmountLeftError(true);
-      setCurrentAmountLeftErrorText("Input must be a positive number");
+      setCurrentAmountLeftErrorText("Input must be a positive number.");
     } else if (m < c) {
       if (maxNum) {
         setMaxInventoryAmountError(true);
         setMaxInventoryAmountErrorText(
-          "Input must not be less than current inventory amount"
+          "Input must be more than or equal to the current inventory amount."
         );
       }
       if (currentNum) {
         setCurrentAmountLeftError(true);
         setCurrentAmountLeftErrorText(
-          "Input must not exceed maximum warehouse capacity"
+          "Input must be less than or equal to the maximum warehouse capacity."
         );
       }
     } else {
@@ -181,7 +181,7 @@ const OperationsSettings = (props) => {
           </h1>
         </div>
 
-        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600 pt-8">
+        <h2 className="font-['Rasa'] text-[30px] font-[600] sm:text-[40px] text-neutral-600 pt-8">
           Tell us about your operations
         </h2>
         <p className="p18 text-neutral-600">
@@ -199,9 +199,9 @@ const OperationsSettings = (props) => {
             unit="%"
             adornment="end"
             info
-            infoText="This setting will provide a suggested price for purchasing copra"
+            infoText="This setting will provide a suggested price for purchasing copra."
             error={marginError}
-            errorText="Percentage should be between 0 and 100"
+            errorText="Percentage should be between 0 and 100."
           />
           <Field
             label="Maximum warehouse capacity"
@@ -216,7 +216,7 @@ const OperationsSettings = (props) => {
             unit="kg"
             adornment="end"
             info
-            infoText="This setting will provide insight for inventory and shipment"
+            infoText="This setting will provide insight for inventory and shipment."
             error={maxInventoryAmountError}
             errorText={maxInventoryAmountErrorText}
           />
@@ -230,9 +230,9 @@ const OperationsSettings = (props) => {
             unit="%"
             adornment="end"
             info
-            infoText="This setting will provide insight for inventory and shipment"
+            infoText="This setting will provide insight for inventory and shipment."
             error={amountPerShipError}
-            errorText="Percentage should be between 0 and 100"
+            errorText="Percentage should be between 0 and 100."
           />
           <Field
             label="Current inventory"
@@ -259,11 +259,11 @@ const OperationsSettings = (props) => {
             unit="PHP"
             adornment="start"
             error={currentBalanceError}
-            errorText="Input should be a positive number"
+            errorText="Input should be a positive number."
           />
         </div>
 
-        <div className="flex justify-between sm:mt-16">
+        <div className="flex justify-between gap-4 mt-4 sm:mt-16">
           <CtaBtn
             size="M"
             level="O"

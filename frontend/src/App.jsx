@@ -34,6 +34,7 @@ const AppRoutes = ({ userid, setUser, URL }) => {
   return (
     <Routes>
       <Route path="/" element={<Landing fnToSetUser={setUser} URL={URL} />} />
+      {/* <Route path="/*" element={<NotFound />} /> */}
       <Route path="/onboarding/*" element={<Onboarding URL={URL} />} />
       {userid && (
         <>

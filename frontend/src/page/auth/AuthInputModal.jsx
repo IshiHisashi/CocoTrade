@@ -111,7 +111,9 @@ const AuthInputModal = (props) => {
       elementToReturn = (
         <>
           <img src={CocoTradeLogo} alt="" aria-hidden />
-          <h1 className="h2-serif-normal text-center">Create an account</h1>
+          <h1 className="h2-serif-normal text-center" id="modal-title">
+            Create an account
+          </h1>
           <form
             className="mt-6 max-w-96 w-full"
             onSubmit={async (e) => {
@@ -176,7 +178,9 @@ const AuthInputModal = (props) => {
       elementToReturn = (
         <>
           <img src={CocoTradeIcon} alt="" aria-hidden />
-          <h1 className="h2-serif-normal text-center">Welcome back</h1>
+          <h1 className="h2-serif-normal text-center" id="modal-title">
+            Welcome back
+          </h1>
           <form
             className="mt-6 max-w-96 w-full"
             onSubmit={async (e) => {
@@ -232,7 +236,9 @@ const AuthInputModal = (props) => {
       elementToReturn = (
         <>
           <img src={CocoTradeIcon} alt="" aria-hidden />
-          <h1 className="h2-serif-normal text-center">Forgot your password?</h1>
+          <h1 className="h2-serif-normal text-center" id="modal-title">
+            Forgot your password?
+          </h1>
           <form
             className="mt-6 max-w-96 w-full"
             onSubmit={async (e) => {
@@ -262,7 +268,7 @@ const AuthInputModal = (props) => {
     default:
       elementToReturn = (
         <>
-          <h1 className="h2-serif-normal text-center">
+          <h1 className="h2-serif-normal text-center" id="modal-title">
             Something went wrong...
           </h1>
           <p className="p18 text-center">Please try again.</p>

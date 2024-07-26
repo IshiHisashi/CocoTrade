@@ -287,7 +287,7 @@ const Dashboard = ({ URL }) => {
                       title: {
                         display: true,
                         text: "Price (Php)",
-                        align: "end",
+                        align: "center",
                       },
                     },
                     y: {

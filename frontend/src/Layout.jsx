@@ -51,6 +51,7 @@ const Layout = (props) => {
         isOpen={isFormModalOpen}
         className={`${classNameForModal} sm:w-[508px]`}
         style={styleForModal}
+        aria={{ labelledby: "modal-title" }}
       >
         <FormModal
           formType="support"
@@ -65,6 +66,7 @@ const Layout = (props) => {
         onRequestClose={() => setIsConfirmationModalOpen(false)}
         className={`${classNameForModal} ${hideScrollbar.div}`}
         style={styleForModal}
+        aria={{ labelledby: "modal-title" }}
       >
         <ConfirmationModal
           confirmationType="support"

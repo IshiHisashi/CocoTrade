@@ -18,7 +18,10 @@ const ConfirmationModal = (props) => {
         <>
           <div className="flex flex-col items-center justify-center gap-5">
             <img src={Confirm} alt="" aria-hidden />
-            <h1 className={`h2-serif-normal ${commonClassName}`}>
+            <h1
+              className={`h2-serif-normal ${commonClassName}`}
+              id="modal-title"
+            >
               Account created
             </h1>
           </div>
@@ -36,7 +39,10 @@ const ConfirmationModal = (props) => {
         <>
           <div className="flex flex-col items-center justify-center gap-5">
             <img src={Confirm} alt="" aria-hidden />
-            <h1 className={`h2-serif-normal ${commonClassName}`}>
+            <h1
+              className={`h2-serif-normal ${commonClassName}`}
+              id="modal-title"
+            >
               Request received
             </h1>
             <p className={`p16 ${commonClassName}`}>
@@ -57,7 +63,10 @@ const ConfirmationModal = (props) => {
         <>
           <div className="flex flex-col items-center justify-center gap-5">
             <img src={Confirm} alt="" aria-hidden />
-            <h1 className={`h2-serif-normal ${commonClassName}`}>
+            <h1
+              className={`h2-serif-normal ${commonClassName}`}
+              id="modal-title"
+            >
               Your account is all set
             </h1>
             <p className={`p16 ${commonClassName}`}>Welcome to CocoTrade!</p>
@@ -76,7 +85,10 @@ const ConfirmationModal = (props) => {
         <>
           <div className="flex flex-col items-center justify-center gap-5">
             <img src={Confirm} alt="" aria-hidden />
-            <h1 className={`h2-serif-normal ${commonClassName}`}>
+            <h1
+              className={`h2-serif-normal ${commonClassName}`}
+              id="modal-title"
+            >
               Talk to you soon!
             </h1>
             <p className={`p16 ${commonClassName}`}>
@@ -98,7 +110,10 @@ const ConfirmationModal = (props) => {
         <>
           <div className="flex flex-col items-center justify-center gap-5">
             <img src={Confirm} alt="" aria-hidden />
-            <h1 className={`h2-serif-normal ${commonClassName}`}>
+            <h1
+              className={`h2-serif-normal ${commonClassName}`}
+              id="modal-title"
+            >
               Talk to you soon!
             </h1>
             <p className={`p16 ${commonClassName}`}>
@@ -118,7 +133,10 @@ const ConfirmationModal = (props) => {
       elementToReturn = (
         <>
           <div className="flex flex-col items-center justify-center gap-5">
-            <h1 className={`h2-serif-normal ${commonClassName}`}>
+            <h1
+              className={`h2-serif-normal ${commonClassName}`}
+              id="modal-title"
+            >
               Something went wrong...
             </h1>
             <p className={`p16 ${commonClassName}`}>Please try again.</p>

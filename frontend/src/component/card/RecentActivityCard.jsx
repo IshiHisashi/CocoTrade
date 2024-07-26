@@ -38,14 +38,14 @@ const RecentActivityCard = (props) => {
   }, [type, userId, URL]);
 
   return (
-    <div className="p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200">
+    <div className="p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200 grid grid-rows-[auto_auto_1fr]">
       <h3 className="h3-sans text-neutral-600">
         Recent {type.charAt(0).toUpperCase() + type.slice(1)}
       </h3>
       <p className="p16 text-neutral-400">
         {type === "purchase" ? "from today" : "over the last week"}
       </p>
-      <p className="display-sans text-bluegreen-700">
+      <p className="display-sans text-bluegreen-700 self-center">
         {totalSum ? `Php ${totalSum}` : "loading..."}
       </p>
     </div>

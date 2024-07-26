@@ -99,7 +99,8 @@ const CtaBtn = ({
   return (
     <button
       type={type}
-      className={`${tailwindClass} ${imgSource ? "lg:w-full" : "w-full"} ${size === "L" && "justify-self-center"}`}
+      // eslint-disable-next-line no-nested-ternary
+      className={`${tailwindClass} ${imgSource ? "lg:w-full" : size === "S-support" ? "" : "w-full"} ${size === "L" && "justify-self-center"}`}
       onClick={
         onClickFnc === ""
           ? () => {}

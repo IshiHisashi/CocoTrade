@@ -48,10 +48,13 @@ const NotificationDropdown = ({
       style={{ maxHeight: windowHeight - 80 }}
       onClick={(e) => e.stopPropagation()}
       onKeyDown={(e) => e.stopPropagation()}
-      role="none"
+      role="presentation"
+      aria-labelledby="dropdown-title"
     >
       <div className="flex justify-between items-center">
-        <p className="h3-sans">Notifications</p>
+        <p className="h3-sans" id="dropdown-title">
+          Notifications
+        </p>
         <button
           type="button"
           className="hover:bg-bluegreen-100 cursor-pointer p-1 rounded"

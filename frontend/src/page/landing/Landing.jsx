@@ -54,6 +54,7 @@ const Landing = (props) => {
           onRequestClose={() => setIsAuthModalOpen(false)}
           className={`${classNameForModal} sm:w-[508px]`}
           style={styleForModal}
+          aria={{ labelledby: "modal-title" }}
         >
           <AuthInputModal
             authType={authType}
@@ -72,6 +73,7 @@ const Landing = (props) => {
           }
           className={`${classNameForModal} sm:min-w-[382px] ${hideScrollbar.div}`}
           style={styleForModal}
+          aria={{ labelledby: "modal-title" }}
         >
           <ConfirmationModal
             confirmationType={confirmationType}

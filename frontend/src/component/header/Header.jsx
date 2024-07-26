@@ -167,6 +167,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
               setIsNotificationOpen(false);
               fnToToggleNav("-translate-x-full");
             }}
+            aria-label="profile"
           >
             {companyName.split("")[0]}
             <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />

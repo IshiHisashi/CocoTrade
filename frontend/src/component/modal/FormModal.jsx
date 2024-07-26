@@ -21,7 +21,9 @@ const FormModal = (props) => {
         <>
           <img src={CocoTradeIcon} alt="" aria-hidden />
           <div className="text-center">
-            <h1 className="h2-serif-normal">How can we help you?</h1>
+            <h1 className="h2-serif-normal" id="modal-title">
+              How can we help you?
+            </h1>
             <p className="p18">Any questions for us?</p>
           </div>
           <form
@@ -81,7 +83,9 @@ const FormModal = (props) => {
         <>
           <img src={CocoTradeIcon} alt="" aria-hidden />
           <div className="text-center">
-            <h1 className="h2-serif-normal">Get in touch</h1>
+            <h1 className="h2-serif-normal" id="modal-title">
+              Get in touch
+            </h1>
             <p className="p18">We are here for you. How can we help?</p>
           </div>
           <form
@@ -145,7 +149,9 @@ const FormModal = (props) => {
     default:
       elementToReturn = (
         <>
-          <h1 className="h2-serif-normal">Something went wrong...</h1>
+          <h1 className="h2-serif-normal" id="modal-title">
+            Something went wrong...
+          </h1>
           <p className="p18">Please try again.</p>
           <CtaBtn
             size="M"

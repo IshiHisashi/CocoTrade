@@ -167,7 +167,7 @@ const Dashboard = ({ URL }) => {
           <div className="flex items-center">
             <p className="p18-bold text-neutral-600 sm:text-base md:p18-bold">
               {!upcomingShipDate
-                ? "getting your upcoming shipment information..."
+                ? "Getting your upcoming shipment information..."
                 : upcomingShipDate}
             </p>
 

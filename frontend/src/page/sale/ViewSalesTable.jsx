@@ -326,7 +326,7 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
         axios.patch(`${URL}/currentbalance/updateForSales`, objFin);
       }
 
-      // await axios.delete(`${URL}/sale/${saleId}`);
+      await axios.delete(`${URL}/sale/${saleId}`);
       fetchSales();
     } catch (error) {
       console.error("Error deleting sale:", error);

@@ -32,10 +32,11 @@ const Setting = ({ URL }) => {
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [userId, URL])
+  }, [userId, URL]);
 
   return (
     <div className="sm:pl-[34px] sm:pt-[25px] bg-white sm:bg-bluegreen-100">
+      <title>Settings | CocoTrade</title>
       <div 
         id="navigation"
         className={ windowWidth >= 640 ? 

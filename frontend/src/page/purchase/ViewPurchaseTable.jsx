@@ -342,7 +342,7 @@ return () => {
     <span className="h3-sans">{dateLabel}</span>
   </label>
   <div className="relative flex items-center">
-    <label className="mr-2 font-bold">
+    <label className="mr-2 font-bold text-[14px]">
       Filter by date:
     </label>
     <div className="relative flex cursor-pointer">
@@ -352,7 +352,7 @@ return () => {
         value={inputLabel}
         ref={inputRef}
         onClick={() => setIsDateModalOpen(true)}
-        className="w-60 py-2 px-2 border rounded cursor-pointer text-neutral-400  border-bluegreen-200"
+        className="sm:w-32 md:w-60 py-2 px-2 border rounded cursor-pointer text-neutral-400  border-bluegreen-200"
       />
       <button 
         type="button" 
@@ -375,8 +375,8 @@ return () => {
   overlayClassName="absolute inset-0 bg-black bg-opacity-0"
   style={{
     content: {
-        top: `${inputPosition.top -11}px`, 
-        left: `${inputPosition.left-140}px`,
+        top: `${inputPosition.top+40}px`, 
+        left: `${inputPosition.left-60}px`,
         right: 'auto',
         bottom: 'auto',
         marginRight: '0',
@@ -384,7 +384,7 @@ return () => {
         transform: 'none'
     }
 }}>
-  <div className="bg-white p-6 rounded-lg shadow-lg w-[380px]" style={{ marginTop: 'calc(100% - 330px)' }}>
+  <div className="bg-white p-6 rounded-lg shadow-lg sm:w-[250px] md:w-[300px]">
     <h2 className="text-sm font-semibold text-neutral-600 mb-4">Select date range</h2>
     {isDatePickerVisible ? (
   <>
@@ -421,11 +421,11 @@ return () => {
             placeholder="MM/DD/YY - MM/DD/YY"
             readOnly
             onClick={showDatePicker}
-            className="w-full py-2 px-4 mb-4 mt-2 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
+            className="w-full py-2 px-4 mb-4 mt-2 border rounded-lg cursor-pointer text-sm text-neutral-600 border w-[310px]"
           />
            <button
         type="button"
-        className="absolute right-10 top-32 cursor-pointer"
+        className="absolute right-10 top-[80px] cursor-pointer"
         onClick={showDatePicker}
       >
         <img src={CalendarIcon} alt="Calendar" />

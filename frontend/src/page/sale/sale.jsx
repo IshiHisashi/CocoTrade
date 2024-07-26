@@ -36,6 +36,7 @@ const Sale = ({ URL }) => {
     content: {
       zIndex: '9999',
       position: 'relative',
+      padding: '24px'
     },
     overlay: {
       zIndex: '9998',
@@ -58,7 +59,7 @@ const Sale = ({ URL }) => {
           onFormSubmit={handleFormSubmit}
         />
       </Modal>
-      <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[40px]">
+      <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] lg:m-[30px]">
 
       <ViewSalesTable
         showEditForm={showEditForm}

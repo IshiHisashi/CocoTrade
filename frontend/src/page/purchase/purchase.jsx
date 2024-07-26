@@ -110,6 +110,7 @@ const Purchase = ({ URL }) => {
     content: {
       zIndex: '9999',
       position: 'relative',
+      padding: '24px'
     },
     overlay: {
       zIndex: '9998',
@@ -152,7 +153,7 @@ const Purchase = ({ URL }) => {
       
     />
     </div>
-    <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[30px]">
+    <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] lg:m-[30px]">
     
       <ViewPurchaseTable
         setShowAddForm={setShowAddForm}

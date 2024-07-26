@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CtaBtn from "../btn/CtaBtn";
 import Field from "../field-filter/Field.jsx";
+import Field2 from "../field-filter/Field2.jsx";
 import Exit from "../../assets/icons/Exit.svg";
 import CocoTradeIcon from "../../assets/icons/CocoTradeIcon-Orange.svg";
 
@@ -112,7 +113,7 @@ const FormModal = (props) => {
               type="text"
               required
             />
-            <Field
+            <Field2
               label="Subject"
               type="dropdown"
               name="subject"

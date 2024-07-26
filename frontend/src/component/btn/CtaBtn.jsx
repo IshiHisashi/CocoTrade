@@ -41,6 +41,9 @@ const CtaBtn = ({
   } else if (size === "M-landing") {
     width = "w-52";
     height = "h-14";
+  } else if (size === "S-support") {
+    width = "w-[110px]";
+    height = "h-12";
   }
 
   // Conditioning based on level(primary/secondary/disabled/outline)
@@ -96,7 +99,8 @@ const CtaBtn = ({
   return (
     <button
       type={type}
-      className={`${tailwindClass} ${imgSource ? "lg:w-full" : "w-full"} ${size === "L" && "justify-self-center"}`}
+      // eslint-disable-next-line no-nested-ternary
+      className={`${tailwindClass} ${imgSource ? "lg:w-full" : size === "S-support" ? "" : "w-full"} ${size === "L" && "justify-self-center"}`}
       onClick={
         onClickFnc === ""
           ? () => {}

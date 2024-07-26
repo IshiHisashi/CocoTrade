@@ -31,19 +31,30 @@ const NotificationDropdown = ({
     }
   }, [isNotificationOpen, userId, URL]);
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  window.addEventListener("resize", () => {
+    setWindowWidth(window.innerWidth);
+    setWindowHeight(window.innerHeight);
+  });
+
   return (
     <div
       className={`absolute right-0 w-600 bg-white shadow-lg p-4 flex flex-col gap-4 cursor-default transition-all ease-in-out ${
         isNotificationOpen
           ? "translate-y-2 opacity-1"
           : "translate-y-0 opacity-0 invisible"
-      } w-96`}
+      } ${windowWidth > 700 ? "w-96" : "w-72"} overflow-auto rounded-2xl`}
+      style={{ maxHeight: windowHeight - 80 }}
       onClick={(e) => e.stopPropagation()}
       onKeyDown={(e) => e.stopPropagation()}
-      role="none"
+      role="presentation"
+      aria-labelledby="dropdown-title"
     >
       <div className="flex justify-between items-center">
-        <p className="font-bold">Notifications</p>
+        <p className="h3-sans" id="dropdown-title">
+          Notifications
+        </p>
         <button
           type="button"
           className="hover:bg-bluegreen-100 cursor-pointer p-1 rounded"
@@ -66,12 +77,12 @@ const NotificationDropdown = ({
                 {!notification.read && (
                   <div className="absolute top-50 left-2 w-3 h-3 bg-red-500 rounded-full" />
                 )}
-                <h2 className="text-left flex-1 font-semibold">
+                <h2 className="text-left flex-1 h5-dashboard">
                   {notification.title}
                 </h2>
               </div>
-              <p>{notification.message}</p>
-              <small className="text-gray-500 block">
+              <p className="p14">{notification.message}</p>
+              <small className="text-[#9C9C9C] block p14">
                 {formatDistanceToNow(new Date(notification.createdAt))} ago
               </small>
             </div>

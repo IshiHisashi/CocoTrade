@@ -24,32 +24,23 @@ const ViewPurchaseTable = ({
   const [filteredPurchases, setFilteredPurchases] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
+  const today = new Date();
+  const initialDateLabel = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
   const [dateRange, setDateRange] = useState({
-    startDate: null,
-    endDate: null,
+  startDate: today,
+  endDate: today,
   });
+const [dateLabel, setDateLabel] = useState(initialDateLabel);
+const [inputLabel, setInputLabel] = useState("Today");
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [dateLabel, setDateLabel] = useState("");
-  const [inputLabel, setInputLabel] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [newlyAdded, setNewlyAdded] = useState(false);
   const recordsPerPage = 10;
   const userId = useContext(UserIdContext);
   const inputRef = useRef(null);
   const [inputPosition, setInputPosition] = useState({ top: 0, left: 0 });
 
-  const setNewlyAddedInLocalStorage = (value) => {
-    localStorage.setItem('newlyAdded', JSON.stringify(value));
-  };
-
-  const getNewlyAddedFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem('newlyAdded'));
-  };
-
-  const [highlightNewlyAdded, setHighlightNewlyAdded] = useState(getNewlyAddedFromLocalStorage());
-
-
+ 
   const sortPurchaseData = (purchaseData) => {
     return purchaseData.sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date));
   };
@@ -63,8 +54,6 @@ const ViewPurchaseTable = ({
         const sortedData = sortPurchaseData(response.data);
         setPurchases(sortedData);
         setFilteredPurchases(sortedData);
-        const newlyAddedFromStorage = getNewlyAddedFromLocalStorage();
-        setNewlyAdded(newlyAddedFromStorage);
       })
       .catch((error) => {
         console.error("Error fetching purchases:", error);
@@ -130,8 +119,6 @@ const ViewPurchaseTable = ({
         const sortedData = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setPurchases(sortedData);
           setFilteredPurchases(sortedData);
-          setNewlyAdded(false); // Do not set newly added on delete
-          setNewlyAddedInLocalStorage(false);
         })
         .catch((error) => {
           console.error("Error fetching purchases:", error);
@@ -175,7 +162,6 @@ const ViewPurchaseTable = ({
   };
 
   const handlePredefinedRange = (range) => {
-    const today = new Date();
     let start;
     let end;
     let label = "";
@@ -234,6 +220,9 @@ const ViewPurchaseTable = ({
       const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
       setDateLabel(`${start} - ${end}`);
       setInputLabel(`${start} - ${end}`);
+    }else {
+      setDateLabel(initialDateLabel);
+      setInputLabel("Today");
     }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
@@ -268,17 +257,7 @@ const ViewPurchaseTable = ({
   };
 
   const getRowClassName = (index) => {
-    if (highlightNewlyAdded && currentPage === 1 && index === 0) {
-      return 'bg-neutral-100 cursor-pointer';
-    }
-    return index % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
-  };
-  const handleRowClick = (index) => {
-    if (index === 0 && newlyAdded) {
-      setHighlightNewlyAdded(false);
-      setNewlyAdded(false);
-      setNewlyAddedInLocalStorage(false);
-    }
+    return (index + indexOfFirstRecord) % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
   };
 
   useEffect(() => {
@@ -289,10 +268,6 @@ const ViewPurchaseTable = ({
         !event.target.closest('.dropdown-content')
       ) {
         setDropdownVisible(null);
-        if (newlyAdded && highlightNewlyAdded) {
-          setHighlightNewlyAdded(false);
-          setNewlyAddedInLocalStorage(false);
-        }
       }
     };
   
@@ -300,7 +275,7 @@ const ViewPurchaseTable = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [newlyAdded, highlightNewlyAdded]); 
+  }, []);
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -330,12 +305,15 @@ return () => {
 
   return (
     <div>
-   <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
+ 
+      
+      <div className="overflow-x-auto rounded-lg">
+      <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
    <label className="mr-4">
     <span className="h3-sans">{dateLabel}</span>
   </label>
   <div className="relative flex items-center">
-    <label className="mr-2 font-bold">
+    <label className="mr-2 font-bold text-[14px]">
       Filter by date:
     </label>
     <div className="relative flex cursor-pointer">
@@ -345,7 +323,7 @@ return () => {
         value={inputLabel}
         ref={inputRef}
         onClick={() => setIsDateModalOpen(true)}
-        className="w-60 py-2 px-2 border rounded cursor-pointer text-neutral-400  border-bluegreen-200"
+        className="sm:w-32 md:w-60 py-2 px-2 border rounded cursor-pointer text-neutral-400  border-bluegreen-200"
       />
       <button 
         type="button" 
@@ -368,8 +346,8 @@ return () => {
   overlayClassName="absolute inset-0 bg-black bg-opacity-0"
   style={{
     content: {
-        top: `${inputPosition.top -11}px`, 
-        left: `${inputPosition.left-140}px`,
+        top: `${inputPosition.top+40}px`, 
+        left: `${inputPosition.left-60}px`,
         right: 'auto',
         bottom: 'auto',
         marginRight: '0',
@@ -377,7 +355,7 @@ return () => {
         transform: 'none'
     }
 }}>
-  <div className="bg-white p-6 rounded-lg shadow-lg w-[380px]" style={{ marginTop: 'calc(100% - 330px)' }}>
+  <div className="bg-white p-6 rounded-lg shadow-lg sm:w-[250px] md:w-[300px]">
     <h2 className="text-sm font-semibold text-neutral-600 mb-4">Select date range</h2>
     {isDatePickerVisible ? (
   <>
@@ -414,11 +392,11 @@ return () => {
             placeholder="MM/DD/YY - MM/DD/YY"
             readOnly
             onClick={showDatePicker}
-            className="w-full py-2 px-4 mb-4 m-2 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
+            className="w-full py-2 px-4 mb-4 mt-2 border rounded-lg cursor-pointer text-sm text-neutral-600 border w-[310px]"
           />
            <button
         type="button"
-        className="absolute right-10 top-32 cursor-pointer"
+        className="absolute right-10 top-[80px] cursor-pointer"
         onClick={showDatePicker}
       >
         <img src={CalendarIcon} alt="Calendar" />
@@ -462,11 +440,9 @@ return () => {
   </div>
  
 </div>
-      
-      <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
-            <tr className="bg-black text-white text-left">
+            <tr className="bg-neutral-600 text-white text-left">
             <th className="p-2.5 rounded-tl-[8px] min-w-[150px]">Invoice No.</th>
     <th className="p-2.5 min-w-[100px]">Date</th>
     <th className="p-2.5 min-w-[150px]">Farmers Name</th>
@@ -479,15 +455,10 @@ return () => {
             </tr>
           </thead>
           <tbody>
-          {currentRecords.map((purchase, index) => (
-   <tr
-   key={purchase._id}
-   className={getRowClassName(index)}
-   onClick={(e) => {
-     e.stopPropagation(); // Prevent the event from bubbling up to the document click handler
-     handleRowClick(index);
-   }}
- >
+          {filteredPurchases.slice(indexOfFirstRecord, indexOfLastRecord).map((purchase, index) => (
+ <tr
+                key={purchase._id}
+                className={getRowClassName(indexOfFirstRecord + index)}              >
          <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{purchase.invoice_number}</td>
 <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{formatDate(purchase.purchase_date)}</td>
 <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{purchase.farmer_id ? purchase.farmer_id.full_name : "-"}</td>
@@ -510,10 +481,10 @@ return () => {
   <img src={EllipseIcon} alt="Options" />
 </button>
                     {dropdownVisible === purchase._id && (
-      <div className="dropdown-content absolute top-0 right-0  bg-white border border-gray-200 rounded-md shadow-lg z-10">
+      <div className="dropdown-content absolute top-11 right-0  bg-white border border-gray-200 rounded-md shadow-lg z-10">
                         <button
                           type="button"
-                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 pr-8"
                           onClick={(e) => handleEditClick(purchase, e)}
 
                         >          <img src={EditIcon} alt="Edit" className="mr-2" />
@@ -540,7 +511,7 @@ return () => {
     <tr
       // eslint-disable-next-line react/no-array-index-key
       key={`empty-${index}`}
-      className={index % 2 === 0 ? 'bg-white' : 'bg-bluegreen-100'}
+      className={getRowClassName(indexOfFirstRecord + currentRecords.length + index)}
       style={{ width: '123px', height: '43px' }}
     >
       <td colSpan="8" className="px-2 py-0" aria-label="Empty Row">&nbsp;</td>

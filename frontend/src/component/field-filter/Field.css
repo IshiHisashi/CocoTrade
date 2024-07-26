@@ -1,0 +1,94 @@
+/* default */
+.customTextFieldStyle .MuiOutlinedInput-root,
+.customFormControl .MuiOutlinedInput-root {
+  border: 1px solid #243037;
+  border-radius: 4px;
+  font-family: "DM sans", sans-serif;
+  color: #243037;
+}
+.customTextFieldStyle .MuiOutlinedInput-root input,
+.customFormControl .MuiOutlinedInput-root .MuiSelect-select {
+  padding-top: 15.5px;
+  padding-bottom: 15.5px;
+}
+/* focus */
+.customTextFieldStyle .MuiOutlinedInput-root.Mui-focused,
+.customFormControl .MuiOutlinedInput-root.Mui-focused {
+  border: 1px solid #0c7f8e;
+  outline: 1px solid #0c7f8e;
+}
+
+/* error */
+.customTextFieldStyle .MuiOutlinedInput-root.Mui-error {
+  border: 1px solid #fe2e00;
+}
+.customTextFieldStyle .MuiOutlinedInput-root.Mui-error.Mui-focused {
+  outline: 1px solid #fe2e00;
+}
+
+/* error helper text */
+.customTextFieldStyle .MuiFormHelperText-root.Mui-error {
+  font-family: "DM sans", sans-serif;
+  color: #fe2e00;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15.62px;
+  margin-top: 4px;
+}
+
+/* info helper text */
+.customFormControl .MuiFormHelperText-root:not(.Mui-error) {
+  font-family: "DM sans", sans-serif;
+  color: #8e9299;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15.62px;
+  margin-top: 0;
+}
+
+/* disabled */
+.customTextFieldStyle .MuiOutlinedInput-root.Mui-disabled {
+  border: 1px solid #f1f1f1;
+  background-color: #f1f1f1;
+}
+.customTextFieldStyle
+  .MuiOutlinedInput-root.Mui-disabled
+  .MuiOutlinedInput-input {
+  color: #243037;
+}
+.customTextFieldStyle
+  .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+  /* opacity: 1; */
+  -webkit-text-fill-color: unset;
+}
+
+/* unit typography and divider */
+.customTextFieldStyle .start .MuiTypography-root {
+  font-family: "DM sans", sans-serif;
+  color: #243037;
+  padding-right: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-right: solid 1px #dae5e7;
+}
+.customTextFieldStyle .end .MuiTypography-root {
+  font-family: "DM sans", sans-serif;
+  color: #243037;
+  padding-left: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-left: solid 1px #dae5e7;
+}
+
+/* textarea default */
+.customFormControl textarea {
+  border: 1px solid #243037;
+  border-radius: 4px;
+  font-family: "DM sans", sans-serif;
+  color: #243037;
+}
+/* textarea focus */
+.customFormControl textarea:focus {
+  border: 1px solid #0c7f8e;
+  outline: 1px solid #0c7f8e;
+}

@@ -10,7 +10,7 @@ const Team = () => {
           Meet the designers and developers who worked together on this project{" "}
         </p>
       </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-[20px] gap-y-[48px] px-[120px]">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-[20px] gap-y-[48px] px-[32px] sm:px-[80px]">
         <LandingTeamCard
           name="Kathreen Nervez"
           position="Project Manager & UI/UX Designer"

@@ -23,7 +23,7 @@ const TryCoco = ({ setAuthType, setIsAuthModalOpen }) => {
   rounded
   border-0 border-bluegreen-700"
         >
-          Free 14-day trial
+          Get started{" "}
         </button>
       </div>
     </div>

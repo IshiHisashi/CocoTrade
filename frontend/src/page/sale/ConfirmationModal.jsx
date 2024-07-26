@@ -11,6 +11,17 @@ const ConfirmationModal = ({ isOpen, onRequestClose, message }) => {
 
   return (
     <Modal
+    style={{
+      content: {
+        zIndex: '9999',
+        position: 'relative',
+        padding: '24px'
+      },
+      overlay: {
+        zIndex: '9998',
+        backgroundColor: "#24303790",
+      }
+    }}
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       className={classNameForModal}

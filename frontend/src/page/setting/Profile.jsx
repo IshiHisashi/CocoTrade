@@ -3,7 +3,7 @@ import axios from 'axios';
 import CtaBtn from '../../component/btn/CtaBtn';
 import Field from '../../component/field-filter/Field';
 
-const Profile = ({ userId, URL, userInfo, setUserInfo }) => {
+const Profile = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
   const [formData, setFormData] = useState({
     company_name: "",
     email: "",
@@ -58,9 +58,9 @@ const Profile = ({ userId, URL, userInfo, setUserInfo }) => {
   }
 
   return (
-    <div>
+    <div className='px-[35px] py-[24px] bg-neutral-0 sm:rounded-lg sm:max-w-[436px]'>
       <form onSubmit={handleSubmit}>
-        <h3>Personal information</h3>
+        <h3 className='h3-sans mb-[15px]'>Personal information</h3>
         <Field
           label="Company Name"
           name="company_name"
@@ -82,7 +82,8 @@ const Profile = ({ userId, URL, userInfo, setUserInfo }) => {
           value={formData.full_name}
           onChange={handleChange}
         />
-        <h3>Address</h3>
+        <div id="partition" className='h-0 border border-neutral-200 my-[33px]'> </div>
+        <h3 className='h3-sans mb-[15px]'>Address</h3>
         <Field
           label="Country"
           name="country"
@@ -92,7 +93,7 @@ const Profile = ({ userId, URL, userInfo, setUserInfo }) => {
           disabled
         />
         <CtaBtn 
-          size="S" 
+          size={ winWidth >= 640 ? "S" : "L" } 
           level={ 
             prevFormData !== null && 
             prevFormData.company_name === formData.company_name && 

@@ -10,13 +10,13 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
         </h2>
         <p className="text-white p18 pb-[26px]">
           Improve paperless business transactions and operations with our
-          all-in-one web app.{" "}
+          all-in-one web app{" "}
         </p>
       </div>
       <div className="btn flex flex-col sm:flex-row gap-[10px] pb-[47px]">
         <button
           type="submit"
-          className="w-52 h-[50px] bg-transparent  hover:bg-bluegreen-100
+          className="w-52 h-[50px] bg-transparent  hover:bg-white hover:text-neutral-600
           active:bg-bluegreen-500 text-white
           active:text-neutral-0 border border-white
   font-semibold
@@ -24,7 +24,7 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   dm-sans
   rounded"
         >
-          Download Proposal
+          Download proposal
         </button>
         <button
           onClick={() => {
@@ -59,8 +59,8 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
           }}
         /> */}
       </div>
-      <div className="image-section px-[15px] sm:px-[15%]">
-        <img src="./images/hero-image-rev.png" alt="dashboard" />
+      <div className="image-section px-[22px] sm:px-[15%]">
+        <img src="./images/herobanner2.png" alt="dashboard" />
       </div>{" "}
     </div>
   );

@@ -155,6 +155,10 @@ const LineChart = (t) => {
       });
     }
 
+    daysInDuration = daysInDuration.filter((point) =>
+      moment(point.date).isBefore(today)
+    );
+
     const data = {
       labels: daysInDuration.map((dayOrMonth) => dayOrMonth.date),
       datasets: [
@@ -201,7 +205,7 @@ const LineChart = (t) => {
           ctx.moveTo(x, topY);
           ctx.lineTo(x, bottomY);
           ctx.lineWidth = 1;
-          ctx.strokeStyle = "#000000";
+          ctx.strokeStyle = type === "market" ? "#224F55" : "#FF5733";
           ctx.stroke();
           ctx.restore();
         }
@@ -242,8 +246,11 @@ const LineChart = (t) => {
               unit: durationType === "yearly" ? "month" : "day",
               tooltipFormat: "MM/DD/YYYY",
               displayFormats: {
-                day: "MM-DD-YYYY",
+                month: "MM/YY",
+                day: "MM/DD",
               },
+              min: daysInDuration[0].date, // Set the minimum date
+              max: daysInDuration[daysInDuration.length - 1].date, // Set the maximum date to remove the gap
             },
             title: {
               display: false,
@@ -268,7 +275,7 @@ const LineChart = (t) => {
             },
             ticks: {
               callback(value) {
-                const valueToShow = value === 0 ? "0" : `${value / 1000}k`
+                const valueToShow = value === 0 ? "0" : `${value / 1000}k`;
                 return valueToShow;
               },
             },
@@ -312,7 +319,7 @@ const LineChart = (t) => {
   ]);
 
   return (
-    <div className="flex flex-col gap-8 bg-white px-[27px] py-[25px] border border-bluegreen-200 ">
+    <div className="flex flex-col gap-8 bg-white px-[27px] py-[25px] border border-bluegreen-200 rounded-lg ">
       <div className="flex gap-4 justify-between">
         <h3 className="h3-sans text-neutral-600">
           {type === "cashflow" ? "Balance" : "Market Price Tracker"}

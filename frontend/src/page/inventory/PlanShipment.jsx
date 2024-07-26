@@ -340,9 +340,9 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
             step="0.0001"
           />  
         </div>
-        <p className={isIrrationalCalculation || formData.amount_of_copra_sold <= 0 ? "text-red-600 mb-[14px]" : "text-red-600" }>
+        <p className={isIrrationalCalculation || formData.amount_of_copra_sold < 0 ? "text-red-600 mb-[14px]" : "text-red-600" }>
           {isIrrationalCalculation ? "The amount of copra shipping exceedsthe amount in your warehouse. If you want to modify the amount manually, please go to a settings page." : ""}
-          {formData.amount_of_copra_sold <= 0 ? "The amount of copra shipping has to be a positive number" : ""}
+          {formData.amount_of_copra_sold < 0 ? "The amount of copra shipping has to be a positive number" : ""}
         </p>
         <div className="flex flex-nowrap gap-[12px]">
           <CtaBtn

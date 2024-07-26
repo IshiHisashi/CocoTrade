@@ -180,16 +180,18 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
                   {transaction.date.slice(5, 7)}/{transaction.date.slice(8, 10)}
                   /{transaction.date.slice(2, 4)}
                 </td>
-                <td className="pl-[10px] py-[12.5px]">
-                  {transaction.sale === 0 ? "" : "php. "}
-                  {transaction.sale === 0
-                    ? "to be informed"
-                    : transaction.sale.toFixed(2)}
+                <td
+                  className={`pl-[10px] py-[12.5px] ${transaction.sale === 0 ? "text-center" : ""}`}
+                >
+                  {transaction.sale === 0 ? "" : "Php. "}
+                  {transaction.sale === 0 ? "-" : transaction.sale.toFixed(2)}
                 </td>
-                <td className="pl-[10px] py-[12.5px]">
-                  php.{" "}
+                <td
+                  className={`pl-[10px] py-[12.5px] ${transaction.purchase === 0 ? "text-center" : ""}`}
+                >
+                  {transaction.purchase === 0 ? "" : "Php. "}
                   {transaction.purchase === 0
-                    ? "00.00"
+                    ? "-"
                     : transaction.purchase.toFixed(2)}
                 </td>
               </tr>

@@ -27,7 +27,7 @@ const Sale = ({ URL }) => {
 
   const classNameForModal =
 `
-  absolute bg-white top-0 left-0 w-full h-full sm:top-[55%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[80vh] sm:max-w-[30vw] overflow-scroll p-3`;
+  absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-scroll sm:h-auto sm:w-[508px]`;
  
   return (
     <div>
@@ -36,9 +36,11 @@ const Sale = ({ URL }) => {
     content: {
       zIndex: '9999',
       position: 'relative',
+      padding: '24px'
     },
     overlay: {
-      zIndex: '9998'
+      zIndex: '9998',
+      backgroundColor: "#24303790",
     }
   }}
       className={classNameForModal}
@@ -57,7 +59,7 @@ const Sale = ({ URL }) => {
           onFormSubmit={handleFormSubmit}
         />
       </Modal>
-      <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] m-[40px]">
+      <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] lg:m-[30px]">
 
       <ViewSalesTable
         showEditForm={showEditForm}

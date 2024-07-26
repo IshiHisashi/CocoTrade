@@ -334,12 +334,15 @@ return () => {
 
   return (
     <div>
-   <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
+ 
+      
+      <div className="overflow-x-auto rounded-lg">
+      <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
    <label className="mr-4">
     <span className="h3-sans">{dateLabel}</span>
   </label>
   <div className="relative flex items-center">
-    <label className="mr-2 font-bold">
+    <label className="mr-2 font-bold text-[14px]">
       Filter by date:
     </label>
     <div className="relative flex cursor-pointer">
@@ -349,7 +352,7 @@ return () => {
         value={inputLabel}
         ref={inputRef}
         onClick={() => setIsDateModalOpen(true)}
-        className="w-60 py-2 px-2 border rounded cursor-pointer text-neutral-400  border-bluegreen-200"
+        className="sm:w-32 md:w-60 py-2 px-2 border rounded cursor-pointer text-neutral-400  border-bluegreen-200"
       />
       <button 
         type="button" 
@@ -372,8 +375,8 @@ return () => {
   overlayClassName="absolute inset-0 bg-black bg-opacity-0"
   style={{
     content: {
-        top: `${inputPosition.top -11}px`, 
-        left: `${inputPosition.left-140}px`,
+        top: `${inputPosition.top+40}px`, 
+        left: `${inputPosition.left-60}px`,
         right: 'auto',
         bottom: 'auto',
         marginRight: '0',
@@ -381,7 +384,7 @@ return () => {
         transform: 'none'
     }
 }}>
-  <div className="bg-white p-6 rounded-lg shadow-lg w-[380px]" style={{ marginTop: 'calc(100% - 330px)' }}>
+  <div className="bg-white p-6 rounded-lg shadow-lg sm:w-[250px] md:w-[300px]">
     <h2 className="text-sm font-semibold text-neutral-600 mb-4">Select date range</h2>
     {isDatePickerVisible ? (
   <>
@@ -418,11 +421,11 @@ return () => {
             placeholder="MM/DD/YY - MM/DD/YY"
             readOnly
             onClick={showDatePicker}
-            className="w-full py-2 px-4 mb-4 mt-2 border rounded-lg cursor-pointer text-neutral-600 border w-[310px]"
+            className="w-full py-2 px-4 mb-4 mt-2 border rounded-lg cursor-pointer text-sm text-neutral-600 border w-[310px]"
           />
            <button
         type="button"
-        className="absolute right-10 top-32 cursor-pointer"
+        className="absolute right-10 top-[80px] cursor-pointer"
         onClick={showDatePicker}
       >
         <img src={CalendarIcon} alt="Calendar" />
@@ -466,8 +469,6 @@ return () => {
   </div>
  
 </div>
-      
-      <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
             <tr className="bg-neutral-600 text-white text-left">
@@ -514,7 +515,7 @@ return () => {
   <img src={EllipseIcon} alt="Options" />
 </button>
                     {dropdownVisible === purchase._id && (
-      <div className="dropdown-content absolute top-0 right-0  bg-white border border-gray-200 rounded-md shadow-lg z-10">
+      <div className="dropdown-content absolute top-11 right-0  bg-white border border-gray-200 rounded-md shadow-lg z-10">
                         <button
                           type="button"
                           className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 pr-8"

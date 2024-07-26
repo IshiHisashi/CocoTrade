@@ -371,7 +371,10 @@ const getStatusClass = (status) => {
 
   return (
     <div>
-   <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
+   
+
+      <div className="overflow-x-auto rounded-lg">
+      <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
   <label className="mr-4">
     <span className="h3-sans">{dateLabel}</span>
   </label>
@@ -385,7 +388,7 @@ const getStatusClass = (status) => {
     </label>
    
     <div className="relative flex items-center mb-2 sm:mb-0">
-      <label className="mr-2 font-bold">
+    <label className="mr-2 font-bold text-[14px]">
         Filter by date
       </label>
       <input
@@ -394,8 +397,8 @@ const getStatusClass = (status) => {
           value={inputLabel}
           onClick={() => setIsDateModalOpen(true)}
           ref={inputRef}
-          className="w-60 p-[15px] h-[28px] border rounded cursor-pointer text-neutral-400 border-bluegreen-200"
-        />
+          className="sm:w-32 md:w-60 py-2 px-2 border rounded cursor-pointer text-neutral-400  border-bluegreen-200"
+          />
        <button
           type="button"
           className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
@@ -416,8 +419,8 @@ const getStatusClass = (status) => {
   overlayClassName="absolute inset-0 bg-black bg-opacity-0"
   style={{
     content: {
-        top: `${inputPosition.top-18}px`, 
-        left: `${inputPosition.left-140}px`,
+        top: `${inputPosition.top+40}px`, 
+        left: `${inputPosition.left-60}px`,
         right: 'auto',
         bottom: 'auto',
         marginRight: '0',
@@ -425,8 +428,8 @@ const getStatusClass = (status) => {
         transform: 'none'
     }
 }}>
-  <div className="bg-white p-6 rounded-lg shadow-lg w-[380px]" style={{ marginTop: 'calc(100% - 330px)' }}>
-    <h2 className="text-sm font-semibold text-neutral-600 mb-4">Select date range</h2>
+  <div className="bg-white p-6 rounded-lg shadow-lg sm:w-[250px] md:w-[300px]">
+  <h2 className="text-sm font-semibold text-neutral-600 mb-4">Select date range</h2>
     {isDatePickerVisible ? (
   <>
   <DatePicker
@@ -466,7 +469,7 @@ const getStatusClass = (status) => {
           />
            <button
         type="button"
-        className="absolute right-10 top-32 cursor-pointer"
+        className="absolute right-10 top-[80px] cursor-pointer"
         onClick={showDatePicker}
       >
         <img src={CalendarIcon} alt="Calendar" />
@@ -510,8 +513,6 @@ const getStatusClass = (status) => {
 
   </div>
 </div>
-
-      <div className="overflow-x-auto rounded-lg">
       <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
                        <thead>
                        <tr className="bg-neutral-600 text-white text-left">
@@ -522,7 +523,7 @@ const getStatusClass = (status) => {
                        <th className="p-2.5 min-w-[123px]">Received On</th>
                        <th className="p-2.5 min-w-[156px]">Total sale</th>
                        <th className="p-2.5 min-w-[141px]">Status</th>
-            <th className="p-2.5 rounded-tr-[8px] w-[72px]">Action</th>
+            <th className="p-2.5 rounded-tr-[8px] min-w-[100px]">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -572,10 +573,10 @@ const getStatusClass = (status) => {
                   {
                     // eslint-disable-next-line no-underscore-dangle
                     dropdownVisible === sale._id && (
-                      <div className="dropdown-content absolute top-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                      <div className="dropdown-content absolute top-11 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                         <button
                           type="button"
-                          className="flex items-center px-2 py-2 text-neutral-600 hover:bg-bluegreen-100  pr-8"
+                          className="flex items-center px-4 py-2 text-neutral-600 hover:bg-bluegreen-100 pr-8"
                           onClick={(e) => {
                             handleEditClick(sale,e);
                           }}
@@ -585,7 +586,7 @@ const getStatusClass = (status) => {
                         </button>
                         <button
                           type="button"
-                          className="flex items-center px-2 py-2 text-neutral-600 hover:bg-bluegreen-100"
+                          className="flex items-center px-4 py-2 text-neutral-600 hover:bg-bluegreen-100"
                           onClick={(e) =>
                             // eslint-disable-next-line no-underscore-dangle
                             handleDeleteClick(sale._id,e)

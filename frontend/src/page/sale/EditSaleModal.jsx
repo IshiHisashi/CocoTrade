@@ -300,7 +300,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   };
 
   return (
-    <div className="modal">
+    <div className="modal font-dm-sans">
       {console.log(manufacturers)}
       <h1 className="text-neutral-600 font-dm-sans font-bold text-[24px]">Edit Sale</h1>
       <small className="text-[#8E9299] font-dm-sans">Update sales entry information</small>
@@ -327,7 +327,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           required
         />
         <Field
-          className="w-[183px]"
+          className="w-[183px] focus:ring-bluegreen-600"
           label="Shipment date"
           name="copra_ship_date"
           type="date"
@@ -369,7 +369,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           type="number"
           value={formData.sales_unit_price}
           onChange={handleChange}
-          unit="PHP"
+          unit="Php"
           adornment="start"
           adornmentEnd="per kg"
           disabled
@@ -378,7 +378,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           label="Copra Sold"
           name="amount_of_copra_sold"
           type="number"
-          className="w-[183px]"
+          className="w-[183px] focus:border-bluegreen-500 focus:ring-bluegreen-500"
           value={formData.amount_of_copra_sold}
           onChange={handleChange}
           unit="kg"
@@ -411,7 +411,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           onChange={handleChange}
           disabled={formData.status !== "completed"}
           required={formData.status === "completed"}
-          unit="PHP"
+          unit="Php"
           adornment="start"
           min="0"
           step="0.0001"

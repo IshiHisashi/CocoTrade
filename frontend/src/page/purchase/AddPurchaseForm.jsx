@@ -23,7 +23,7 @@ const AddPurchaseForm = ({
   const [formData, setFormData] = useState({
     farmer_name: "",
     invoice_number: "",
-    purchase_date: "",
+    purchase_date: new Date().toISOString().split('T')[0], // Set default to today's date
     sales_unit_price: "",
     amount_of_copra_purchased: "",
     moisture_test_details: "",

@@ -3,7 +3,7 @@ import axios from "axios";
 import CtaBtn from '../../component/btn/CtaBtn';
 import Field from '../../component/field-filter/Field';
 
-const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
+const Preference = ({ userId, URL, userInfo, setUserInfo, winWidth }) => {
   const [latestInv, setLatestInv] = useState(null);
   const [latestFin, setLatestFin] = useState(null);
   const [formData, setFormData] = useState({
@@ -145,14 +145,15 @@ const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
   }
 
   return (
-    <div>
+    <div className='px-[35px] py-[24px] bg-neutral-0 sm:rounded-lg sm:max-w-[436px]'>
       <form onSubmit={handleSubmit}>
-        <h3>Preference</h3>
+        <h3 className='h3-sans mb-[15px]'>Preference</h3>
         <Field
           label="Profit margin"
           name="margin"
           type="number"
           value={formData.margin}
+          unit="%"
           onChange={handleChange}
         />
         <Field
@@ -160,6 +161,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
           name="amount_per_ship"
           type="number"
           value={formData.amount_per_ship}
+          unit="%"
           onChange={handleChange}
         />
         <Field
@@ -167,6 +169,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
           name="max_inventory_amount"
           type="number"
           value={formData.max_inventory_amount}
+          unit="kg"
           onChange={handleChange}
         />
         <Field
@@ -174,6 +177,7 @@ const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
           name="current_amount_with_pending"
           type="number"
           value={formData.current_amount_with_pending}
+          unit="kg"
           onChange={handleChange}
         />
         <Field
@@ -181,10 +185,11 @@ const Preference = ({ userId, URL, userInfo, setUserInfo }) => {
           name="current_balance"
           type="number"
           value={formData.current_balance}
+          unit="php"
           onChange={handleChange}
         />
         <CtaBtn 
-          size="S" 
+          size={ winWidth >= 640 ? "S" : "L" } 
           level={ 
             prevFormData !== null && 
             prevFormData.margin === formData.margin && 

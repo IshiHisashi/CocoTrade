@@ -179,7 +179,7 @@ const Dashboard = ({ URL }) => {
             >
               <button
                 type="button"
-                className="mx-2"
+                className="mx-2 grid"
                 onClick={() => navigate("/sales")}
               >
                 <img src={Info} alt="toggle tooltip" className="inline-block" />

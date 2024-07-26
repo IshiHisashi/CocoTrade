@@ -116,7 +116,7 @@ const Dashboard = ({ URL }) => {
   const [data, setData] = useState(null);
   const [upcomingShipDate, setUpcomingShipDate] = useState("");
   const [todaysInventory, setTodaysInventory] = useState(
-    "getting your today's inventory amount..."
+    "Getting your today's inventory amount..."
   );
   const navigate = useNavigate();
 
@@ -147,7 +147,7 @@ const Dashboard = ({ URL }) => {
       try {
         const res = await axios.get(`${URL}/user/${userId}/latestInv`);
         const formatted = Number(
-          res.data.latestInv[0].current_amount_left.$numberDecimal
+          res.data.latestInv[0].current_amount_with_pending.$numberDecimal
         ).toLocaleString();
         setTodaysInventory(`Today's inventory is ${formatted}kg`);
       } catch (error) {

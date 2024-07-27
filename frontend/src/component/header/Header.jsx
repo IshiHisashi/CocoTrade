@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import axios from "axios";
 import { NavLink, useLocation } from "react-router-dom";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
@@ -56,21 +62,41 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
     };
   }, []);
 
-  const handleNotificationClick = async (e) => {
-    e.stopPropagation();
-    setIsNotificationOpen(!isNotificationOpen);
-    setIsUserMenuOpen(false);
-    fnToToggleNav("-translate-x-full");
+  const handleNotificationClick = useCallback(
+    async (e) => {
+      e.stopPropagation();
+      setIsNotificationOpen(!isNotificationOpen);
+      setIsUserMenuOpen(false);
+      fnToToggleNav("-translate-x-full");
 
-    if (!isNotificationOpen) {
-      try {
-        await axios.patch(`${URL}/notification/user/${userId}/mark-read`);
-        setUnreadCount(0);
-      } catch (err) {
-        console.error("Error marking notifications as read:", err);
+      if (!isNotificationOpen) {
+        try {
+          await axios.patch(`${URL}/notification/user/${userId}/mark-read`);
+          setUnreadCount(0);
+        } catch (err) {
+          console.error("Error marking notifications as read:", err);
+        }
       }
-    }
-  };
+    },
+    [isNotificationOpen, userId, URL, fnToToggleNav]
+  );
+
+  const memoizedNotificationDropdown = useMemo(
+    () => (
+      <NotificationDropdown
+        isNotificationOpen={isNotificationOpen}
+        setIsNotificationOpen={setIsNotificationOpen}
+        userId={userId}
+        URL={URL}
+      />
+    ),
+    [isNotificationOpen, userId, URL]
+  );
+
+  const memoizedUserMenuDropdown = useMemo(
+    () => <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />,
+    [isUserMenuOpen]
+  );
 
   let pageTitle;
   let pageInfo;
@@ -150,13 +176,14 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
                 {unreadCount}
               </span>
             )}
-            <NotificationDropdown
+            {memoizedNotificationDropdown}
+            {/* <NotificationDropdown
               isNotificationOpen={isNotificationOpen}
-              setIsNotificationOpen={setIsNotificationOpen}
+              setIsNotificationOpen={setIsNotificationOpenUseCallback}
               userId={userId}
               URL={URL}
               onClick={(e) => e.stopPropagation()}
-            />
+            /> */}
           </button>
           <button
             type="button"
@@ -170,7 +197,8 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
             aria-label="profile"
           >
             {companyName.split("")[0]}
-            <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />
+            {memoizedUserMenuDropdown}
+            {/* <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} /> */}
           </button>
         </div>
       </div>

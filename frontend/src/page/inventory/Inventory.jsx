@@ -33,7 +33,7 @@ const Inventory = ({ URL }) => {
     setShowConfirmation(true);
   };
   const classNameForModal =
-    "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] lg:max-w-[30vw] max-w-[90vw] overflow-scroll p-2";
+    "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] sm:max-w-[400px] max-w-[382px] overflow-scroll p-2";
 
   return (
     <div className="sm:pt-[25px] sm:pr-[32px] sm:pb-[30px] sm:pl-[35px] flex flex-wrap">
@@ -67,6 +67,17 @@ const Inventory = ({ URL }) => {
             imgSource="./btn-imgs/calender.png"
           />
           <Modal
+            style={{
+              content: {
+                zIndex: "9999",
+                position: "relative",
+                padding: "24px",
+              },
+              overlay: {
+                zIndex: "9998",
+                backgroundColor: "#24303790",
+              },
+            }}
             className={classNameForModal}
             isOpen={showModal}
             onRequestClose={() => {

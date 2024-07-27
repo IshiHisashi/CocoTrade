@@ -159,27 +159,6 @@ const LineChartRevised = ({
 
         const dataPoints = fillInMissingData(dateRange, rawDataPoints);
 
-        // // If today's date is not the latest datapoint's date, copy the number from the latest datapoint and create a new datapoint for today.
-        // if (dataPoints[0].x !== today.toISOString().split("T")[0]) {
-        //   const todaysData = {
-        //     x: today.toISOString().split("T")[0],
-        //     y: dataPoints[0].y,
-        //   };
-        //   dataPoints.unshift(todaysData);
-        // }
-
-        // // If the oldest data is not of the startDate, create a datapoint for the startDate
-        // if (
-        //   dataPoints[dataPoints.length - 1].x !==
-        //   startDate.toISOString().split("T")[0]
-        // ) {
-        //   const startDatesData = {
-        //     x: startDate.toISOString().split("T")[0],
-        //     y: dataPoints[dataPoints.length - 1].y,
-        //   };
-        //   dataPoints.push(startDatesData);
-        // }
-
         // Create a labels and modify timeOption
         const durationLabels = [];
         if (durationType === "yearly") {

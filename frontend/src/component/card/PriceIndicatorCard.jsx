@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import { UserIdContext } from "../../contexts/UserIdContext";
 import MUp from "../../assets/icons/MarketPrice-Up.svg";
 import MDown from "../../assets/icons/MarketPrice-Down.svg";
@@ -52,7 +52,7 @@ const calculateDiff = (obj) => {
   return { priceDiff, percentageDiff, arrow, trend };
 };
 
-const PriceIndicatorCard = (props) => {
+const PriceIndicatorCard = memo((props) => {
   const { type, URL } = props;
   const userId = useContext(UserIdContext);
   const [dataObj, setDataObj] = useState(null);
@@ -121,6 +121,6 @@ const PriceIndicatorCard = (props) => {
       )}
     </div>
   );
-};
+});
 
 export default PriceIndicatorCard;

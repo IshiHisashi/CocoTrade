@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserIdContext } from "../../contexts/UserIdContext";
 
@@ -26,7 +26,7 @@ const getTotalSum = async (type, userId, URL) => {
   }
 };
 
-const RecentActivityCard = (props) => {
+const RecentActivityCard = memo((props) => {
   const { type, URL } = props;
   const userId = useContext(UserIdContext);
   const [totalSum, setTotalSum] = useState(null);
@@ -50,6 +50,6 @@ const RecentActivityCard = (props) => {
       </p>
     </div>
   );
-};
+});
 
 export default RecentActivityCard;

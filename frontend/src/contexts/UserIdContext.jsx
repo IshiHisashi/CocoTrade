@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import auth from "../../firebase-config";
+import LoadingScreen from "../component/loading/LoadingScreen";
 
 export const UserIdContext = createContext();
 
@@ -39,7 +40,7 @@ const UserIdProvider = ({ children }) => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{/* <LoadingScreen /> */}</div>;
   }
 
   return (

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import CtaBtn from "../component/btn/CtaBtn";
-import useMediaQuery from "../hook/useMediaQuery";
+import CtaBtn from "../../component/btn/CtaBtn";
+import useMediaQuery from "../../hook/useMediaQuery";
 
 const NotFound = () => {
   const navigate = useNavigate();

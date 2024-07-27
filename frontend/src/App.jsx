@@ -17,7 +17,7 @@ import Auth from "./page/auth/Auth.jsx";
 import Onboarding from "./page/onboarding/Onboarding.jsx";
 import { UserIdContext } from "./contexts/UserIdContext.jsx";
 import Setting from "./page/setting/Setting.jsx";
-import NotFound from "./page/NotFound.jsx";
+import NotFound from "./page/others/NotFound.jsx";
 
 const AppRoutes = ({ userid, setUser, URL }) => {
   const navigate = useNavigate();

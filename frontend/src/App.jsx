@@ -16,83 +16,84 @@ import Layout from "./Layout.jsx";
 import Auth from "./page/auth/Auth.jsx";
 import Onboarding from "./page/onboarding/Onboarding.jsx";
 import { UserIdContext } from "./contexts/UserIdContext.jsx";
+import { LoadingProvider } from "./contexts/LoadingContext.jsx";
 import Setting from "./page/setting/Setting.jsx";
+import NotFound from "./page/others/NotFound.jsx";
 
 const AppRoutes = ({ userid, setUser, URL }) => {
   const navigate = useNavigate();
-
   console.log(userid);
-
   // useEffect(() => {
   //   if (!userid) {
   //     navigate("/");
   //   }
-  //   // if (userid) {
-  //   //   navigate("/dashboard");
-  //   // } else {
-  //   //   navigate("/");
-  //   // }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
   return (
-    <Routes>
-      <Route path="/*" element={<Landing fnToSetUser={setUser} URL={URL} />} />
-      <Route path="/onboarding/*" element={<Onboarding URL={URL} />} />
-      {userid && (
-        <>
-          <Route
-            path="/dashboard"
-            element={
-              <Layout URL={URL}>
-                <Dashboard URL={URL} />
-              </Layout>
-            }
-          />
-          <Route
-            path="/inventory"
-            element={
-              <Layout URL={URL}>
-                <Inventory URL={URL} />
-              </Layout>
-            }
-          />
-          <Route
-            path="/purchase"
-            element={
-              <Layout URL={URL}>
-                <Purchase URL={URL} />
-              </Layout>
-            }
-          />
-          <Route
-            path="/sales"
-            element={
-              <Layout URL={URL}>
-                <Sale URL={URL} />
-              </Layout>
-            }
-          />
-          <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
-          <Route
-            path="/finances"
-            element={
-              <Layout URL={URL}>
-                <Finance URL={URL} />
-              </Layout>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <Layout URL={URL}>
-                <Setting URL={URL} />
-              </Layout>
-            }
-          />
-        </>
-      )}
-    </Routes>
+    <LoadingProvider>
+      <Routes>
+        <Route path="/" element={<Landing fnToSetUser={setUser} URL={URL} />} />
+        <Route path="/*" element={<NotFound />} />
+        <Route path="/onboarding/*" element={<Onboarding URL={URL} />} />
+        {userid && (
+          <>
+            <Route
+              path="/dashboard"
+              element={
+                <Layout URL={URL}>
+                  <Dashboard URL={URL} />
+                </Layout>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <Layout URL={URL}>
+                  <Inventory URL={URL} />
+                </Layout>
+              }
+            />
+            <Route
+              path="/purchase"
+              element={
+                <Layout URL={URL}>
+                  <Purchase URL={URL} />
+                </Layout>
+              }
+            />
+            <Route
+              path="/sales"
+              element={
+                <Layout URL={URL}>
+                  <Sale URL={URL} />
+                </Layout>
+              }
+            />
+            <Route path="/sale/ViewSalesTable" element={<ViewSalesTable />} />
+            <Route
+              path="/finances"
+              element={
+                <LoadingProvider>
+                  <Layout URL={URL}>
+                    <Finance URL={URL} />
+                  </Layout>
+                </LoadingProvider>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <Layout URL={URL}>
+                  <Setting URL={URL} />
+                </Layout>
+              }
+            />
+            {/* <Route path="/*" element={<NotFound />} /> */}
+          </>
+        )}
+      </Routes>
+    </LoadingProvider>
   );
 };
 

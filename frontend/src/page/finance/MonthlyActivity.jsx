@@ -7,6 +7,7 @@ import axios from "axios";
 import moment from "moment";
 import { Chart, registerables } from "chart.js";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 import MonthlyTable from "./MonthlyTable";
 
 Chart.register(...registerables);
@@ -54,16 +55,20 @@ const MonthlyActivity = ({ URL }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
 
   // Function to determine if the screen is 'lg' or larger
   const isLgScreen = () => window.innerWidth >= 1024;
 
   // Read sales
   useEffect(() => {
+    startLoading();
     axios
       .get(`${URL}/tmpFinRoute/${userId}/sale/monthly-aggregate`)
       .then((res) => {
         setMonthlySale(res.data.data.salesAggregation);
+        stopLoading();
       })
       .catch();
     // Read purchase
@@ -71,9 +76,10 @@ const MonthlyActivity = ({ URL }) => {
       .get(`${URL}/tmpFinRoute/${userId}/purchase/monthly-aggregate`)
       .then((res) => {
         setMonthlyPurchase(res.data.data.purchaseAggregation);
+        stopLoading();
       })
       .catch();
-  }, [userId, URL]);
+  }, [userId, URL, startLoading, stopLoading]);
 
   function getLast12Months() {
     const months = [];

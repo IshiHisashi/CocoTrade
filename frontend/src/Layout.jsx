@@ -5,6 +5,8 @@ import Header from "./component/header/Header.jsx";
 import FormModal from "./component/modal/FormModal.jsx";
 import ConfirmationModal from "./page/auth/ConfirmationModal.jsx";
 import hideScrollbar from "./styles/HideScrollbar.module.css";
+import { useLoading } from "./contexts/LoadingContext.jsx";
+import LoadingScreen from "./component/loading/LoadingScreen.jsx";
 
 const classNameForModal =
   "absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-auto sm:h-auto";
@@ -35,8 +37,18 @@ const Layout = (props) => {
       ? "overflow-clip"
       : "overflow-scroll";
 
+  // ESC keydown to stop loading screen
+  const { loading } = useLoading();
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+  const handleCloseLoadingScreen = () => {
+    setShowLoadingScreen(false);
+  };
+
   return (
-    <>
+    <div>
+      {loading && showLoadingScreen && (
+        <LoadingScreen onClose={handleCloseLoadingScreen} />
+      )}
       <Header URL={URL} translateX={translateX} fnToToggleNav={setTranslateX} />
       <Nav
         fnToOpenFormModal={setIsFormModalOpen}
@@ -74,7 +86,7 @@ const Layout = (props) => {
           windowWidth={windowWidth}
         />
       </Modal>
-    </>
+    </div>
   );
 };
 

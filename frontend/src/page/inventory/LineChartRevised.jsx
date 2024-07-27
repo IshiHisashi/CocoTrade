@@ -131,7 +131,6 @@ const LineChartRevised = ({
           return dates;
         };
         const dateRange = generateDateRange(startDate, new Date())
-        console.log(dateRange);
 
         // Create a raw inv data array based on duration without filling missing date
         const modifiedInvData = inventory.filter((inv) => {

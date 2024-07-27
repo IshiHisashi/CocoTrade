@@ -21,9 +21,7 @@ import NotFound from "./page/NotFound.jsx";
 
 const AppRoutes = ({ userid, setUser, URL }) => {
   const navigate = useNavigate();
-
   console.log(userid);
-
   // useEffect(() => {
   //   if (!userid) {
   //     navigate("/");

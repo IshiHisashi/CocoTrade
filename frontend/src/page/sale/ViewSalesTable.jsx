@@ -4,6 +4,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
+import moment from 'moment-timezone';
 import Pagination from "../../component/btn/Pagination";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
  import Exit from '../../assets/icons/Exit.svg';
@@ -25,14 +26,15 @@ const statusOptions = [
   { value: 'all', label: 'All', icon: BlackEllipse },
   { value: 'pending', label: 'Pending', icon: YellowEclipse },
   { value: 'ongoing', label: 'Ongoing', icon: RedEclipse },
-  { value: 'completed', label: 'Complete', icon: BlueEllipse },
+  { value: 'completed', label: 'Completed', icon: BlueEllipse },
 ];
 
 const CustomDropdown = ({ options, value, onChange }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const handleOptionClick = (optionValue) => {
+  const handleOptionClick = (optionValue,e) => {
+    e.preventDefault();
     onChange(optionValue);
     setDropdownOpen(false);
   };
@@ -75,7 +77,7 @@ const CustomDropdown = ({ options, value, onChange }) => {
               key={option.value}
               type="button"
               className="flex items-center hover:bg-gray-100 w-full text-left p-[15px]"
-              onClick={() => handleOptionClick(option.value)}
+              onClick={(e) => {handleOptionClick(option.value,e);}}
             >
               <img src={option.icon} alt={option.label} className="w-4 h-4 mr-2" />
               {option.label}
@@ -93,13 +95,15 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const [filteredSales, setFilteredSales] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
-  const today = new Date();
-  const initialDateLabel = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-  const [dateRange, setDateRange] = useState({
-    startDate: today,
-    endDate: today,
+  const today = moment().tz("America/Vancouver").toDate(); 
+  const initialStartDate = new Date(today.getFullYear(), today.getMonth(), 1); // Start of this month
+  const initialEndDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of this month
+  const initialDateLabel = `${initialStartDate.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`; // Label for this month
+   const [dateRange, setDateRange] = useState({
+    startDate: initialStartDate,
+    endDate: initialEndDate,
   });
-  const [inputLabel, setInputLabel] = useState("Today");
+  const [inputLabel, setInputLabel] = useState("This Month");
   const [dateLabel, setDateLabel] = useState(initialDateLabel);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
@@ -110,8 +114,7 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const recordsPerPage = 10;
   const inputRef = useRef(null);
   const [inputPosition, setInputPosition] = useState({ top: 0, left: 0 });
-
-
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const setNewlyAddedInLocalStorage = (value) => {
     localStorage.setItem('newlyAdded', JSON.stringify(value));
@@ -158,16 +161,12 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   useEffect(() => {
     const filterSales = () => {
       const filtered = sales.filter((sale) => {
-        const saleDate = new Date(sale.copra_ship_date);
-        const start = dateRange.startDate
-          ? new Date(dateRange.startDate).setHours(0, 0, 0, 0)
-          : null;
-        const end = dateRange.endDate
-          ? new Date(dateRange.endDate).setHours(23, 59, 59, 999)
-          : null;
+        const saleDate = new Date(sale.copra_ship_date).toISOString().split("T")[0];;
+        const startDate = dateRange.startDate.toISOString().split("T")[0];
+        const endDate = dateRange.endDate.toISOString().split("T")[0];
         return (
-          (!start || saleDate >= start) &&
-          (!end || saleDate <= end) &&
+          (!startDate || saleDate >= startDate) &&
+          (!endDate || saleDate <= endDate) &&
           (statusFilter === "all" || sale.status === statusFilter)
         );
       });
@@ -198,8 +197,10 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
       case "today":
         label = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
         setInputLabel("Today");
-        start = new Date(today.setHours(0, 0, 0, 0));
-        end = new Date(today.setHours(23, 59, 59, 999));
+        start = new Date(today);
+        end = new Date(today);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
         break;
       case "thisWeek":
         {
@@ -419,29 +420,33 @@ useEffect(() => {
   }, [newlyAdded, highlightNewlyAdded]);
   
 
+// const formatDate = (dateString) => {
+//   const date = new Date(dateString);
+//   const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
+//   return date.toLocaleDateString('en-US', options);
+// };
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
-  return date.toLocaleDateString('en-US', options);
-};
-const getStatusClass = (status) => {
-  switch (status) {
-    case 'ongoing':
-      return 'bg-orange-200 text-orange-500';
-    case 'pending':
-      return 'bg-yellow-100 text-yellow-200';
-    case 'completed':
-      return 'bg-bluegreen-100 text-bluegreen-500';
-    default:
-      return 'bg-gray-400';
-  }
-};
+  return date.toISOString().split("T")[0];
+  };
 
+
+  const getStatusClass = (status) => {
+    const baseClass = 'px-2 py-1 rounded-full text-sm font-semibold capitalize'; // Added 'capitalize' here
+    switch (status) {
+      case 'ongoing':
+        return `${baseClass} bg-orange-200 text-orange-500`;
+      case 'pending':
+        return `${baseClass} bg-yellow-100 text-yellow-200`;
+      case 'completed':
+        return `${baseClass} bg-bluegreen-100 text-bluegreen-500`;
+      default:
+        return `${baseClass} bg-gray-400`;
+    }
+  };
 
   return (
     <div>
-   
-
       <div className="overflow-x-auto rounded-lg">
       <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
   <label className="mr-4">
@@ -452,8 +457,9 @@ const getStatusClass = (status) => {
       <CustomDropdown
         options={statusOptions}
         value={statusFilter}
-        onChange={(value) => setStatusFilter(value)}
-      />
+        onChange={(value) => {
+          setStatusFilter(value);
+          setActiveDropdown(null);        }}      />
     </label>
    
     <div className="relative flex items-center mb-2 sm:mb-0">
@@ -648,22 +654,19 @@ const getStatusClass = (status) => {
                           className="flex items-center px-4 py-2 text-neutral-600 hover:bg-bluegreen-100 pr-8"
                           onClick={(e) => {
                             handleEditClick(sale,e);
+                            setActiveDropdown(null);
                           }}
                         >
                             <img src={EditIcon} alt="Edit" />
                           Edit
                         </button>
-                        <button
-                          type="button"
-                          className="flex items-center px-4 py-2 text-neutral-600 hover:bg-bluegreen-100"
-                          onClick={(e) =>
-                            // eslint-disable-next-line no-underscore-dangle
-                            handleDeleteClick(sale._id,e)
-                          }
-                        >
-                          <img src={DeleteIcon} alt="Delete" />
-                          Delete
-                        </button>
+                        <button type="button" className="flex items-center px-4 py-2 text-neutral-600 hover:bg-bluegreen-100" onClick={(e) => {
+        handleDeleteClick(sale._id, e);
+        setActiveDropdown(null); // Close dropdown after action
+      }}>
+        <img src={DeleteIcon} alt="Delete" />
+        Delete
+      </button>
                       </div>
                     )
                   }

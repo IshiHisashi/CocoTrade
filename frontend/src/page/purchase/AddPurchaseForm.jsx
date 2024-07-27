@@ -302,7 +302,7 @@ const AddPurchaseForm = ({
         
       <button
         type="button"
-        className="absolute top-2 right-2"
+        className="absolute top-7 right-5"
         onClick={() => setShowAddForm(false)}
       >
         <img src={Exit} alt="close" />
@@ -384,7 +384,7 @@ const AddPurchaseForm = ({
           min="0"
           step="0.0001"
         />
-        <div>
+        <div className="relative pb-2">
         <Field
           className="w-[183px]"
           label="Moisture level"
@@ -399,7 +399,7 @@ const AddPurchaseForm = ({
           max="100"
         />
          {showDeductionMessage && (
-    <div className="col-span-2 text-red-500 text-xs text-right mb-3">
+    <div className="col-span-2 absolute text-red-500 text-xs text-right top-20 pt-3 right-0">
             15% sale deduction applied
           </div>
         )}

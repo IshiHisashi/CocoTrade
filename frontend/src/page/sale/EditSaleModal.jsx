@@ -229,12 +229,12 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     return object;
   }
 
-  const prevWasPending = previousStatus === "pending";
-  const prevWasOngoing = previousStatus === "ongoing";
-  const prevWasCompleted = previousStatus === "completed";
-  const updateToPending = formData.status === "pending";
-  const updateToOngoing = formData.status === "ongoing";
-  const updateToCompleted = formData.status === "completed";
+  const prevWasPending = previousStatus === "Pending";
+  const prevWasOngoing = previousStatus === "Ongoing";
+  const prevWasCompleted = previousStatus === "Completed";
+  const updateToPending = formData.status === "Pending";
+  const updateToOngoing = formData.status === "Ongoing";
+  const updateToCompleted = formData.status === "Completed";
 
 
   const handleSubmit = async (e) => {
@@ -307,7 +307,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       <form onSubmit={handleSubmit}>
       <button
         type="button"
-       className="absolute top-2 right-2"
+       className="absolute top-7 right-5"
         onClick={() => setshowEditForm(false)}
       >
         <img src={Exit} alt="close" />

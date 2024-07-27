@@ -5,6 +5,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
+import moment from 'moment-timezone';
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import EllipseIcon from '../../assets/icons/Ellipse.svg';
 import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
@@ -24,9 +25,9 @@ const ViewPurchaseTable = ({
   const [filteredPurchases, setFilteredPurchases] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
-  const today = new Date();
-  const initialDateLabel = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-  const [dateRange, setDateRange] = useState({
+  const today = moment().tz("America/Vancouver").toDate(); 
+  const initialDateLabel = moment(today).format("MMMM DD, YYYY"); 
+ const [dateRange, setDateRange] = useState({
   startDate: today,
   endDate: today,
   });
@@ -40,12 +41,10 @@ const [inputLabel, setInputLabel] = useState("Today");
   const inputRef = useRef(null);
   const [inputPosition, setInputPosition] = useState({ top: 0, left: 0 });
 
- 
   const sortPurchaseData = (purchaseData) => {
     return purchaseData.sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date));
   };
 
-  
   useEffect(() => {
     const url = `${URL}/tmpFinRoute/${userId}/purchase`;
     axios
@@ -131,22 +130,17 @@ const [inputLabel, setInputLabel] = useState("Today");
   useEffect(() => {
     const filterPurchases = () => {
       const filtered = purchases.filter((purchase) => {
-        const purchaseDate = new Date(purchase.purchase_date);
-        const start = dateRange.startDate
-          ? new Date(dateRange.startDate).setHours(0, 0, 0, 0)
-          : null;
-        const end = dateRange.endDate
-          ? new Date(dateRange.endDate).setHours(23, 59, 59, 999)
-          : null;
-        return (
-          (!start || purchaseDate >= start) && (!end || purchaseDate <= end)
-        );
+        const purchaseDate = new Date(purchase.purchase_date).toISOString().split("T")[0];
+        const startDate = dateRange.startDate.toISOString().split("T")[0];
+        const endDate = dateRange.endDate.toISOString().split("T")[0];
+        return purchaseDate >= startDate && purchaseDate <= endDate;
       });
       setFilteredPurchases(filtered);
-      setCurrentPage(1); // Reset to first page on filter change
+      setCurrentPage(1);
     };
     filterPurchases();
-  }, [purchases, dateRange]);
+}, [purchases, dateRange]);
+  
 
   const toggleDateModal = () => {
     setIsDateModalOpen(!isDateModalOpen);
@@ -169,8 +163,10 @@ const [inputLabel, setInputLabel] = useState("Today");
       case "today":
         label = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
         setInputLabel("Today");
-        start = new Date(today.setHours(0, 0, 0, 0));
-        end = new Date(today.setHours(23, 59, 59, 999));
+        start = new Date(today);
+        end = new Date(today);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
         break;
       case "thisWeek":
         label = "This Week";
@@ -277,11 +273,10 @@ const [inputLabel, setInputLabel] = useState("Today");
     };
   }, []);
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
-  return date.toLocaleDateString('en-US', options);
-};
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+    };
 
 const updateModalPosition = () => {
   if (inputRef.current) {
@@ -443,14 +438,14 @@ return () => {
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
             <tr className="bg-neutral-600 text-white text-left">
-            <th className="p-2.5 rounded-tl-[8px] min-w-[150px]">Invoice No.</th>
-    <th className="p-2.5 min-w-[100px]">Date</th>
-    <th className="p-2.5 min-w-[150px]">Farmers Name</th>
-    <th className="p-2.5 min-w-[150px]">Copra Bought</th>
-    <th className="p-2.5 min-w-[150px]">Moisture</th>
-    <th className="p-2.5 min-w-[150px]">Price Per kg</th>
-    <th className="p-2.5 min-w-[150px]">Total Purchase</th>
-    <th className="p-2.5 rounded-tr-[8px] min-w-[100px]">Action</th>
+            <th className="p-2.5 rounded-tl-[8px] min-w-[123px]">Invoice No.</th>
+    <th className="p-2.5 min-w-[113px]">Date</th>
+    <th className="p-2.5 min-w-[183px]">Farmers Name</th>
+    <th className="p-2.5 min-w-[139px]">Copra Bought</th>
+    <th className="p-2.5 min-w-[143px]">Moisture</th>
+    <th className="p-2.5 min-w-[143px]">Price Per kg</th>
+    <th className="p-2.5 min-w-[156px]">Total Purchase</th>
+    <th className="p-2.5 rounded-tr-[8px] min-w-[72px]">Action</th>
  
             </tr>
           </thead>
@@ -460,13 +455,13 @@ return () => {
                 key={purchase._id}
                 className={getRowClassName(indexOfFirstRecord + index)}              >
          <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{purchase.invoice_number}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{formatDate(purchase.purchase_date)}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{purchase.farmer_id ? purchase.farmer_id.full_name : "-"}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`${formatDecimal(purchase.amount_of_copra_purchased)} kg.`}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`${formatDecimal(purchase.moisture_test_details, 0)}%`}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`Php ${formatDecimal(purchase.sales_unit_price)}`}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`Php ${formatDecimal(purchase.total_purchase_price)}`}</td>
-<td className="px-2 py-0 relative" style={{ width: '123px', height: '43px' }}>
+<td className="px-2 py-0" style={{ width: '113px', height: '43px' }}>{formatDate(purchase.purchase_date)}</td>
+<td className="px-2 py-0" style={{ width: '183px', height: '43px' }}>{purchase.farmer_id ? purchase.farmer_id.full_name : "-"}</td>
+<td className="px-2 py-0" style={{ width: '139px', height: '43px' }}>{`${formatDecimal(purchase.amount_of_copra_purchased)} kg.`}</td>
+<td className="px-2 py-0" style={{ width: '143px', height: '43px' }}>{`${formatDecimal(purchase.moisture_test_details, 0)}%`}</td>
+<td className="px-2 py-0" style={{ width: '143px', height: '43px' }}>{`Php ${formatDecimal(purchase.sales_unit_price)}`}</td>
+<td className="px-2 py-0" style={{ width: '156px', height: '43px' }}>{`Php ${formatDecimal(purchase.total_purchase_price)}`}</td>
+<td className="px-2 py-0 relative" style={{ width: '72px', height: '43px' }}>
                   <div className="dropdown" ref={dropdownRef}>
                   <button
   type="button"

@@ -38,7 +38,7 @@ const BusinessProfile = (props) => {
         style={{ backgroundImage: `url(${image1})` }}
       />
 
-      <div className="w-full bg-white p-8 mt-32 md:mt-8 filter-none md:order-1 md:col-span-2 max-w-[900px] mx-auto">
+      <div className="w-full bg-white p-8 mt-32 md:mt-8 filter-none md:order-1 md:col-span-2 max-w-[900px] mx-auto grid">
         <div>
           <img src={progress1} alt="" aria-hidden className="mb-8" />
           <h1 className="h4-sans-uppercase text-neutral-600">
@@ -46,7 +46,7 @@ const BusinessProfile = (props) => {
           </h1>
         </div>
 
-        <h2 className="h2-serif-normal sm:h2-serif text-neutral-600 pt-8">
+        <h2 className="font-['Rasa'] text-[30px] font-[600] sm:text-[40px] text-neutral-600 pt-8">
           Let&apos;s set up your profile
         </h2>
         <p className="p18 text-neutral-600">
@@ -91,11 +91,11 @@ const BusinessProfile = (props) => {
             required
             disabled
             info
-            infoText="Location will provide information on which currency will be used &#8212;currently our app is optimized only for Philippines"
+            infoText="The location will indicate the currency &#8212;currently, our app is available only in the Philippines."
           />
         </div>
 
-        <div className="grid justify-end sm:mt-16 md:mt-32">
+        <div className="grid justify-self-end mt-4 sm:mt-16 md:mt-32 w-[185px]">
           <CtaBtn
             size="M"
             level={fullName && email && companyName && country ? "P" : "D"}

@@ -35,23 +35,12 @@ const [inputLabel, setInputLabel] = useState("Today");
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [newlyAdded, setNewlyAdded] = useState(false);
   const recordsPerPage = 10;
   const userId = useContext(UserIdContext);
   const inputRef = useRef(null);
   const [inputPosition, setInputPosition] = useState({ top: 0, left: 0 });
 
-  const setNewlyAddedInLocalStorage = (value) => {
-    localStorage.setItem('newlyAdded', JSON.stringify(value));
-  };
-
-  const getNewlyAddedFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem('newlyAdded'));
-  };
-
-  const [highlightNewlyAdded, setHighlightNewlyAdded] = useState(getNewlyAddedFromLocalStorage());
-
-
+ 
   const sortPurchaseData = (purchaseData) => {
     return purchaseData.sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date));
   };
@@ -65,8 +54,6 @@ const [inputLabel, setInputLabel] = useState("Today");
         const sortedData = sortPurchaseData(response.data);
         setPurchases(sortedData);
         setFilteredPurchases(sortedData);
-        const newlyAddedFromStorage = getNewlyAddedFromLocalStorage();
-        setNewlyAdded(newlyAddedFromStorage);
       })
       .catch((error) => {
         console.error("Error fetching purchases:", error);
@@ -132,8 +119,6 @@ const [inputLabel, setInputLabel] = useState("Today");
         const sortedData = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setPurchases(sortedData);
           setFilteredPurchases(sortedData);
-          setNewlyAdded(false); // Do not set newly added on delete
-          setNewlyAddedInLocalStorage(false);
         })
         .catch((error) => {
           console.error("Error fetching purchases:", error);
@@ -272,17 +257,7 @@ const [inputLabel, setInputLabel] = useState("Today");
   };
 
   const getRowClassName = (index) => {
-    if (highlightNewlyAdded && currentPage === 1 && index === 0) {
-      return 'bg-neutral-100 cursor-pointer';
-    }
-    return index % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
-  };
-  const handleRowClick = (index) => {
-    if (index === 0 && newlyAdded) {
-      setHighlightNewlyAdded(false);
-      setNewlyAdded(false);
-      setNewlyAddedInLocalStorage(false);
-    }
+    return (index + indexOfFirstRecord) % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
   };
 
   useEffect(() => {
@@ -293,10 +268,6 @@ const [inputLabel, setInputLabel] = useState("Today");
         !event.target.closest('.dropdown-content')
       ) {
         setDropdownVisible(null);
-        if (newlyAdded && highlightNewlyAdded) {
-          setHighlightNewlyAdded(false);
-          setNewlyAddedInLocalStorage(false);
-        }
       }
     };
   
@@ -304,7 +275,7 @@ const [inputLabel, setInputLabel] = useState("Today");
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [newlyAdded, highlightNewlyAdded]); 
+  }, []);
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -484,15 +455,10 @@ return () => {
             </tr>
           </thead>
           <tbody>
-          {currentRecords.map((purchase, index) => (
-   <tr
-   key={purchase._id}
-   className={getRowClassName(index)}
-   onClick={(e) => {
-     e.stopPropagation(); // Prevent the event from bubbling up to the document click handler
-     handleRowClick(index);
-   }}
- >
+          {filteredPurchases.slice(indexOfFirstRecord, indexOfLastRecord).map((purchase, index) => (
+ <tr
+                key={purchase._id}
+                className={getRowClassName(indexOfFirstRecord + index)}              >
          <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{purchase.invoice_number}</td>
 <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{formatDate(purchase.purchase_date)}</td>
 <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{purchase.farmer_id ? purchase.farmer_id.full_name : "-"}</td>
@@ -545,7 +511,7 @@ return () => {
     <tr
       // eslint-disable-next-line react/no-array-index-key
       key={`empty-${index}`}
-      className={index % 2 === 0 ? 'bg-white' : 'bg-bluegreen-100'}
+      className={getRowClassName(indexOfFirstRecord + currentRecords.length + index)}
       style={{ width: '123px', height: '43px' }}
     >
       <td colSpan="8" className="px-2 py-0" aria-label="Empty Row">&nbsp;</td>

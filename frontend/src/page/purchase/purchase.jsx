@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ViewPurchaseTable from "./ViewPurchaseTable";
 import AddPurchaseForm from "./AddPurchaseForm.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
-import ConfirmationModal from "./ConfirmationModal"; 
+import ConfirmationModal from "./ConfirmationModal";
 import Add from "../../assets/icons/Add.svg";
 
 // Set the app element for accessibility
@@ -22,12 +22,11 @@ const Purchase = ({ URL }) => {
   );
   const [selectedPurchase, setSelectedPurchase] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false); // State for confirmation modal
-  const [confirmationMessage, setConfirmationMessage] = useState(""); 
+  const [confirmationMessage, setConfirmationMessage] = useState("");
 
   const handleEdit = (purchase) => {
     setSelectedPurchase(purchase);
     setShowAddForm(true);
-
   };
 
   const handleUpdate = async (updatedPurchase, currentPurchase, userid) => {
@@ -104,20 +103,21 @@ const Purchase = ({ URL }) => {
   absolute bg-white h-full top-0 left-0 right-0 bottom-0 sm:top-[50%] sm:left-[50%] sm:right-auto sm:bottom-auto sm:mr-[-50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[10px] sm:max-h-[95vh] overflow-scroll sm:h-auto sm:w-[508px]`;
   return (
     <div className="relative">
+      <title>Purchase | CocoTrade</title>
 
-<Modal
-  style={{
-    content: {
-      zIndex: '9999',
-      position: 'relative',
-      padding: '24px'
-    },
-    overlay: {
-      zIndex: '9998',
-      backgroundColor: "#24303790",
-    }
-  }}
-         className={classNameForModal}
+      <Modal
+        style={{
+          content: {
+            zIndex: "9999",
+            position: "relative",
+            padding: "24px",
+          },
+          overlay: {
+            zIndex: "9998",
+            backgroundColor: "#24303790",
+          },
+        }}
+        className={classNameForModal}
         isOpen={showAddForm}
         onRequestClose={() => {
           setShowAddForm(false);
@@ -141,28 +141,26 @@ const Purchase = ({ URL }) => {
         />
       </Modal>
       <div className="w-full flex justify-end items-center mb-4 pr-9 md:pr-8 md:pt-3">
-      <CtaBtn 
-      size="M"
-      level="P"
-      innerTxt="Add Purchase"
-      imgSource={Add}
-      onClickFnc={() => {
-        setShowAddForm(true);
-        setSelectedPurchase(null);
-      }}
-      
-    />
-    </div>
-    <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] lg:m-[30px]">
-    
-      <ViewPurchaseTable
-        setShowAddForm={setShowAddForm}
-        handleEdit={handleEdit}
-        purchasesFromParent={purchases}
-        URL={URL}
-      />
+        <CtaBtn
+          size="M"
+          level="P"
+          innerTxt="Add Purchase"
+          imgSource={Add}
+          onClickFnc={() => {
+            setShowAddForm(true);
+            setSelectedPurchase(null);
+          }}
+        />
       </div>
-       <ConfirmationModal
+      <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] lg:m-[30px]">
+        <ViewPurchaseTable
+          setShowAddForm={setShowAddForm}
+          handleEdit={handleEdit}
+          purchasesFromParent={purchases}
+          URL={URL}
+        />
+      </div>
+      <ConfirmationModal
         isOpen={showConfirmation}
         onRequestClose={() => {
           setShowConfirmation(false);

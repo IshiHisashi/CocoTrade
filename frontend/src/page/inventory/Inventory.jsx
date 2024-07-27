@@ -33,10 +33,11 @@ const Inventory = ({ URL }) => {
     setShowConfirmation(true);
   };
   const classNameForModal =
-    "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] max-w-[30vw] overflow-scroll p-2";
+    "absolute bg-white top-[50%] left-[50%] right-auto bottom-auto mr-[-50%] translate-x-[-50%] translate-y-[-50%] rounded-[10px] max-h-[85vh] lg:max-w-[30vw] max-w-[90vw] overflow-scroll p-2";
 
   return (
     <div className="sm:pt-[25px] sm:pr-[32px] sm:pb-[30px] sm:pl-[35px] flex flex-wrap">
+      <title>Inventory | CocoTrade</title>
       <div
         id="barChartSection"
         className="flex flex-wrap sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] mb-[14px] basis-11/12 grow shrink"
@@ -82,7 +83,7 @@ const Inventory = ({ URL }) => {
           </Modal>
         </div>
         <div id="actualBarChart" className="mt-[20px] basis-11/12 grow shrink">
-          <BarChart userId={userId} URL={URL} setInvInfo={setInvInfo} />
+          <BarChart userId={userId} URL={URL} setInvInfo={setInvInfo} showModal={showModal}/>
         </div>
       </div>
       <ConfirmationModal

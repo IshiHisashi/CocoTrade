@@ -25,6 +25,7 @@ const UserMenuDropdown = (props) => {
           ? "translate-y-3 opacity-1"
           : "translate-y-1 opacity-0 invisible"
       }`}
+      aria-label="user menu"
     >
       <nav className="w-[136px]">
         <ul className="p-2">

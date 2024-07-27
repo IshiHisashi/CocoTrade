@@ -116,7 +116,7 @@ const Dashboard = ({ URL }) => {
   const [data, setData] = useState(null);
   const [upcomingShipDate, setUpcomingShipDate] = useState("");
   const [todaysInventory, setTodaysInventory] = useState(
-    "getting your today's inventory amount..."
+    "Getting your today's inventory amount..."
   );
   const navigate = useNavigate();
 
@@ -147,7 +147,7 @@ const Dashboard = ({ URL }) => {
       try {
         const res = await axios.get(`${URL}/user/${userId}/latestInv`);
         const formatted = Number(
-          res.data.latestInv[0].current_amount_left.$numberDecimal
+          res.data.latestInv[0].current_amount_with_pending.$numberDecimal
         ).toLocaleString();
         setTodaysInventory(`Today's inventory is ${formatted}kg`);
       } catch (error) {
@@ -162,12 +162,13 @@ const Dashboard = ({ URL }) => {
 
   return (
     <UserIdContext.Provider value={userId}>
+      <title>Dashboard | CocoTrade</title>
       <div className="sm:m-8">
         <div className="flex justify-between items-center px-8 pb-4 sm:px-0">
           <div className="flex items-center">
             <p className="p18-bold text-neutral-600 sm:text-base md:p18-bold">
               {!upcomingShipDate
-                ? "getting your upcoming shipment information..."
+                ? "Getting your upcoming shipment information..."
                 : upcomingShipDate}
             </p>
 
@@ -179,7 +180,7 @@ const Dashboard = ({ URL }) => {
             >
               <button
                 type="button"
-                className="mx-2"
+                className="mx-2 grid"
                 onClick={() => navigate("/sales")}
               >
                 <img src={Info} alt="toggle tooltip" className="inline-block" />
@@ -212,7 +213,7 @@ const Dashboard = ({ URL }) => {
         </section>
 
         <div className="@3xl:grid @3xl:grid-cols-3 gap-4">
-          <section className="order-2 flex flex-col gap-4 mb-4 @3xl:mb-0">
+          <section className="order-2 grid gap-4 mb-4 @3xl:mb-0">
             <RecentActivityCard type="purchase" URL={URL} />
             <RecentActivityCard type="sales" URL={URL} />
           </section>
@@ -287,7 +288,7 @@ const Dashboard = ({ URL }) => {
                       title: {
                         display: true,
                         text: "Price (Php)",
-                        align: "end",
+                        align: "center",
                       },
                     },
                     y: {

@@ -275,7 +275,7 @@ const Field = ({
     case "dropdown":
       inputElement = (
         <FormControl fullWidth className="customFormControl">
-          <select
+          <Select
             name={name}
             id={name}
             value={value}
@@ -285,11 +285,11 @@ const Field = ({
             // sx={{ py: 1, "& fieldset": { border: "none" } }}
           >
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <MenuItem key={option.value} value={option.value}>
                 {option.label}
-              </option>
+              </MenuItem>
             ))}
-          </select>
+          </Select>
           {isShowInfoText && <FormHelperText>{infoText}</FormHelperText>}
         </FormControl>
       );

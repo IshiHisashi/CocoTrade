@@ -52,7 +52,7 @@ const Inventory = ({ URL }) => {
           <p>
             {maxAmount === 0 || amountLeft === 0
               ? "Loading"
-              : `${amountLeft}kg of ${maxAmount}kg`}
+              : `${Number(amountLeft).toLocaleString()}kg of ${Number(maxAmount).toLocaleString()}kg`}
           </p>
         </div>
         <div

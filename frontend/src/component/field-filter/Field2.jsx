@@ -6,13 +6,22 @@ import {
   TextField,
   Select,
   MenuItem,
+  SvgIcon,
 } from "@mui/material";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import React, { useEffect, useState } from "react";
 import VisibilityOn from "../../assets/icons/Eye-On.svg";
 import VisibilityOff from "../../assets/icons/Eye-Off.svg";
 import Info from "../../assets/icons/Information.svg";
+import Down from "../../assets/icons/Dropdown-downwards.svg";
 import "./Field.css";
+
+const DownIcon = (props) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <SvgIcon {...props}>
+    <image href={Down} width="24" height="24" />
+  </SvgIcon>
+);
 
 const Field = ({
   label,
@@ -276,14 +285,24 @@ const Field = ({
       inputElement = (
         <FormControl fullWidth className="customFormControl">
           <Select
-            name={name}
-            id={name}
-            value={value}
+            // name={name}
+            // id="select"
+            value={value || ""}
             onChange={onChange}
             required={required}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm h-[56px] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-2 customSelect"
-            // sx={{ py: 1, "& fieldset": { border: "none" } }}
+            // displayEmpty
+            className="block w-full px-3 py-2 border rounded-md shadow-sm h-[56px] focus:outline-none sm:text-sm mt-2 customSelect"
+            sx={{ py: 1, "& fieldset": { border: "none" } }}
+            IconComponent={DownIcon}
+            labelId="subject-mui"
+            inputProps={{
+              name,
+              id: name,
+            }}
           >
+            {/* <MenuItem disabled value="">
+              <em>Select a subject...</em>
+            </MenuItem> */}
             {options.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -305,6 +324,7 @@ const Field = ({
         <label
           htmlFor={name}
           className="block text-sm font-medium text-neutral-600 label16"
+          id={name === "subject" ? "subject-mui" : ""}
         >
           {label} {required && <span className="text-[#FE2E00]">*</span>}
           {info && (

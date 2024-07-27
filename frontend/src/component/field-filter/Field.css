@@ -92,3 +92,51 @@
   border: 1px solid #0c7f8e;
   outline: 1px solid #0c7f8e;
 }
+
+/* dropdown */
+.customSelect .MuiSelect-select {
+  padding-left: 2px;
+}
+
+.customSelect .MuiSvgIcon-root {
+  right: 14px;
+}
+
+#menu-subject .MuiPaper-root {
+  border-radius: 16px;
+}
+
+#menu-subject .MuiMenuItem-root {
+  font-family: "DM sans", sans-serif;
+}
+#menu-subject .MuiMenuItem-root.Mui-selected {
+  background-color: white;
+}
+
+#menu-subject .MuiMenuItem-root::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 16px;
+  border-radius: 4px;
+  background-color: transparent;
+}
+/* #menu-subject .MuiMenuItem-root.Mui-selected::before {
+  background-color: #ff5b04;
+} */
+#menu-subject .MuiMenuItem-root:hover,
+#menu-subject .MuiMenuItem-root:focus,
+#menu-subject .MuiMenuItem-root.Mui-selected:hover,
+#menu-subject .MuiMenuItem-root.Mui-selected:focus {
+  background-color: white;
+}
+#menu-subject .MuiMenuItem-root:hover::before,
+#menu-subject .MuiMenuItem-root:focus::before,
+#menu-subject .MuiMenuItem-root.Mui-selected:hover::before,
+#menu-subject .MuiMenuItem-root.Mui-selected:focus::before {
+  background-color: #ff5b04;
+}
+/* #menu-subject .MuiMenuItem-root.Mui-selected:focus-visible {
+  background-color: white;
+} */

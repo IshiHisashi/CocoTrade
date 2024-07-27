@@ -4,6 +4,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
+  memo,
 } from "react";
 import axios from "axios";
 import { NavLink, useLocation } from "react-router-dom";
@@ -18,7 +19,7 @@ import InfoTooltip from "../tooltip/InfoTooltip.jsx";
 import LogoForLightBg from "../../assets/CocoTradeLogoForLightBg.svg";
 import Hamburger from "../../assets/icons/Hamburger.svg";
 
-const Header = ({ URL, translateX, fnToToggleNav }) => {
+const Header = memo(({ URL, translateX, fnToToggleNav }) => {
   const { pathname } = useLocation();
 
   const userId = useContext(UserIdContext);
@@ -65,7 +66,7 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
   const handleNotificationClick = useCallback(
     async (e) => {
       e.stopPropagation();
-      setIsNotificationOpen(!isNotificationOpen);
+      setIsNotificationOpen((prev) => !prev);
       setIsUserMenuOpen(false);
       fnToToggleNav("-translate-x-full");
 
@@ -81,22 +82,39 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
     [isNotificationOpen, userId, URL, fnToToggleNav]
   );
 
-  const memoizedNotificationDropdown = useMemo(
-    () => (
-      <NotificationDropdown
-        isNotificationOpen={isNotificationOpen}
-        setIsNotificationOpen={setIsNotificationOpen}
-        userId={userId}
-        URL={URL}
-      />
-    ),
-    [isNotificationOpen, userId, URL]
+  const handleUserMenuClick = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setIsUserMenuOpen((prev) => !prev);
+      setIsNotificationOpen(false);
+      fnToToggleNav("-translate-x-full");
+    },
+    [fnToToggleNav]
   );
 
-  const memoizedUserMenuDropdown = useMemo(
-    () => <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />,
-    [isUserMenuOpen]
+  const setIsNotificationOpenUseCallback = useCallback(
+    () => setIsNotificationOpen(false),
+    []
   );
+
+  const propagationUseCallback = useCallback((e) => e.stopPropagation(), []);
+
+  // const memoizedNotificationDropdown = useMemo(
+  //   () => (
+  //     <NotificationDropdown
+  //       isNotificationOpen={isNotificationOpen}
+  //       setIsNotificationOpen={setIsNotificationOpen}
+  //       userId={userId}
+  //       URL={URL}
+  //     />
+  //   ),
+  //   [isNotificationOpen, userId, URL]
+  // );
+
+  // const memoizedUserMenuDropdown = useMemo(
+  //   () => <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />,
+  //   [isUserMenuOpen]
+  // );
 
   let pageTitle;
   let pageInfo;
@@ -176,34 +194,29 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
                 {unreadCount}
               </span>
             )}
-            {memoizedNotificationDropdown}
-            {/* <NotificationDropdown
+            {/* {memoizedNotificationDropdown} */}
+            <NotificationDropdown
               isNotificationOpen={isNotificationOpen}
               setIsNotificationOpen={setIsNotificationOpenUseCallback}
               userId={userId}
               URL={URL}
-              onClick={(e) => e.stopPropagation()}
-            /> */}
+              onClick={propagationUseCallback}
+            />
           </button>
           <button
             type="button"
             className="w-[30px] h-[30px] font-dm-sans bg-[#0C7F8E] text-white text-center rounded-[50%] relative"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsUserMenuOpen(!isUserMenuOpen);
-              setIsNotificationOpen(false);
-              fnToToggleNav("-translate-x-full");
-            }}
+            onClick={handleUserMenuClick}
             aria-label="profile"
           >
             {companyName.split("")[0]}
-            {memoizedUserMenuDropdown}
-            {/* <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} /> */}
+            {/* {memoizedUserMenuDropdown} */}
+            <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />
           </button>
         </div>
       </div>
     </header>
   );
-};
+});
 
 export default Header;

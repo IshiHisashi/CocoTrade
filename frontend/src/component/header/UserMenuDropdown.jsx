@@ -1,10 +1,12 @@
-import React from "react";
+import React, { memo } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import logout from "../../services/logout";
 import Settings from "../../assets/icons/Settings.svg";
 import Out from "../../assets/icons/Logout.svg";
 
-const UserMenuDropdown = (props) => {
+const UserMenuDropdown = memo((props) => {
+  console.log("USER");
+
   const { isUserMenuOpen } = props;
   const navigate = useNavigate();
 
@@ -56,6 +58,6 @@ const UserMenuDropdown = (props) => {
       </nav>
     </div>
   );
-};
+});
 
 export default UserMenuDropdown;

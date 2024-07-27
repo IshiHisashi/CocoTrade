@@ -59,20 +59,22 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
         label: "Stored",
         data: [(inventoryLeft / maximumInv) * 100],
         backgroundColor: "#FF5B04",
-        barThickness: 20,
-        borderWidth: 0,
+        barThickness: 24,
         borderSkipped: false,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
         borderRadius: {
-          topLeft: 10,
-          bottomLeft: 10
+          topLeft: 12,
+          bottomLeft: 12
         },
       },
       {
         label: "To ship",
         data: [((inventoryWithPending - inventoryLeft) / maximumInv) * 100],
         backgroundColor: "#0C7F8E",
-        barThickness: 20,
-        borderWidth: 0,
+        barThickness: 24,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
       },
       {
         label: "Available",
@@ -82,8 +84,8 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
         borderWidth: 1,
         borderColor: "#D3D3D3",
         borderRadius: {
-          topRight: 10,
-          bottomRight: 10
+          topRight: 12,
+          bottomRight: 12
         }
       },
     ] :
@@ -92,9 +94,10 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
         label: "Stored",
         data: [(inventoryLeft / maximumInv) * 100],
         backgroundColor: "#FF5B04",
-        barThickness: 20,
-        borderWidth: 0,
+        barThickness: 24,
         borderSkipped: false,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
         borderRadius: {
           topLeft: 10,
           bottomLeft: 10

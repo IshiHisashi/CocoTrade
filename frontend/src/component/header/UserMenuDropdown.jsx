@@ -5,8 +5,6 @@ import Settings from "../../assets/icons/Settings.svg";
 import Out from "../../assets/icons/Logout.svg";
 
 const UserMenuDropdown = memo((props) => {
-  console.log("USER");
-
   const { isUserMenuOpen } = props;
   const navigate = useNavigate();
 

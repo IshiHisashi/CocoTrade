@@ -5,8 +5,6 @@ import Exit from "../../assets/icons/Exit.svg";
 
 const NotificationDropdown = memo(
   ({ isNotificationOpen, setIsNotificationOpen, userId, URL }) => {
-    console.log("NOTIFICATION");
-
     const [notifications, setNotifications] = useState([]);
     const [error, setError] = useState(null);
     useEffect(() => {

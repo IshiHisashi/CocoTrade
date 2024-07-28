@@ -12,6 +12,7 @@ import {
   Legend,
 } from "chart.js";
 import DurationSelecter from "../../component/field-filter/DurationSelecter.jsx";
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 
 // Custom plungin to show the line on the chart.
 const verticalLinePlugin = {
@@ -76,14 +77,18 @@ const LineChartRevised = ({
   const [data, setData] = useState({ datasets: [] });
   const [options, setOptions] = useState({});
   const [timeOption, setTimeOption] = useState({});
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
 
   useEffect(
     () => {
+      startLoading();
       // Current inventory
       axios
         .get(`${URL}/user/${userId}/inv`)
         .then((res) => {
           setInventory(res.data.data);
+          stopLoading();
         })
         .catch((err) => {
           console.error(err);

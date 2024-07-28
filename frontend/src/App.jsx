@@ -41,17 +41,21 @@ const AppRoutes = ({ userid, setUser, URL }) => {
             <Route
               path="/dashboard"
               element={
-                <Layout URL={URL}>
-                  <Dashboard URL={URL} />
-                </Layout>
+                <LoadingProvider>
+                  <Layout URL={URL}>
+                    <Dashboard URL={URL} />
+                  </Layout>
+                </LoadingProvider>
               }
             />
             <Route
               path="/inventory"
               element={
-                <Layout URL={URL}>
-                  <Inventory URL={URL} />
-                </Layout>
+                <LoadingProvider>
+                  <Layout URL={URL}>
+                    <Inventory URL={URL} />
+                  </Layout>
+                </LoadingProvider>
               }
             />
             <Route

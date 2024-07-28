@@ -64,69 +64,69 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
 
   const data = {
     labels: [""],
-    datasets:
-      Number(inventoryWithPending - inventoryLeft) !== 0
-        ? [
-            {
-              label: "Stored",
-              data: [(inventoryLeft / maximumInv) * 100],
-              backgroundColor: "#FF5B04",
-              barThickness: 20,
-              borderWidth: 0,
-              borderSkipped: false,
-              borderRadius: {
-                topLeft: 10,
-                bottomLeft: 10,
-              },
-            },
-            {
-              label: "To ship",
-              data: [
-                ((inventoryWithPending - inventoryLeft) / maximumInv) * 100,
-              ],
-              backgroundColor: "#0C7F8E",
-              barThickness: 20,
-              borderWidth: 0,
-            },
-            {
-              label: "Available",
-              data: [((maximumInv - inventoryWithPending) / maximumInv) * 100],
-              backgroundColor: "#F1F1F1",
-              barThickness: 20,
-              borderWidth: 1,
-              borderColor: "#D3D3D3",
-              borderRadius: {
-                topRight: 10,
-                bottomRight: 10,
-              },
-            },
-          ]
-        : [
-            {
-              label: "Stored",
-              data: [(inventoryLeft / maximumInv) * 100],
-              backgroundColor: "#FF5B04",
-              barThickness: 20,
-              borderWidth: 0,
-              borderSkipped: false,
-              borderRadius: {
-                topLeft: 10,
-                bottomLeft: 10,
-              },
-            },
-            {
-              label: "Available",
-              data: [((maximumInv - inventoryWithPending) / maximumInv) * 100],
-              backgroundColor: "#F1F1F1",
-              barThickness: 20,
-              borderWidth: 1,
-              borderColor: "#D3D3D3",
-              borderRadius: {
-                topRight: 10,
-                bottomRight: 10,
-              },
-            },
-          ],
+    datasets: Number(inventoryWithPending - inventoryLeft) !== 0 ? [
+      {
+        label: "Stored",
+        data: [(inventoryLeft / maximumInv) * 100],
+        backgroundColor: "#FF5B04",
+        barThickness: 24,
+        borderSkipped: false,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
+        borderRadius: {
+          topLeft: 12,
+          bottomLeft: 12
+        },
+      },
+      {
+        label: "To ship",
+        data: [((inventoryWithPending - inventoryLeft) / maximumInv) * 100],
+        backgroundColor: "#0C7F8E",
+        barThickness: 24,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
+      },
+      {
+        label: "Available",
+        data: [((maximumInv - inventoryWithPending) / maximumInv) * 100],
+        backgroundColor: "#F1F1F1",
+        barThickness: 20,
+        borderWidth: 1,
+        borderColor: "#D3D3D3",
+        borderRadius: {
+          topRight: 12,
+          bottomRight: 12
+        }
+      },
+    ] :
+    [
+      {
+        label: "Stored",
+        data: [(inventoryLeft / maximumInv) * 100],
+        backgroundColor: "#FF5B04",
+        barThickness: 24,
+        borderSkipped: false,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
+        borderRadius: {
+          topLeft: 10,
+          bottomLeft: 10
+        },
+      },
+      {
+        label: "Available",
+        data: [((maximumInv - inventoryWithPending) / maximumInv) * 100],
+        backgroundColor: "#F1F1F1",
+        barThickness: 20,
+        borderWidth: 1,
+        borderColor: "#D3D3D3",
+        borderRadius: {
+          topRight: 10,
+          bottomRight: 10
+        }
+      },
+    ]
+    ,
   };
 
   const options = {

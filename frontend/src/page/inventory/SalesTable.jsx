@@ -23,11 +23,8 @@ const SalesTable = ({ userId, URL, showConfirmation }) => {
 
   return (
     <div>
-      <h3 className="h3-serif font-semibold mb-[14px]">Latest Sales</h3>
-      <div
-        id="tableArea"
-        className="overflow-auto rounded-lg border border-bluegreen-200"
-      >
+      <h3 className="h3-sans font-semibold text-neutral-600 mb-[14px]">Latest Sales</h3>
+      <div id="tableArea" className="overflow-auto rounded-lg border border-bluegreen-200">
         <table className="w-full overflow-auto">
           <thead className="text-white bg-neutral-600">
             <tr className="legend14">

@@ -16,11 +16,14 @@ const getTotalSum = async (type, userId, URL) => {
       );
       totalSum = res.data.data.totalSales.$numberDecimal;
     }
-    return Number(totalSum).toFixed(2).toLocaleString();
+    return Number(totalSum).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   } catch (error) {
     if (error.response.status === 404) {
       totalSum = 0;
-      return Number(totalSum).toFixed(2).toLocaleString();
+      return Number(totalSum).toFixed(2);
     }
     return null;
   }

@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
 import moment from 'moment-timezone';
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 import DeleteConfirmationModal from "./DeleteConfirmationModal.jsx"
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import EllipseIcon from '../../assets/icons/Ellipse.svg';
@@ -47,12 +48,15 @@ const [inputLabel, setInputLabel] = useState("Today");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 const [selectedPurchase, setSelectedPurchase] = useState(null);
 const [activeDropdown, setActiveDropdown] = useState(null);
+const { startLoading, stopLoading } = useLoading();
+const [load, setLoad] = useState(null);
 
   const sortPurchaseData = (purchaseData) => {
     return purchaseData.sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date));
   };
 
   useEffect(() => {
+    startLoading();
     const url = `${URL}/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
@@ -60,11 +64,12 @@ const [activeDropdown, setActiveDropdown] = useState(null);
         const sortedData = sortPurchaseData(response.data);
         setPurchases(sortedData);
         setFilteredPurchases(sortedData);
+        stopLoading();
       })
       .catch((error) => {
         console.error("Error fetching purchases:", error);
       });
-  }, [purchasesFromParent, userId, URL]);
+  }, [purchasesFromParent, userId, URL, startLoading, stopLoading]);
 
 
   const formatWithCommas = (number) => {
@@ -482,17 +487,18 @@ return () => {
   </div>
  
 </div>
+<div className="rounded-tl-lg rounded-tr-lg overflow-scroll">
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
             <tr className="bg-neutral-600 text-white text-left">
-            <th className="p-2.5 rounded-tl-[8px] min-w-[123px]">Invoice No.</th>
+            <th className="p-2.5 min-w-[123px]">Invoice No.</th>
     <th className="p-2.5 min-w-[113px]">Date</th>
     <th className="p-2.5 min-w-[183px]">Farmers Name</th>
     <th className="p-2.5 min-w-[139px]">Copra Bought</th>
     <th className="p-2.5 min-w-[143px]">Moisture</th>
     <th className="p-2.5 min-w-[143px]">Price Per kg</th>
     <th className="p-2.5 min-w-[156px]">Total Purchase</th>
-    <th className="p-2.5 rounded-tr-[8px] min-w-[72px]">Action</th>
+    <th className="p-2.5 min-w-[72px]">Action</th>
  
             </tr>
           </thead>
@@ -572,6 +578,7 @@ return () => {
   ))}
           </tbody>
         </table>
+        </div>
       </div>
       <div className="pagination flex items-center justify-center mt-4">
         <Pagination

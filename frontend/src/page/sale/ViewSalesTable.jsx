@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
 import moment from 'moment-timezone';
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 import Pagination from "../../component/btn/Pagination";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import DeleteConfirmationModal from "./DeleteConfirmationModal.jsx"
@@ -118,6 +119,8 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 const [selectedSale, setSelectedSale] = useState(null);
 const [activeDropdown, setActiveDropdown] = useState(null);
+const { startLoading, stopLoading } = useLoading();
+const [load, setLoad] = useState(null);
 
   const setNewlyAddedInLocalStorage = (value) => {
     localStorage.setItem('newlyAdded', JSON.stringify(value));
@@ -135,6 +138,7 @@ const [activeDropdown, setActiveDropdown] = useState(null);
   };
 
   const fetchSales = () => {
+    startLoading();
     const url = `${URL}/user/${userId}/sales`;
     axios
       .get(url)
@@ -144,6 +148,7 @@ const [activeDropdown, setActiveDropdown] = useState(null);
         setFilteredSales(sortedData);
         const newlyAddedFromStorage = getNewlyAddedFromLocalStorage();
         setHighlightNewlyAdded(newlyAddedFromStorage);
+        stopLoading();
       })
       .catch((error) => {
         console.error("Error fetching sales:", error);
@@ -622,17 +627,18 @@ const formatDate = (dateString) => {
 
   </div>
 </div>
+<div className="rounded-tl-lg rounded-tr-lg overflow-scroll">
       <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
                        <thead>
                        <tr className="bg-neutral-600 text-white text-left">
-                       <th className="p-2.5 rounded-tl-[8px] min-w-[109px]">Ship date</th>
+                       <th className="p-2.5 min-w-[109px]">Ship date</th>
                        <th className="p-2.5 min-w-[169px]">Manufacturer</th>
                        <th className="p-2.5 min-w-[143px]">Unit sales price</th>
                        <th className="p-2.5 min-w-[139px]">Copra Sold</th>
                        <th className="p-2.5 min-w-[123px]">Received On</th>
                        <th className="p-2.5 min-w-[156px]">Total sale</th>
                        <th className="p-2.5 min-w-[141px]">Status</th>
-            <th className="p-2.5 rounded-tr-[8px] min-w-[100px]">Action</th>
+            <th className="p-2.5 min-w-[100px]">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -727,6 +733,7 @@ const formatDate = (dateString) => {
   ))}
         </tbody>
       </table>
+      </div>
       </div>
       <div className="pagination flex items-center justify-center mt-4">
                 <Pagination

@@ -151,7 +151,7 @@ const LineChartRevised = ({
 
         const fillInMissingData = (dates, dataPoints) => {
           const dataMap = new Map(dataPoints.map(point => [point.x, point.y]));
-          let lastKnownY = dataPoints[0].y;
+          let lastKnownY = dataPoints[dataPoints.length - 1].y;
           return dates.map(date => {
             const y = dataMap.get(date);
             if (y !== undefined) {

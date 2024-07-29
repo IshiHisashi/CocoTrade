@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
 import moment from 'moment-timezone';
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 import DeleteConfirmationModal from "./DeleteConfirmationModal.jsx"
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import EllipseIcon from '../../assets/icons/Ellipse.svg';
@@ -47,12 +48,17 @@ const [inputLabel, setInputLabel] = useState("Today");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 const [selectedPurchase, setSelectedPurchase] = useState(null);
 const [activeDropdown, setActiveDropdown] = useState(null);
+const { startLoading, stopLoading } = useLoading();
+const [load, setLoad] = useState(null);
+const [settingStartDate, setSettingStartDate] = useState(true);
+
 
   const sortPurchaseData = (purchaseData) => {
     return purchaseData.sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date));
   };
 
   useEffect(() => {
+    startLoading();
     const url = `${URL}/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
@@ -60,11 +66,12 @@ const [activeDropdown, setActiveDropdown] = useState(null);
         const sortedData = sortPurchaseData(response.data);
         setPurchases(sortedData);
         setFilteredPurchases(sortedData);
+        stopLoading();
       })
       .catch((error) => {
         console.error("Error fetching purchases:", error);
       });
-  }, [purchasesFromParent, userId, URL]);
+  }, [purchasesFromParent, userId, URL, startLoading, stopLoading]);
 
 
   const formatWithCommas = (number) => {
@@ -176,23 +183,25 @@ const toggleDateModal = (handlePredefinedRange) => () => {
   setIsDatePickerVisible(false); // Reset to initial state when closing the modal
 };
 
-const handleDateChange = (update) => {
-  // Only update the range if both dates are selected
-  if (update.length === 2 && update[0] && update[1]) {
-    const [start, end] = update;
-    if (start instanceof Date && end instanceof Date && !Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
-      setDateRange({
-        startDate: start,
-        endDate: end
-      });
-    } else {
-      console.error("Invalid dates selected", start, end);
-    }
-  } else if (update.length === 2 && update[0] && !update[1]) {
-    // Handle scenario where the start date is selected but the end date is not yet picked
-    setDateRange(prev => ({ ...prev, startDate: update[0]}));
+const handleDateChange = (dates) => {
+  const [selectedDate] = dates;
+  if (settingStartDate) {
+    setDateRange(prevState => ({
+      ...prevState,
+      startDate: selectedDate,
+      endDate: selectedDate // Reset end date to start date initially
+    }));
+    setSettingStartDate(false); // Next click will set the end date
+  } else {
+    setDateRange(prevState => ({
+      ...prevState,
+      startDate: prevState.startDate,
+      endDate: selectedDate
+    }));
+    setSettingStartDate(true); // Reset for next operation
   }
 };
+
 
   const handlePredefinedRange = (range) => {
     let start;
@@ -253,12 +262,18 @@ const handleDateChange = (update) => {
     if (dateRange.startDate && dateRange.endDate) {
       const start = new Date(dateRange.startDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
       const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-      setDateLabel(`${start} - ${end}`);
-      setInputLabel(`${start} - ${end}`);
-    }else {
-      setDateLabel(initialDateLabel);
-      setInputLabel("Today");
+      // Check if the start and end dates are the same
+    if (dateRange.startDate.toDateString() === dateRange.endDate.toDateString()) {
+      setDateLabel(start); // Display a single date
+      setInputLabel(start); // Update the input label to show only one date
+    } else {
+      setDateLabel(`${start} - ${end}`); // Display the range
+      setInputLabel(`${start} - ${end}`); // Update the input label to show the range
     }
+  } else {
+    setDateLabel(initialDateLabel);
+    setInputLabel("Today");
+  }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
   };
@@ -322,8 +337,15 @@ const handleDateChange = (update) => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
-    };
+    const isoString = date.toISOString(); // Get ISO string of the date
+
+    // Extract year, month, and day from the ISO string
+    const year = isoString.slice(2, 4); // Get the last two digits of the year from ISO string
+    const month = isoString.slice(5, 7); // Month is in positions 5-6
+    const day = isoString.slice(8, 10); // Day is in positions 8-9
+
+    return `${month}/${day}/${year}`;
+};
 
 const updateModalPosition = () => {
   if (inputRef.current) {
@@ -482,17 +504,18 @@ return () => {
   </div>
  
 </div>
+<div className="rounded-tl-lg rounded-tr-lg overflow-scroll">
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
             <tr className="bg-neutral-600 text-white text-left">
-            <th className="p-2.5 rounded-tl-[8px] min-w-[123px]">Invoice No.</th>
+            <th className="p-2.5 min-w-[123px]">Invoice No.</th>
     <th className="p-2.5 min-w-[113px]">Date</th>
     <th className="p-2.5 min-w-[183px]">Farmers Name</th>
     <th className="p-2.5 min-w-[139px]">Copra Bought</th>
     <th className="p-2.5 min-w-[143px]">Moisture</th>
     <th className="p-2.5 min-w-[143px]">Price Per kg</th>
     <th className="p-2.5 min-w-[156px]">Total Purchase</th>
-    <th className="p-2.5 rounded-tr-[8px] min-w-[72px]">Action</th>
+    <th className="p-2.5 min-w-[72px]">Action</th>
  
             </tr>
           </thead>
@@ -572,6 +595,7 @@ return () => {
   ))}
           </tbody>
         </table>
+        </div>
       </div>
       <div className="pagination flex items-center justify-center mt-4">
         <Pagination

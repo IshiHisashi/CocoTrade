@@ -354,7 +354,7 @@ const AddPurchaseForm = ({
           required
         />
         {showSuggestions && filteredFarmers.length > 0 && (
-          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-[-23px] z-10">
             {filteredFarmers.map((farmer) => (
               <li key={farmer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 <button

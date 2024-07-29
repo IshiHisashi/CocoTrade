@@ -121,6 +121,7 @@ const [selectedSale, setSelectedSale] = useState(null);
 const [activeDropdown, setActiveDropdown] = useState(null);
 const { startLoading, stopLoading } = useLoading();
 const [load, setLoad] = useState(null);
+const [settingStartDate, setSettingStartDate] = useState(true);
 
   const setNewlyAddedInLocalStorage = (value) => {
     localStorage.setItem('newlyAdded', JSON.stringify(value));
@@ -203,24 +204,25 @@ const [load, setLoad] = useState(null);
   };
   
   
-  const handleDateChange = (update) => {
-    // Only update the range if both dates are selected
-    if (update.length === 2 && update[0] && update[1]) {
-      const [start, end] = update;
-      if (start instanceof Date && end instanceof Date && !Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
-        setDateRange({
-          startDate: start,
-          endDate: end
-        });
-      } else {
-        console.error("Invalid dates selected", start, end);
-      }
-    } else if (update.length === 2 && update[0] && !update[1]) {
-      // Handle scenario where the start date is selected but the end date is not yet picked
-      setDateRange(prev => ({ ...prev, startDate: update[0]}));
+  const handleDateChange = (dates) => {
+    const [selectedDate] = dates;
+    if (settingStartDate) {
+      setDateRange(prevState => ({
+        ...prevState,
+        startDate: selectedDate,
+        endDate: selectedDate // Reset end date to start date initially
+      }));
+      setSettingStartDate(false); // Next click will set the end date
+    } else {
+      setDateRange(prevState => ({
+        ...prevState,
+        startDate: prevState.startDate,
+        endDate: selectedDate
+      }));
+      setSettingStartDate(true); // Reset for next operation
     }
   };
-  
+
 
   const handlePredefinedRange = (range) => {
     let start;
@@ -280,12 +282,18 @@ const [load, setLoad] = useState(null);
     if (dateRange.startDate && dateRange.endDate) {
       const start = new Date(dateRange.startDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
       const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-      setDateLabel(`${start} - ${end}`);
-      setInputLabel(`${start} - ${end}`);
+      // Check if the start and end dates are the same
+    if (dateRange.startDate.toDateString() === dateRange.endDate.toDateString()) {
+      setDateLabel(start); // Display a single date
+      setInputLabel(start); // Update the input label to show only one date
     } else {
-      setDateLabel(initialDateLabel);
-      setInputLabel("Today");
+      setDateLabel(`${start} - ${end}`); // Display the range
+      setInputLabel(`${start} - ${end}`); // Update the input label to show the range
     }
+  } else {
+    setDateLabel(initialDateLabel);
+    setInputLabel("Today");
+  }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
   };

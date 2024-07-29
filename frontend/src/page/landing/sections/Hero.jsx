@@ -3,7 +3,10 @@ import CtaBtn from "../../../component/btn/CtaBtn";
 
 const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   const handleDownload = () => {
-    window.open("http://localhost:5555/download-proposal", "_blank");
+    window.open(
+      "https://coco-trade-backend.vercel.app/download-proposal",
+      "_blank"
+    );
   };
   return (
     <div className="flex flex-col items-center bg-neutral-600 pt-[57px] sm:pt-[95px] pb-[45px]">

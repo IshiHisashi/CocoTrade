@@ -156,6 +156,13 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
     return monthMapping[monthNumber];
   };
 
+  const formatNumber = (number) => {
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(number);
+  };
+
   return (
     <div className="flex flex-col gap-[32px]">
       <div className="title flex flex-col gap-1">
@@ -190,7 +197,9 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
                   className={`pl-[10px] py-[12.5px] ${transaction.sale === 0 ? "text-center" : ""}`}
                 >
                   {transaction.sale === 0 ? "" : "Php. "}
-                  {transaction.sale === 0 ? "-" : transaction.sale.toFixed(2)}
+                  {transaction.sale === 0
+                    ? "-"
+                    : formatNumber(transaction.sale)}
                 </td>
                 <td
                   className={`pl-[10px] py-[12.5px] ${transaction.purchase === 0 ? "text-center" : ""}`}
@@ -198,7 +207,7 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
                   {transaction.purchase === 0 ? "" : "Php. "}
                   {transaction.purchase === 0
                     ? "-"
-                    : transaction.purchase.toFixed(2)}
+                    : formatNumber(transaction.purchase)}
                 </td>
               </tr>
             ))}

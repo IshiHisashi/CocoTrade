@@ -11,6 +11,7 @@ import LineChartRevised from "../inventory/LineChartRevised.jsx";
 import Info from "../../assets/icons/Information.svg";
 import InfoTooltip from "../../component/tooltip/InfoTooltip.jsx";
 import Add from "../../assets/icons/Add.svg";
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -119,13 +120,17 @@ const Dashboard = ({ URL }) => {
     "Getting your today's inventory amount..."
   );
   const navigate = useNavigate();
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
 
   useEffect(() => {
+    startLoading();
     (async () => {
       const dataObj = await getData(userId, URL);
       setData(dataObj);
+      stopLoading();
     })();
-  }, [userId, URL]);
+  }, [userId, URL, startLoading, stopLoading]);
 
   useEffect(() => {
     (async () => {

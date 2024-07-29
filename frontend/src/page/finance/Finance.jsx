@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { useLoading } from "../../contexts/LoadingContext.jsx";
+// import { useLoading } from "../../contexts/LoadingContext.jsx";
 import LoadingScreen from "../../component/loading/LoadingScreen.jsx";
 import MonthlyActivity from "./MonthlyActivity.jsx";
 import LineChart from "./LineChart.jsx";
 
 const Finance = ({ URL }) => {
-  const { loading } = useLoading();
+  // const { loading } = useLoading();
 
   return (
     <div className="">

@@ -8,14 +8,13 @@ import Modal from "react-modal";
 import moment from 'moment-timezone';
 import DeleteConfirmationModal from "./DeleteConfirmationModal.jsx"
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
-import EllipseIcon from '../../assets/icons/Ellipse.svg';
-import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
+import { useLoading } from "../../contexts/LoadingContext.jsx";
+import EllipseIcon from "../../assets/icons/Ellipse.svg";
+import CalendarIcon from "../../assets/icons/CalendarIcon.svg";
 import Pagination from "../../component/btn/Pagination";
-import DeleteIcon from '../../assets/icons/DeleteIcon.svg';
-import EditIcon from '../../assets/icons/EditIcon.svg';
+import DeleteIcon from "../../assets/icons/DeleteIcon.svg";
+import EditIcon from "../../assets/icons/EditIcon.svg";
 import CtaBtn from "../../component/btn/CtaBtn";
-
-
 
 const ViewPurchaseTable = ({
   setShowAddForm,
@@ -28,8 +27,7 @@ const ViewPurchaseTable = ({
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
   const today = moment().tz("America/Vancouver").startOf('day').toDate();
-  const endOfToday = moment().tz("America/Vancouver").endOf('day').toDate();
-  
+  const endOfToday = moment().tz("America/Vancouver").endOf('day').toDate(); 
   const [dateRange, setDateRange] = useState({
     startDate: today,
     endDate: endOfToday,
@@ -37,6 +35,7 @@ const ViewPurchaseTable = ({
   const initialDateLabel = moment(today).format("MMMM DD, YYYY"); 
 const [dateLabel, setDateLabel] = useState(initialDateLabel);
 const [inputLabel, setInputLabel] = useState("Today");
+
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,12 +46,17 @@ const [inputLabel, setInputLabel] = useState("Today");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 const [selectedPurchase, setSelectedPurchase] = useState(null);
 const [activeDropdown, setActiveDropdown] = useState(null);
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
 
   const sortPurchaseData = (purchaseData) => {
-    return purchaseData.sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date));
+    return purchaseData.sort(
+      (a, b) => new Date(b.purchase_date) - new Date(a.purchase_date)
+    );
   };
 
   useEffect(() => {
+    startLoading();
     const url = `${URL}/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
@@ -60,12 +64,12 @@ const [activeDropdown, setActiveDropdown] = useState(null);
         const sortedData = sortPurchaseData(response.data);
         setPurchases(sortedData);
         setFilteredPurchases(sortedData);
+        stopLoading();
       })
       .catch((error) => {
         console.error("Error fetching purchases:", error);
       });
-  }, [purchasesFromParent, userId, URL]);
-
+  }, [purchasesFromParent, userId, URL, startLoading, stopLoading]);
 
   const formatWithCommas = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -76,8 +80,9 @@ const [activeDropdown, setActiveDropdown] = useState(null);
       return "0";
     }
     const number = parseFloat(decimal128.$numberDecimal);
-  return number % 1 === 0 ? number.toString() : number.toFixed(decimalPlaces);
+    return number % 1 === 0 ? number.toString() : number.toFixed(decimalPlaces);
   };
+
 
   const deletePurchase = async (purchase) => {
       try {
@@ -121,8 +126,10 @@ const [activeDropdown, setActiveDropdown] = useState(null);
       axios
         .get(url)
         .then((response) => {
-        const sortedData = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setPurchases(sortedData);
+          const sortedData = response.data.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          setPurchases(sortedData);
           setFilteredPurchases(sortedData);
         })
         .catch((error) => {
@@ -200,7 +207,11 @@ const handleDateChange = (update) => {
     let label = "";
     switch (range) {
       case "today":
-        label = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        label = today.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
         setInputLabel("Today");
         start = new Date(today);
         end = new Date(today);
@@ -216,18 +227,18 @@ const handleDateChange = (update) => {
           end = new Date(start);
           end.setDate(end.getDate() + 6);
           end.setHours(23, 59, 59, 999);
-          label = `${start.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })} - ${end.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}`;
+          label = `${start.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} - ${end.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`;
           setInputLabel("This Week");
         }
         break;
       case "thisMonth":
-        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        label = `${today.toLocaleDateString("en-US", { year: "numeric", month: "long" })}`;
         setInputLabel("This Month");
         start = new Date(today.getFullYear(), today.getMonth(), 1);
         end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         break;
       case "lastMonth":
-        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        label = `${today.toLocaleDateString("en-US", { year: "numeric", month: "long" })}`;
         setInputLabel("Last Month");
         start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
         end = new Date(today.getFullYear(), today.getMonth(), 0);
@@ -251,11 +262,19 @@ const handleDateChange = (update) => {
 
   const submitDateRange = () => {
     if (dateRange.startDate && dateRange.endDate) {
-      const start = new Date(dateRange.startDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-      const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      const start = new Date(dateRange.startDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const end = new Date(dateRange.endDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
       setDateLabel(`${start} - ${end}`);
       setInputLabel(`${start} - ${end}`);
-    }else {
+    } else {
       setDateLabel(initialDateLabel);
       setInputLabel("Today");
     }
@@ -276,7 +295,7 @@ const handleDateChange = (update) => {
   const currentRecords = filteredPurchases.slice(
     indexOfFirstRecord,
     indexOfLastRecord
-  );  
+  );
   const totalPages = Math.ceil(filteredPurchases.length / recordsPerPage);
 
   const handleNextPage = () => {
@@ -292,7 +311,9 @@ const handleDateChange = (update) => {
   };
 
   const getRowClassName = (index) => {
-    return (index + indexOfFirstRecord) % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
+    return (index + indexOfFirstRecord) % 2 === 0
+      ? "bg-white cursor-pointer"
+      : "bg-bluegreen-100 cursor-pointer";
   };
 
     useEffect(() => {
@@ -308,16 +329,9 @@ const handleDateChange = (update) => {
   
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  // const formatDateForVancouver = (dateString) => {
-  //   // Parse the date string with moment, and then set the timezone to Vancouver
-  //   const date = moment(dateString).tz("America/Vancouver");
-  //   // Format the date as 'YYYY-MM-DD' which is the ISO date format
-  //   return date.format('YYYY-MM-DD');
-  // };
 
 
   const formatDate = (dateString) => {
@@ -325,30 +339,29 @@ const handleDateChange = (update) => {
     return date.toISOString().split("T")[0];
     };
 
-const updateModalPosition = () => {
-  if (inputRef.current) {
+
+  const updateModalPosition = () => {
+    if (inputRef.current) {
       const rect = inputRef.current.getBoundingClientRect();
       setInputPosition({
-          top: rect.top + window.scrollY,
-          left: rect.left + window.scrollX
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX,
       });
-  }
-};
+    }
+  };
 
-useEffect(() => {
-updateModalPosition();
-window.addEventListener('resize', updateModalPosition);
-window.addEventListener('scroll', updateModalPosition);
-return () => {
-    window.removeEventListener('resize', updateModalPosition);
-    window.removeEventListener('scroll', updateModalPosition);
-};
-}, []);
+  useEffect(() => {
+    updateModalPosition();
+    window.addEventListener("resize", updateModalPosition);
+    window.addEventListener("scroll", updateModalPosition);
+    return () => {
+      window.removeEventListener("resize", updateModalPosition);
+      window.removeEventListener("scroll", updateModalPosition);
+    };
+  }, []);
 
   return (
     <div>
- 
-      
       <div className="overflow-x-auto rounded-lg">
       <div className="flex flex-col sm:flex-row justify-between mb-4 py-5 text-p14 font-dm-sans font-medium space-y-4 sm:space-y-0">
    <label className="mr-4">
@@ -473,15 +486,8 @@ return () => {
           >
             Last Month
           </button>
+
         </div>
-      </>
-    )}
-  </div>
-</Modal>
- 
-  </div>
- 
-</div>
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
             <tr className="bg-neutral-600 text-white text-left">
@@ -570,29 +576,20 @@ return () => {
       <td colSpan="8" className="px-2 py-0" aria-label="Empty Row">&nbsp;</td>
       </tr>
   ))}
+
           </tbody>
         </table>
       </div>
       <div className="pagination flex items-center justify-center mt-4">
-        <Pagination
-          size = "M"
-          onClickFnc={handlePrevPage} 
-          pageNum = "L"
-          key = "L"
-        />
+        <Pagination size="M" onClickFnc={handlePrevPage} pageNum="L" key="L" />
         {Array.from({ length: totalPages }, (_, index) => (
-          <Pagination 
+          <Pagination
             onClickFnc={() => setCurrentPage(index + 1)}
-            pageNum = {index + 1}
-            key = {index + 1}
+            pageNum={index + 1}
+            key={index + 1}
           />
         ))}
-        <Pagination
-          size = "M"
-          onClickFnc={handleNextPage} 
-          pageNum = "R"
-          key = "R"
-        />
+        <Pagination size="M" onClickFnc={handleNextPage} pageNum="R" key="R" />
       </div>
     </div>
     

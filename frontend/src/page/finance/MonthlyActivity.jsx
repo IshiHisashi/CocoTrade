@@ -7,6 +7,7 @@ import axios from "axios";
 import moment from "moment";
 import { Chart, registerables } from "chart.js";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 import MonthlyTable from "./MonthlyTable";
 
 Chart.register(...registerables);
@@ -54,16 +55,20 @@ const MonthlyActivity = ({ URL }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
 
   // Function to determine if the screen is 'lg' or larger
   const isLgScreen = () => window.innerWidth >= 1024;
 
   // Read sales
   useEffect(() => {
+    startLoading();
     axios
       .get(`${URL}/tmpFinRoute/${userId}/sale/monthly-aggregate`)
       .then((res) => {
         setMonthlySale(res.data.data.salesAggregation);
+        stopLoading();
       })
       .catch();
     // Read purchase
@@ -71,9 +76,10 @@ const MonthlyActivity = ({ URL }) => {
       .get(`${URL}/tmpFinRoute/${userId}/purchase/monthly-aggregate`)
       .then((res) => {
         setMonthlyPurchase(res.data.data.purchaseAggregation);
+        stopLoading();
       })
       .catch();
-  }, [userId, URL]);
+  }, [userId, URL, startLoading, stopLoading]);
 
   function getLast12Months() {
     const months = [];
@@ -313,7 +319,7 @@ const MonthlyActivity = ({ URL }) => {
 
   return (
     <div className="lg:grid lg:grid-cols-6 gap-[14px]">
-      <div className=" bg-white px-[27px] py-[25px] border border-b-0 lg:border-b-1 border-bluegreen-200 lg:col-start-1 lg:col-end-5 rounded-lg">
+      <div className=" bg-white px-[27px] py-[25px] border border-b-0 lg:border-b-[1px] border-bluegreen-200 lg:col-start-1 lg:col-end-5 rounded-lg rounded-b-none lg:rounded-b-lg">
         <h3 className="h3-sans text-neutral-600">Your Monthly Activity</h3>
         <section className="h-[250px] mt-[30px]">
           <canvas ref={chartRef}> </canvas>
@@ -325,7 +331,7 @@ const MonthlyActivity = ({ URL }) => {
           <p className="p12-medium">Purchase</p>
         </div>
       </div>
-      <div className="bg-white px-[27px] py-[25px] border border-t-0 lg:border-t-1 border-bluegreen-200 lg:col-start-5 lg:col-end-7 rounded-lg">
+      <div className="bg-white px-[27px] py-[25px] border border-t-0 lg:border-t-[1px] border-bluegreen-200 lg:col-start-5 lg:col-end-7 rounded-lg rounded-t-none lg:rounded-t-lg">
         <MonthlyTable selectedTableMonth={selectedTableMonth} URL={URL} />
       </div>
     </div>

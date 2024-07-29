@@ -2,6 +2,9 @@ import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
 
 const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
+  const handleDownload = () => {
+    window.open("http://localhost:5555/download-proposal", "_blank");
+  };
   return (
     <div className="flex flex-col items-center bg-neutral-600 pt-[57px] sm:pt-[95px] pb-[45px]">
       <div className="texts text-center flex flex-col gap-4 px-[23px]">
@@ -23,6 +26,7 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   text-[16px]
   dm-sans
   rounded"
+          onClick={handleDownload}
         >
           Download proposal
         </button>

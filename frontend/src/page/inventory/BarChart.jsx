@@ -12,6 +12,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -19,16 +20,20 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
   const [inventoryLeft, setInventoryLeft] = useState(0);
   const [inventoryWithPending, setInventoryWithPending] = useState(0);
   const [maximumInv, setMaximumInv] = useState(0);
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
   // const [data, setData] = useState({});
 
   // Retreice info for bar chart
   useEffect(
     () => {
+      startLoading();
       // maximum capacity
       axios
         .get(`${URL}/user/${userId}/maxcap`)
         .then((res) => {
           setMaximumInv(res.data.data);
+          stopLoading();
         })
         .catch((err) => {
           console.error(err);
@@ -37,20 +42,25 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
       axios
         .get(`${URL}/user/${userId}/latestInv`)
         .then((res) => {
-          setInventoryLeft(res.data.latestInv[0].current_amount_left.$numberDecimal);
-          setInventoryWithPending(res.data.latestInv[0].current_amount_with_pending.$numberDecimal);
+          setInventoryLeft(
+            res.data.latestInv[0].current_amount_left.$numberDecimal
+          );
+          setInventoryWithPending(
+            res.data.latestInv[0].current_amount_with_pending.$numberDecimal
+          );
+          stopLoading();
         })
         .catch((err) => {
           console.error(err);
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userId, URL, showModal]
+    [userId, URL, showModal, startLoading, stopLoading]
   );
 
   useEffect(() => {
     setInvInfo([inventoryWithPending, maximumInv]);
-  }, [inventoryWithPending, maximumInv, setInvInfo])
+  }, [inventoryWithPending, maximumInv, setInvInfo]);
 
   const data = {
     labels: [""],
@@ -59,20 +69,22 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
         label: "Stored",
         data: [(inventoryLeft / maximumInv) * 100],
         backgroundColor: "#FF5B04",
-        barThickness: 20,
-        borderWidth: 0,
+        barThickness: 24,
         borderSkipped: false,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
         borderRadius: {
-          topLeft: 10,
-          bottomLeft: 10
+          topLeft: 12,
+          bottomLeft: 12
         },
       },
       {
         label: "To ship",
         data: [((inventoryWithPending - inventoryLeft) / maximumInv) * 100],
         backgroundColor: "#0C7F8E",
-        barThickness: 20,
-        borderWidth: 0,
+        barThickness: 24,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
       },
       {
         label: "Available",
@@ -82,8 +94,8 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
         borderWidth: 1,
         borderColor: "#D3D3D3",
         borderRadius: {
-          topRight: 10,
-          bottomRight: 10
+          topRight: 12,
+          bottomRight: 12
         }
       },
     ] :
@@ -92,9 +104,10 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
         label: "Stored",
         data: [(inventoryLeft / maximumInv) * 100],
         backgroundColor: "#FF5B04",
-        barThickness: 20,
-        borderWidth: 0,
+        barThickness: 24,
         borderSkipped: false,
+        borderWidth: 2,
+        borderColor: "#FFFFFF",
         borderRadius: {
           topLeft: 10,
           bottomLeft: 10
@@ -122,7 +135,7 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
       padding: {
         left: -8,
         bottom: 0,
-        top: 16
+        top: 16,
       },
     },
     maintainAspectRatio: false,
@@ -141,8 +154,8 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
           display: false,
         },
         border: {
-          display: false
-        }
+          display: false,
+        },
       },
       y: {
         stacked: true,
@@ -156,8 +169,8 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
           display: false,
         },
         border: {
-          display: false
-        }
+          display: false,
+        },
       },
     },
     plugins: {
@@ -172,10 +185,10 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
           boxWidth: 8,
           boxHeight: 8,
           padding: 15,
-        }
+        },
       },
       title: {
-        display: false
+        display: false,
       },
       tooltip: {
         callbacks: {
@@ -183,20 +196,20 @@ const BarChart = ({ userId, URL, setInvInfo, showModal }) => {
             const dataset = data.datasets[tooltipItem.datasetIndex];
             const value = dataset.data[tooltipItem.dataIndex];
             return `${dataset.label}: ${value.toFixed(2)} %`;
-          }
+          },
         },
-        yAlign: 'bottom'
+        yAlign: "bottom",
       },
       verticalLinePlugin: false,
     },
     chartArea: {
-      backgroundColor: 'transparent',
+      backgroundColor: "transparent",
     },
   };
 
   return (
     <div className="h-[80px]">
-      <Bar data={data} options={options}/>
+      <Bar data={data} options={options} />
     </div>
   );
 };

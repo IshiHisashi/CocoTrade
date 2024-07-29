@@ -19,11 +19,13 @@ import DeleteConfirmationModal from "./DeleteConfirmationModal.jsx"
 import EditIcon from '../../assets/icons/EditIcon.svg';
 import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
 import EllipseIcon from '../../assets/icons/Ellipse.svg';
+import { useLoading } from "../../contexts/LoadingContext";
+
 
 // import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
 
-
 const statusOptions = [
+
   { value: 'all', label: 'All', icon: BlackEllipse },
   { value: 'pending', label: 'Pending', icon: YellowEclipse },
   { value: 'ongoing', label: 'Ongoing', icon: RedEclipse },
@@ -46,16 +48,15 @@ const CustomDropdown = ({ options, value, onChange }) => {
         setDropdownOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = options.find((option) => option.value === value);
 
   return (
-    
     <div className="relative" ref={dropdownRef}>
       <button
         type="button"
@@ -64,11 +65,20 @@ const CustomDropdown = ({ options, value, onChange }) => {
       >
         {selectedOption && (
           <div className="flex items-center text-neutral-300">
-            <img src={selectedOption.icon} alt={selectedOption.label} className="w-4 h-4 mr-2" />
+            <img
+              src={selectedOption.icon}
+              alt={selectedOption.label}
+              className="w-4 h-4 mr-2"
+            />
             {selectedOption.label}
           </div>
         )}
-        <span className="ml-2"><img src={Dropdown} alt={selectedOption.label} className="w-[6px] h-[4px] mr-2" />
+        <span className="ml-2">
+          <img
+            src={Dropdown}
+            alt={selectedOption.label}
+            className="w-[6px] h-[4px] mr-2"
+          />
         </span>
       </button>
       {dropdownOpen && (
@@ -80,7 +90,11 @@ const CustomDropdown = ({ options, value, onChange }) => {
               className="flex items-center hover:bg-gray-100 w-full text-left p-[15px]"
               onClick={(e) => {handleOptionClick(option.value,e);}}
             >
-              <img src={option.icon} alt={option.label} className="w-4 h-4 mr-2" />
+              <img
+                src={option.icon}
+                alt={option.label}
+                className="w-4 h-4 mr-2"
+              />
               {option.label}
             </button>
           ))}
@@ -103,6 +117,7 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
    const [dateRange, setDateRange] = useState({
     startDate: initialStartDate,
     endDate: initialEndDate,
+
   });
   const [inputLabel, setInputLabel] = useState("This Month");
   const [dateLabel, setDateLabel] = useState(initialDateLabel);
@@ -118,14 +133,16 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 const [selectedSale, setSelectedSale] = useState(null);
 const [activeDropdown, setActiveDropdown] = useState(null);
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
 
   const setNewlyAddedInLocalStorage = (value) => {
-    localStorage.setItem('newlyAdded', JSON.stringify(value));
+    localStorage.setItem("newlyAdded", JSON.stringify(value));
   };
 
   const getNewlyAddedFromLocalStorage = () => {
-    return JSON.parse(localStorage.getItem('newlyAdded'));
-  }; 
+    return JSON.parse(localStorage.getItem("newlyAdded"));
+  };
 
   const formatDateForVancouver = (dateString) => {
     // Check if dateString is truthy; if not, return an empty string
@@ -135,26 +152,32 @@ const [activeDropdown, setActiveDropdown] = useState(null);
   };
 
   const fetchSales = () => {
+    startLoading();
     const url = `${URL}/user/${userId}/sales`;
     axios
       .get(url)
       .then((response) => {
-        const sortedData = response.data.sort((a, b) => new Date(b.copra_ship_date) - new Date(a.copra_ship_date));
+        const sortedData = response.data.sort(
+          (a, b) => new Date(b.copra_ship_date) - new Date(a.copra_ship_date)
+        );
         setSales(sortedData);
         setFilteredSales(sortedData);
         const newlyAddedFromStorage = getNewlyAddedFromLocalStorage();
         setHighlightNewlyAdded(newlyAddedFromStorage);
+        stopLoading();
       })
       .catch((error) => {
         console.error("Error fetching sales:", error);
       });
   };
 
-  useEffect(() => {
-    fetchSales();
-  },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [userId, URL, showEditForm]);
+  useEffect(
+    () => {
+      fetchSales();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userId, URL, showEditForm]
+  );
 
   const formatWithCommas = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -165,7 +188,7 @@ const [activeDropdown, setActiveDropdown] = useState(null);
       return "0";
     }
     const number = parseFloat(decimal128.$numberDecimal);
-  return number % 1 === 0 ? number.toString() : number.toFixed(decimalPlaces);
+    return number % 1 === 0 ? number.toString() : number.toFixed(decimalPlaces);
   };
 
   useEffect(() => {
@@ -223,7 +246,11 @@ const [activeDropdown, setActiveDropdown] = useState(null);
     let label = "";
     switch (range) {
       case "today":
-        label = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+        label = today.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
         setInputLabel("Today");
         start = new Date(today);
         end = new Date(today);
@@ -238,18 +265,18 @@ const [activeDropdown, setActiveDropdown] = useState(null);
           end = new Date(start);
           end.setDate(end.getDate() + 6);
           end.setHours(23, 59, 59, 999);
-          label = `${start.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })} - ${end.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}`;
+          label = `${start.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} - ${end.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`;
           setInputLabel("This Week");
         }
         break;
       case "thisMonth":
-        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        label = `${today.toLocaleDateString("en-US", { year: "numeric", month: "long" })}`;
         setInputLabel("This Month");
         start = new Date(today.getFullYear(), today.getMonth(), 1);
         end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         break;
       case "lastMonth":
-        label = `${today.toLocaleDateString("en-US", { year: 'numeric', month: 'long' })}`;
+        label = `${today.toLocaleDateString("en-US", { year: "numeric", month: "long" })}`;
         setInputLabel("Last Month");
         start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
         end = new Date(today.getFullYear(), today.getMonth(), 0);
@@ -273,8 +300,16 @@ const [activeDropdown, setActiveDropdown] = useState(null);
 
   const submitDateRange = () => {
     if (dateRange.startDate && dateRange.endDate) {
-      const start = new Date(dateRange.startDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-      const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      const start = new Date(dateRange.startDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const end = new Date(dateRange.endDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
       setDateLabel(`${start} - ${end}`);
       setInputLabel(`${start} - ${end}`);
     } else {
@@ -302,9 +337,9 @@ const [activeDropdown, setActiveDropdown] = useState(null);
           reverseInvNeeded: rev,
           modifInvWithDiffNeeded: mod,
           changeBasedOnShipDateNeeded: ship,
-        }
+        };
         return object;
-      }
+      };
       // Object to pass to inventory (only for pending) update api
       const createObjectToPassForInvForPending = (sub, rev, mod, ship) => {
         const object = {
@@ -317,9 +352,9 @@ const [activeDropdown, setActiveDropdown] = useState(null);
           reverseInvNeeded: rev,
           modifInvWithDiffNeeded: mod,
           changeBasedOnShipDateNeeded: ship,
-        }
+        };
         return object;
-      }
+      };
       // Object to pass to finance upate api
       const createObjectToPassForFin = (add, rev, mod) => {
         const object = {
@@ -330,26 +365,31 @@ const [activeDropdown, setActiveDropdown] = useState(null);
           newPrice: targetSalesLog.data.total_sales_price.$numberDecimal,
           addFinNeeded: add,
           reverseFinNeeded: rev,
-          modifFinWithDiffNeeded: mod
-        }
+          modifFinWithDiffNeeded: mod,
+        };
         return object;
-      }
+      };
 
       let objInv;
       let objFin = null;
 
-      // conditioning      
+      // conditioning
       if (targetSalesLog.data.status === "ongoing") {
         objInv = createObjectToPassForInv(false, true, false, false);
         axios.patch(`${URL}/inventory/updateForSales`, objInv);
-      } else if(targetSalesLog.data.status === "completed") {
+      } else if (targetSalesLog.data.status === "completed") {
         objInv = createObjectToPassForInv(false, true, false, false);
         axios.patch(`${URL}/inventory/updateForSales`, objInv);
         objFin = createObjectToPassForFin(false, true, false);
       }
       console.log(objInv);
       console.log(objFin);
-      const objInvForPending = createObjectToPassForInvForPending(false, false, false, false);
+      const objInvForPending = createObjectToPassForInvForPending(
+        false,
+        false,
+        false,
+        false
+      );
       axios.patch(`${URL}/inventory/updateForSales`, objInvForPending);
       if (objFin !== null) {
         axios.patch(`${URL}/currentbalance/updateForSales`, objFin);
@@ -398,9 +438,11 @@ const [activeDropdown, setActiveDropdown] = useState(null);
 
   const getRowClassName = (index) => {
     if (newlyAdded && currentPage === 1 && index === 0 && highlightNewlyAdded) {
-      return 'bg-neutral-100 cursor-pointer';
+      return "bg-neutral-100 cursor-pointer";
     }
-    return index % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
+    return index % 2 === 0
+      ? "bg-white cursor-pointer"
+      : "bg-bluegreen-100 cursor-pointer";
   };
 
   const handleRowClick = (index) => {
@@ -413,23 +455,23 @@ const [activeDropdown, setActiveDropdown] = useState(null);
 
   const updateModalPosition = () => {
     if (inputRef.current) {
-        const rect = inputRef.current.getBoundingClientRect();
-        setInputPosition({
-            top: rect.top + window.scrollY,
-            left: rect.left + window.scrollX
-        });
+      const rect = inputRef.current.getBoundingClientRect();
+      setInputPosition({
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
     }
-};
-
-useEffect(() => {
-  updateModalPosition();
-  window.addEventListener('resize', updateModalPosition);
-  window.addEventListener('scroll', updateModalPosition);
-  return () => {
-      window.removeEventListener('resize', updateModalPosition);
-      window.removeEventListener('scroll', updateModalPosition);
   };
-}, []);
+
+  useEffect(() => {
+    updateModalPosition();
+    window.addEventListener("resize", updateModalPosition);
+    window.addEventListener("scroll", updateModalPosition);
+    return () => {
+      window.removeEventListener("resize", updateModalPosition);
+      window.removeEventListener("scroll", updateModalPosition);
+    };
+  }, []);
 
   // Add this useEffect to handle clicks outside the dropdown
   useEffect(() => {
@@ -437,7 +479,7 @@ useEffect(() => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
-        !event.target.closest('.dropdown-content')
+        !event.target.closest(".dropdown-content")
       ) {
         setDropdownVisible(null);
         if (newlyAdded && highlightNewlyAdded) {
@@ -446,24 +488,36 @@ useEffect(() => {
         }
       }
     };
-  
-    document.addEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [newlyAdded, highlightNewlyAdded]);
-  
 
-// const formatDate = (dateString) => {
-//   const date = new Date(dateString);
-//   const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
-//   return date.toLocaleDateString('en-US', options);
-// };
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toISOString().split("T")[0];
   };
 
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "2-digit", month: "2-digit", day: "2-digit" };
+    return date.toLocaleDateString("en-US", options);
+  };
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "ongoing":
+        return "bg-orange-200 text-orange-500";
+      case "pending":
+        return "bg-yellow-100 text-yellow-200";
+      case "completed":
+        return "bg-bluegreen-100 text-bluegreen-500";
+      default:
+        return "bg-gray-400";
+    }
+  };
 
   const getStatusClass = (status) => {
     const baseClass = 'px-2 py-1 rounded-full text-sm font-semibold capitalize'; // Added 'capitalize' here
@@ -689,9 +743,32 @@ const formatDate = (dateString) => {
                             handleEditClick(sale,e);
                             setActiveDropdown(null);
                           }}
+
                         >
-                            <img src={EditIcon} alt="Edit" />
-                          Edit
+                          <img src={CalendarIcon} alt="Calendar" />
+                        </button>
+                      </label>
+                      <div className="space-y-2 font-sans text-[12px] text-bluegreen-700">
+                        <button
+                          type="button"
+                          onClick={() => handlePredefinedRange("today")}
+                          className="w-full py-2 px-4  rounded-lg hover:bg-blue-100 border w-[310px]"
+                        >
+                          Today
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handlePredefinedRange("thisWeek")}
+                          className="w-full py-2 px-4 rounded-lg hover:bg-blue-100 border w-[310px]"
+                        >
+                          This Week
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handlePredefinedRange("thisMonth")}
+                          className="w-full py-2 px-4  rounded-lg hover:bg-blue-100 border w-[310px]"
+                        >
+                          This Month
                         </button>
                         <button type="button" className="flex items-center px-4 py-2 text-neutral-600 hover:bg-bluegreen-100" onClick={(e) => {
         handleDeleteClick(sale._id, e);
@@ -711,43 +788,165 @@ const formatDate = (dateString) => {
           setIsDeleteModalOpen(false);  // Optionally close modal immediately after invoking delete
         }}
       />
+
                 </div>
-              </td>
+              </Modal>
+            </div>
+          </div>
+        </div>
+        <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
+          <thead>
+            <tr className="bg-neutral-600 text-white text-left">
+              <th className="p-2.5 rounded-tl-[8px] min-w-[109px]">
+                Ship date
+              </th>
+              <th className="p-2.5 min-w-[169px]">Manufacturer</th>
+              <th className="p-2.5 min-w-[143px]">Unit sales price</th>
+              <th className="p-2.5 min-w-[139px]">Copra Sold</th>
+              <th className="p-2.5 min-w-[123px]">Received On</th>
+              <th className="p-2.5 min-w-[156px]">Total sale</th>
+              <th className="p-2.5 min-w-[141px]">Status</th>
+              <th className="p-2.5 rounded-tr-[8px] min-w-[100px]">Action</th>
             </tr>
-          ))}
-          {Array.from({ length: recordsPerPage - currentRecords.length }).map((_, index) => (
-    <tr
-      // eslint-disable-next-line react/no-array-index-key
-      key={`empty-${index}`}
-      className={index % 2 === 0 ? 'bg-white' : 'bg-bluegreen-100'}
-      style={{ width: '123px', height: '43px' }}
-    >
-      <td colSpan="8" className="px-2 py-0" aria-label="Empty Row">&nbsp;</td>
-      </tr>
-  ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {currentRecords.map((sale, index) => (
+              // eslint-disable-next-line no-underscore-dangle
+              <tr
+                key={sale._id}
+                className={getRowClassName(index)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent the event from bubbling up to the document click handler
+                  handleRowClick(index);
+                }}
+              >
+                <td
+                  className="px-2 py-0"
+                  style={{ width: "109px", height: "43px" }}
+                >
+                  {formatDate(sale.copra_ship_date)}
+                </td>
+                <td
+                  className="px-2 py-0"
+                  style={{ width: "169px", height: "43px" }}
+                >
+                  {sale.manufacturer_id ? sale.manufacturer_id.full_name : "-"}
+                </td>
+                <td
+                  className="px-2 py-0"
+                  style={{ width: "143px", height: "43px" }}
+                >
+                  {formatDecimal(sale.sales_unit_price)}
+                </td>
+                <td
+                  className="px-2 py-0"
+                  style={{ width: "139px", height: "43px" }}
+                >{`${formatDecimal(sale.amount_of_copra_sold)} kg`}</td>
+                <td
+                  className="px-2 py-0"
+                  style={{ width: "123px", height: "43px" }}
+                >
+                  {sale.cheque_receive_date
+                    ? new Date(sale.cheque_receive_date).toLocaleDateString()
+                    : "-"}
+                </td>
+                <td
+                  className="px-2 py-0"
+                  style={{ width: "156px", height: "43px" }}
+                >
+                  {sale.total_sales_price &&
+                  parseFloat(sale.total_sales_price.$numberDecimal) === 0
+                    ? "-"
+                    : `Php ${formatDecimal(sale.total_sales_price)}`}
+                </td>
+                <td
+                  className="px-2 py-0"
+                  style={{ width: "141px", height: "43px" }}
+                >
+                  <span
+                    className={`px-2 py-1 rounded-full text-sm font-semibold ${getStatusClass(sale.status)}`}
+                  >
+                    {sale.status}
+                  </span>
+                </td>{" "}
+                <td
+                  className="px-2 py-0 relative"
+                  style={{ width: "72px", height: "43px" }}
+                >
+                  <div className="dropdown" ref={dropdownRef}>
+                    <button
+                      type="button"
+                      className="dropbtn"
+                      // eslint-disable-next-line no-underscore-dangle
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDropdownVisible(
+                          // eslint-disable-next-line no-underscore-dangle
+                          dropdownVisible === sale._id ? null : sale._id
+                        );
+                      }}
+                    >
+                      <img src={EllipseIcon} alt="Options" />
+                    </button>
+                    {
+                      // eslint-disable-next-line no-underscore-dangle
+                      dropdownVisible === sale._id && (
+                        <div className="dropdown-content absolute top-11 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                          <button
+                            type="button"
+                            className="flex items-center px-4 py-2 text-neutral-600 hover:bg-bluegreen-100 pr-8"
+                            onClick={(e) => {
+                              handleEditClick(sale, e);
+                            }}
+                          >
+                            <img src={EditIcon} alt="Edit" />
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="flex items-center px-4 py-2 text-neutral-600 hover:bg-bluegreen-100"
+                            onClick={(e) =>
+                              // eslint-disable-next-line no-underscore-dangle
+                              handleDeleteClick(sale._id, e)
+                            }
+                          >
+                            <img src={DeleteIcon} alt="Delete" />
+                            Delete
+                          </button>
+                        </div>
+                      )
+                    }
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {Array.from({ length: recordsPerPage - currentRecords.length }).map(
+              (_, index) => (
+                <tr
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`empty-${index}`}
+                  className={index % 2 === 0 ? "bg-white" : "bg-bluegreen-100"}
+                  style={{ width: "123px", height: "43px" }}
+                >
+                  <td colSpan="8" className="px-2 py-0" aria-label="Empty Row">
+                    &nbsp;
+                  </td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
       </div>
       <div className="pagination flex items-center justify-center mt-4">
-                <Pagination
-          size = "M"
-          onClickFnc={handlePrevPage} 
-          pageNum = "L"
-          key = "L"
-        />
+        <Pagination size="M" onClickFnc={handlePrevPage} pageNum="L" key="L" />
         {Array.from({ length: totalPages }, (_, index) => (
-          <Pagination 
+          <Pagination
             onClickFnc={() => setCurrentPage(index + 1)}
-            pageNum = {index + 1}
-            key = {index + 1}
+            pageNum={index + 1}
+            key={index + 1}
           />
         ))}
-        <Pagination
-          size = "M"
-          onClickFnc={handleNextPage} 
-          pageNum = "R"
-          key = "R"
-        />
+        <Pagination size="M" onClickFnc={handleNextPage} pageNum="R" key="R" />
       </div>
     </div>
   );

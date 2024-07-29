@@ -43,6 +43,7 @@ const Landing = (props) => {
 
   return (
     <div className=" bg-bluegreen-100">
+      <title>CocoTrade</title>
       <LandingHeader
         setAuthType={setAuthType}
         setIsAuthModalOpen={setIsAuthModalOpen}

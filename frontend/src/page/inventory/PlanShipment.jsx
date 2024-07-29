@@ -305,11 +305,12 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
             required
           />
           {showSuggestions && filteredManufacturers.length > 0 && (
-            <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+            <ul className="suggestions absolute bg-white border border-gray-300 sm:w-[288px] w-[270px] mt-[-24px] z-10">
               {filteredManufacturers.map((manufacturer) => (
-                <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <li key={manufacturer._id} className=" hover:bg-gray-100 cursor-pointer w-full">
                   <button
                     type="button"
+                    className="px-4 py-2 w-full text-left"
                     onClick={() => handleSelectManufacturer(manufacturer.full_name)}
                   >
                     {manufacturer.full_name}

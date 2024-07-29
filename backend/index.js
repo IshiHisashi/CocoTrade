@@ -1,5 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
 import cors from "cors";
 import { PORT, mongoURL } from "./config.js";
 import inventoryRoute from "./route/inventoryRoute.js";
@@ -14,7 +16,22 @@ import notificationRoute from "./route/notificationRoute.js";
 import tmpFinRoute from "./route/tmpFinRoute.js";
 import farmerRoute from "./route/farmerRoute.js";
 
+// for downloading proposal
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
+
+app.use("/public", express.static(path.join(__dirname, "public")));
+app.get("/download-proposal", (req, res) => {
+  const file = path.join(
+    __dirname,
+    "public",
+    "proposals",
+    "Cocotrade_proposal.pdf"
+  );
+  res.download(file); // Set the headers to force download
+});
 
 app.use(
   cors({
@@ -28,7 +45,7 @@ app.use(
       "http://localhost:5175",
       // Diployment
       "https://coco-trade.vercel.app",
-      "https://cocotrade.net"
+      "https://cocotrade.net",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],

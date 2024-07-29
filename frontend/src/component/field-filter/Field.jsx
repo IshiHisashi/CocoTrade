@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import React, { useEffect, useState } from "react";
+import moment from 'moment-timezone';
 import VisibilityOn from "../../assets/icons/Eye-On.svg";
 import VisibilityOff from "../../assets/icons/Eye-Off.svg";
 import Info from "../../assets/icons/Information.svg";
@@ -61,6 +62,10 @@ const Field = ({
       setIsDisabled(!isDisabled);
     }
   }, [disabled, isDisabled]);
+
+  const getTodayInVancouver = () => {
+    return moment().tz("America/Vancouver").format('YYYY-MM-DD');
+  };
 
   switch (type) {
     case "number":
@@ -262,7 +267,7 @@ const Field = ({
               inputProps: {
                 max:
                   name === "purchase_date"
-                    ? new Date().toISOString().split("T")[0]
+                    ? getTodayInVancouver()
                     : undefined,
               },
             }}

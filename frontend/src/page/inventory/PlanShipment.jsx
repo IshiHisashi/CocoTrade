@@ -222,10 +222,13 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
         );
       }
       // Create notification
-      const formattedDate = format(
-        new Date(updatedFormData.copra_ship_date),
-        "MMMM do, yyyy"
-      );
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().split("T")[0];
+      };
+      
+      // Usage example with updatedFormData assuming it exists:
+      const formattedDate = formatDate(updatedFormData.copra_ship_date);
       const notificationData1 = {
         user_id: userId,
         title: "Prepare your trucks!",

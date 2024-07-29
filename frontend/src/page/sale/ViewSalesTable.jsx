@@ -7,6 +7,7 @@ import Modal from "react-modal";
 import moment from 'moment-timezone';
 import Pagination from "../../component/btn/Pagination";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import DeleteConfirmationModal from "./DeleteConfirmationModal.jsx"
  import Exit from '../../assets/icons/Exit.svg';
  import BlackEllipse from '../../assets/icons/BlackEllipse.svg';
  import BlueEllipse from '../../assets/icons/BlueEllipse.svg';
@@ -114,7 +115,9 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const recordsPerPage = 10;
   const inputRef = useRef(null);
   const [inputPosition, setInputPosition] = useState({ top: 0, left: 0 });
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+const [selectedSale, setSelectedSale] = useState(null);
+const [activeDropdown, setActiveDropdown] = useState(null);
 
   const setNewlyAddedInLocalStorage = (value) => {
     localStorage.setItem('newlyAdded', JSON.stringify(value));
@@ -123,6 +126,13 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   const getNewlyAddedFromLocalStorage = () => {
     return JSON.parse(localStorage.getItem('newlyAdded'));
   }; 
+
+  const formatDateForVancouver = (dateString) => {
+    // Check if dateString is truthy; if not, return an empty string
+    if (!dateString) return "";
+    // Convert the dateString to the specific Vancouver time zone and format it
+    return moment(dateString).tz("America/Vancouver").format('YYYY-MM-DD');
+  };
 
   const fetchSales = () => {
     const url = `${URL}/user/${userId}/sales`;
@@ -161,7 +171,7 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
   useEffect(() => {
     const filterSales = () => {
       const filtered = sales.filter((sale) => {
-        const saleDate = new Date(sale.copra_ship_date).toISOString().split("T")[0];;
+        const saleDate = new Date(sale.copra_ship_date).toISOString().split("T")[0];
         const startDate = dateRange.startDate.toISOString().split("T")[0];
         const endDate = dateRange.endDate.toISOString().split("T")[0];
         return (
@@ -176,18 +186,36 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     filterSales();
   }, [statusFilter, sales, dateRange]);
 
-  const toggleDateModal = () => {
-    setIsDateModalOpen(!isDateModalOpen);
+  const toggleDateModal = (handlePredefinedRange) => () => {
+    setIsDateModalOpen(current => {
+      // When closing the modal and no date is selected, default to this month
+      if (current && (!dateRange.startDate || !dateRange.endDate)) {
+        handlePredefinedRange("thisMonth");
+      }
+      return !current;
+    });
     setIsDatePickerVisible(false); // Reset to initial state when closing the modal
-    setDateRange({ startDate: null, endDate: null }); // Reset date range when opening the modal
-    setDateLabel(""); // Clear the date label
-    setInputLabel("");
   };
+  
+  
   const handleDateChange = (update) => {
-    setDateRange({ startDate: update[0], endDate: update[1] });
-    setDateLabel("");
-    setInputLabel("");
+    // Only update the range if both dates are selected
+    if (update.length === 2 && update[0] && update[1]) {
+      const [start, end] = update;
+      if (start instanceof Date && end instanceof Date && !Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
+        setDateRange({
+          startDate: start,
+          endDate: end
+        });
+      } else {
+        console.error("Invalid dates selected", start, end);
+      }
+    } else if (update.length === 2 && update[0] && !update[1]) {
+      // Handle scenario where the start date is selected but the end date is not yet picked
+      setDateRange(prev => ({ ...prev, startDate: update[0]}));
+    }
   };
+  
 
   const handlePredefinedRange = (range) => {
     let start;
@@ -257,7 +285,7 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     setIsDateModalOpen(false);
   };
 
-  const handleDeleteClick = async (saleId) => {
+  const deleteSale = async (saleId) => {
     try {
       const targetSalesLog = await axios.get(`${URL}/sale/${saleId}`);
       console.log(targetSalesLog.data);
@@ -332,6 +360,12 @@ const ViewSalesTable = ({ showEditForm, setshowEditForm, handleEdit, URL }) => {
     } catch (error) {
       console.error("Error deleting sale:", error);
     }
+  };
+  const handleDeleteClick = (saleId, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedSale(saleId);
+    setIsDeleteModalOpen(true);
   };
 
   const handleEditClick = (sale, e) => {
@@ -488,7 +522,7 @@ const formatDate = (dateString) => {
         </button>
         <Modal
   isOpen={isDateModalOpen}
-  onRequestClose={toggleDateModal}
+  onRequestClose={toggleDateModal(handlePredefinedRange)}
   shouldCloseOnOverlayClick
   className="absolute z-10"
   overlayClassName="absolute inset-0 bg-black bg-opacity-0"
@@ -616,10 +650,9 @@ const formatDate = (dateString) => {
               <td className="px-2 py-0" style={{ width: '143px', height: '43px' }}>{formatDecimal(sale.sales_unit_price)}</td>
               <td className="px-2 py-0" style={{ width: '139px', height: '43px' }}>{`${formatDecimal(sale.amount_of_copra_sold)} kg`}</td>
               <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>
-                {sale.cheque_receive_date
-                  ? new Date(sale.cheque_receive_date).toLocaleDateString()
-                  : "-"}
-              </td>
+              {sale.cheque_receive_date
+                  ? formatDate(sale.cheque_receive_date)
+                  : "-"}              </td>
               <td className="px-2 py-0" style={{ width: '156px', height: '43px' }}>
   {sale.total_sales_price && parseFloat(sale.total_sales_price.$numberDecimal) === 0 
     ? '-' 
@@ -670,6 +703,14 @@ const formatDate = (dateString) => {
                       </div>
                     )
                   }
+                   <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onRequestClose={() => setIsDeleteModalOpen(false)}
+        onDelete={() => {
+          deleteSale(selectedSale);
+          setIsDeleteModalOpen(false);  // Optionally close modal immediately after invoking delete
+        }}
+      />
                 </div>
               </td>
             </tr>

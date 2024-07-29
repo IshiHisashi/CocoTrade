@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import moment from 'moment-timezone';
 import Field from "../../component/field-filter/Field";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Exit from "../../assets/icons/Exit.svg";
@@ -20,10 +21,14 @@ const AddPurchaseForm = ({
   const [filteredFarmers, setFilteredFarmers] = useState([]);
   const [user, setUser] = useState(null);
   const  [isSubmitting, setIsSubmitting] =useState(false);
+  const getCurrentDateForVancouver = () => {
+    return moment().tz("America/Vancouver").format('YYYY-MM-DD'); // Formats the date as "YYYY-MM-DD"
+  };
+  
   const [formData, setFormData] = useState({
     farmer_name: "",
     invoice_number: "",
-    purchase_date: new Date().toISOString().split('T')[0], // Set default to today's date
+    purchase_date: getCurrentDateForVancouver(), // Set default to today's date in Vancouver
     sales_unit_price: "",
     amount_of_copra_purchased: "",
     moisture_test_details: "",
@@ -34,7 +39,14 @@ const AddPurchaseForm = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
   const [showDeductionMessage, setShowDeductionMessage] = useState(false);
-
+  
+  const formatDateForVancouver = (dateString) => {
+    // Check if dateString is truthy; if not, return an empty string
+    if (!dateString) return "";
+    // Convert the dateString to the specific Vancouver time zone and format it
+    return moment(dateString).tz("America/Vancouver").format('YYYY-MM-DD');
+  };
+  
   useEffect(() => {
     // Fetch user data
     axios
@@ -116,7 +128,7 @@ const AddPurchaseForm = ({
             purchase.total_purchase_price
         ),
         purchase_date: purchase.purchase_date
-          ? new Date(purchase.purchase_date).toISOString('en-CA').split("T")[0]
+          ?  new Date(purchase.purchase_date).toISOString('en-CA').split("T")[0]
           : "",
         user_id: userid,
       });

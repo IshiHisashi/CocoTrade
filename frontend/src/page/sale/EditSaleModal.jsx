@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import moment from 'moment-timezone';
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
@@ -35,6 +36,13 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
+
+  const formatDateForVancouver = (dateString) => {
+    // Check if dateString is truthy; if not, return an empty string
+    if (!dateString) return "";
+    // Convert the dateString to the specific Vancouver time zone and format it
+    return moment(dateString).tz("America/Vancouver").format('YYYY-MM-DD');
+  };
 
   useEffect(() => {
     // Fetch user data

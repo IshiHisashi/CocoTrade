@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import axios from "axios";
@@ -165,6 +165,95 @@ const Dashboard = ({ URL }) => {
     })();
   }, [userId, URL]);
 
+  const memoizedBarChart = useMemo(
+    () => (
+      <section className="col-span-2 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200 order-1">
+        <h2 className="h3-sans text-neutral-600">
+          Activity this month vs last month
+        </h2>
+        {!data ? (
+          <p>loading...</p>
+        ) : (
+          <Bar
+            data={{
+              labels: [data.secondLatestMonthName, data.latestMonthName],
+              datasets: [
+                {
+                  label: "Sales",
+                  data: [
+                    data.sales.secondLatest
+                      ? data.sales.secondLatest.monthlySales.$numberDecimal
+                      : 0,
+                    data.sales.latest
+                      ? data.sales.latest.monthlySales.$numberDecimal
+                      : 0,
+                  ],
+                  backgroundColor: "#0C7F8E",
+                  hoverBackgroundColor: "#0C7F8E",
+                  barPercentage: 1,
+                  categoryPercentage: 0.6,
+                  maxBarThickness: 32,
+                },
+                {
+                  label: "Purchase",
+                  data: [
+                    data.purchase.secondLatest
+                      ? data.purchase.secondLatest.monthlyPurchase
+                          .$numberDecimal
+                      : 0,
+                    data.purchase.latest
+                      ? data.purchase.latest.monthlyPurchase.$numberDecimal
+                      : 0,
+                  ],
+                  backgroundColor: "#FF8340",
+                  hoverBackgroundColor: "#FF8340",
+                  barPercentage: 1,
+                  categoryPercentage: 0.6,
+                  maxBarThickness: 32,
+                },
+              ],
+            }}
+            options={{
+              indexAxis: "y",
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                },
+              },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  ticks: {
+                    callback(value) {
+                      const valueToShow =
+                        value < 1000 ? value : `${value / 1000}k`;
+                      return valueToShow;
+                    },
+                  },
+                  grid: {
+                    display: false,
+                  },
+                  title: {
+                    display: true,
+                    text: "Price (Php)",
+                    align: "center",
+                  },
+                },
+                y: {
+                  grid: {
+                    display: false,
+                  },
+                },
+              },
+            }}
+          />
+        )}
+      </section>
+    ),
+    [data]
+  );
+
   return (
     <UserIdContext.Provider value={userId}>
       <title>Dashboard | CocoTrade</title>
@@ -223,7 +312,9 @@ const Dashboard = ({ URL }) => {
             <RecentActivityCard type="sales" URL={URL} />
           </section>
 
-          <section className="col-span-2 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200 order-1">
+          {memoizedBarChart}
+
+          {/* <section className="col-span-2 p-8 bg-white sm:rounded-lg sm:border sm:border-bluegreen-200 order-1">
             <h2 className="h3-sans text-neutral-600">
               Activity this month vs last month
             </h2>
@@ -305,7 +396,7 @@ const Dashboard = ({ URL }) => {
                 }}
               />
             )}
-          </section>
+          </section> */}
         </div>
       </div>
     </UserIdContext.Provider>

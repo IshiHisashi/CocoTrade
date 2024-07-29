@@ -7,6 +7,7 @@ import moment from "moment";
 import { Chart } from "chart.js";
 import "chartjs-adapter-moment";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 import DurationSelecter from "../../component/field-filter/DurationSelecter.jsx";
 
 const LineChart = (t) => {
@@ -15,6 +16,8 @@ const LineChart = (t) => {
   const thisYear = today.toLocaleDateString().split("/")[2];
   const thisMonth = today.toLocaleDateString().split("/")[0].padStart(2, "0");
   const userId = useContext(UserIdContext);
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
   const [retrievedData, setRetrievedData] = useState([]);
   const [durationType, setDurationType] = useState("yearly");
   const [durationValue, setDurationValue] = useState(thisYear);
@@ -25,12 +28,15 @@ const LineChart = (t) => {
 
   // Get data from the collection
   useEffect(() => {
+    startLoading();
     if (type === "market") {
       // for market price
       axios
         .get(`${URL}/marketprice`)
         .then((res) => {
           setRetrievedData(res.data.data.docs);
+          setLoad(true);
+          stopLoading();
         })
         .catch(console.log("waiting..."));
     } else if (type === "cashflow") {
@@ -39,12 +45,13 @@ const LineChart = (t) => {
       axios
         .get(`${URL}/tmpFinRoute/${userId}/currentbalance/byuser`)
         .then((res) => {
-          console.log(res);
           setRetrievedData(res.data.data.docs);
+          setLoad(true);
+          stopLoading();
         })
         .catch(console.log("waiting..."));
     }
-  }, [type, userId, URL]);
+  }, [type, userId, URL, startLoading, stopLoading]);
 
   // LineChart drawing
   useEffect(() => {
@@ -226,10 +233,16 @@ const LineChart = (t) => {
             mode: "index",
             intersect: false,
             callbacks: {
-              label(context) {
-                const date = context.raw.x;
-                const price = context.raw.y;
-                return `Php ${price.toFixed(2)}`;
+              label(value) {
+                const valueBase =
+                  type === "market"
+                    ? (value.raw.y / 1000).toFixed(2)
+                    : value.raw.y;
+                const valueBalance = new Intl.NumberFormat("en-US", {
+                  maximumFractionDigits: 0,
+                }).format(valueBase);
+                const valueFormatted = `PHP ${type === "market" ? valueBase : valueBalance}`;
+                return valueFormatted;
               },
             },
           },

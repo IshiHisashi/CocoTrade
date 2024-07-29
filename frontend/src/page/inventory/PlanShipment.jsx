@@ -222,10 +222,13 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
         );
       }
       // Create notification
-      const formattedDate = format(
-        new Date(updatedFormData.copra_ship_date),
-        "MMMM do, yyyy"
-      );
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().split("T")[0];
+      };
+      
+      // Usage example with updatedFormData assuming it exists:
+      const formattedDate = formatDate(updatedFormData.copra_ship_date);
       const notificationData1 = {
         user_id: userId,
         title: "Prepare your trucks!",
@@ -302,11 +305,12 @@ const PlanShipment = ({ userId, setShowModal, refreshNotifications, URL,onFormSu
             required
           />
           {showSuggestions && filteredManufacturers.length > 0 && (
-            <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+            <ul className="suggestions absolute bg-white border border-gray-300 sm:w-[288px] w-[270px] mt-[-24px] z-10">
               {filteredManufacturers.map((manufacturer) => (
-                <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <li key={manufacturer._id} className=" hover:bg-gray-100 cursor-pointer w-full">
                   <button
                     type="button"
+                    className="px-4 py-2 w-full text-left"
                     onClick={() => handleSelectManufacturer(manufacturer.full_name)}
                   >
                     {manufacturer.full_name}

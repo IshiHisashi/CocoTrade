@@ -140,7 +140,7 @@ const Purchase = ({ URL }) => {
           onFormSubmit={handleFormSubmit}
         />
       </Modal>
-      <div className="w-full flex justify-end items-center mb-4 pr-9 md:pr-8 md:pt-3">
+      <div className="w-full flex justify-end items-center mb-4 pr-9 md:pr-8 md:pt-[27px]">
         <CtaBtn
           size="M"
           level="P"
@@ -152,7 +152,7 @@ const Purchase = ({ URL }) => {
           }}
         />
       </div>
-      <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] lg:m-[30px]">
+      <div className=" sm:border sm:border-neutral-100 sm:rounded-lg bg-neutral-0 p-[27px] lg:m-[30px] ">
         <ViewPurchaseTable
           setShowAddForm={setShowAddForm}
           handleEdit={handleEdit}

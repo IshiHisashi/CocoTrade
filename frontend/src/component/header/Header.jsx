@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  memo,
+} from "react";
 import axios from "axios";
 import { NavLink, useLocation } from "react-router-dom";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
@@ -12,7 +19,7 @@ import InfoTooltip from "../tooltip/InfoTooltip.jsx";
 import LogoForLightBg from "../../assets/CocoTradeLogoForLightBg.svg";
 import Hamburger from "../../assets/icons/Hamburger.svg";
 
-const Header = ({ URL, translateX, fnToToggleNav }) => {
+const Header = memo(({ URL, translateX, fnToToggleNav }) => {
   const { pathname } = useLocation();
 
   const userId = useContext(UserIdContext);
@@ -56,21 +63,58 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
     };
   }, []);
 
-  const handleNotificationClick = async (e) => {
-    e.stopPropagation();
-    setIsNotificationOpen(!isNotificationOpen);
-    setIsUserMenuOpen(false);
-    fnToToggleNav("-translate-x-full");
+  const handleNotificationClick = useCallback(
+    async (e) => {
+      e.stopPropagation();
+      setIsNotificationOpen((prev) => !prev);
+      setIsUserMenuOpen(false);
+      fnToToggleNav("-translate-x-full");
 
-    if (!isNotificationOpen) {
-      try {
-        await axios.patch(`${URL}/notification/user/${userId}/mark-read`);
-        setUnreadCount(0);
-      } catch (err) {
-        console.error("Error marking notifications as read:", err);
+      if (!isNotificationOpen) {
+        try {
+          await axios.patch(`${URL}/notification/user/${userId}/mark-read`);
+          setUnreadCount(0);
+        } catch (err) {
+          console.error("Error marking notifications as read:", err);
+        }
       }
-    }
-  };
+    },
+    [isNotificationOpen, userId, URL, fnToToggleNav]
+  );
+
+  const handleUserMenuClick = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setIsUserMenuOpen((prev) => !prev);
+      setIsNotificationOpen(false);
+      fnToToggleNav("-translate-x-full");
+    },
+    [fnToToggleNav]
+  );
+
+  const setIsNotificationOpenUseCallback = useCallback(
+    () => setIsNotificationOpen(false),
+    []
+  );
+
+  const propagationUseCallback = useCallback((e) => e.stopPropagation(), []);
+
+  // const memoizedNotificationDropdown = useMemo(
+  //   () => (
+  //     <NotificationDropdown
+  //       isNotificationOpen={isNotificationOpen}
+  //       setIsNotificationOpen={setIsNotificationOpen}
+  //       userId={userId}
+  //       URL={URL}
+  //     />
+  //   ),
+  //   [isNotificationOpen, userId, URL]
+  // );
+
+  // const memoizedUserMenuDropdown = useMemo(
+  //   () => <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />,
+  //   [isUserMenuOpen]
+  // );
 
   let pageTitle;
   let pageInfo;
@@ -150,32 +194,29 @@ const Header = ({ URL, translateX, fnToToggleNav }) => {
                 {unreadCount}
               </span>
             )}
+            {/* {memoizedNotificationDropdown} */}
             <NotificationDropdown
               isNotificationOpen={isNotificationOpen}
-              setIsNotificationOpen={setIsNotificationOpen}
+              setIsNotificationOpen={setIsNotificationOpenUseCallback}
               userId={userId}
               URL={URL}
-              onClick={(e) => e.stopPropagation()}
+              onClick={propagationUseCallback}
             />
           </button>
           <button
             type="button"
             className="w-[30px] h-[30px] font-dm-sans bg-[#0C7F8E] text-white text-center rounded-[50%] relative"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsUserMenuOpen(!isUserMenuOpen);
-              setIsNotificationOpen(false);
-              fnToToggleNav("-translate-x-full");
-            }}
+            onClick={handleUserMenuClick}
             aria-label="profile"
           >
             {companyName.split("")[0]}
+            {/* {memoizedUserMenuDropdown} */}
             <UserMenuDropdown isUserMenuOpen={isUserMenuOpen} />
           </button>
         </div>
       </div>
     </header>
   );
-};
+});
 
 export default Header;

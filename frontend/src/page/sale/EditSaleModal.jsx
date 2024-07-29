@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import moment from 'moment-timezone';
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
@@ -35,6 +36,13 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
+
+  const formatDateForVancouver = (dateString) => {
+    // Check if dateString is truthy; if not, return an empty string
+    if (!dateString) return "";
+    // Convert the dateString to the specific Vancouver time zone and format it
+    return moment(dateString).tz("America/Vancouver").format('YYYY-MM-DD');
+  };
 
   useEffect(() => {
     // Fetch user data
@@ -229,12 +237,12 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     return object;
   }
 
-  const prevWasPending = previousStatus === "pending";
-  const prevWasOngoing = previousStatus === "ongoing";
-  const prevWasCompleted = previousStatus === "completed";
-  const updateToPending = formData.status === "pending";
-  const updateToOngoing = formData.status === "ongoing";
-  const updateToCompleted = formData.status === "completed";
+  const prevWasPending = previousStatus === "Pending";
+  const prevWasOngoing = previousStatus === "Ongoing";
+  const prevWasCompleted = previousStatus === "Completed";
+  const updateToPending = formData.status === "Pending";
+  const updateToOngoing = formData.status === "Ongoing";
+  const updateToCompleted = formData.status === "Completed";
 
 
   const handleSubmit = async (e) => {
@@ -307,7 +315,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       <form onSubmit={handleSubmit}>
       <button
         type="button"
-       className="absolute top-2 right-2"
+       className="absolute top-7 right-5"
         onClick={() => setshowEditForm(false)}
       >
         <img src={Exit} alt="close" />
@@ -348,7 +356,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
           required
         />
         {showSuggestions && filteredManufacturers.length > 0 && (
-          <ul className="suggestions absolute bg-white border border-gray-300 w-full mt-1 z-10">
+          <ul className="suggestions absolute bg-white border border-gray-300 w-[full] mt-[-23px] z-10">
             {filteredManufacturers.map((manufacturer) => (
               <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 <button

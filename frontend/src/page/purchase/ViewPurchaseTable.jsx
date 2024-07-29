@@ -5,6 +5,9 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
+import moment from 'moment-timezone';
+import { useLoading } from "../../contexts/LoadingContext.jsx";
+import DeleteConfirmationModal from "./DeleteConfirmationModal.jsx"
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import EllipseIcon from '../../assets/icons/Ellipse.svg';
 import CalendarIcon from '../../assets/icons/CalendarIcon.svg';
@@ -12,6 +15,7 @@ import Pagination from "../../component/btn/Pagination";
 import DeleteIcon from '../../assets/icons/DeleteIcon.svg';
 import EditIcon from '../../assets/icons/EditIcon.svg';
 import CtaBtn from "../../component/btn/CtaBtn";
+
 
 
 const ViewPurchaseTable = ({
@@ -24,12 +28,14 @@ const ViewPurchaseTable = ({
   const [filteredPurchases, setFilteredPurchases] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
-  const today = new Date();
-  const initialDateLabel = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+  const today = moment().tz("America/Vancouver").startOf('day').toDate();
+  const endOfToday = moment().tz("America/Vancouver").endOf('day').toDate();
+  
   const [dateRange, setDateRange] = useState({
-  startDate: today,
-  endDate: today,
+    startDate: today,
+    endDate: endOfToday,
   });
+  const initialDateLabel = moment(today).format("MMMM DD, YYYY"); 
 const [dateLabel, setDateLabel] = useState(initialDateLabel);
 const [inputLabel, setInputLabel] = useState("Today");
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
@@ -39,14 +45,20 @@ const [inputLabel, setInputLabel] = useState("Today");
   const userId = useContext(UserIdContext);
   const inputRef = useRef(null);
   const [inputPosition, setInputPosition] = useState({ top: 0, left: 0 });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+const [selectedPurchase, setSelectedPurchase] = useState(null);
+const [activeDropdown, setActiveDropdown] = useState(null);
+const { startLoading, stopLoading } = useLoading();
+const [load, setLoad] = useState(null);
+const [settingStartDate, setSettingStartDate] = useState(true);
 
- 
+
   const sortPurchaseData = (purchaseData) => {
     return purchaseData.sort((a, b) => new Date(b.purchase_date) - new Date(a.purchase_date));
   };
 
-  
   useEffect(() => {
+    startLoading();
     const url = `${URL}/tmpFinRoute/${userId}/purchase`;
     axios
       .get(url)
@@ -54,11 +66,12 @@ const [inputLabel, setInputLabel] = useState("Today");
         const sortedData = sortPurchaseData(response.data);
         setPurchases(sortedData);
         setFilteredPurchases(sortedData);
+        stopLoading();
       })
       .catch((error) => {
         console.error("Error fetching purchases:", error);
       });
-  }, [purchasesFromParent, userId, URL]);
+  }, [purchasesFromParent, userId, URL, startLoading, stopLoading]);
 
 
   const formatWithCommas = (number) => {
@@ -73,9 +86,8 @@ const [inputLabel, setInputLabel] = useState("Today");
   return number % 1 === 0 ? number.toString() : number.toFixed(decimalPlaces);
   };
 
-  const handleDeleteClick = async (purchase, e) => {
-    e.preventDefault();
-    e.stopPropagation();    try {
+  const deletePurchase = async (purchase) => {
+      try {
       // cash balance
       await axios.patch(
         // eslint-disable-next-line no-underscore-dangle
@@ -128,38 +140,68 @@ const [inputLabel, setInputLabel] = useState("Today");
     }
   };
 
+
+  const handleDeleteClick = (purchase, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedPurchase(purchase);
+    setIsDeleteModalOpen(true);
+  };
+
+
   useEffect(() => {
     const filterPurchases = () => {
       const filtered = purchases.filter((purchase) => {
+        if (!purchase.purchase_date) {
+          return false; // Skip this purchase if the date is invalid
+        }
         const purchaseDate = new Date(purchase.purchase_date);
-        const start = dateRange.startDate
-          ? new Date(dateRange.startDate).setHours(0, 0, 0, 0)
-          : null;
-        const end = dateRange.endDate
-          ? new Date(dateRange.endDate).setHours(23, 59, 59, 999)
-          : null;
-        return (
-          (!start || purchaseDate >= start) && (!end || purchaseDate <= end)
-        );
+        if (Number.isNaN(purchaseDate.getTime())) {
+          return false; // Check if the date is valid
+        }
+        const purchaseDateString = purchaseDate.toISOString().split("T")[0];
+        const startDateString = dateRange.startDate.toISOString().split("T")[0];
+        const endDateString = dateRange.endDate.toISOString().split("T")[0];
+        return purchaseDateString >= startDateString && purchaseDateString <= endDateString;
       });
       setFilteredPurchases(filtered);
-      setCurrentPage(1); // Reset to first page on filter change
+      setCurrentPage(1);
     };
     filterPurchases();
-  }, [purchases, dateRange]);
+}, [purchases, dateRange]);
+  
 
-  const toggleDateModal = () => {
-    setIsDateModalOpen(!isDateModalOpen);
-    setIsDatePickerVisible(false); // Reset to initial state when closing the modal
-    setDateRange({ startDate: null, endDate: null }); // Reset date range when opening the modal
-    setDateLabel(""); // Clear the date label
-    setInputLabel("");
-  };
-  const handleDateChange = (update) => {
-    setDateRange({ startDate: update[0], endDate: update[1] });
-    setDateLabel("");
-    setInputLabel("");
-  };
+ 
+const toggleDateModal = (handlePredefinedRange) => () => {
+  setIsDateModalOpen(current => {
+    // When closing the modal and no date is selected, default to this month
+    if (current && (!dateRange.startDate || !dateRange.endDate)) {
+      handlePredefinedRange("today");
+    }
+    return !current;
+  });
+  setIsDatePickerVisible(false); // Reset to initial state when closing the modal
+};
+
+const handleDateChange = (dates) => {
+  const [selectedDate] = dates;
+  if (settingStartDate) {
+    setDateRange(prevState => ({
+      ...prevState,
+      startDate: selectedDate,
+      endDate: selectedDate // Reset end date to start date initially
+    }));
+    setSettingStartDate(false); // Next click will set the end date
+  } else {
+    setDateRange(prevState => ({
+      ...prevState,
+      startDate: prevState.startDate,
+      endDate: selectedDate
+    }));
+    setSettingStartDate(true); // Reset for next operation
+  }
+};
+
 
   const handlePredefinedRange = (range) => {
     let start;
@@ -169,8 +211,10 @@ const [inputLabel, setInputLabel] = useState("Today");
       case "today":
         label = today.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
         setInputLabel("Today");
-        start = new Date(today.setHours(0, 0, 0, 0));
-        end = new Date(today.setHours(23, 59, 59, 999));
+        start = new Date(today);
+        end = new Date(today);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
         break;
       case "thisWeek":
         label = "This Week";
@@ -218,12 +262,18 @@ const [inputLabel, setInputLabel] = useState("Today");
     if (dateRange.startDate && dateRange.endDate) {
       const start = new Date(dateRange.startDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
       const end = new Date(dateRange.endDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-      setDateLabel(`${start} - ${end}`);
-      setInputLabel(`${start} - ${end}`);
-    }else {
-      setDateLabel(initialDateLabel);
-      setInputLabel("Today");
+      // Check if the start and end dates are the same
+    if (dateRange.startDate.toDateString() === dateRange.endDate.toDateString()) {
+      setDateLabel(start); // Display a single date
+      setInputLabel(start); // Update the input label to show only one date
+    } else {
+      setDateLabel(`${start} - ${end}`); // Display the range
+      setInputLabel(`${start} - ${end}`); // Update the input label to show the range
     }
+  } else {
+    setDateLabel(initialDateLabel);
+    setInputLabel("Today");
+  }
     setIsDatePickerVisible(false);
     setIsDateModalOpen(false);
   };
@@ -260,16 +310,16 @@ const [inputLabel, setInputLabel] = useState("Today");
     return (index + indexOfFirstRecord) % 2 === 0 ? 'bg-white cursor-pointer' : 'bg-bluegreen-100 cursor-pointer';
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        !event.target.closest('.dropdown-content')
-      ) {
-        setDropdownVisible(null);
-      }
-    };
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target) &&
+          !event.target.closest('.dropdown-content')
+        ) {
+          setDropdownVisible(null);
+        }
+      };
   
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -277,10 +327,24 @@ const [inputLabel, setInputLabel] = useState("Today");
     };
   }, []);
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const options = { year: '2-digit', month: '2-digit', day: '2-digit' };
-  return date.toLocaleDateString('en-US', options);
+  // const formatDateForVancouver = (dateString) => {
+  //   // Parse the date string with moment, and then set the timezone to Vancouver
+  //   const date = moment(dateString).tz("America/Vancouver");
+  //   // Format the date as 'YYYY-MM-DD' which is the ISO date format
+  //   return date.format('YYYY-MM-DD');
+  // };
+
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const isoString = date.toISOString(); // Get ISO string of the date
+
+    // Extract year, month, and day from the ISO string
+    const year = isoString.slice(2, 4); // Get the last two digits of the year from ISO string
+    const month = isoString.slice(5, 7); // Month is in positions 5-6
+    const day = isoString.slice(8, 10); // Day is in positions 8-9
+
+    return `${month}/${day}/${year}`;
 };
 
 const updateModalPosition = () => {
@@ -340,7 +404,7 @@ return () => {
     </div>
     <Modal
   isOpen={isDateModalOpen}
-  onRequestClose={toggleDateModal}
+  onRequestClose={toggleDateModal(handlePredefinedRange)}
   shouldCloseOnOverlayClick
   className="absolute z-10"
   overlayClassName="absolute inset-0 bg-black bg-opacity-0"
@@ -440,17 +504,18 @@ return () => {
   </div>
  
 </div>
+<div className="rounded-tl-lg rounded-tr-lg overflow-scroll">
         <table className="min-w-full bg-white border-collapse text-p14 font-dm-sans font-medium">
           <thead>
             <tr className="bg-neutral-600 text-white text-left">
-            <th className="p-2.5 rounded-tl-[8px] min-w-[150px]">Invoice No.</th>
-    <th className="p-2.5 min-w-[100px]">Date</th>
-    <th className="p-2.5 min-w-[150px]">Farmers Name</th>
-    <th className="p-2.5 min-w-[150px]">Copra Bought</th>
-    <th className="p-2.5 min-w-[150px]">Moisture</th>
-    <th className="p-2.5 min-w-[150px]">Price Per kg</th>
-    <th className="p-2.5 min-w-[150px]">Total Purchase</th>
-    <th className="p-2.5 rounded-tr-[8px] min-w-[100px]">Action</th>
+            <th className="p-2.5 min-w-[123px]">Invoice No.</th>
+    <th className="p-2.5 min-w-[113px]">Date</th>
+    <th className="p-2.5 min-w-[183px]">Farmers Name</th>
+    <th className="p-2.5 min-w-[139px]">Copra Bought</th>
+    <th className="p-2.5 min-w-[143px]">Moisture</th>
+    <th className="p-2.5 min-w-[143px]">Price Per kg</th>
+    <th className="p-2.5 min-w-[156px]">Total Purchase</th>
+    <th className="p-2.5 min-w-[72px]">Action</th>
  
             </tr>
           </thead>
@@ -460,13 +525,13 @@ return () => {
                 key={purchase._id}
                 className={getRowClassName(indexOfFirstRecord + index)}              >
          <td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{purchase.invoice_number}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{formatDate(purchase.purchase_date)}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{purchase.farmer_id ? purchase.farmer_id.full_name : "-"}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`${formatDecimal(purchase.amount_of_copra_purchased)} kg.`}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`${formatDecimal(purchase.moisture_test_details, 0)}%`}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`Php ${formatDecimal(purchase.sales_unit_price)}`}</td>
-<td className="px-2 py-0" style={{ width: '123px', height: '43px' }}>{`Php ${formatDecimal(purchase.total_purchase_price)}`}</td>
-<td className="px-2 py-0 relative" style={{ width: '123px', height: '43px' }}>
+<td className="px-2 py-0" style={{ width: '113px', height: '43px' }}>{formatDate(purchase.purchase_date)}</td>
+<td className="px-2 py-0" style={{ width: '183px', height: '43px' }}>{purchase.farmer_id ? purchase.farmer_id.full_name : "-"}</td>
+<td className="px-2 py-0" style={{ width: '139px', height: '43px' }}>{`${formatDecimal(purchase.amount_of_copra_purchased)} kg.`}</td>
+<td className="px-2 py-0" style={{ width: '143px', height: '43px' }}>{`${formatDecimal(purchase.moisture_test_details, 0)}%`}</td>
+<td className="px-2 py-0" style={{ width: '143px', height: '43px' }}>{`Php ${formatDecimal(purchase.sales_unit_price)}`}</td>
+<td className="px-2 py-0" style={{ width: '156px', height: '43px' }}>{`Php ${formatDecimal(purchase.total_purchase_price)}`}</td>
+<td className="px-2 py-0 relative" style={{ width: '72px', height: '43px' }}>
                   <div className="dropdown" ref={dropdownRef}>
                   <button
   type="button"
@@ -485,9 +550,12 @@ return () => {
                         <button
                           type="button"
                           className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 pr-8"
-                          onClick={(e) => handleEditClick(purchase, e)}
-
-                        >          <img src={EditIcon} alt="Edit" className="mr-2" />
+                          onClick={(e) => {
+                            handleEditClick(purchase,e);
+                            setActiveDropdown(null);
+                          }}
+                        >
+                       <img src={EditIcon} alt="Edit" className="mr-2" />
 
                           Edit
                         </button>
@@ -503,6 +571,14 @@ return () => {
                         </button>
                       </div>
                     )}
+                     <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onRequestClose={() => setIsDeleteModalOpen(false)}
+        onDelete={() => {
+          deletePurchase(selectedPurchase);
+          setIsDeleteModalOpen(false);  // Optionally close modal immediately after invoking delete
+        }}
+      />
                   </div>
                 </td>
               </tr>
@@ -519,6 +595,7 @@ return () => {
   ))}
           </tbody>
         </table>
+        </div>
       </div>
       <div className="pagination flex items-center justify-center mt-4">
         <Pagination
@@ -542,6 +619,7 @@ return () => {
         />
       </div>
     </div>
+    
   );
 };
 

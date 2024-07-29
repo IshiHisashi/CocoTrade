@@ -39,7 +39,7 @@ const ConfirmationModal = ({ isOpen, onRequestClose, message }) => {
         </div>
         <img src={Confirm} alt="" aria-hidden />
         <h1 className="text-xl font-bold mb-2 text-center">Successful!</h1>
-        <p className="text-gray-700 mb-6">{message}</p>
+        <p className="text-gray-700 mb-6 text-center">{message}</p>
         <CtaBtn size="M" level="P" innerTxt="Done" onClickFnc={onRequestClose} />
       </div>
     </Modal>

@@ -12,6 +12,7 @@ import {
   Legend,
 } from "chart.js";
 import DurationSelecter from "../../component/field-filter/DurationSelecter.jsx";
+import { useLoading } from "../../contexts/LoadingContext.jsx";
 
 // Custom plungin to show the line on the chart.
 const verticalLinePlugin = {
@@ -76,14 +77,18 @@ const LineChartRevised = ({
   const [data, setData] = useState({ datasets: [] });
   const [options, setOptions] = useState({});
   const [timeOption, setTimeOption] = useState({});
+  const { startLoading, stopLoading } = useLoading();
+  const [load, setLoad] = useState(null);
 
   useEffect(
     () => {
+      startLoading();
       // Current inventory
       axios
         .get(`${URL}/user/${userId}/inv`)
         .then((res) => {
           setInventory(res.data.data);
+          stopLoading();
         })
         .catch((err) => {
           console.error(err);
@@ -108,6 +113,7 @@ const LineChartRevised = ({
       }
       // Create a new data array based on duration
       if (inventory.length > 0) {
+        // Get start date and end date for the duration
         let startDate = new Date();
         if (durationType === "yearly") {
           startDate = new Date(
@@ -118,37 +124,45 @@ const LineChartRevised = ({
         } else if (durationType === "monthly") {
           startDate.setDate(today.getDate() - 30);
         }
+
+        // Generate all the date during the duration
+        const generateDateRange = (start, end) => {
+          const dates = [];
+          const currentDate = new Date(start);
+          while (currentDate <= end) {
+            dates.push(new Date(currentDate).toISOString().slice(0, 10));
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+          return dates;
+        };
+        const dateRange = generateDateRange(startDate, new Date())
+
+        // Create a raw inv data array based on duration without filling missing date
         const modifiedInvData = inventory.filter((inv) => {
           const invDate = new Date(inv.time_stamp);
           return invDate > startDate;
         });
 
         // Convert raw data into a way that suits chart.js
-        const dataPoints = modifiedInvData.map((inv) => ({
+        const rawDataPoints = modifiedInvData.map((inv) => ({
           x: inv.time_stamp.slice(0, 10),
           y: inv.current_amount_with_pending.$numberDecimal,
         }));
 
-        // If today's date is not the latest datapoint's date, copy the number from the latest datapoint and create a new datapoint for today.
-        if (dataPoints[0].x !== today.toISOString().split("T")[0]) {
-          const todaysData = {
-            x: today.toISOString().split("T")[0],
-            y: dataPoints[0].y,
-          };
-          dataPoints.unshift(todaysData);
-        }
+        // fill in missing data so that the chart has data points for every single date
+        const fillInMissingData = (dates, dataPoints) => {
+          const dataMap = new Map(dataPoints.map(point => [point.x, point.y]));
+          let lastKnownY = dataPoints[dataPoints.length - 1].y;
+          return dates.map(date => {
+            const y = dataMap.get(date);
+            if (y !== undefined) {
+              lastKnownY = y;
+            }
+            return { x: date, y: lastKnownY };
+          });
+        };
 
-        // If the oldest data is not of the startDate, create a datapoint for the startDate
-        if (
-          dataPoints[dataPoints.length - 1].x !==
-          startDate.toISOString().split("T")[0]
-        ) {
-          const startDatesData = {
-            x: startDate.toISOString().split("T")[0],
-            y: dataPoints[dataPoints.length - 1].y,
-          };
-          dataPoints.push(startDatesData);
-        }
+        const dataPoints = fillInMissingData(dateRange, rawDataPoints);
 
         // Create a labels and modify timeOption
         const durationLabels = [];
@@ -164,6 +178,10 @@ const LineChartRevised = ({
             setTimeOption({
               unit: "month",
               tooltipFormat: "yyyy-MM-DD",
+              displayFormats: {
+                month: "MMM/YY",
+                week: "MM/DD",
+              },
             });
           }
         } else if (durationType === "monthly") {
@@ -178,6 +196,10 @@ const LineChartRevised = ({
             setTimeOption({
               unit: "week",
               tooltipFormat: "MM-DD",
+              displayFormats: {
+                month: "MMM/YY",
+                week: "MM/DD",
+              },
             });
           }
         }
@@ -244,7 +266,7 @@ const LineChartRevised = ({
           },
           elements: {
             line: {
-              tension: 0.4, // Smoothing effect
+              tension: 0.2, // Smoothing effect
             },
             point: {
               radius: 0, // Hide points

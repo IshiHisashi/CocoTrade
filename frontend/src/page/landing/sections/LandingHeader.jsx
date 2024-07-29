@@ -67,7 +67,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
         className={`col-span-2 lg:col-start-2 lg:col-end-3 lg:flex justify-between ${isHamburgerOpen ? "bg-neutral-600 gap-10" : "hidden"}`}
       >
         <ul
-          className={`h3-sans lg:p16 lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[150px]" : ""}`}
+          className={`h3-sans lg:p16-bold lg:flex items-center gap-[40px] xl:gap-[60px] ${isHamburgerOpen ? "text-white pb-[150px]" : ""}`}
         >
           <AnchorLink href="#benefit" offset="-50">
             <li

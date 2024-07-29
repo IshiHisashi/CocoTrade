@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserIdContext } from "../../contexts/UserIdContext";
 
@@ -16,17 +16,20 @@ const getTotalSum = async (type, userId, URL) => {
       );
       totalSum = res.data.data.totalSales.$numberDecimal;
     }
-    return Number(totalSum).toFixed(2).toLocaleString();
+    return Number(totalSum).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   } catch (error) {
     if (error.response.status === 404) {
       totalSum = 0;
-      return Number(totalSum).toFixed(2).toLocaleString();
+      return Number(totalSum).toFixed(2);
     }
     return null;
   }
 };
 
-const RecentActivityCard = (props) => {
+const RecentActivityCard = memo((props) => {
   const { type, URL } = props;
   const userId = useContext(UserIdContext);
   const [totalSum, setTotalSum] = useState(null);
@@ -50,6 +53,6 @@ const RecentActivityCard = (props) => {
       </p>
     </div>
   );
-};
+});
 
 export default RecentActivityCard;

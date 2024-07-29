@@ -10,6 +10,7 @@ const Finance = ({ URL }) => {
 
   return (
     <div className="">
+      <title>Finances | CocoTrade</title>
       {/* {loading && <LoadingScreen />} */}
       <div className="flex flex-col gap-8 sm:mx-[31px] sm:py-[25px]">
         <LineChart type="cashflow" URL={URL} />

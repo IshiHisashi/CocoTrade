@@ -54,9 +54,10 @@ const SalesTable = ({ userId, URL, showConfirmation }) => {
       <button
         onClick={() => navigate("/sales")}
         type="button"
-        className="mt-[37px] p14 font-semibold w-full text-right"
+        className="mt-[37px] p14 font-semibold w-full flex flex-nowrap justify-end"
       >
-        View sales log →
+        View sales log
+        <img src="/images/right-arrow.svg" alt="right arrow" />
       </button>
     </div>
   );

@@ -149,9 +149,10 @@ const LineChartRevised = ({
           y: inv.current_amount_with_pending.$numberDecimal,
         }));
 
+        // fill in missing data so that the chart has data points for every single date
         const fillInMissingData = (dates, dataPoints) => {
           const dataMap = new Map(dataPoints.map(point => [point.x, point.y]));
-          let lastKnownY = dataPoints[0].y;
+          let lastKnownY = dataPoints[dataPoints.length - 1].y;
           return dates.map(date => {
             const y = dataMap.get(date);
             if (y !== undefined) {
@@ -177,6 +178,10 @@ const LineChartRevised = ({
             setTimeOption({
               unit: "month",
               tooltipFormat: "yyyy-MM-DD",
+              displayFormats: {
+                month: "MMM/YY",
+                week: "MM/DD",
+              },
             });
           }
         } else if (durationType === "monthly") {
@@ -191,6 +196,10 @@ const LineChartRevised = ({
             setTimeOption({
               unit: "week",
               tooltipFormat: "MM-DD",
+              displayFormats: {
+                month: "MMM/YY",
+                week: "MM/DD",
+              },
             });
           }
         }

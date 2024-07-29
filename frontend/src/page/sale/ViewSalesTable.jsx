@@ -466,8 +466,15 @@ useEffect(() => {
 // };
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  return date.toISOString().split("T")[0];
-  };
+  const isoString = date.toISOString(); // Get ISO string of the date
+
+  // Extract year, month, and day from the ISO string
+  const year = isoString.slice(2, 4); // Get the last two digits of the year from ISO string
+  const month = isoString.slice(5, 7); // Month is in positions 5-6
+  const day = isoString.slice(8, 10); // Day is in positions 8-9
+
+  return `${month}/${day}/${year}`;
+};
 
 
   const getStatusClass = (status) => {

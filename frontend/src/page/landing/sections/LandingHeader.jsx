@@ -133,7 +133,7 @@ const LandingHeader = ({ setAuthType, setIsAuthModalOpen }) => {
   rounded
   border-0 border-bluegreen-700`}
             >
-              Free 30-day trial
+              Free 14-day trial
             </button>
           </li>
         </ul>

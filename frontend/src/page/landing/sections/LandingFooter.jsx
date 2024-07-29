@@ -3,7 +3,10 @@ import CtaBtn from "../../../component/btn/CtaBtn";
 
 const LandingFooter = () => {
   const handleDownload = () => {
-    window.open("http://localhost:5555/download-proposal", "_blank");
+    window.open(
+      "https://coco-trade-backend.vercel.app/download-proposal",
+      "_blank"
+    );
   };
   return (
     <div className="flex flex-col-reverse md:flex-row gap-[22px] items-center md:justify-between bg-neutral-600 px-[120px] py-[30px] text-bluegreen-100">

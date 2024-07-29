@@ -3,7 +3,10 @@ import CtaBtn from "../../../component/btn/CtaBtn";
 
 const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   const handleDownload = () => {
-    window.open("http://localhost:5555/download-proposal", "_blank");
+    window.open(
+      "https://coco-trade-backend.vercel.app/download-proposal",
+      "_blank"
+    );
   };
   return (
     <div className="flex flex-col items-center bg-neutral-600 pt-[57px] sm:pt-[95px] pb-[45px]">
@@ -45,23 +48,8 @@ const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   rounded
   border-0 border-bluegreen-700"
         >
-          Free 30-day trial
+          Free 14-day trial
         </button>
-
-        {/* THIS DOESN'T WORK in DEPLOYMENT 
-        <CtaBtn
-          innerTxt="Download Proposal"
-          size="M-landing"
-          level="O-landing"
-        />
-        <CtaBtn
-          innerTxt="Free 14-day trial"
-          size="M-landing"
-          onClickFnc={() => {
-            setAuthType("signup");
-            setIsAuthModalOpen(true);
-          }}
-        /> */}
       </div>
       <div className="image-section px-[22px] sm:px-[15%]">
         <img src="./images/herobanner2.png" alt="dashboard" />

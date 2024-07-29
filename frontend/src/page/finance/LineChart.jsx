@@ -233,10 +233,16 @@ const LineChart = (t) => {
             mode: "index",
             intersect: false,
             callbacks: {
-              label(context) {
-                const date = context.raw.x;
-                const price = context.raw.y;
-                return `Php ${price.toFixed(2)}`;
+              label(value) {
+                const valueBase =
+                  type === "market"
+                    ? (value.raw.y / 1000).toFixed(2)
+                    : value.raw.y;
+                const valueBalance = new Intl.NumberFormat("en-US", {
+                  maximumFractionDigits: 0,
+                }).format(valueBase);
+                const valueFormatted = `PHP ${type === "market" ? valueBase : valueBalance}`;
+                return valueFormatted;
               },
             },
           },

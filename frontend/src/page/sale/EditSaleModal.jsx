@@ -1,13 +1,21 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import moment from 'moment-timezone';
+import moment from "moment-timezone";
 import Field from "../../component/field-filter/Field";
 import { UserIdContext } from "../../contexts/UserIdContext.jsx";
 import CtaBtn from "../../component/btn/CtaBtn";
 import Exit from "../../assets/icons/Exit.svg";
 
-const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelectedSale, setSales, URL,onFormSubmit, }) => {
+const EditSaleModal = ({
+  showEditForm,
+  setshowEditForm,
+  selectedSale,
+  setSelectedSale,
+  setSales,
+  URL,
+  onFormSubmit,
+}) => {
   const userId = useContext(UserIdContext);
   const navigate = useNavigate();
   const [manufacturers, setManufacturers] = useState([]);
@@ -15,7 +23,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   const [user, setUser] = useState(null);
 
   // To controll update behaivior in API
-  const [previousStatus, setPreviousStatus] = useState(null); 
+  const [previousStatus, setPreviousStatus] = useState(null);
   const [previousAmount, setPreviousAmount] = useState(null);
   const [previousPrice, setPreviousPrice] = useState(null);
   const [previousShipDate, setPreviousShipDate] = useState(null);
@@ -41,45 +49,62 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     // Check if dateString is truthy; if not, return an empty string
     if (!dateString) return "";
     // Convert the dateString to the specific Vancouver time zone and format it
-    return moment(dateString).tz("America/Vancouver").format('YYYY-MM-DD');
+    return moment(dateString).tz("America/Vancouver").format("YYYY-MM-DD");
   };
 
-  useEffect(() => {
-    // Fetch user data
-    axios
-      .get(`${URL}/user/${userId}`)
-      .then((response) => {
-        setUser(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching user:", error);
-      });
+  useEffect(
+    () => {
+      // Fetch user data
+      axios
+        .get(`${URL}/user/${userId}`)
+        .then((response) => {
+          setUser(response.data.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching user:", error);
+        });
 
-    // Fetch manufacturers for the current user
-    axios
-    .get(`${URL}/manufacturer`, { params: { user_id: userId } })
-    .then((response) => {
-      setManufacturers(response.data);
-      setFilteredManufacturers(response.data); // Set initial filtered manufacturer
-    })
-    .catch((error) => {
-      console.error("Error fetching manufacturers:", error);
-    });
-  }, 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [selectedSale]);
+      // Fetch manufacturers for the current user
+      axios
+        .get(`${URL}/manufacturer`, { params: { user_id: userId } })
+        .then((response) => {
+          setManufacturers(response.data);
+          setFilteredManufacturers(response.data); // Set initial filtered manufacturer
+        })
+        .catch((error) => {
+          console.error("Error fetching manufacturers:", error);
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedSale]
+  );
 
   useEffect(() => {
     if (selectedSale) {
       setFormData({
         ...selectedSale,
-           // eslint-disable-next-line no-underscore-dangle 
-          manufacturer_id: selectedSale.manufacturer_id?._id ?? '',
-          amount_of_copra_sold: parseFloat(selectedSale.amount_of_copra_sold?.$numberDecimal ?? selectedSale.amount_of_copra_sold),
-          sales_unit_price: parseFloat(selectedSale.sales_unit_price?.$numberDecimal ?? selectedSale.sales_unit_price),
-          copra_ship_date: selectedSale.copra_ship_date ? new Date(selectedSale.copra_ship_date).toISOString().split('T')[0] : '',
-          cheque_receive_date: selectedSale.cheque_receive_date ? new Date(selectedSale.cheque_receive_date).toISOString().split('T')[0] : '',
-          total_sales_price: parseFloat(selectedSale.total_sales_price?.$numberDecimal ?? selectedSale.total_sales_price),
+        // eslint-disable-next-line no-underscore-dangle
+        manufacturer_id: selectedSale.manufacturer_id?._id ?? "",
+        amount_of_copra_sold: parseFloat(
+          selectedSale.amount_of_copra_sold?.$numberDecimal ??
+            selectedSale.amount_of_copra_sold
+        ),
+        sales_unit_price: parseFloat(
+          selectedSale.sales_unit_price?.$numberDecimal ??
+            selectedSale.sales_unit_price
+        ),
+        copra_ship_date: selectedSale.copra_ship_date
+          ? new Date(selectedSale.copra_ship_date).toISOString().split("T")[0]
+          : "",
+        cheque_receive_date: selectedSale.cheque_receive_date
+          ? new Date(selectedSale.cheque_receive_date)
+              .toISOString()
+              .split("T")[0]
+          : "",
+        total_sales_price: parseFloat(
+          selectedSale.total_sales_price?.$numberDecimal ??
+            selectedSale.total_sales_price
+        ),
       });
     }
   }, [selectedSale]);
@@ -89,7 +114,12 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     const calculateTotalSalesPrice = () => {
       const totalSales = parseFloat(formData.total_sales_price);
       const amountSold = parseFloat(formData.amount_of_copra_sold);
-      if ((!Number.isNaN(totalSales) && !Number.isNaN(amountSold)) && totalSales !== 0 && amountSold !== 0) {
+      if (
+        !Number.isNaN(totalSales) &&
+        !Number.isNaN(amountSold) &&
+        totalSales !== 0 &&
+        amountSold !== 0
+      ) {
         const salesPerUnit = totalSales / amountSold;
         setFormData((prevData) => ({
           ...prevData,
@@ -102,30 +132,42 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     console.log(new Date(formData.copra_ship_date));
     console.log(new Date());
     console.log(new Date(formData.copra_ship_date) > new Date());
-  }, [formData.total_sales_price, formData.amount_of_copra_sold, formData.copra_ship_date]);
+  }, [
+    formData.total_sales_price,
+    formData.amount_of_copra_sold,
+    formData.copra_ship_date,
+  ]);
 
-  useEffect(() => {
-    if(selectedSale){
-      setPreviousStatus(selectedSale.status);
-      console.log("Status: ", selectedSale.status);
-      setPreviousAmount(selectedSale.amount_of_copra_sold.$numberDecimal);
-      console.log("Amount of copra sold: ", selectedSale.amount_of_copra_sold.$numberDecimal);
-      setPreviousPrice(selectedSale.total_sales_price.$numberDecimal);
-      console.log("Total price: ", selectedSale.total_sales_price.$numberDecimal);
-      setPreviousShipDate(selectedSale.copra_ship_date);
-      console.log("Shipment date: ", selectedSale.copra_ship_date);
-      setPreviousReceivedDate(selectedSale.cheque_receive_date);
-      console.log("Money received date: ", selectedSale.cheque_receive_date);
-    }
-  }, 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [showEditForm]) 
+  useEffect(
+    () => {
+      if (selectedSale) {
+        setPreviousStatus(selectedSale.status);
+        console.log("Status: ", selectedSale.status);
+        setPreviousAmount(selectedSale.amount_of_copra_sold.$numberDecimal);
+        console.log(
+          "Amount of copra sold: ",
+          selectedSale.amount_of_copra_sold.$numberDecimal
+        );
+        setPreviousPrice(selectedSale.total_sales_price.$numberDecimal);
+        console.log(
+          "Total price: ",
+          selectedSale.total_sales_price.$numberDecimal
+        );
+        setPreviousShipDate(selectedSale.copra_ship_date);
+        console.log("Shipment date: ", selectedSale.copra_ship_date);
+        setPreviousReceivedDate(selectedSale.cheque_receive_date);
+        console.log("Money received date: ", selectedSale.cheque_receive_date);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [showEditForm]
+  );
 
   const handleClickOutside = (event) => {
     if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
       setShowSuggestions(false);
     }
-  }; 
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -171,8 +213,12 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   // Common throughout all the sales edit patterns => Good to go
   const updateSales = async () => {
     try {
-      const existingManufacturer = manufacturers.find(manufacturer => manufacturer.full_name === formData.manufacturer_name);
-      let manufacturerId = existingManufacturer ? existingManufacturer._id : null;
+      const existingManufacturer = manufacturers.find(
+        (manufacturer) => manufacturer.full_name === formData.manufacturer_name
+      );
+      let manufacturerId = existingManufacturer
+        ? existingManufacturer._id
+        : null;
 
       if (!manufacturerId) {
         const manufacturerResponse = await axios.post(`${URL}/manufacturer`, {
@@ -187,7 +233,10 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
         manufacturer_id: manufacturerId,
       };
 
-      const updatedSale = await axios.patch(`${URL}/sale/${selectedSale._id}`, updatedFormData);
+      const updatedSale = await axios.patch(
+        `${URL}/sale/${selectedSale._id}`,
+        updatedFormData
+      );
 
       setSales((prevSales) =>
         prevSales.map((sale) =>
@@ -201,7 +250,7 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
     } catch (err) {
       console.error("Failed to update sales: ", err);
     }
-  }
+  };
   // Object to pass to inventory update api
   // argument represents below
   // add: when it's true, api subtract number from inv
@@ -219,9 +268,9 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       reverseInvNeeded: rev,
       modifInvWithDiffNeeded: mod,
       changeBasedOnShipDateNeeded: ship,
-    }
+    };
     return object;
-  }
+  };
   // Object to pass to finance upate api
   const createObjectToPassForFin = (add, rev, mod) => {
     const object = {
@@ -232,25 +281,24 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
       newPrice: formData.total_sales_price,
       addFinNeeded: add,
       reverseFinNeeded: rev,
-      modifFinWithDiffNeeded: mod
-    }
+      modifFinWithDiffNeeded: mod,
+    };
     return object;
-  }
+  };
 
-  const prevWasPending = previousStatus === "Pending";
-  const prevWasOngoing = previousStatus === "Ongoing";
-  const prevWasCompleted = previousStatus === "Completed";
-  const updateToPending = formData.status === "Pending";
-  const updateToOngoing = formData.status === "Ongoing";
-  const updateToCompleted = formData.status === "Completed";
-
+  const prevWasPending = previousStatus === "pending";
+  const prevWasOngoing = previousStatus === "ongoing";
+  const prevWasCompleted = previousStatus === "completed";
+  const updateToPending = formData.status === "pending";
+  const updateToOngoing = formData.status === "ongoing";
+  const updateToCompleted = formData.status === "completed";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       //  Update selected sales document based on id in any case of updating
       await updateSales();
-
+      console.log(previousStatus);
       let objectToPassI;
       let objectToPassF = null;
 
@@ -293,11 +341,10 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
 
       setshowEditForm(false);
       setSelectedSale(null);
-      // setSales((prevSales) => prevSales.map((saleData) => 
-      // // eslint-disable-next-line no-underscore-dangle 
+      // setSales((prevSales) => prevSales.map((saleData) =>
+      // // eslint-disable-next-line no-underscore-dangle
       //   saleData._id === selectedSale._id ? updatedSalesData : saleData
       // ));
-
     } catch (error) {
       console.error("Error creating/updating purchase:", error);
     }
@@ -310,156 +357,178 @@ const EditSaleModal = ({ showEditForm, setshowEditForm, selectedSale, setSelecte
   return (
     <div className="modal font-dm-sans">
       {console.log(manufacturers)}
-      <h1 className="text-neutral-600 font-dm-sans font-bold text-[24px]">Edit Sale</h1>
-      <small className="text-[#8E9299] font-dm-sans">Update sales entry information</small>
+      <h1 className="text-neutral-600 font-dm-sans font-bold text-[24px]">
+        Edit Sale
+      </h1>
+      <small className="text-[#8E9299] font-dm-sans">
+        Update sales entry information
+      </small>
       <form onSubmit={handleSubmit}>
-      <button
-        type="button"
-       className="absolute top-7 right-5"
-        onClick={() => setshowEditForm(false)}
-      >
-        <img src={Exit} alt="close" />
-      </button>
-      <div className="grid grid-cols-2 gap-x-6 pt-3">
-        <Field
-          label="Status"
-          name="status"
-          type="dropdown"
-          value={formData.status}
-          onChange={handleChange}
-          options={[
-            { value: "pending", label: "Pending" },
-            { value: "ongoing", label: "Ongoing" },
-            { value: "completed", label: "Completed" },
-          ]}
-          required
-        />
-        <Field
-          className="w-[183px] focus:ring-bluegreen-600"
-          label="Shipment date"
-          name="copra_ship_date"
-          type="date"
-          value={formData.copra_ship_date}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="relative" ref={wrapperRef}>
-        <Field
-          label="Manufacturer"
-          name="manufacturer_name"
-          type="text"
-          value={formData.manufacturer_name}
-          onChange={handleChange}
-          onFocus={handleFocus}
+        <button
+          type="button"
+          className="absolute top-7 right-5"
+          onClick={() => setshowEditForm(false)}
+        >
+          <img src={Exit} alt="close" />
+        </button>
+        <div className="grid grid-cols-2 gap-x-6 pt-3">
+          <Field
+            label="Status"
+            name="status"
+            type="dropdown"
+            value={formData.status}
+            onChange={handleChange}
+            options={[
+              { value: "pending", label: "Pending" },
+              { value: "ongoing", label: "Ongoing" },
+              { value: "completed", label: "Completed" },
+            ]}
+            required
+          />
+          <Field
+            className="w-[183px] focus:ring-bluegreen-600"
+            label="Shipment date"
+            name="copra_ship_date"
+            type="date"
+            value={formData.copra_ship_date}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="relative" ref={wrapperRef}>
+          <Field
+            label="Manufacturer"
+            name="manufacturer_name"
+            type="text"
+            value={formData.manufacturer_name}
+            onChange={handleChange}
+            onFocus={handleFocus}
             onBlur={handleBlur}
-          required
-        />
-        {showSuggestions && filteredManufacturers.length > 0 && (
-          <ul className="suggestions absolute bg-white border border-gray-300 w-[full] mt-[-23px] z-10">
-            {filteredManufacturers.map((manufacturer) => (
-              <li key={manufacturer._id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                <button
-                  type="button"
-                  onClick={() => handleSelectManufacturer(manufacturer.full_name)}
+            required
+          />
+          {showSuggestions && filteredManufacturers.length > 0 && (
+            <ul className="suggestions absolute bg-white border border-gray-300 w-[full] mt-[-23px] z-10">
+              {filteredManufacturers.map((manufacturer) => (
+                <li
+                  key={manufacturer._id}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 >
-                  {manufacturer.full_name}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSelectManufacturer(manufacturer.full_name)
+                    }
+                  >
+                    {manufacturer.full_name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <div className="grid grid-cols-2 gap-x-6 pt-3">
-        <Field
-          label="Sales unit price"
-          name="sales_unit_price"
-          type="number"
-          value={formData.sales_unit_price}
-          onChange={handleChange}
-          unit="Php"
-          adornment="start"
-          adornmentEnd="per kg"
-          disabled
-        />      
-        <Field
-          label="Copra Sold"
-          name="amount_of_copra_sold"
-          type="number"
-          className="w-[183px] focus:border-bluegreen-500 focus:ring-bluegreen-500"
-          value={formData.amount_of_copra_sold}
-          onChange={handleChange}
-          unit="kg"
-          adornment="end"
-          required
-          min="0"
-          step="0.0001"
-        />               
-        <Field
-          label="Received on"
-          name="cheque_receive_date"
-          type="date"
-          className="w-[183px]"
-          value={formData.cheque_receive_date}
-          onChange={handleChange}
-          disabled={formData.status !== "completed"}
-          required={formData.status === "completed"}
-          title={
-            formData.status !== "completed"
-              ? "The sale must be completed to edit the date."
-              : ""
-          }
-           />
-        <Field
-          label="Total Sale"
-          name="total_sales_price"
-          type="number"
-          className="w-[183px]"
-          value={formData.total_sales_price}
-          onChange={handleChange}
-          disabled={formData.status !== "completed"}
-          required={formData.status === "completed"}
-          unit="Php"
-          adornment="start"
-          min="0"
-          step="0.0001"
-          title={
-            formData.status !== "completed"
-              ? "The sale must be completed to edit the date."
-              : ""
-          }
-        />
-        <p className="col-span-2 text-red-600">
-          {new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date) ? "The date for money receive has to be after the date for shipment" : ""}
-          {new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending" ? "Shipment date has to be the date on or before today's date. If you want to choose a future date, status has to be pending." : ""}
-        </p>
+          <Field
+            label="Sales unit price"
+            name="sales_unit_price"
+            type="number"
+            value={formData.sales_unit_price}
+            onChange={handleChange}
+            unit="Php"
+            adornment="start"
+            adornmentEnd="per kg"
+            disabled
+          />
+          <Field
+            label="Copra Sold"
+            name="amount_of_copra_sold"
+            type="number"
+            className="w-[183px] focus:border-bluegreen-500 focus:ring-bluegreen-500"
+            value={formData.amount_of_copra_sold}
+            onChange={handleChange}
+            unit="kg"
+            adornment="end"
+            required
+            min="0"
+            step="0.0001"
+          />
+          <Field
+            label="Received on"
+            name="cheque_receive_date"
+            type="date"
+            className="w-[183px]"
+            value={formData.cheque_receive_date}
+            onChange={handleChange}
+            disabled={formData.status !== "completed"}
+            required={formData.status === "completed"}
+            title={
+              formData.status !== "completed"
+                ? "The sale must be completed to edit the date."
+                : ""
+            }
+          />
+          <Field
+            label="Total Sale"
+            name="total_sales_price"
+            type="number"
+            className="w-[183px]"
+            value={formData.total_sales_price}
+            onChange={handleChange}
+            disabled={formData.status !== "completed"}
+            required={formData.status === "completed"}
+            unit="Php"
+            adornment="start"
+            min="0"
+            step="0.0001"
+            title={
+              formData.status !== "completed"
+                ? "The sale must be completed to edit the date."
+                : ""
+            }
+          />
+          <p className="col-span-2 text-red-600">
+            {new Date(formData.cheque_receive_date) <
+            new Date(formData.copra_ship_date)
+              ? "The date for money receive has to be after the date for shipment"
+              : ""}
+            {new Date(formData.copra_ship_date) > new Date() &&
+            formData.status !== "pending"
+              ? "Shipment date has to be the date on or before today's date. If you want to choose a future date, status has to be pending."
+              : ""}
+          </p>
         </div>
-        <div className="grid grid-cols-2 gap-x-6 pt-3">   
-        <CtaBtn
-          className="w-[183px]"
-          size="L"
-          level="O"
-          innerTxt="Clear"
-          onClickFnc={fncCloseModal}
-        />
-        <CtaBtn 
-          className="w-[183px]"
-          size="L" 
-          level={
-            (new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending") || 
-            (formData.status === "completed" && Number(formData.total_sales_price) <= 0) ||
-            (new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date))
-             ? "D" : "P"
-          }
-          type="submit"
-          innerTxt="Save" 
-          disabled = {
-            (new Date(formData.copra_ship_date) > new Date() && formData.status !== "pending") || 
-            (formData.status === "completed" && Number(formData.total_sales_price) <= 0) ||
-            (new Date(formData.cheque_receive_date) < new Date(formData.copra_ship_date))
-          }
-        />
-        </div> 
+        <div className="grid grid-cols-2 gap-x-6 pt-3">
+          <CtaBtn
+            className="w-[183px]"
+            size="L"
+            level="O"
+            innerTxt="Clear"
+            onClickFnc={fncCloseModal}
+          />
+          <CtaBtn
+            className="w-[183px]"
+            size="L"
+            level={
+              (new Date(formData.copra_ship_date) > new Date() &&
+                formData.status !== "pending") ||
+              (formData.status === "completed" &&
+                Number(formData.total_sales_price) <= 0) ||
+              new Date(formData.cheque_receive_date) <
+                new Date(formData.copra_ship_date)
+                ? "D"
+                : "P"
+            }
+            type="submit"
+            innerTxt="Save"
+            disabled={
+              (new Date(formData.copra_ship_date) > new Date() &&
+                formData.status !== "pending") ||
+              (formData.status === "completed" &&
+                Number(formData.total_sales_price) <= 0) ||
+              new Date(formData.cheque_receive_date) <
+                new Date(formData.copra_ship_date)
+            }
+          />
+        </div>
       </form>
     </div>
   );

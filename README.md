@@ -137,25 +137,25 @@
     <td><img src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Ishi_prof.png width=50></td>
     <td>Hisashi Ishihara</td>
     <td><a target="_blank" href=https://github.com/IshiHisashi>@IshiHisashi</td>
-      <td>Frontend | Landing page, Finance page <br> Backend | API realted to cash management and Purchase editing, deployement to vercel </td>
+      <td>Frontend | Landing page, Finance page <br> Backend | API for cash management and Purchase editing, deployement to vercel </td>
   </tr>
   <tr>
     <td><img  target="_blank"src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Prathibha_prof.png width=50></td>
     <td>Pratibha Wijetunga</td>
     <td><a target="_blank" href=https://github.com/shehani-wijetunga>@shehani-wijetunga</td>
-      <td>Frontend | Purchase page, Sales page <br> Backend | API realted to new sales and purchase log, authentication</td>
+      <td>Frontend | Purchase page, Sales page <br> Backend | API for new sales and purchase log, authentication</td>
   </tr>
   <tr>
     <td><img  target="_blank"src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Sacha_prof.png width=50></td>
     <td>Sachi Asano</td>
     <td><a href=https://github.com/c-est-sa>@c-est-sa</td>
-      <td>Frontend | Dashboard page, Onbording screens <br> Backend | API realted to user and market price, 3rd party resource such as web scraping, API</td>
+      <td>Frontend | Dashboard page, Onbording screens <br> Backend | API for user and market price, 3rd party resource such as web scraping, API</td>
   </tr>
   <tr>
     <td><img src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Aki_prof.png width=50></td>
     <td>Akifumi Hayashi</td>
     <td><a target="_blank" href=https://github.com/Akiodesukedo>@Akiodesukedo</td>
-  <td>Frontend | Inventory page <br> Backend | API realted to Inventory and Sales editing </td>
+  <td>Frontend | Inventory page <br> Backend | API for Inventory and Sales editing </td>
   </tr>
 </table>
 

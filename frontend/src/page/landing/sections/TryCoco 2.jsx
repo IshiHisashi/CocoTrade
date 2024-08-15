@@ -1,6 +1,5 @@
 import React from "react";
 import CtaBtn from "../../../component/btn/CtaBtn";
-import Field from "../../../component/field-filter/Field";
 
 const TryCoco = ({ setAuthType, setIsAuthModalOpen }) => {
   return (

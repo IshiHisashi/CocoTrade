@@ -5,24 +5,6 @@ import LoadingScreen from "../component/loading/LoadingScreen";
 export const UserIdContext = createContext();
 
 const UserIdProvider = ({ children }) => {
-  // --Version.1
-  // const [userId, setUserId] = useState(null);
-  // useEffect(() => {
-  //   auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       console.log(user.uid);
-  //       setUserId(user.uid);
-  //     } else {
-  //       setUserId(null);
-  //     }
-  //   });
-  // }, []);
-
-  // return (
-  //   <UserIdContext.Provider value={userId}>{children}</UserIdContext.Provider>
-  // );
-
-  // --Version.2
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
 

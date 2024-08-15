@@ -1,5 +1,4 @@
 import React from "react";
-import CtaBtn from "../../../component/btn/CtaBtn";
 
 const LandingFooter = () => {
   const handleDownload = () => {

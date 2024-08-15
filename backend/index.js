@@ -30,14 +30,13 @@ app.get("/download-proposal", (req, res) => {
     "proposals",
     "Cocotrade_proposal.pdf"
   );
-  res.download(file); // Set the headers to force download
+  res.download(file);
 });
 
 app.use(
   cors({
     credentials: true,
     // Let the origin have wildcard for the time being.
-    // origin: "*",
     origin: [
       //   // Local
       "http://localhost:5173",
@@ -85,8 +84,6 @@ app.use("/user", priceSuggestionRoute);
 app.use("/sale", saleRoute);
 app.use("/purchase", purchaseRoute);
 app.use("/farmer", farmerRoute);
-
-// This will be replaced by the endpoint 'user'
 app.use("/tmpFinRoute", tmpFinRoute);
 
 // connection to DB

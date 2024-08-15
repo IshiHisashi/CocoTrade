@@ -1,5 +1,4 @@
 import React from "react";
-import CtaBtn from "../../../component/btn/CtaBtn";
 
 const Hero = ({ setAuthType, setIsAuthModalOpen }) => {
   const handleDownload = () => {

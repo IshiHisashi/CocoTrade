@@ -10,7 +10,6 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
   const [monthTransactionArr, setMonthTransactionArr] = useState([]);
   const userId = useContext(UserIdContext);
   const { startLoading, stopLoading } = useLoading();
-  const [load, setLoad] = useState(null);
 
   useEffect(() => {
     startLoading();
@@ -189,7 +188,6 @@ const MonthlyTable = ({ selectedTableMonth, URL }) => {
                 className="p14-medium odd:bg-bluegreen-100"
               >
                 <td className="pl-[10px] py-[12.5px]">
-                  {/* {transaction.date.slice(0, 10)} */}
                   {transaction.date.slice(5, 7)}/{transaction.date.slice(8, 10)}
                   /{transaction.date.slice(2, 4)}
                 </td>

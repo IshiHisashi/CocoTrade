@@ -25,8 +25,6 @@ const Layout = (props) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const [translateX, setTranslateX] = useState("-translate-x-full");
-  // translate-x-0
-  // -translate-x-full
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
 

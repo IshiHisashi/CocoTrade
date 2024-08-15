@@ -6,7 +6,6 @@ const { Schema } = mongoose;
 const currentBalanceSchema = new Schema({
   user_id: {
     type: String,
-    // ref: "User",
   },
   purchases_array: {
     type: Array,

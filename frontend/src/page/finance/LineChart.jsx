@@ -40,7 +40,6 @@ const LineChart = (t) => {
         })
         .catch(console.log("waiting..."));
     } else if (type === "cashflow") {
-      // console.log(userId);
       // for cash flow
       axios
         .get(`${URL}/tmpFinRoute/${userId}/currentbalance/byuser`)
@@ -62,7 +61,6 @@ const LineChart = (t) => {
       gradient.addColorStop(0, "rgba(75, 192, 192, 0.5)");
       gradient.addColorStop(1, "rgba(75, 192, 192, 0)");
     } else {
-      // rgba(255, 131, 64, 1)
       gradient.addColorStop(0, "rgba(255, 131, 64, 0.5)");
       gradient.addColorStop(1, "rgba(255, 131, 64, 0)");
     }
@@ -103,8 +101,6 @@ const LineChart = (t) => {
       .filter(durationAdjuster)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    console.log(dailyData);
-
     // 3-1. Add data to blank days. This is to make consecutive chart : Get the latest balance before the start of the duration
     const latestBalanceBeforeStart =
       dailyData
@@ -137,7 +133,6 @@ const LineChart = (t) => {
           return { date: day, price: dataPoint.price }; //If transaction occurs, the value of the day should change
         }
       });
-      // console.log(daysInDuration);
     } else if (durationType === "yearly") {
       // Yearly scenario
       const startOfDuration = moment().subtract(12, "months").startOf("month");
